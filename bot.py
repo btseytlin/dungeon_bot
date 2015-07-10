@@ -23,18 +23,20 @@ class DungeonBot(object):
 	def start_main_loop(self):
 		while True:
 			updates = DungeonBot.api.getUpdates()
+
 			for update in updates:
 				message = update.message
 				self.on_message(message)
 
+
 	def on_message(self, message):
 		user = message.from_user
-		
+
 		if not message.text: #if message text is missing or empty its an error
 			self.reply_error(user, message)
 
 		#check if player is registered
-		if !PersistenceController.is_registered(user.username): 
+		if not PersistenceController.is_registered(user.username): 
 			self.register_player(user)
 		else:
 			ply = PersistenceController.get_ply(user)

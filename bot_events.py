@@ -37,12 +37,12 @@ class RegistrationEvent(BotEvent):
 			self.current_step+=1
 			DungeonBot.api.sendMessage(user, "What is your race?")
 
-		else if self.current_step == 1:
+		elif self.current_step == 1:
 			self.new_player.race == message.text
 			DungeonBot.api.sendMessage(user, "What is your class?")
 			self.current_step+=1
 
-		else if self.current_step == 2:
+		elif self.current_step == 2:
 			self.new_player.combat_class == message.text
 			DungeonBot.api.sendMessage(user, "Registration complete!")
 			
