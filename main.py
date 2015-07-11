@@ -3,7 +3,7 @@ import telegram
 from mock_telegram import MockBot
 import logging
 
-logging.basicConfig(level=logging.DEBUG, filename='error.log')
+logging.basicConfig(level=logging.DEBUG, filename='error.log', datefmt='%H:%M:%S')
 
 # read token from file
 apitoken = "90526238:AAH75hEHDV0LBDfC1UKyMHnXmoDNB7AeQ6A"
