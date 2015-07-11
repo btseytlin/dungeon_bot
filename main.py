@@ -14,6 +14,7 @@ dungeon_bot = DungeonBot()
 dungeon_bot.api = tg
 
 try:
+	logging.info("Telegram DungeonBot starting")
 	dungeon_bot.start_main_loop()
 except:
 	logging.exception("Exception ")
