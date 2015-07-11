@@ -1,4 +1,4 @@
-
+import logging
 class PersistenceController(object):
 	players = {}
 	instance = None

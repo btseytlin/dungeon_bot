@@ -3,6 +3,8 @@ from creatures import Player
 from bot_events import RegistrationEvent
 import uuid
 import json
+import logging
+import util
 # read apikey from file
 
 persistence_controller = persistence.get_persistence_controller_instance()
@@ -11,9 +13,6 @@ persistence_controller = persistence.get_persistence_controller_instance()
 def get_dungeon_bot_instance():
 	if DungeonBot.instance:
 		return DungeonBot.instance
-
-def get_uid():
-	return str(uuid.uuid4())[:8]
 
 def event_over_callback(uid):
 	event = DungeonBot.events[uid]
@@ -78,7 +77,7 @@ class DungeonBot(object):
 	def register_player(self, user):
 		new_player = Player(None, None, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
-		uid = get_uid()
+		uid = util.get_uid()
 		registration = RegistrationEvent(self, event_over_callback, uid, user) #Create a registration event
 		self.events[uid] = registration #add event to collection of events
 		print("Registration event %s created"%(uid))
