@@ -1,12 +1,19 @@
-from bot import DungeonBot
+from dungeon_bot import DungeonBot
 import telegram
 from mock_telegram import MockBot
+import logging
+
+logging.basicConfig(level=logging.DEBUG, filename='error.log')
 
 # read token from file
+apitoken = "90526238:AAH75hEHDV0LBDfC1UKyMHnXmoDNB7AeQ6A"
+tg = telegram.Bot(token=apitoken)
+#tg = MockBot()
 
-#tg = telegram.Bot(token='token')
-tg = MockBot()
+dungeon_bot = DungeonBot()
+dungeon_bot.api = tg
 
-DungeonBot.api = tg
-
-DungeonBot.start_main_loop()
+try:
+	dungeon_bot.start_main_loop()
+except:
+	logging.exception("Exception ")

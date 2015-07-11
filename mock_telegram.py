@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 """A library that provides a Python interface to the Telegram Bot API"""
-
+import datetime
 import json
 import urllib
 import urllib2
@@ -13,18 +13,21 @@ from telegram import (User, Message, Update, UserProfilePhotos, TelegramError,
 
 uid = 1
 muid = 1
+def getMockUser():
+  return User(0, "Mock", "Mock", "mockuser")
+
 class MockBot(object):
 
     def __init__(self):
         try:
             bot = self.getMe()
 
-            self._id = bot.id
+            self._id = "bot.id"
             self._first_name = bot.first_name
             self._last_name = bot.last_name
             self._username = bot.username
 
-            self.updates = [ {"update_id": 0, "message":Message(0, None, None, None, None, None, None, "Mockbot initialized").to_json()} ]
+            self.updates = [ {"update_id": 0, "message":Message(0, self.getMe(), str(datetime.datetime.now()), getMockUser(), None, None, None, "Mockbot initialized").to_json()} ]
 
             self.__auth = True
         except TelegramError:
@@ -47,16 +50,16 @@ class MockBot(object):
         return self._username
 
     def listen_to_console_input(self):
-		ply_message = raw_input("Next command: ")
-		self.updates = [{"update_id": uid, "message":Message(muid, User(0, "Mock", "Mock", "mockuser").to_json(), None, None, None, None, None, ply_message).to_json()}]
-		uid += 1
-		muid += 1
-		return(self.updates)
+      global uid, muid
+      ply_message = raw_input("Next command: ")
+      self.updates = [{"update_id": uid, "message":Message(muid, getMockUser().to_json(), str(datetime.datetime.now()), getMockUser(), None, None, None, ply_message).to_json()}]
+      uid += 1
+      muid += 1
+      return json.dumps(self.updates)
 
     def getMe(self):
-        json_data = "{}" #self._requestUrl(url, 'GET')
+        json_data = '{"result":{"id":"mockbot", "first_name":"mockbot", "last_name":"mockbot", "username":"mockbot"} }' #self._requestUrl(url, 'GET')
         data = self._parseAndCheckTelegram(json_data)
-
         return User.de_json(data)
 
     def sendMessage(self,
@@ -106,7 +109,6 @@ class MockBot(object):
         json_data =  json.dumps(data)#self._requestUrl(url, 'POST', data=data)
         data = self._parseAndCheckTelegram(json_data)
 
-        print Message.de_json(data)
         return Message.de_json(data)
 
     def forwardMessage(self,
@@ -657,6 +659,6 @@ class MockBot(object):
         Raises:
           TelegramError wrapping the Telegram error message if one exists.
         """
-
-        if not data['ok']:
-            raise TelegramError(data['description'])
+        pass
+       # if not data['ok']:
+         #   raise TelegramError(data['description'])

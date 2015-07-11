@@ -6,6 +6,6 @@ class Creature(object):
 		self.description = description
 		self.event = None
 
-class Player(object):
+class Player(Creature):
 	def __init__(self, name, race, combat_class, description=None):
-		Creature.__init__(name, race, combat_class, description)
+		Creature.__init__(self, name, race, combat_class, description)
