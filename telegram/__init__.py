@@ -8,6 +8,9 @@ __version__ = '1.1'
 
 import json
 
+import sys
+sys.path.append("telegram/")
+
 from user import User
 from message import Message
 from update import Update

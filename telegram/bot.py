@@ -5,7 +5,9 @@
 
 import json
 import urllib
-import urllib2
+import urllib.error
+import urllib.request
+import urllib.parse
 
 from telegram import (User, Message, Update, UserProfilePhotos, TelegramError,
                       ReplyMarkup, InputFile)
@@ -608,29 +610,29 @@ class Bot(object):
                'video' in data and (isinstance(data['video'], file) or 'http' in data['video']):
                 try:
                     data = InputFile(data)
-                    request = urllib2.Request(
+                    request = urllib.Request(
                         url,
                         data=data.to_form(),
                         headers=data.headers
                     )
-                    return urllib2.urlopen(request).read()
-                except urllib2.URLError as e:
+                    return urllib.request.urlopen(request).read()
+                except urllib.error.URLError as e:
                     raise TelegramError(str(e))
             else:
                 try:
-                    return urllib2.urlopen(
+                    return urllib.request.urlopen(
                         url,
-                        urllib.urlencode(data)
+                        urllib.parse.urlencode(data)
                     ).read()
                 #except urllib.IOError as e:
                 #    raise TelegramError(str(e))
-                except urllib2.URLError as e:
+                except urllib.error.URLError as e:
                     raise TelegramError(str(e))
 
         if method == 'GET':
             try:
-                return urllib2.urlopen(url).read()
-            except urllib2.URLError as e:
+                return urllib.request.urlopen(url).read()
+            except urllib.error.URLError as e:
                 raise TelegramError(str(e))
         return 0
 
@@ -648,7 +650,7 @@ class Bot(object):
         """
 
         try:
-            data = json.loads(json_data)
+            data = json.loads(json_data.decode())
             self._checkForTelegramError(data)
         except ValueError:
             if '<title>403 Forbidden</title>' in json_data:

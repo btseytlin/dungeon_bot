@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 
 
-import mimetools
+import email
 import mimetypes
 import os
-import urllib2
+import urllib
 
 
 class InputFile(object):
     def __init__(self,
                  data):
         self.data = data
-        self.boundary = mimetools.choose_boundary()
+        self.boundary = email.generator._make_boundary()
 
         if 'audio' in data:
             self.input_name = 'audio'

@@ -5,7 +5,6 @@
 import datetime
 import json
 import urllib
-import urllib2
 
 from telegram import (User, Message, Update, UserProfilePhotos, TelegramError,
                       ReplyMarkup, InputFile)
