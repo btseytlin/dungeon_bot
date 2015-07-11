@@ -1,9 +1,5 @@
 #!/usr/bin/env python
-
-
 import json
-
-
 class User(object):
     def __init__(self,
                  id,

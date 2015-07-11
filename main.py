@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG, filename='botlog.log', datefmt='%H:%M:%S')
 
 # read token from file
-apitoken = "90526238:AAH75hEHDV0LBDfC1UKyMHnXmoDNB7AeQ6A"
+apitoken = "notanapikey"
 tg = telegram.Bot(token=apitoken)
 #tg = MockBot()
 

@@ -52,6 +52,6 @@ class RegistrationEvent(BotEvent):
 
 		elif self.current_step == 2:
 			self.new_player.combat_class = message.text
-			self.bot.api.sendMessage(self.user.id, "Registration complete!")
+			self.bot.api.sendMessage(self.user.id, 'Registration complete! Try "examine" to see your stats.')
 			
 			self.finish()

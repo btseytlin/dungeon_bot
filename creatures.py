@@ -18,11 +18,12 @@ class Creature(object):
 
 	def __str__(self):
 		desc = ""
-		if name:
-			desc+="You see %s\n."%(self.name)
-		desc+="It's a %s %s\n."%(self.combat_class, self.race)
-		desc+="It has %d health and %d energy\n."%(self.health, self.energy)
-		desc+="%s"%(self.description)
+		if self.name:
+			desc+="You see %s.\n"%(self.name)
+		desc+="It's a %s %s.\n"%(self.combat_class, self.race)
+		desc+="It has %d health and %d energy.\n"%(self.health, self.energy)
+		if self.description:
+			desc+="%s"%(self.description)
 		return desc
 
 	def __repr__(self):
@@ -34,5 +35,6 @@ class Player(Creature):
 		self.level = level
 
 	def __str__(self):
-		desc = super().__str__()
-		desc += "It is of level %d\n."%(self.level)
+		desc = super(Player, self).__str__()
+		desc += "It is of level %d.\n"%(self.level)
+		return desc
