@@ -1,0 +1,229 @@
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749698709
+DEBUG:root:Last update id is 749698710
+INFO:root:[MESSAGE] btseytlin: examine
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x02A5A410>
+DEBUG:root:Got update with id 749698710
+DEBUG:root:Last update id is 749698711
+INFO:root:[MESSAGE] btseytlin: Hey bot
+DEBUG:root:Got update with id 749698711
+DEBUG:root:Last update id is 749698712
+INFO:root:[MESSAGE] btseytlin: d
+DEBUG:root:Got update with id 749698712
+DEBUG:root:Last update id is 749698713
+INFO:root:[MESSAGE] btseytlin: d
+DEBUG:root:Removing event 86718d4b
+DEBUG:root:Event 86718d4b removed
+DEBUG:root:Got update with id 749698713
+DEBUG:root:Last update id is 749698714
+INFO:root:[MESSAGE] btseytlin: d
+DEBUG:root:Got update with id 749698714
+DEBUG:root:Last update id is 749698715
+INFO:root:[MESSAGE] btseytlin: examine
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 94, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 623, in _requestUrl
+    urllib.urlencode(data)
+  File "C:\Python27\lib\urllib2.py", line 154, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python27\lib\urllib2.py", line 431, in open
+    response = self._open(req, data)
+  File "C:\Python27\lib\urllib2.py", line 449, in _open
+    '_open', req)
+  File "C:\Python27\lib\urllib2.py", line 409, in _call_chain
+    result = func(*args)
+  File "C:\Python27\lib\urllib2.py", line 1240, in https_open
+    context=self._context)
+  File "C:\Python27\lib\urllib2.py", line 1194, in do_open
+    h.request(req.get_method(), req.get_selector(), req.data, headers)
+  File "C:\Python27\lib\httplib.py", line 1053, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python27\lib\httplib.py", line 1093, in _send_request
+    self.endheaders(body)
+  File "C:\Python27\lib\httplib.py", line 1049, in endheaders
+    self._send_output(message_body)
+  File "C:\Python27\lib\httplib.py", line 893, in _send_output
+    self.send(msg)
+  File "C:\Python27\lib\httplib.py", line 855, in send
+    self.connect()
+  File "C:\Python27\lib\httplib.py", line 1266, in connect
+    HTTPConnection.connect(self)
+  File "C:\Python27\lib\httplib.py", line 832, in connect
+    self.timeout, self.source_address)
+  File "C:\Python27\lib\socket.py", line 566, in create_connection
+    sock.connect(sa)
+  File "C:\Python27\lib\socket.py", line 228, in meth
+    return getattr(self._sock,name)(*args)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749698715
+DEBUG:root:Last update id is 749698716
+INFO:root:[MESSAGE] btseytlin: Hey bot
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x02B05430>
+DEBUG:root:Got update with id 749698716
+DEBUG:root:Last update id is 749698717
+INFO:root:[MESSAGE] btseytlin: Boris
+DEBUG:root:Got update with id 749698717
+DEBUG:root:Last update id is 749698718
+INFO:root:[MESSAGE] btseytlin: Human
+DEBUG:root:Got update with id 749698718
+DEBUG:root:Last update id is 749698719
+INFO:root:[MESSAGE] btseytlin: Mage
+DEBUG:root:Removing event ff2039dc
+DEBUG:root:Event ff2039dc removed
+DEBUG:root:Got update with id 749698719
+DEBUG:root:Last update id is 749698720
+INFO:root:[MESSAGE] btseytlin: examine
+DEBUG:root:Got update with id 749698720
+DEBUG:root:Last update id is 749698721
+INFO:root:[MESSAGE] btseytlin: help
+DEBUG:root:Got update with id 749698721
+DEBUG:root:Last update id is 749698722
+INFO:root:[MESSAGE] btseytlin: examine self
+DEBUG:root:Got update with id 749698722
+DEBUG:root:Last update id is 749698723
+INFO:root:[MESSAGE] btseytlin: stats
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 94, in start_main_loop
+    else:
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 623, in _requestUrl
+    urllib.urlencode(data)
+  File "C:\Python27\lib\urllib2.py", line 154, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python27\lib\urllib2.py", line 431, in open
+    response = self._open(req, data)
+  File "C:\Python27\lib\urllib2.py", line 449, in _open
+    '_open', req)
+  File "C:\Python27\lib\urllib2.py", line 409, in _call_chain
+    result = func(*args)
+  File "C:\Python27\lib\urllib2.py", line 1240, in https_open
+    context=self._context)
+  File "C:\Python27\lib\urllib2.py", line 1194, in do_open
+    h.request(req.get_method(), req.get_selector(), req.data, headers)
+  File "C:\Python27\lib\httplib.py", line 1053, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python27\lib\httplib.py", line 1093, in _send_request
+    self.endheaders(body)
+  File "C:\Python27\lib\httplib.py", line 1049, in endheaders
+    self._send_output(message_body)
+  File "C:\Python27\lib\httplib.py", line 893, in _send_output
+    self.send(msg)
+  File "C:\Python27\lib\httplib.py", line 855, in send
+    self.connect()
+  File "C:\Python27\lib\httplib.py", line 1266, in connect
+    HTTPConnection.connect(self)
+  File "C:\Python27\lib\httplib.py", line 832, in connect
+    self.timeout, self.source_address)
+  File "C:\Python27\lib\socket.py", line 566, in create_connection
+    sock.connect(sa)
+  File "C:\Python27\lib\socket.py", line 228, in meth
+    return getattr(self._sock,name)(*args)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 95, in start_main_loop
+    updates = self.api.getUpdates()
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 628, in _requestUrl
+    raise TelegramError(str(e))
+TelegramError: HTTP Error 502: Bad Gateway
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749698723
+DEBUG:root:Last update id is 749698724
+INFO:root:[MESSAGE] btseytlin: hey
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x02A45450>
+DEBUG:root:Got update with id 749698724
+DEBUG:root:Last update id is 749698725
+INFO:root:[MESSAGE] btseytlin: Boris
+DEBUG:root:Got update with id 749698725
+DEBUG:root:Last update id is 749698726
+INFO:root:[MESSAGE] btseytlin: orc
+DEBUG:root:Got update with id 749698726
+DEBUG:root:Last update id is 749698727
+INFO:root:[MESSAGE] btseytlin: warrior
+DEBUG:root:Removing event 57350b14
+DEBUG:root:Event 57350b14 removed
+DEBUG:root:Got update with id 749698727
+DEBUG:root:Last update id is 749698728
+INFO:root:[MESSAGE] btseytlin: examine
+DEBUG:root:Got update with id 749698728
+DEBUG:root:Last update id is 749698729
+INFO:root:[MESSAGE] amPerl: asdsdf
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x02A45450>
+DEBUG:root:Got update with id 749698729
+DEBUG:root:Last update id is 749698730
+INFO:root:[MESSAGE] amPerl: butt
+DEBUG:root:Got update with id 749698730
+DEBUG:root:Last update id is 749698731
+INFO:root:[MESSAGE] amPerl: negroid
+DEBUG:root:Got update with id 749698731
+DEBUG:root:Last update id is 749698732
+INFO:root:[MESSAGE] amPerl: thief
+DEBUG:root:Removing event 6a0bbcdd
+DEBUG:root:Event 6a0bbcdd removed
+DEBUG:root:Got update with id 749698732
+DEBUG:root:Last update id is 749698733
+INFO:root:[MESSAGE] amPerl: examine
+DEBUG:root:Got update with id 749698733
+DEBUG:root:Last update id is 749698734
+INFO:root:[MESSAGE] amPerl: asd
+DEBUG:root:Got update with id 749698734
+DEBUG:root:Last update id is 749698735
+INFO:root:[MESSAGE] amPerl: help
+DEBUG:root:Got update with id 749698735
+DEBUG:root:Last update id is 749698736
+INFO:root:[MESSAGE] amPerl: stats
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 93, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 623, in _requestUrl
+    urllib.urlencode(data)
+  File "C:\Python27\lib\urllib2.py", line 154, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python27\lib\urllib2.py", line 431, in open
+    response = self._open(req, data)
+  File "C:\Python27\lib\urllib2.py", line 449, in _open
+    '_open', req)
+  File "C:\Python27\lib\urllib2.py", line 409, in _call_chain
+    result = func(*args)
+  File "C:\Python27\lib\urllib2.py", line 1240, in https_open
+    context=self._context)
+  File "C:\Python27\lib\urllib2.py", line 1200, in do_open
+    r = h.getresponse(buffering=True)
+  File "C:\Python27\lib\httplib.py", line 1132, in getresponse
+    response.begin()
+  File "C:\Python27\lib\httplib.py", line 453, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python27\lib\httplib.py", line 409, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "C:\Python27\lib\socket.py", line 480, in readline
+    data = self._sock.recv(self._rbufsize)
+  File "C:\Python27\lib\ssl.py", line 734, in recv
+    return self.read(buflen)
+  File "C:\Python27\lib\ssl.py", line 621, in read
+    v = self._sslobj.read(len or 1024)
+KeyboardInterrupt

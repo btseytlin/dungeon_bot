@@ -51,8 +51,7 @@ class DungeonBot(object):
 		words = message.text.strip().lower().split(' ')
 		command = words[0]
 		args = words[1:]
-		self.handle_command(user, command, *args)
-
+		return command,args
 
 	def handle_command(self, user, command, *args):
 		if not command in self.allowed_commands.keys():
@@ -118,11 +117,13 @@ class DungeonBot(object):
 			self.register_player(user)
 		else:
 			ply = persistence_controller.get_ply(user)
+			command, args = self.parse_command(user, message)
 			if ply.event and self.events[ply.event]: #Check if player is in event
-				self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+
+				self.events[ply.event].handle_command(command, *args) #If he is, let the event handle the message
 			else:
 				#parse command on your own
-				self.parse_command(user, message)
+				self.handle_command(user, command, *args)
 
 	def register_player(self, user):
 		new_player = Player(None, None, None) #Create an empty player object
