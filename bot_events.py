@@ -18,7 +18,7 @@ class BotEvent(object):
 		print("Base bot event shouldnt handle any messages!")
 
 	def finish(self):
-		self.finished_callback(uid)
+		self.finished_callback(self.uid)
 
 class RegistrationEvent(BotEvent):
 
@@ -37,21 +37,21 @@ class RegistrationEvent(BotEvent):
 		logging.debug(self.bot)
 
 
-		self.bot.api.sendMessage(user, "What is your name?")
+		self.bot.api.sendMessage(self.user.id, "What is your name?")
 
 	def handle_message(self, message):
 		if self.current_step == 0:
-			self.new_player.name == message.text
+			self.new_player.name = message.text
 			self.current_step+=1
-			self.bot.api.sendMessage(user, "What is your race?")
+			self.bot.api.sendMessage(self.user.id, "What is your race?")
 
 		elif self.current_step == 1:
-			self.new_player.race == message.text
-			self.bot.api.sendMessage(user, "What is your class?")
+			self.new_player.race = message.text
+			self.bot.api.sendMessage(self.user.id, "What is your class?")
 			self.current_step+=1
 
 		elif self.current_step == 2:
-			self.new_player.combat_class == message.text
-			self.bot.api.sendMessage(user, "Registration complete!")
+			self.new_player.combat_class = message.text
+			self.bot.api.sendMessage(self.user.id, "Registration complete!")
 			
 			self.finish()

@@ -1,0 +1,377 @@
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A4BF98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 56, in on_message
+    self.register_player(user)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 74, in register_player
+    registration = RegistrationEvent(self, event_over_callback, get_uid, user) #Create a registration event
+  File "D:\projects\dungeon_bot\bot_events.py", line 40, in __init__
+    self.bot.api.sendMessage(user, "What is your name?")
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 118, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 625, in _requestUrl
+    except urllib.IOError as e:
+AttributeError: 'module' object has no attribute 'IOError'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A0BFD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 56, in on_message
+    self.register_player(user)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 74, in register_player
+    registration = RegistrationEvent(self, event_over_callback, get_uid, user) #Create a registration event
+  File "D:\projects\dungeon_bot\bot_events.py", line 40, in __init__
+    self.bot.api.sendMessage(user, "What is your name?")
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 118, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 628, in _requestUrl
+    raise TelegramError(str(e))
+TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A9BFD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 56, in on_message
+    self.register_player(user)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 74, in register_player
+    registration = RegistrationEvent(self, event_over_callback, get_uid, user) #Create a registration event
+  File "D:\projects\dungeon_bot\bot_events.py", line 40, in __init__
+    self.bot.api.sendMessage(user, "What is your name?")
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 119, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 629, in _requestUrl
+    raise TelegramError(str(e))
+TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x000000000295CF98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 56, in on_message
+    self.register_player(user)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 74, in register_player
+    registration = RegistrationEvent(self, event_over_callback, get_uid, user) #Create a registration event
+  File "D:\projects\dungeon_bot\bot_events.py", line 40, in __init__
+    self.bot.api.sendMessage(user, "What is your name?")
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 119, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 629, in _requestUrl
+    raise TelegramError(str(e))
+TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002AB30F0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 69, in on_message
+    print("Message from %s: %s" % (user["first_name"], message["text"]))
+TypeError: 'User' object has no attribute '__getitem__'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002959FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 60, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+KeyError: <function get_uid at 0x00000000026CB358>
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x00000000029ACF98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 60, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+KeyError: <function get_uid at 0x00000000026EC358>
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x000000000297CF98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 60, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+KeyError: 'ec8d7a13'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x000000000293AF98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 60, in on_message
+    if ply.event and self.events[ply.event]: #Check if player is in event
+KeyError: '4bfdb1db'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A19F98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 60, in on_message
+    if ply.event and self.events[ply.event]: #Check if player is in event
+KeyError: '93be7f18'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x00000000029C0F98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 61, in on_message
+    if ply.event and self.events[ply.event]: #Check if player is in event
+KeyError: 'aa1ecbc8'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A01FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 45, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 61, in on_message
+    if ply.event and self.events[ply.event]: #Check if player is in event
+KeyError: '64423bf5'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002960FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 44, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 61, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 46, in handle_message
+    self.bot.api.sendMessage(user, "What is your race?")
+NameError: global name 'user' is not defined
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 40, in start_main_loop
+    if last_update_id:
+UnboundLocalError: local variable 'last_update_id' referenced before assignment
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 47, in start_main_loop
+    self.last_update_id = update.id
+AttributeError: 'Update' object has no attribute 'id'
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A73FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 50, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 67, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 46, in handle_message
+    self.bot.api.sendMessage(self.user, "What is your race?")
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 118, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 628, in _requestUrl
+    raise TelegramError(str(e))
+TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x00000000029EAF98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 50, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 67, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 57, in handle_message
+    self.finish()
+  File "D:\projects\dungeon_bot\bot_events.py", line 21, in finish
+    self.finished_callback(uid)
+NameError: global name 'uid' is not defined
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002963FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 51, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 68, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 57, in handle_message
+    self.finish()
+  File "D:\projects\dungeon_bot\bot_events.py", line 21, in finish
+    self.finished_callback(uid)
+NameError: global name 'uid' is not defined
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x000000000293FFD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 51, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 68, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 57, in handle_message
+    self.finish()
+  File "D:\projects\dungeon_bot\bot_events.py", line 21, in finish
+    self.finished_callback(uid)
+NameError: global name 'uid' is not defined
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x00000000029D4F98>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 56, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 73, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 57, in handle_message
+    self.finish()
+  File "D:\projects\dungeon_bot\bot_events.py", line 21, in finish
+    self.finished_callback(uid)
+NameError: global name 'uid' is not defined
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x00000000029D3FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 56, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 72, in on_message
+    self.events[ply.event].handle_message(message) #If he is, let the event handle the message
+  File "D:\projects\dungeon_bot\bot_events.py", line 57, in handle_message
+    self.finish()
+  File "D:\projects\dungeon_bot\bot_events.py", line 21, in finish
+    self.finished_callback(uid)
+NameError: global name 'uid' is not defined
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x0000000002A0AFD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 46, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 623, in _requestUrl
+    urllib.urlencode(data)
+  File "C:\Python27\lib\urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "C:\Python27\lib\urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "C:\Python27\lib\urllib2.py", line 422, in _open
+    '_open', req)
+  File "C:\Python27\lib\urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "C:\Python27\lib\urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "C:\Python27\lib\urllib2.py", line 1187, in do_open
+    r = h.getresponse(buffering=True)
+  File "C:\Python27\lib\httplib.py", line 1045, in getresponse
+    response.begin()
+  File "C:\Python27\lib\httplib.py", line 409, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python27\lib\httplib.py", line 365, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "C:\Python27\lib\socket.py", line 476, in readline
+    data = self._sock.recv(self._rbufsize)
+  File "C:\Python27\lib\ssl.py", line 241, in recv
+    return self.read(buflen)
+  File "C:\Python27\lib\ssl.py", line 160, in read
+    return self._sslobj.read(len)
+KeyboardInterrupt
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 48, in start_main_loop
+    updates = self.api.getUpdates()
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 623, in _requestUrl
+    urllib.urlencode(data)
+  File "C:\Python27\lib\urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "C:\Python27\lib\urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "C:\Python27\lib\urllib2.py", line 422, in _open
+    '_open', req)
+  File "C:\Python27\lib\urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "C:\Python27\lib\urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "C:\Python27\lib\urllib2.py", line 1181, in do_open
+    h.request(req.get_method(), req.get_selector(), req.data, headers)
+  File "C:\Python27\lib\httplib.py", line 973, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python27\lib\httplib.py", line 1007, in _send_request
+    self.endheaders(body)
+  File "C:\Python27\lib\httplib.py", line 969, in endheaders
+    self._send_output(message_body)
+  File "C:\Python27\lib\httplib.py", line 829, in _send_output
+    self.send(msg)
+  File "C:\Python27\lib\httplib.py", line 791, in send
+    self.connect()
+  File "C:\Python27\lib\httplib.py", line 1176, in connect
+    self.sock = ssl.wrap_socket(sock, self.key_file, self.cert_file)
+  File "C:\Python27\lib\ssl.py", line 387, in wrap_socket
+    ciphers=ciphers)
+  File "C:\Python27\lib\ssl.py", line 143, in __init__
+    self.do_handshake()
+  File "C:\Python27\lib\ssl.py", line 305, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt
+DEBUG:root:<dungeon_bot.DungeonBot object at 0x00000000029A9FD0>
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\main.py", line 17, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\dungeon_bot\dungeon_bot.py", line 46, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 554, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "D:\projects\dungeon_bot\telegram\bot.py", line 623, in _requestUrl
+    urllib.urlencode(data)
+  File "C:\Python27\lib\urllib2.py", line 127, in urlopen
+    return _opener.open(url, data, timeout)
+  File "C:\Python27\lib\urllib2.py", line 404, in open
+    response = self._open(req, data)
+  File "C:\Python27\lib\urllib2.py", line 422, in _open
+    '_open', req)
+  File "C:\Python27\lib\urllib2.py", line 382, in _call_chain
+    result = func(*args)
+  File "C:\Python27\lib\urllib2.py", line 1222, in https_open
+    return self.do_open(httplib.HTTPSConnection, req)
+  File "C:\Python27\lib\urllib2.py", line 1187, in do_open
+    r = h.getresponse(buffering=True)
+  File "C:\Python27\lib\httplib.py", line 1045, in getresponse
+    response.begin()
+  File "C:\Python27\lib\httplib.py", line 409, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python27\lib\httplib.py", line 365, in _read_status
+    line = self.fp.readline(_MAXLINE + 1)
+  File "C:\Python27\lib\socket.py", line 476, in readline
+    data = self._sock.recv(self._rbufsize)
+  File "C:\Python27\lib\ssl.py", line 241, in recv
+    return self.read(buflen)
+  File "C:\Python27\lib\ssl.py", line 160, in read
+    return self._sslobj.read(len)
+KeyboardInterrupt
