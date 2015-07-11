@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.DEBUG, filename='botlog.log', datefmt='%H:%M:%
 
 # read token from file
 apitoken = "90526238:AAGfxUa2zW2AW7FjPxaE6II11-GuNGKZsKQ"
-tg = telegram.Bot(token=apitoken)
+tg = telegram.Bot(token=apitoken) 
 #tg = MockBot()
 
 dungeon_bot = DungeonBot()
