@@ -1,6 +1,7 @@
 import persistence
 import logging
 import items
+import util
 persistence_controller = persistence.get_persistence_controller_instance()
 
 
@@ -98,16 +99,17 @@ class InventoryEvent(BotEvent):
 
 
 	def handle_command(self, command, *args):
-		if not command in allowed_commands.keys():
-			return self.bot.reply_error(self.user)
+		
 
 		if (command in ["help","info","h"]):
-			return(util.print_available_commands(allowed_commands))
+			return(util.print_available_commands(self.allowed_commands))
 
-		if (command in ["examine","ex","stats","st"]) and len(args) == 0:
+		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
-				self.bot.handle_command(command, args)
-				self.player.examine_inventory()
+				desc = self.player.examine_inventory()
+				desc += "\n"+self.player.examine_equipment()
+				desc += (persistence_controller.get_ply(self.user)).examine_self()
+				return desc
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
@@ -122,7 +124,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player, True)
 				if found:
-					msg = item.equip(user)
+					msg = item.equip(self.player)
 					return(msg)
 				else:
 					return item
@@ -133,7 +135,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
-					msg = item.use(user)
+					msg = item.use(self.player)
 					return(msg)
 				else:
 					return item
@@ -144,7 +146,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
-					msg = item.destroy(user)
+					msg = item.destroy(self.player)
 					return(msg)
 				else:
 					return item
@@ -154,3 +156,5 @@ class InventoryEvent(BotEvent):
 
 		elif (command in ["back", "abort", "ab", "b"]):
 			self.finish()
+
+		return 'Unknown command, try "help"'

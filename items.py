@@ -25,12 +25,13 @@ class Item(object):
 		return "Succesfully destroyed."
 
 	def examine_self(self):
-		desc = "%s, a %s."%(self.name.title(), self.item_type )
-		if requirements:
-			desc += "Requirements to use:\n"+str(self.requirements)
-		desc += "Stats:\n"+str(self.stats)
-		desc += "Abilities:\n"+str(self.abilities_granted)
-		desc += "Modifiers granted:\n"+str(self.modifiers_granted)
+		desc = "%s, a %s\n."%(self.name.title(), self.item_type )
+		if self.requirements:
+			desc += "Requirements to use:\n"+str(self.requirements)+'\n'
+		desc += "Stats:\n"+str(self.stats) +'\n'
+		desc += "Abilities:\n"+str(self.abilities_granted)+'\n'
+		desc += "Modifiers granted:\n"+str(self.modifiers_granted)+'\n'
+		return desc
 
 	def to_json(self):
 		big_dict = self.__dict__.copy()
@@ -61,14 +62,18 @@ class PrimaryWeapon(Item):
 
 
 	def equip(self, target):
-		if target.equipment.primary_weapon == self:
+		if target.primary_weapon == self:
 			return "Already equipped %s."%(self.name)
 
-		if target.equipment.primary_weapon:
-			temp = target.equipment.primary_weapon
+		if target.primary_weapon:
+			temp = target.primary_weapon
 			temp.unequip(target)
 
-		target.equipment.primary_weapon = self
+		target.primary_weapon = self
+
+		for item in target.inventory:
+			if item == self:
+				del item
 		target.refresh_abilities()
 		return "Succesfully equipped %s."%(self.name)
 		

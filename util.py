@@ -5,22 +5,26 @@ def get_uid():
 	return str(uuid.uuid4())[:8]
 
 def print_available_commands(available_commands):
-	help_text += "Available commands:\n"
+	help_text = "Available commands:\n"
 	allowed_comms_descs = {}
-	for command in self.available_commands.keys():
-		desc = self.available_commands[command]
+	for command in available_commands.keys():
+		desc = available_commands[command]
 		if not desc in allowed_comms_descs:
 			commands_for_desc = [command]
-			for comm in self.available_commands.keys():
-				descr = self.available_commands[comm]
+			for comm in available_commands.keys():
+				descr = available_commands[comm]
 				if descr == desc:
 					if not comm in commands_for_desc:
 						commands_for_desc.append(comm)
 			commands_for_desc = ", ".join(commands_for_desc)
 			allowed_comms_descs[desc] = commands_for_desc
 	allowed_comms = dict(zip(allowed_comms_descs.values(),allowed_comms_descs.keys()))# swap keys and values in dict
-	for comms, desc in allowed_comms.iteritems():
-		help_text+= "  %s : %s\n"%(comms, desc)
+	lines = []
+	for comms in allowed_comms.keys():
+		desc = allowed_comms[comms]
+		lines.append("  %s : %s\n"%(comms, desc))
+	lines.sort()
+	help_text+= "".join(lines)
 	return help_text
 
 def diceroll(string):

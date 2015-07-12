@@ -40,6 +40,7 @@ class DungeonBot(object):
 		"help": "shows help",
 		"h": "shows help",
 		"inventory": "shows your inventory",
+		"inv": "shows your inventory",
 	}
 
 	instance = None
@@ -60,19 +61,18 @@ class DungeonBot(object):
 		return command,args
 
 	def handle_command(self, user, command, *args):
-		if not command in self.allowed_commands.keys():
-			return self.reply_error(user)
-
 		if (command in ["examine","ex","stats","st"]):
 			if len(args) > 1:
 				return self.reply_error(user)
 			elif len(args) == 0 or args[0]=="self" or args[0] == user.username or args[0] == persistence_controller.get_ply(user).name:
-				return str(persistence_controller.get_ply(user))
-		elif (command in ["inventory"]):
-			self.open_inventory(user)
-
+				return (persistence_controller.get_ply(user).examine_self())
+		elif (command in ["inventory", "inv"]):
+			return self.open_inventory(user)
 		elif (command in ["help","info","h"]):
 			return(util.print_available_commands(allowed_commands))
+
+		return 'Unknown command, try "help"'
+
 
 	def reply_error(self, user):
 		self.api.sendMessage(user.id, "Unknown command, try 'help'.")
@@ -129,8 +129,9 @@ class DungeonBot(object):
 		uid = util.get_uid()
 		inv = bot_events.InventoryEvent(event_over_callback, uid, user) #Create a registration event
 		self.events[uid] = inv #add event to collection of events
-		self.api.sendMessage(user.id, inv.greeting_message)
 		logging.debug("Inventory event %s created"%(uid))
+		return(inv.greeting_message)
+		
 
 
 

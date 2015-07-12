@@ -131,19 +131,36 @@ class Creature(object):
 			desc += item.examine_self() + "\n"
 		return desc
 
+	def examine_equipment(self):
+		desc = "%s's equipment:\n"%(self.name)
+		for key in self.equipment.keys():
+			item = self.equipment[key]
+			if item:
+				desc+="%s: %s.\n"%(key, item.examine_self())
+		return desc
+
+	def examine_inventory(self):
+		desc = "%s's inventory:\n"%(self.name)
+		for item in self.inventory:
+			desc += item.examine_self() + "\n"
+		return desc
+
+	def refresh_modifiers(self):
+		pass
+
 	def refresh_abilities(self):
 		self.abilities = []
-		for perk in level_perks:
+		for perk in self.level_perks:
 			self.abilities = list(set(self.abilities + perk.abilities_granted))
 
 		for modifier in self.modifiers:
 			self.abilities = list(set(self.abilities + modifier.abilities_granted))
 
-		for item in self.equipment:
-			if item:
-				self.abilities = list(set(self.abilities + item.abilities_granted))
+		for key in self.equipment.keys():
+			if self.equipment[key]:
+				self.abilities = list(set(self.abilities + self.equipment[key].abilities_granted))
 
-	def __str__(self):
+	def examine_self(self):
 		desc = ""
 		if self.name:
 			desc+="You see %s.\n"%(self.name)
@@ -161,8 +178,6 @@ class Creature(object):
 			desc+="%s\n"%(self.description)
 		return desc
 
-	def __repr__(self):
-		return self.__str__()
 
 	def to_json(self):
 		big_dict = self.__dict__.copy()
@@ -189,17 +204,10 @@ class Player(Creature):
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.level_perks = level_perks
 
-
-
 	def examine_self(self):
-		desc = super(Player, self).__str__()
+		desc = super(Player, self).examine_self()
 		desc += "It is of level %d.\n"%(self.stats["level"])
 		return desc
-
-	def refresh_modifiers(self):
-		pass
-
-
 
 	def __str__(self):
 		return self.examine_self()
@@ -221,7 +229,7 @@ class Enemy(Creature):
 		self.level = level
 
 	def __str__(self):
-		desc = super(Player, self).__str__()
+		desc = super(Player, self).examine_self()
 		desc += "It is of level %d.\n"%(self.stats["level"])
 
 		return desc
