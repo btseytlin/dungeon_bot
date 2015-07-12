@@ -1,8 +1,9 @@
+import json
 class Item(object):
-	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None,):
+	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None):
 		self.name = name
 		self.description = description
-		self.requirements = requirement
+		self.requirements = requirements
 		self.item_type = item_type
 
 		self.abilities_granted = abilities_granted
@@ -31,9 +32,18 @@ class Item(object):
 		desc += "Abilities:\n"+str(self.abilities_granted)
 		desc += "Modifiers granted:\n"+str(self.modifiers_granted)
 
+	def to_json(self):
+		big_dict = self.__dict__.copy()
+		big_dict["requirements"] = json.dumps(self.requirements)
+		big_dict["abilities_granted"] = json.dumps(self.abilities_granted)
+		big_dict["stats"] = json.dumps(self.stats)
+		big_dict["modifiers_granted"] = json.dumps(self.modifiers_granted)
+		return json.dumps(big_dict)
+
+
 default_weapon_stats= {
-	"damage" = 0,
-	"accuracy" = 0,
+	"damage" : 0,
+	"accuracy" : 0,
 }
 
 default_weapon_requirements = {
@@ -47,7 +57,8 @@ default_weapon_requirements = {
 default_weapon_abilities = ["attack"]
 class PrimaryWeapon(Item):
 	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements):
-		Item().__init__(self, name, description, item_type, stats, stats, abilities_granted, modifiers_granted, requirements)
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements)
+
 
 	def equip(self, target):
 		if target.equipment.primary_weapon == self:

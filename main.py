@@ -3,7 +3,7 @@ import telegram
 from mock_telegram import MockBot
 import logging
 
-logging.basicConfig(level=logging.DEBUG, filename='botlog.log', datefmt='%H:%M:%S')
+logging.basicConfig(level=logging.DEBUG, filename='botlog.log', datefmt='%Y:%M:%D%H:%M:%S')
 
 with open("api.token") as f:
 	apitoken = f.read()

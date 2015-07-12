@@ -1,15 +1,18 @@
 import uuid
 import random 
+import json
 def get_uid():
 	return str(uuid.uuid4())[:8]
 
 def print_available_commands(available_commands):
 	help_text += "Available commands:\n"
 	allowed_comms_descs = {}
-	for command, desc in self.available_commands.iteritems():
+	for command in self.available_commands.keys():
+		desc = self.available_commands[command]
 		if not desc in allowed_comms_descs:
 			commands_for_desc = [command]
-			for comm, descr in self.available_commands.iteritems():
+			for comm in self.available_commands.keys():
+				descr = self.available_commands[comm]
 				if descr == desc:
 					if not comm in commands_for_desc:
 						commands_for_desc.append(comm)
@@ -26,3 +29,37 @@ def diceroll(string):
 	for i in range(0, nums[0]):
 		total_sum += randint(0, num[1])
 	return total_sum
+"""
+def deep_jsonify(target):
+	print("")
+	print("Jsonifying ", target)
+	try:
+		print("Success, return as it is")
+		return target
+	except:
+		print("Unserializable!")
+		if hasattr(target, '__dict__'): 
+			print("a class")
+			target = target.__dict__
+			return deep_jsonify(target)
+		if isinstance(target, dict):
+			print("a dict")
+			for key in target.keys():
+				value = target[key]
+				print("Now parsing", value)
+				try:
+					json.dumps(value)
+				except (Exception, TypeError):
+					print("Unserializable dict val!")
+					target[key] = deep_jsonify(value)
+			return deep_jsonify(target)
+
+		if hasattr(target, '__iter__'): #if its a list-kinda thing iterate over list
+			print("A list", target)
+			new_list = []
+			for item in target:
+				new_list.append(deep_jsonify(item))
+			print("Newlist is ", new_list)
+			return new_list
+
+"""

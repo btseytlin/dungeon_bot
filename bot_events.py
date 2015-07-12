@@ -33,11 +33,12 @@ class RegistrationEvent(BotEvent):
 		self.user = user
 		self.current_step = 0
 		self.new_player = persistence_controller.get_ply(user)
-		return('You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?')
+		self.greeting_message = 'You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?'
+		
 
 	def handle_command(self, command, *args):
 		if command == "restart":
-			self.current_step == 0
+			self.current_step = 0
 			return("Let's begin. What is your name?")
 
 		if self.current_step == 0:
@@ -47,17 +48,19 @@ class RegistrationEvent(BotEvent):
 
 		elif self.current_step == 1:
 			self.new_player.race = command
-			return("What is your class?")
 			self.current_step+=1
+			return("What is your class?")
 
 		elif self.current_step == 2:
 			self.new_player.combat_class = command
-			self.new_player.inventory = [PrimaryWeapon("club", "A rough wooden club, good enough to break a skull!", "blunt", {"damage" = "1d3", "accuracy" = "3d6"}, ["swing"]]
+			club = items.PrimaryWeapon("club", "A rough wooden club, good enough to break a skull!", "blunt", {"damage" : "1d3", "accuracy" : "3d6"}, ["swing"])
+			self.new_player.inventory = [club]
+			self.finish()
 			return('Registration complete! Try "examine" to see your stats, "inventory" to see your items.')
 			
-			self.finish()
+			
 
-class Inventory(BotEvent):
+class InventoryEvent(BotEvent):
 
 	allowed_commands = {
 		"examine": "shows your stats and inventory","ex": "shows your stats and inventory","stats": "shows your stats and inventory",
@@ -75,7 +78,7 @@ class Inventory(BotEvent):
 		BotEvent.__init__(self, finished_callback, uid, [user])
 		self.user = user
 		self.player = persistence_controller.get_ply(user)
-		return('You can close inventory at any time by sending "back" or "abort".')
+		self.greeting_message = 'You can close inventory at any time by sending "back" or "abort".'
 
 	def find_item(self, itemname, player, inventory_only = False):
 		all_items = self.player.inventory
@@ -89,7 +92,7 @@ class Inventory(BotEvent):
 		error_text = "No such item in your inventory"
 		if not inventory_only:
 			error_text += "or equipment."
-		else 
+		else:
 			error_text += "."
 		return False, error_text
 

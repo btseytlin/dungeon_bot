@@ -622,7 +622,7 @@ class Bot(object):
                 try:
                     return urllib.request.urlopen(
                         url,
-                        urllib.parse.urlencode(data)
+                        urllib.parse.urlencode(data).encode('utf8')
                     ).read()
                 #except urllib.IOError as e:
                 #    raise TelegramError(str(e))
