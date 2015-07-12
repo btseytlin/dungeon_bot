@@ -168,5 +168,6 @@ class InventoryEvent(BotEvent):
 
 		elif (command in ["back", "abort", "ab", "b"]):
 			self.finish()
+			return "Closed inventory"
 
 		return 'Unknown command, try "help"'

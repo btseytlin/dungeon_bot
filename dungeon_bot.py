@@ -22,8 +22,6 @@ def event_over_callback(uid):
 	for user in event.users:
 		if persistence_controller.is_registered(user):
 			player = persistence_controller.get_ply(user)
-
-			print("registered player: %s"%(player.to_json()))
 			player.event = None # Free all players from event
 
 	del DungeonBot.events[uid] #delete event
