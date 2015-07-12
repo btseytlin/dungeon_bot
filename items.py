@@ -9,6 +9,28 @@ class Item(object):
 		self.stats = stats
 		self.modifiers_granted = modifiers_granted
 
+	def use(self, target):
+		return "Can't use %s."%(self.name)
+
+	def equip(self, target):
+		return "Can't equip %s."%(self.name)
+
+	def unequip(self, target):
+		return "Can't unequip %s."%(self.name)
+
+	def destroy(self, target):
+		self.unequip(target)
+		del self
+		return "Succesfully destroyed."
+
+	def examine_self(self):
+		desc = "%s, a %s."%(self.name.title(), self.item_type, )
+		if requirements:
+			desc += "Requirements to use:\n"+str(self.requirements)
+		desc += "Stats:\n"+str(self.stats)
+		desc += "Abilities:\n"+str(self.abilities_granted)
+		desc += "Modifiers granted:\n"+str(self.modifiers_granted)
+
 default_weapon_stats= {
 	"damage" = 0,
 	"accuracy" = 0,
@@ -28,9 +50,23 @@ class Weapon(Item):
 		Item().__init__(self, name, description, item_type, requirements, stats, stats, abilities_granted, modifiers_granted)
 
 	def equip(self, target):
-		return "succesfully equipped"
+		if target.equipment.primary_weapon == self:
+			return "Already equipped %s."%(self.name)
+
+		if target.equipment.primary_weapon:
+			temp = target.equipment.primary_weapon
+			temp.unequip(target)
+
+		target.equipment.primary_weapon = self
+		target.refresh_abilities()
+		return "Succesfully equipped %s."%(self.name)
 		
 
 	def unequip(self, target):
-		return "succesfully unequipped"
-		
+		if target.primary_weapon == self:
+			target.primary_weapon = None
+			target.inventory.append(self)
+			target.refresh_abilities()
+			return "Succesfully unequipped %."%(self.name)
+		return "Not equipped!"
+	

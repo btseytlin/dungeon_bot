@@ -73,11 +73,13 @@ default_equipment = {
 }
 
 class Player(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[]):
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[], level_perks=[]):
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, tags, abilities, modifiers)
 		self.level = level
 		self.inventory = inventory
 		self.equipment = equipment
+		self.level_perks = level_perks
+
 	def examine_inventory(self):
 		pass
 
@@ -85,7 +87,22 @@ class Player(Creature):
 		desc = super(Player, self).__str__()
 		desc += "It is of level %d.\n"%(self.level)
 		return desc
-		
+
+	def refresh_modifiers(self):
+		pass
+
+	def refresh_abilities(self):
+		self.abilities = []
+		for perk in level_perks:
+			self.abilities = list(set(self.abilities + perk.abilities_granted))
+
+		for modifier in self.modifiers:
+			self.abilities = list(set(self.abilities + modifier.abilities_granted))
+
+		for item in self.equipment:
+			if item:
+				self.abilities = list(set(self.abilities + item.abilities_granted))
+
 	def __str__(self):
 		return self.examine_self()
 
