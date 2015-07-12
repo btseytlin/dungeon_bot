@@ -69,7 +69,7 @@ class DungeonBot(object):
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
 		elif (command in ["help","info","h"]):
-			return(util.print_available_commands(allowed_commands))
+			return(util.print_available_commands(self.allowed_commands))
 
 		return 'Unknown command, try "help"'
 

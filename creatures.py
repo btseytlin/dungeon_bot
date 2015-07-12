@@ -125,25 +125,21 @@ class Creature(object):
 	def headwear(self, value):
 		self.equipment["headwear"] = value
 
-	def examine_inventory(self):
-		desc = "%s's inventory:\n"%(self.name)
-		for item in self.inventory:
-			desc += item.examine_self() + "\n"
-		return desc
-
 	def examine_equipment(self):
 		desc = "%s's equipment:\n"%(self.name)
 		for key in self.equipment.keys():
 			item = self.equipment[key]
 			if item:
-				desc+="%s: %s.\n"%(key, item.examine_self())
+				desc+="%s: %s.\n"%(key, item.name)
 		return desc
 
 	def examine_inventory(self):
 		desc = "%s's inventory:\n"%(self.name)
+		items = []
 		for item in self.inventory:
-			desc += item.examine_self() + "\n"
-		return desc
+			if item:
+				items.append(item.name)
+		return desc + ', '.join(items)
 
 	def refresh_modifiers(self):
 		pass
@@ -166,12 +162,11 @@ class Creature(object):
 			desc+="You see %s.\n"%(self.name)
 		desc+="It's a %s %s.\n"%(self.combat_class, self.race)
 		desc+="It has %d health and %d energy.\n"%(self.health, self.energy)
-		desc += "It has the following abilities:"
+		desc += "It has the following abilities:\n"
 		for ability in self.abilities:
 			desc += "  %s\n"%(ability)
-
 		if len(self.modifiers) > 0:
-			desc += "It has the following modifiers:"
+			desc += "It has the following modifiers:\n"
 			for modifier in self.modifiers:
 				desc += "  %s\n"%(modifier)
 		if self.description:

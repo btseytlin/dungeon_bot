@@ -67,6 +67,7 @@ class InventoryEvent(BotEvent):
 		"examine": "shows your stats and inventory","ex": "shows your stats and inventory","stats": "shows your stats and inventory",
 		"examine [item]": "shows an item's stats", "ex [item]": "shows an item's stats", 
 		"equip [item]": "equips an item","eq [item]": "equips an item",
+		"unequip [item]": "equips an item","uneq [item]": "unequips an item",
 		"use [item]": "uses an item (such as a potion)", "u [item]": "uses an item (such as a potion)",
 		"destroy [item]": "destroys an item","drop [item]": "destroys an item",
 		"give [item] [username/playername]": "gives an item to another player",
@@ -82,12 +83,12 @@ class InventoryEvent(BotEvent):
 		self.greeting_message = 'You can close inventory at any time by sending "back" or "abort".'
 
 	def find_item(self, itemname, player, inventory_only = False):
-		all_items = self.player.inventory
+		all_items = self.player.inventory.copy()
 		if not inventory_only:
-			all_items += player.equipment.values()
+			all_items += list(player.equipment.values())
 
 		for item in all_items:
-			if item.name == itemname:
+			if item and item.name == itemname:
 				return True, item
 
 		error_text = "No such item in your inventory"
@@ -106,9 +107,9 @@ class InventoryEvent(BotEvent):
 
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
-				desc = self.player.examine_inventory()
+				desc = (persistence_controller.get_ply(self.user)).examine_self()
 				desc += "\n"+self.player.examine_equipment()
-				desc += (persistence_controller.get_ply(self.user)).examine_self()
+				desc += self.player.examine_inventory()
 				return desc
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
@@ -125,6 +126,17 @@ class InventoryEvent(BotEvent):
 				found, item = self.find_item(" ".join(args), self.player, True)
 				if found:
 					msg = item.equip(self.player)
+					return(msg)
+				else:
+					return item
+
+		elif (command in ["unequip", "uneq"]):
+			if len(args) == 0:
+				return("Specify an item to unequip.")
+			elif len(args) > 0:
+				found, item = self.find_item(" ".join(args), self.player)
+				if found:
+					msg = item.unequip(self.player)
 					return(msg)
 				else:
 					return item

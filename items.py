@@ -21,11 +21,14 @@ class Item(object):
 
 	def destroy(self, target):
 		self.unequip(target)
+		for item in target.inventory:
+			if item == self:
+				target.inventory.remove(item)
 		del self
 		return "Succesfully destroyed."
 
 	def examine_self(self):
-		desc = "%s, a %s\n."%(self.name.title(), self.item_type )
+		desc = "%s, a %s.\n"%(self.name.title(), self.item_type )
 		if self.requirements:
 			desc += "Requirements to use:\n"+str(self.requirements)+'\n'
 		desc += "Stats:\n"+str(self.stats) +'\n'
@@ -70,10 +73,10 @@ class PrimaryWeapon(Item):
 			temp.unequip(target)
 
 		target.primary_weapon = self
-
 		for item in target.inventory:
 			if item == self:
-				del item
+				target.inventory.remove(item)
+
 		target.refresh_abilities()
 		return "Succesfully equipped %s."%(self.name)
 		
@@ -83,6 +86,6 @@ class PrimaryWeapon(Item):
 			target.primary_weapon = None
 			target.inventory.append(self)
 			target.refresh_abilities()
-			return "Succesfully unequipped %."%(self.name)
+			return "Succesfully unequipped %s."%(self.name)
 		return "Not equipped!"
 	
