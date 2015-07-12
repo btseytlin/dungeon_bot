@@ -39,7 +39,6 @@ class DungeonBot(object):
 		"help": "shows help",
 		"h": "shows help",
 		"inventory": "shows your inventory",
-		"i": "shows your inventory",
 	}
 
 	instance = None
@@ -64,13 +63,13 @@ class DungeonBot(object):
 		if not command in self.allowed_commands.keys():
 			return self.reply_error(user)
 
-		if command == "examine" or command == "stats" or command == "ex" or command == "st":
+		if (command in ["examine","ex","stats","st"]):
 			if len(args) > 1:
 				return self.reply_error(user)
 			elif len(args) == 0 or args[0]=="self" or args[0] == user.username or args[0] == persistence_controller.get_ply(user).name:
 				return str(persistence_controller.get_ply(user))
 
-		elif command == "help" or command == "info" or command == "h":
+		elif (command in ["help","info","h"]):
 			return(util.print_available_commands(allowed_commands))
 
 	def reply_error(self, user):

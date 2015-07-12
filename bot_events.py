@@ -62,8 +62,7 @@ class Inventory(BotEvent):
 		"examine [item]": "shows an item's stats", "ex [item]": "shows an item's stats", 
 		"equip [item]": "equips an item","eq [item]": "equips an item",
 		"use [item]": "uses an item (such as a potion)", "u [item]": "uses an item (such as a potion)",
-		"destroy [item]": "destroys an item",
-		"drop [item]": "destroys an item",
+		"destroy [item]": "destroys an item","drop [item]": "destroys an item",
 		"give [item] [username/playername]": "gives an item to another player",
 
 		"info": "shows help","help": "shows help","h": "shows help",
@@ -97,7 +96,10 @@ class Inventory(BotEvent):
 		if not command in allowed_commands.keys():
 			return self.bot.reply_error(self.user)
 
-		if (command == "examine" or command == "ex" or command == "stats" or command == "st") and len(args) == 0:
+		if (command in ["help","info","h"]):
+			return(util.print_available_commands(allowed_commands))
+
+		if (command in ["examine","ex","stats","st"]) and len(args) == 0:
 			if len(args) == 0:
 				self.bot.handle_command(command, args)
 				self.player.examine_inventory()
@@ -109,7 +111,7 @@ class Inventory(BotEvent):
 				else:
 					return item
 
-		elif (command == "equip" or command == "eq"):
+		elif (command in ["equip", "eq"]):
 			if len(args) == 0:
 				return("Specify an item to equip.")
 			elif len(args) > 0:
@@ -120,7 +122,7 @@ class Inventory(BotEvent):
 				else:
 					return item
 
-		elif (command == "use" or command == "u"):
+		elif (command in["use", "u"]):
 			if len(args) == 0:
 				return("Specify an item to use.")
 			elif len(args) > 0:
@@ -131,9 +133,9 @@ class Inventory(BotEvent):
 				else:
 					return item
 
-		elif (command == "destroy"):
+		elif (command in ['destroy', 'drop']):
 			if len(args) == 0:
-				return("Specify an item to use.")
+				return("Specify an item to destroy.")
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
@@ -142,9 +144,8 @@ class Inventory(BotEvent):
 				else:
 					return item
 
+		elif (command == "give"):
+			return "WIP FEATURE"
 
-		elif self.current_step == 2:
-			self.new_player.combat_class = command
-			return('Registration complete! Try "examine" to see your stats.')
-			
+		elif (command in ["back", "abort", "ab", "b"]):
 			self.finish()
