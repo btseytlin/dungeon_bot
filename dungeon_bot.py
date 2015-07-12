@@ -32,9 +32,14 @@ class DungeonBot(object):
 
 	allowed_commands = {
 		"examine": "shows your stats", 
+		"ex": "shows your stats", 
 		"stats": "shows your stats",
+		"st": "shows your stats",
 		"info": "shows help",
 		"help": "shows help",
+		"h": "shows help",
+		"inventory": "shows your inventory",
+		"i": "shows your inventory",
 	}
 
 	instance = None
@@ -53,38 +58,23 @@ class DungeonBot(object):
 		args = words[1:]
 		return command,args
 
+
+
 	def handle_command(self, user, command, *args):
 		if not command in self.allowed_commands.keys():
 			return self.reply_error(user)
 
-		if command == "examine" or command == "stats":
+		if command == "examine" or command == "stats" or command == "ex" or command == "st":
 			if len(args) > 1:
 				return self.reply_error(user)
 			elif len(args) == 0 or args[0]=="self" or args[0] == user.username or args[0] == persistence_controller.get_ply(user).name:
-				return self.api.sendMessage(user.id, str(persistence_controller.get_ply(user)))
+				return str(persistence_controller.get_ply(user))
 
-		elif command == "help" or command == "info":
-			help_text = "Welcome to dungeon bot lobby! Here you can register, delete and reset characters, view your stats, inventory.\n"
-			help_text += "Available commands:\n"
-
-			allowed_comms_descs = {}
-			for command, desc in self.allowed_commands.iteritems():
-				if not desc in allowed_comms_descs:
-					commands_for_desc = [command]
-					for comm, descr in self.allowed_commands.iteritems():
-						if descr == desc:
-							if not comm in commands_for_desc:
-								commands_for_desc.append(comm)
-					commands_for_desc = ", ".join(commands_for_desc)
-					allowed_comms_descs[desc] = commands_for_desc
-			allowed_comms = dict(zip(allowed_comms_descs.values(),allowed_comms_descs.keys()))# swap keys and values in dict
-			for comms, desc in allowed_comms.iteritems():
-				help_text+= "  %s : %s\n"%(comms, desc)
-
-			return self.api.sendMessage(user.id, help_text) 
+		elif command == "help" or command == "info" or command == "h":
+			return(util.print_available_commands(allowed_commands))
 
 	def reply_error(self, user):
-		self.api.sendMessage(user.id, "Unknown command")
+		self.api.sendMessage(user.id, "Unknown command, try 'help'.")
 
 	def start_main_loop(self):
 		while True:
@@ -120,16 +110,16 @@ class DungeonBot(object):
 			command, args = self.parse_command(user, message)
 			if ply.event and self.events[ply.event]: #Check if player is in event
 
-				self.events[ply.event].handle_command(command, *args) #If he is, let the event handle the message
+				self.api.sendMessage(self.events[ply.event].handle_command(command, *args)) #If he is, let the event handle the message
 			else:
 				#parse command on your own
-				self.handle_command(user, command, *args)
+				self.api.sendMessage(self.handle_command(user, command, *args))
 
 	def register_player(self, user):
 		new_player = Player(None, None, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
 		uid = util.get_uid()
-		registration = RegistrationEvent(self, event_over_callback, uid, user) #Create a registration event
+		registration = RegistrationEvent(event_over_callback, uid, user) #Create a registration event
 		self.events[uid] = registration #add event to collection of events
 		print("Registration event %s created"%(uid))
 
