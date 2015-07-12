@@ -1,5 +1,5 @@
 import uuid
-
+import random 
 def get_uid():
 	return str(uuid.uuid4())[:8]
 
@@ -19,3 +19,10 @@ def print_available_commands(available_commands):
 	for comms, desc in allowed_comms.iteritems():
 		help_text+= "  %s : %s\n"%(comms, desc)
 	return help_text
+
+def diceroll(string):
+	nums = (int(x) for x in string.split(" "))
+	total_sum = 0 
+	for i in range(0, nums[0]):
+		total_sum += randint(0, num[1])
+	return total_sum

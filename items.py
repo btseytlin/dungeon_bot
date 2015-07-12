@@ -1,5 +1,5 @@
 class Item(object):
-	def __init__(self, name, description, item_type, requirements = None, stats = {},  abilities_granted = [], modifiers_granted = []):
+	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None,):
 		self.name = name
 		self.description = description
 		self.requirements = requirement
@@ -24,7 +24,7 @@ class Item(object):
 		return "Succesfully destroyed."
 
 	def examine_self(self):
-		desc = "%s, a %s."%(self.name.title(), self.item_type, )
+		desc = "%s, a %s."%(self.name.title(), self.item_type )
 		if requirements:
 			desc += "Requirements to use:\n"+str(self.requirements)
 		desc += "Stats:\n"+str(self.stats)
@@ -45,9 +45,9 @@ default_weapon_requirements = {
 }	
 
 default_weapon_abilities = ["attack"]
-class Weapon(Item):
-	def __init__(self, name, description, item_type="weapon", requirements = default_weapon_requirements,  stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = []):
-		Item().__init__(self, name, description, item_type, requirements, stats, stats, abilities_granted, modifiers_granted)
+class PrimaryWeapon(Item):
+	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements):
+		Item().__init__(self, name, description, item_type, stats, stats, abilities_granted, modifiers_granted, requirements)
 
 	def equip(self, target):
 		if target.equipment.primary_weapon == self:

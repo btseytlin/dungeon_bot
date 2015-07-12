@@ -1,5 +1,6 @@
 import persistence
 import logging
+import items
 persistence_controller = persistence.get_persistence_controller_instance()
 
 
@@ -51,7 +52,8 @@ class RegistrationEvent(BotEvent):
 
 		elif self.current_step == 2:
 			self.new_player.combat_class = command
-			return('Registration complete! Try "examine" to see your stats.')
+			self.new_player.inventory = [PrimaryWeapon("club", "A rough wooden club, good enough to break a skull!", "blunt", {"damage" = "1d3", "accuracy" = "3d6"}, ["swing"]]
+			return('Registration complete! Try "examine" to see your stats, "inventory" to see your items.')
 			
 			self.finish()
 

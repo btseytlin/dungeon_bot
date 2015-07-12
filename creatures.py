@@ -27,8 +27,17 @@ Tags:
 
 """
 
+default_equipment = {
+	"armor": None,
+	"primary_weapon": None,
+	"secondary_weapon": None,
+	"ring": None,
+	"talisman": None,
+	"headwear": None
+}
+
 class Creature(object):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats= default_stats, description=None, tags=[],abilities=[], modifiers = []):
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats= default_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
 		self.name = name
 		self.race = race
 		self.combat_class = combat_class
@@ -48,48 +57,46 @@ class Creature(object):
 		self.tags = []
 		self.abilities = []
 
-
-
-	def __str__(self):
-		desc = ""
-		if self.name:
-			desc+="You see %s.\n"%(self.name)
-		desc+="It's a %s %s.\n"%(self.combat_class, self.race)
-		desc+="It has %d health and %d energy.\n"%(self.health, self.energy)
-		if self.description:
-			desc+="%s"%(self.description)
-		return desc
-
-	def __repr__(self):
-		return self.__str__()
-
-default_equipment = {
-	"armor": None,
-	"primary_weapon": None,
-	"secondary_weapon": None,
-	"ring": None,
-	"talisman": None,
-	"headwear": None
-}
-
-class Player(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[], level_perks=[]):
-		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, tags, abilities, modifiers)
-		self.level = level
 		self.inventory = inventory
 		self.equipment = equipment
-		self.level_perks = level_perks
+
+	@property
+	def health(self):
+		return self.stats["health"]
+
+	@property
+	def energy(self):
+		return self.stats["energy"]
+
+	@property
+	def primary_weapon(self):
+		return self.equipment["primary_weapon"]
+
+	@property
+	def armor(self):
+		return self.equipment["armor"]
+
+	@property
+	def secondary_weapon(self):
+		return self.equipment["secondary_weapon"]
+
+	@property
+	def ring(self):
+		return self.equipment["ring"]
+
+	@property
+	def talisman(self):
+		return self.equipment["talisman"]
+	
+	@property
+	def headwear(self):
+		return self.equipment["headwear"]
 
 	def examine_inventory(self):
-		pass
-
-	def examine_self(self):
-		desc = super(Player, self).__str__()
-		desc += "It is of level %d.\n"%(self.level)
+		desc = "%s's inventory:\n"%(self.name)
+		for item in self.inventory:
+			desc += item.examine_self() + "\n"
 		return desc
-
-	def refresh_modifiers(self):
-		pass
 
 	def refresh_abilities(self):
 		self.abilities = []
@@ -104,6 +111,40 @@ class Player(Creature):
 				self.abilities = list(set(self.abilities + item.abilities_granted))
 
 	def __str__(self):
+		desc = ""
+		if self.name:
+			desc+="You see %s.\n"%(self.name)
+		desc+="It's a %s %s.\n"%(self.combat_class, self.race)
+		desc+="It has %d health and %d energy.\n"%(self.health, self.energy)
+		if self.description:
+			desc+="%s"%(self.description)
+		return desc
+
+	def __repr__(self):
+		return self.__str__()
+
+
+
+class Player(Creature):
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[], level_perks=[]):
+		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+		self.level = level
+
+		self.level_perks = level_perks
+
+
+
+	def examine_self(self):
+		desc = super(Player, self).__str__()
+		desc += "It is of level %d.\n"%(self.level)
+		return desc
+
+	def refresh_modifiers(self):
+		pass
+
+
+
+	def __str__(self):
 		return self.examine_self()
 
 default_enemy_stats = {
@@ -111,8 +152,8 @@ default_enemy_stats = {
 	"energy": 0
 	"max_health": 0,
 	"max_energy": 0,
-	"defence": 0,
-	"evasion": 0,
+	"defence": "1d2",
+	"evasion": "1d2",
 	"level": 1,
 	"exp_value": 0
 }
