@@ -191,7 +191,7 @@ class DungeonBot(object):
 			if len(list(self.open_lobbies.keys())) > 0:
 				lobby_uid = random.choice(list(self.open_lobbies.keys()))#select random lobby
 			else:
-				lobby_uid = self.new_crawl_lobby(1)
+				lobby_uid = self.new_crawl_lobby(1) 
 		if not lobby_uid in list(self.open_lobbies.keys()):
 			return "No such lobby!"
 
