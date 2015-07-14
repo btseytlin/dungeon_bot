@@ -18,7 +18,24 @@ class BotEvent(object):
 	def handle_command(self, command, *args):
 		print("Base bot event shouldnt handle any messages!")
 
+	def add_user(self, user):
+		self.users.append(user)
+		player = persistence_controller.get_ply(user)
+		player.event = uid
+
+	def remove_user(self, user):
+		self.users.remove(user)
+		player = persistence_controller.get_ply(user)
+		player.event = None
+
+	def free_users(self):
+		for user in self.users:
+			if persistence_controller.is_registered(user):
+				player = persistence_controller.get_ply(user)
+				player.event = None # Free all players from event
+
 	def finish(self):
+		self.free_users()
 		self.finished_callback(self.uid)
 
 class RegistrationEvent(BotEvent):
@@ -171,3 +188,72 @@ class InventoryEvent(BotEvent):
 			return "Closed inventory"
 
 		return 'Unknown command, try "help"'
+
+class DungeonLobbyEvent(BotEvent):
+	allowed_commands = {
+		"start": "starts the dungeon crawl", "st": "starts the dungeon crawl",
+		"info": "shows help","help": "shows help","h": "shows help",
+		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby"
+	}
+
+	def __init__(self, finished_callback, uid, total_users):
+		BotEvent.__init__(self, finished_callback, uid, [])
+		self.greeting_message = 'A dungeon crawl will start once there are enough players (%d). Use "abort" to leave, "start" to begin.'%(total_users)
+		self.total_users = total_users
+
+	def handle_command(self, command, *args):
+		if (command in ["help","info","h"]):
+			return(util.print_available_commands(self.allowed_commands))
+
+	def is_enough_players(self):
+		if len(self.users) < total_users:
+			return False	
+		return True
+
+	def add_user(self, user):
+		super(BotEvent, self).add_user(user)
+
+		broadcast = []
+		msg = "User %s joined the lobby"%(user.username)
+
+		msg_enough = 'The lobbdy has enough players to start, use "start" command to proceed'
+		msg_not_enough = 'The lobbdy needs %d more players to start'%( self.total_users - len(self.users) )
+
+		broadcast.append([user, "You were added to lobby %s"%(self.uid)])
+		broadcast.append([user, self.greeting_message])
+		for u in self.users:
+			if u != user:
+				broadcast.append([u, msg])
+			if self.is_enough_players():
+				broadcast.append([u, msg_enough])
+			else:
+				broadcast.append([u, msg_not_enough])
+
+
+		return broadcast
+
+	def remove_user(self, user):
+		super(BotEvent, self).remove_user(user)
+
+		if len(self.users) == 0:
+			return self.finish()
+
+		broadcast = []
+		msg_enough = 'The lobbdy has enough players to start, use "start" command to proceed'
+		msg_not_enough = 'The lobbdy needs %d more players to start'%( self.total_users - len(self.users) )
+		msg = "User %s left the lobby"%(user.username)
+
+		broadcast.append([user, "You were removed from lobby %s"%(self.uid)])
+		for u in self.users:
+			if u != user:
+				broadcast.append([u, msg])
+				if self.is_enough_players():
+					broadcast.append([u, msg_enough])
+				else:
+					broadcast.append([u, msg_not_enough])
+		
+		return broadcast
+
+
+	def start_crawl(self):
+		pass	

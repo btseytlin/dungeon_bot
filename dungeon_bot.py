@@ -19,13 +19,14 @@ def get_dungeon_bot_instance():
 def event_over_callback(uid):
 	logging.debug("Removing event %s"%(uid))
 	event = DungeonBot.events[uid]
-	for user in event.users:
-		if persistence_controller.is_registered(user):
-			player = persistence_controller.get_ply(user)
-			player.event = None # Free all players from event
-
 	del DungeonBot.events[uid] #delete event
 	logging.debug("Event %s removed"%(uid))
+
+def lobby_event_lover_callback(uid):
+	logging.debug("Removing lobby %s"%(uid))
+	del DungeonBot.open_lobbies[uid]
+	event_over_callback(uid)
+
 
 class DungeonBot(object):
 
@@ -39,10 +40,18 @@ class DungeonBot(object):
 		"h": "shows help",
 		"inventory": "shows your inventory",
 		"inv": "shows your inventory",
+
+		"lobbies": "shows active lobbies with free slots",
+		"lob": "shows active lobbies with free slots",
+		"join [lobby]": "joins the specified lobby",
+		"join": "joins a random lobby",
+		"create [player_amount]": "creates a lobby",
+		"cr [player_amount]": "creates a lobby",
 	}
 
 	instance = None
 	events = {}
+	open_lobbies = {}
 	last_update_id = None
 	api = None
 	#set webhook
@@ -68,6 +77,19 @@ class DungeonBot(object):
 			return self.open_inventory(user)
 		elif (command in ["help","info","h"]):
 			return(util.print_available_commands(self.allowed_commands))
+		elif (command in ["lob","lobbies"]):
+			return(self.list_lobbies())
+		elif (command in ["join"]):
+			lobby_uid = None
+			if len(args) != 0:
+				lobby_uid = args[0]
+			return(self.join_lobby(user, lobby_uid))
+		elif (command in ["create", "cr"]):
+			if len(args) < 1:
+				return "Specify the amount of players!"
+			amount = int(args[0])
+			lobby = self.new_crawl_lobby(amount)
+			return self.join_lobby(user, lobby.uid)
 
 		return 'Unknown command, try "help"'
 
@@ -109,7 +131,12 @@ class DungeonBot(object):
 			command, args = self.parse_command(user, message)
 			if ply.event and self.events[ply.event]: #Check if player is in event
 
-				self.api.sendMessage(user.id, self.events[ply.event].handle_command(command, *args)) #If he is, let the event handle the message
+				response = self.events[ply.event].handle_command(command, *args)
+				if isinstance(response, list): #it's a broadcast
+					for message in response:
+						self.api.sendMessage(message[0], message[1])
+				else:
+					self.api.sendMessage(user.id, response) #If he is, let the event handle the message
 			else:
 				#parse command on your own
 				self.api.sendMessage(user.id, self.handle_command(user, command, *args))
@@ -125,11 +152,47 @@ class DungeonBot(object):
 
 	def open_inventory(self, user):
 		uid = util.get_uid()
-		inv = bot_events.InventoryEvent(event_over_callback, uid, user) #Create a registration event
+		inv = bot_events.InventoryEvent(event_over_callback, uid, user) #Create an inventory event
 		self.events[uid] = inv #add event to collection of events
 		logging.debug("Inventory event %s created"%(uid))
 		return(inv.greeting_message)
 		
+	def new_crawl_lobby(self, total_users):
+		uid = util.get_uid()
+		lobby = bot_events.DungeonLobbyEvent(lobby_event_lover_callback, uid, total_users) #Create a dungeon lobby event
+		self.events[uid] = lobby #add event to collection of events
+		self.open_lobbies[uid] = lobby
+		logging.debug("Lobby event %s created"%(uid))
+		return(uid)
+
+	def list_lobbies(self):
+		lobbies = []
+		for key in list(self.open_lobbies.keys()):
+			if self.open_lobbies[key]:
+				lobby = self.open_lobbies[key]
+				if not lobby.is_enough_players:
+					lobby_desc = "Lobby %s\n"%(lobby.uid)
+					lobby_desc += "%d out of %d users:"%(len(lobby.users), lobby.total_users)
+					lobby_desc += ", ".join([ u.username for u in lobby.users ]) + ".\n"
+					lobbies.append(lobby_desc)
+		if len(lobbies) > 0:
+			lobbies.insert(0, "Currently open lobbies:")
+		return "\n".join(lobbies)
+
+	def join_lobby(self, user, lobby_uid=None):
+		if not lobby_uid:
+			if len(list(self.open_lobbies.keys())) > 0:
+				lobby_uid = random.choice(list(self.open_lobbies.keys()))#select random lobby
+			else:
+				lobby_uid = self.new_crawl_lobby(user, 1)
+		if not lobby_uid in list(self.open_lobbies.keys()):
+			return "No such lobby!"
+
+		lobby = self.open_lobbies[lobby_uid]
+		lobby.add_user(user)
+		logging.debug("User %s joined lobby %s"%(user.username, lobby_uid))
+		return(lobby.add_user(user))
+
 
 
 
