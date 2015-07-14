@@ -1,0 +1,1306 @@
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699225
+DEBUG:root:Last update id is 749699226
+DEBUG:root:Got update with id 749699226
+DEBUG:root:Last update id is 749699227
+DEBUG:root:Got update with id 749699227
+DEBUG:root:Last update id is 749699228
+DEBUG:root:Got update with id 749699228
+DEBUG:root:Last update id is 749699229
+DEBUG:root:Got update with id 749699229
+DEBUG:root:Last update id is 749699230
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1182, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers)
+  File "C:\Python34\lib\http\client.py", line 1088, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python34\lib\http\client.py", line 1126, in _send_request
+    self.endheaders(body)
+  File "C:\Python34\lib\http\client.py", line 1084, in endheaders
+    self._send_output(message_body)
+  File "C:\Python34\lib\http\client.py", line 922, in _send_output
+    self.send(msg)
+  File "C:\Python34\lib\http\client.py", line 857, in send
+    self.connect()
+  File "C:\Python34\lib\http\client.py", line 1231, in connect
+    server_hostname=server_hostname)
+  File "C:\Python34\lib\ssl.py", line 365, in wrap_socket
+    _context=self)
+  File "C:\Python34\lib\ssl.py", line 583, in __init__
+    self.do_handshake()
+  File "C:\Python34\lib\ssl.py", line 810, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699230
+DEBUG:root:Last update id is 749699231
+DEBUG:root:Got update with id 749699231
+DEBUG:root:Last update id is 749699232
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1182, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers)
+  File "C:\Python34\lib\http\client.py", line 1088, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python34\lib\http\client.py", line 1126, in _send_request
+    self.endheaders(body)
+  File "C:\Python34\lib\http\client.py", line 1084, in endheaders
+    self._send_output(message_body)
+  File "C:\Python34\lib\http\client.py", line 922, in _send_output
+    self.send(msg)
+  File "C:\Python34\lib\http\client.py", line 857, in send
+    self.connect()
+  File "C:\Python34\lib\http\client.py", line 1231, in connect
+    server_hostname=server_hostname)
+  File "C:\Python34\lib\ssl.py", line 365, in wrap_socket
+    _context=self)
+  File "C:\Python34\lib\ssl.py", line 583, in __init__
+    self.do_handshake()
+  File "C:\Python34\lib\ssl.py", line 810, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699232
+DEBUG:root:Last update id is 749699233
+DEBUG:root:Got update with id 749699233
+DEBUG:root:Last update id is 749699234
+DEBUG:root:Got update with id 749699234
+DEBUG:root:Last update id is 749699235
+DEBUG:root:Got update with id 749699235
+DEBUG:root:Last update id is 749699236
+DEBUG:root:Got update with id 749699236
+DEBUG:root:Last update id is 749699237
+DEBUG:root:Got update with id 749699237
+DEBUG:root:Last update id is 749699238
+DEBUG:root:Got update with id 749699238
+DEBUG:root:Last update id is 749699239
+DEBUG:root:Got update with id 749699239
+DEBUG:root:Last update id is 749699240
+DEBUG:root:Got update with id 749699240
+DEBUG:root:Last update id is 749699241
+DEBUG:root:Got update with id 749699241
+DEBUG:root:Last update id is 749699242
+DEBUG:root:Got update with id 749699242
+DEBUG:root:Last update id is 749699243
+DEBUG:root:Got update with id 749699243
+DEBUG:root:Last update id is 749699244
+DEBUG:root:Got update with id 749699244
+DEBUG:root:Last update id is 749699245
+DEBUG:root:Got update with id 749699245
+DEBUG:root:Last update id is 749699246
+DEBUG:root:Got update with id 749699246
+DEBUG:root:Last update id is 749699247
+DEBUG:root:Got update with id 749699247
+DEBUG:root:Last update id is 749699248
+DEBUG:root:Got update with id 749699248
+DEBUG:root:Last update id is 749699249
+DEBUG:root:Got update with id 749699249
+DEBUG:root:Last update id is 749699250
+INFO:root:[MESSAGE] btseytlin: boom
+DEBUG:root:Registration event c5a332bd created
+DEBUG:root:Got update with id 749699250
+DEBUG:root:Last update id is 749699251
+INFO:root:[MESSAGE] btseytlin: Boris
+DEBUG:root:Got update with id 749699251
+DEBUG:root:Last update id is 749699252
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Got update with id 749699252
+DEBUG:root:Last update id is 749699253
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Removing event c5a332bd
+DEBUG:root:Event c5a332bd removed
+DEBUG:root:Got update with id 749699253
+DEBUG:root:Last update id is 749699254
+INFO:root:[MESSAGE] btseytlin: help
+DEBUG:root:Got update with id 749699254
+DEBUG:root:Last update id is 749699255
+INFO:root:[MESSAGE] btseytlin: lobbies
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 469, in open
+    response = meth(req, response)
+  File "C:\Python34\lib\urllib\request.py", line 579, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "C:\Python34\lib\urllib\request.py", line 507, in error
+    return self._call_chain(*args)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 587, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 143, in on_message
+    self.api.sendMessage(user.id, self.handle_command(user, command, *args))
+  File "telegram\bot.py", line 120, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 630, in _requestUrl
+    raise TelegramError(str(e))
+error.TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699254
+DEBUG:root:Last update id is 749699255
+DEBUG:root:Got update with id 749699255
+DEBUG:root:Last update id is 749699256
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "C:\Python34\lib\http\client.py", line 1171, in getresponse
+    response.begin()
+  File "C:\Python34\lib\http\client.py", line 351, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python34\lib\http\client.py", line 313, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "C:\Python34\lib\socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+  File "C:\Python34\lib\ssl.py", line 751, in recv_into
+    return self.read(nbytes, buffer)
+  File "C:\Python34\lib\ssl.py", line 623, in read
+    v = self._sslobj.read(len, buffer)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699256
+DEBUG:root:Last update id is 749699257
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699257
+DEBUG:root:Last update id is 749699258
+INFO:root:[MESSAGE] btseytlin: wo
+DEBUG:root:Registration event 91a031eb created
+DEBUG:root:Got update with id 749699258
+DEBUG:root:Last update id is 749699259
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Got update with id 749699259
+DEBUG:root:Last update id is 749699260
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Got update with id 749699260
+DEBUG:root:Last update id is 749699261
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Removing event 91a031eb
+DEBUG:root:Event 91a031eb removed
+DEBUG:root:Got update with id 749699261
+DEBUG:root:Last update id is 749699262
+INFO:root:[MESSAGE] btseytlin: lobbies
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 469, in open
+    response = meth(req, response)
+  File "C:\Python34\lib\urllib\request.py", line 579, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "C:\Python34\lib\urllib\request.py", line 507, in error
+    return self._call_chain(*args)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 587, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 146, in on_message
+    self.api.sendMessage(user.id, resp)
+  File "telegram\bot.py", line 120, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 630, in _requestUrl
+    raise TelegramError(str(e))
+error.TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699261
+DEBUG:root:Last update id is 749699262
+INFO:root:[MESSAGE] btseytlin: lobbies
+DEBUG:root:Registration event 0e3262bc created
+DEBUG:root:Got update with id 749699262
+DEBUG:root:Last update id is 749699263
+INFO:root:[MESSAGE] btseytlin: woe onto y
+DEBUG:root:Got update with id 749699263
+DEBUG:root:Last update id is 749699264
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699264
+DEBUG:root:Last update id is 749699265
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 0e3262bc
+DEBUG:root:Event 0e3262bc removed
+DEBUG:root:Got update with id 749699265
+DEBUG:root:Last update id is 749699266
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699266
+DEBUG:root:Last update id is 749699267
+INFO:root:[MESSAGE] btseytlin: lobbies
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 469, in open
+    response = meth(req, response)
+  File "C:\Python34\lib\urllib\request.py", line 579, in http_response
+    'http', request, response, code, msg, hdrs)
+  File "C:\Python34\lib\urllib\request.py", line 507, in error
+    return self._call_chain(*args)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 587, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 145, in on_message
+    self.api.sendMessage(user.id, resp)
+  File "telegram\bot.py", line 120, in sendMessage
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 630, in _requestUrl
+    raise TelegramError(str(e))
+error.TelegramError: HTTP Error 400: Bad Request
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699266
+DEBUG:root:Last update id is 749699267
+INFO:root:[MESSAGE] btseytlin: lobbies
+DEBUG:root:Registration event 44f0adad created
+DEBUG:root:Got update with id 749699267
+DEBUG:root:Last update id is 749699268
+INFO:root:[MESSAGE] btseytlin: Woe onto ye
+DEBUG:root:Got update with id 749699268
+DEBUG:root:Last update id is 749699269
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Got update with id 749699269
+DEBUG:root:Last update id is 749699270
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Removing event 44f0adad
+DEBUG:root:Event 44f0adad removed
+DEBUG:root:Got update with id 749699270
+DEBUG:root:Last update id is 749699271
+INFO:root:[MESSAGE] btseytlin: Orc
+DEBUG:root:Got update with id 749699271
+DEBUG:root:Last update id is 749699272
+INFO:root:[MESSAGE] btseytlin: lobbies
+DEBUG:root:Got update with id 749699272
+DEBUG:root:Last update id is 749699273
+INFO:root:[MESSAGE] btseytlin: cr
+DEBUG:root:Got update with id 749699273
+DEBUG:root:Last update id is 749699274
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 033ae4a2 created
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 143, in on_message
+    resp = self.handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 92, in handle_command
+    return self.join_lobby(user, lobby.uid)
+AttributeError: 'str' object has no attribute 'uid'
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699273
+DEBUG:root:Last update id is 749699274
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Registration event ee558d28 created
+DEBUG:root:Got update with id 749699274
+DEBUG:root:Last update id is 749699275
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699275
+DEBUG:root:Last update id is 749699276
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699276
+DEBUG:root:Last update id is 749699277
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event ee558d28
+DEBUG:root:Event ee558d28 removed
+DEBUG:root:Got update with id 749699277
+DEBUG:root:Last update id is 749699278
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699278
+DEBUG:root:Last update id is 749699279
+INFO:root:[MESSAGE] btseytlin: lobbies
+DEBUG:root:Got update with id 749699279
+DEBUG:root:Last update id is 749699280
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 170677db created
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 143, in on_message
+    resp = self.handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 92, in handle_command
+    return self.join_lobby(user, lobby_uid)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 197, in join_lobby
+    lobby.add_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 214, in add_user
+    super(BotEvent, self).add_user(user)
+AttributeError: 'super' object has no attribute 'add_user'
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699279
+DEBUG:root:Last update id is 749699280
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Registration event d407c6e8 created
+DEBUG:root:Got update with id 749699280
+DEBUG:root:Last update id is 749699281
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699281
+DEBUG:root:Last update id is 749699282
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699282
+DEBUG:root:Last update id is 749699283
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event d407c6e8
+DEBUG:root:Event d407c6e8 removed
+DEBUG:root:Got update with id 749699283
+DEBUG:root:Last update id is 749699284
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event b7564552 created
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 143, in on_message
+    resp = self.handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 92, in handle_command
+    return self.join_lobby(user, lobby_uid)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 197, in join_lobby
+    lobby.add_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 214, in add_user
+    super(DungeonLobbyEvent, self).add_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 24, in add_user
+    player.event = uid
+NameError: name 'uid' is not defined
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699283
+DEBUG:root:Last update id is 749699284
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Registration event d6e3388f created
+DEBUG:root:Got update with id 749699284
+DEBUG:root:Last update id is 749699285
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699285
+DEBUG:root:Last update id is 749699286
+INFO:root:[MESSAGE] btseytlin: 11
+DEBUG:root:Got update with id 749699286
+DEBUG:root:Last update id is 749699287
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event d6e3388f
+DEBUG:root:Event d6e3388f removed
+DEBUG:root:Got update with id 749699287
+DEBUG:root:Last update id is 749699288
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 616ab32e created
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 143, in on_message
+    resp = self.handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 92, in handle_command
+    return self.join_lobby(user, lobby_uid)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 197, in join_lobby
+    lobby.add_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 227, in add_user
+    if self.is_enough_players():
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 209, in is_enough_players
+    if len(self.users) < total_users:
+NameError: name 'total_users' is not defined
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699287
+DEBUG:root:Last update id is 749699288
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Registration event 53561e69 created
+DEBUG:root:Got update with id 749699288
+DEBUG:root:Last update id is 749699289
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699289
+DEBUG:root:Last update id is 749699290
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699290
+DEBUG:root:Last update id is 749699291
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 53561e69
+DEBUG:root:Event 53561e69 removed
+DEBUG:root:Got update with id 749699291
+DEBUG:root:Last update id is 749699292
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699292
+DEBUG:root:Last update id is 749699293
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event d755f86d created
+DEBUG:root:User btseytlin joined lobby d755f86d
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1182, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers)
+  File "C:\Python34\lib\http\client.py", line 1088, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python34\lib\http\client.py", line 1126, in _send_request
+    self.endheaders(body)
+  File "C:\Python34\lib\http\client.py", line 1084, in endheaders
+    self._send_output(message_body)
+  File "C:\Python34\lib\http\client.py", line 922, in _send_output
+    self.send(msg)
+  File "C:\Python34\lib\http\client.py", line 857, in send
+    self.connect()
+  File "C:\Python34\lib\http\client.py", line 1231, in connect
+    server_hostname=server_hostname)
+  File "C:\Python34\lib\ssl.py", line 365, in wrap_socket
+    _context=self)
+  File "C:\Python34\lib\ssl.py", line 583, in __init__
+    self.do_handshake()
+  File "C:\Python34\lib\ssl.py", line 810, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699293
+DEBUG:root:Last update id is 749699294
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event 5bc18c9c created
+DEBUG:root:Got update with id 749699294
+DEBUG:root:Last update id is 749699295
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699295
+DEBUG:root:Last update id is 749699296
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699296
+DEBUG:root:Last update id is 749699297
+INFO:root:[MESSAGE] btseytlin: cr1
+DEBUG:root:Removing event 5bc18c9c
+DEBUG:root:Event 5bc18c9c removed
+DEBUG:root:Got update with id 749699297
+DEBUG:root:Last update id is 749699298
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 5cc2199b created
+DEBUG:root:User btseytlin joined lobby 5cc2199b
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "C:\Python34\lib\http\client.py", line 1171, in getresponse
+    response.begin()
+  File "C:\Python34\lib\http\client.py", line 351, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python34\lib\http\client.py", line 313, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "C:\Python34\lib\socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+  File "C:\Python34\lib\ssl.py", line 751, in recv_into
+    return self.read(nbytes, buffer)
+  File "C:\Python34\lib\ssl.py", line 623, in read
+    v = self._sslobj.read(len, buffer)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699298
+DEBUG:root:Last update id is 749699299
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event a9cb3e4f created
+DEBUG:root:Got update with id 749699299
+DEBUG:root:Last update id is 749699300
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699300
+DEBUG:root:Last update id is 749699301
+INFO:root:[MESSAGE] btseytlin: 11
+DEBUG:root:Got update with id 749699301
+DEBUG:root:Last update id is 749699302
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Removing event a9cb3e4f
+DEBUG:root:Event a9cb3e4f removed
+DEBUG:root:Got update with id 749699302
+DEBUG:root:Last update id is 749699303
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 3b96c5e8 created
+DEBUG:root:User btseytlin joined lobby 3b96c5e8
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1182, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers)
+  File "C:\Python34\lib\http\client.py", line 1088, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python34\lib\http\client.py", line 1126, in _send_request
+    self.endheaders(body)
+  File "C:\Python34\lib\http\client.py", line 1084, in endheaders
+    self._send_output(message_body)
+  File "C:\Python34\lib\http\client.py", line 922, in _send_output
+    self.send(msg)
+  File "C:\Python34\lib\http\client.py", line 857, in send
+    self.connect()
+  File "C:\Python34\lib\http\client.py", line 1231, in connect
+    server_hostname=server_hostname)
+  File "C:\Python34\lib\ssl.py", line 365, in wrap_socket
+    _context=self)
+  File "C:\Python34\lib\ssl.py", line 583, in __init__
+    self.do_handshake()
+  File "C:\Python34\lib\ssl.py", line 810, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699303
+DEBUG:root:Last update id is 749699304
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event c7e45c9c created
+DEBUG:root:Got update with id 749699304
+DEBUG:root:Last update id is 749699305
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699305
+DEBUG:root:Last update id is 749699306
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699306
+DEBUG:root:Last update id is 749699307
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event c7e45c9c
+DEBUG:root:Event c7e45c9c removed
+DEBUG:root:Got update with id 749699307
+DEBUG:root:Last update id is 749699308
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 43c211c5 created
+DEBUG:root:User btseytlin joined lobby 43c211c5
+DEBUG:root:Got update with id 749699308
+DEBUG:root:Last update id is 749699309
+INFO:root:[MESSAGE] btseytlin: help
+DEBUG:root:Got update with id 749699309
+DEBUG:root:Last update id is 749699310
+INFO:root:[MESSAGE] btseytlin: st
+DEBUG:root:Got update with id 749699310
+DEBUG:root:Last update id is 749699311
+INFO:root:[MESSAGE] btseytlin: back
+DEBUG:root:Got update with id 749699311
+DEBUG:root:Last update id is 749699312
+INFO:root:[MESSAGE] btseytlin: help
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "C:\Python34\lib\http\client.py", line 1171, in getresponse
+    response.begin()
+  File "C:\Python34\lib\http\client.py", line 351, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python34\lib\http\client.py", line 313, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "C:\Python34\lib\socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+  File "C:\Python34\lib\ssl.py", line 751, in recv_into
+    return self.read(nbytes, buffer)
+  File "C:\Python34\lib\ssl.py", line 623, in read
+    v = self._sslobj.read(len, buffer)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699312
+DEBUG:root:Last update id is 749699313
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event 0d877a52 created
+DEBUG:root:Got update with id 749699313
+DEBUG:root:Last update id is 749699314
+INFO:root:[MESSAGE] btseytlin: 111
+DEBUG:root:Got update with id 749699314
+DEBUG:root:Last update id is 749699315
+INFO:root:[MESSAGE] btseytlin: 111
+DEBUG:root:Got update with id 749699315
+DEBUG:root:Last update id is 749699316
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 0d877a52
+DEBUG:root:Event 0d877a52 removed
+DEBUG:root:Got update with id 749699316
+DEBUG:root:Last update id is 749699317
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699317
+DEBUG:root:Last update id is 749699318
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 0de1c4a7 created
+DEBUG:root:User btseytlin joined lobby 0de1c4a7
+DEBUG:root:Got update with id 749699318
+DEBUG:root:Last update id is 749699319
+INFO:root:[MESSAGE] btseytlin: b
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 135, in on_message
+    response = self.events[ply.event].handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 208, in handle_command
+    return(self.remove_user(user))
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 240, in remove_user
+    super(DungeonLobbyEvent, self).remove_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 27, in remove_user
+    self.users.remove(user)
+ValueError: list.remove(x): x not in list
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699318
+DEBUG:root:Last update id is 749699319
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Registration event 8376ba9d created
+DEBUG:root:Got update with id 749699319
+DEBUG:root:Last update id is 749699320
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699320
+DEBUG:root:Last update id is 749699321
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699321
+DEBUG:root:Last update id is 749699322
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 8376ba9d
+DEBUG:root:Event 8376ba9d removed
+DEBUG:root:Got update with id 749699322
+DEBUG:root:Last update id is 749699323
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event cfa41e17 created
+DEBUG:root:User btseytlin joined lobby cfa41e17
+DEBUG:root:Got update with id 749699323
+DEBUG:root:Last update id is 749699324
+INFO:root:[MESSAGE] btseytlin: b
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 135, in on_message
+    response = self.events[ply.event].handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 209, in handle_command
+    return(self.remove_user(user))
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 241, in remove_user
+    super(DungeonLobbyEvent, self).remove_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 28, in remove_user
+    self.users.remove(user)
+ValueError: list.remove(x): x not in list
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699323
+DEBUG:root:Last update id is 749699324
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Registration event 4738c2e2 created
+DEBUG:root:Got update with id 749699324
+DEBUG:root:Last update id is 749699325
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699325
+DEBUG:root:Last update id is 749699326
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699326
+DEBUG:root:Last update id is 749699327
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 4738c2e2
+DEBUG:root:Event 4738c2e2 removed
+DEBUG:root:Got update with id 749699327
+DEBUG:root:Last update id is 749699328
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699328
+DEBUG:root:Last update id is 749699329
+INFO:root:[MESSAGE] btseytlin: 11
+DEBUG:root:Got update with id 749699329
+DEBUG:root:Last update id is 749699330
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699330
+DEBUG:root:Last update id is 749699331
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699331
+DEBUG:root:Last update id is 749699332
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 72cb2bf6 created
+DEBUG:root:User btseytlin joined lobby 72cb2bf6
+DEBUG:root:Got update with id 749699332
+DEBUG:root:Last update id is 749699333
+INFO:root:[MESSAGE] btseytlin: b
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 135, in on_message
+    response = self.events[ply.event].handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 209, in handle_command
+    return(self.remove_user(user))
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 241, in remove_user
+    super(DungeonLobbyEvent, self).remove_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 28, in remove_user
+    self.users.remove(user)
+ValueError: list.remove(x): x not in list
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699332
+DEBUG:root:Last update id is 749699333
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Registration event 2a7469e8 created
+DEBUG:root:Got update with id 749699333
+DEBUG:root:Last update id is 749699334
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699334
+DEBUG:root:Last update id is 749699335
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699335
+DEBUG:root:Last update id is 749699336
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 2a7469e8
+DEBUG:root:Event 2a7469e8 removed
+DEBUG:root:Got update with id 749699336
+DEBUG:root:Last update id is 749699337
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699337
+DEBUG:root:Last update id is 749699338
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event d6c55d72 created
+DEBUG:root:User btseytlin joined lobby d6c55d72
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1152, in do_open
+    h = http_class(host, timeout=req.timeout, **http_conn_args)
+  File "C:\Python34\lib\http\client.py", line 1208, in __init__
+    context = ssl._create_default_https_context()
+  File "C:\Python34\lib\ssl.py", line 442, in create_default_context
+    context.load_default_certs(purpose)
+  File "C:\Python34\lib\ssl.py", line 393, in load_default_certs
+    self._load_windows_store_certs(storename, purpose)
+  File "C:\Python34\lib\ssl.py", line 385, in _load_windows_store_certs
+    self.load_verify_locations(cadata=certs)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699338
+DEBUG:root:Last update id is 749699339
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event f32196d0 created
+DEBUG:root:Got update with id 749699339
+DEBUG:root:Last update id is 749699340
+INFO:root:[MESSAGE] btseytlin: 11
+DEBUG:root:Got update with id 749699340
+DEBUG:root:Last update id is 749699341
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699341
+DEBUG:root:Last update id is 749699342
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Removing event f32196d0
+DEBUG:root:Event f32196d0 removed
+DEBUG:root:Got update with id 749699342
+DEBUG:root:Last update id is 749699343
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 6e896ef7 created
+DEBUG:root:User btseytlin joined lobby 6e896ef7
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1152, in do_open
+    h = http_class(host, timeout=req.timeout, **http_conn_args)
+  File "C:\Python34\lib\http\client.py", line 1208, in __init__
+    context = ssl._create_default_https_context()
+  File "C:\Python34\lib\ssl.py", line 408, in create_default_context
+    context = SSLContext(PROTOCOL_SSLv23)
+  File "C:\Python34\lib\ssl.py", line 349, in __new__
+    self = _SSLContext.__new__(cls, protocol)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699343
+DEBUG:root:Last update id is 749699344
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event 47dab0df created
+DEBUG:root:Got update with id 749699344
+DEBUG:root:Last update id is 749699345
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699345
+DEBUG:root:Last update id is 749699346
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699346
+DEBUG:root:Last update id is 749699347
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Removing event 47dab0df
+DEBUG:root:Event 47dab0df removed
+DEBUG:root:Got update with id 749699347
+DEBUG:root:Last update id is 749699348
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 8c1e9c6f created
+DEBUG:root:User btseytlin joined lobby 8c1e9c6f
+DEBUG:root:Got update with id 749699348
+DEBUG:root:Last update id is 749699349
+INFO:root:[MESSAGE] btseytlin: b
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 134, in on_message
+    response = self.events[ply.event].handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 209, in handle_command
+    return(self.remove_user(user))
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 243, in remove_user
+    super(DungeonLobbyEvent, self).remove_user(user)
+  File "D:\projects\telegrambot\dungeon_bot\bot_events.py", line 28, in remove_user
+    self.users.remove(user)
+ValueError: list.remove(x): x not in list
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699348
+DEBUG:root:Last update id is 749699349
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Registration event 106f976e created
+DEBUG:root:Got update with id 749699349
+DEBUG:root:Last update id is 749699350
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699350
+DEBUG:root:Last update id is 749699351
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699351
+DEBUG:root:Last update id is 749699352
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 106f976e
+DEBUG:root:Event 106f976e removed
+DEBUG:root:Got update with id 749699352
+DEBUG:root:Last update id is 749699353
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 79c4f7fb created
+DEBUG:root:User btseytlin joined lobby 79c4f7fb
+DEBUG:root:Got update with id 749699353
+DEBUG:root:Last update id is 749699354
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Removing lobby 79c4f7fb
+DEBUG:root:Removing event 79c4f7fb
+DEBUG:root:Event 79c4f7fb removed
+DEBUG:root:Got update with id 749699354
+DEBUG:root:Last update id is 749699355
+INFO:root:[MESSAGE] btseytlin: help
+DEBUG:root:Got update with id 749699355
+DEBUG:root:Last update id is 749699356
+INFO:root:[MESSAGE] btseytlin: lobbies
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1185, in do_open
+    r = h.getresponse()
+  File "C:\Python34\lib\http\client.py", line 1171, in getresponse
+    response.begin()
+  File "C:\Python34\lib\http\client.py", line 351, in begin
+    version, status, reason = self._read_status()
+  File "C:\Python34\lib\http\client.py", line 313, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "C:\Python34\lib\socket.py", line 374, in readinto
+    return self._sock.recv_into(b)
+  File "C:\Python34\lib\ssl.py", line 751, in recv_into
+    return self.read(nbytes, buffer)
+  File "C:\Python34\lib\ssl.py", line 623, in read
+    v = self._sslobj.read(len, buffer)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699356
+DEBUG:root:Last update id is 749699357
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event 0b22f8cd created
+DEBUG:root:Got update with id 749699357
+DEBUG:root:Last update id is 749699358
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699358
+DEBUG:root:Last update id is 749699359
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699359
+DEBUG:root:Last update id is 749699360
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event 0b22f8cd
+DEBUG:root:Event 0b22f8cd removed
+DEBUG:root:Got update with id 749699360
+DEBUG:root:Last update id is 749699361
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 5b359764 created
+DEBUG:root:User btseytlin joined lobby 5b359764
+DEBUG:root:Got update with id 749699361
+DEBUG:root:Last update id is 749699362
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Removing lobby 5b359764
+DEBUG:root:Removing event 5b359764
+DEBUG:root:Event 5b359764 removed
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1182, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers)
+  File "C:\Python34\lib\http\client.py", line 1088, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python34\lib\http\client.py", line 1126, in _send_request
+    self.endheaders(body)
+  File "C:\Python34\lib\http\client.py", line 1084, in endheaders
+    self._send_output(message_body)
+  File "C:\Python34\lib\http\client.py", line 922, in _send_output
+    self.send(msg)
+  File "C:\Python34\lib\http\client.py", line 857, in send
+    self.connect()
+  File "C:\Python34\lib\http\client.py", line 1223, in connect
+    super().connect()
+  File "C:\Python34\lib\http\client.py", line 834, in connect
+    self.timeout, self.source_address)
+  File "C:\Python34\lib\socket.py", line 503, in create_connection
+    sock.connect(sa)
+KeyboardInterrupt
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699362
+DEBUG:root:Last update id is 749699363
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Registration event f1a82f54 created
+DEBUG:root:Got update with id 749699363
+DEBUG:root:Last update id is 749699364
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699364
+DEBUG:root:Last update id is 749699365
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699365
+DEBUG:root:Last update id is 749699366
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Removing event f1a82f54
+DEBUG:root:Event f1a82f54 removed
+DEBUG:root:Got update with id 749699366
+DEBUG:root:Last update id is 749699367
+INFO:root:[MESSAGE] btseytlin: cr 1
+DEBUG:root:Lobby event 9bd19d61 created
+DEBUG:root:User btseytlin joined lobby 9bd19d61
+DEBUG:root:Got update with id 749699367
+DEBUG:root:Last update id is 749699368
+INFO:root:[MESSAGE] btseytlin: b
+DEBUG:root:Removing lobby 9bd19d61
+DEBUG:root:Removing event 9bd19d61
+DEBUG:root:Event 9bd19d61 removed
+DEBUG:root:Got update with id 749699368
+DEBUG:root:Last update id is 749699369
+INFO:root:[MESSAGE] btseytlin: lobbies
+DEBUG:root:Got update with id 749699369
+DEBUG:root:Last update id is 749699370
+INFO:root:[MESSAGE] btseytlin: create 1
+DEBUG:root:Lobby event 5816a45d created
+DEBUG:root:User btseytlin joined lobby 5816a45d
+DEBUG:root:Got update with id 749699370
+DEBUG:root:Last update id is 749699371
+INFO:root:[MESSAGE] btseytlin: leave
+DEBUG:root:Removing lobby 5816a45d
+DEBUG:root:Removing event 5816a45d
+DEBUG:root:Event 5816a45d removed
+DEBUG:root:Got update with id 749699371
+DEBUG:root:Last update id is 749699372
+INFO:root:[MESSAGE] btseytlin: ehm?
+DEBUG:root:Got update with id 749699372
+DEBUG:root:Last update id is 749699373
+INFO:root:[MESSAGE] btseytlin: lobbies
+DEBUG:root:Got update with id 749699373
+DEBUG:root:Last update id is 749699374
+INFO:root:[MESSAGE] btseytlin: join
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 116, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 142, in on_message
+    response = self.handle_command(user, command, *args)
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 86, in handle_command
+    return(self.join_lobby(user, lobby_uid))
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 194, in join_lobby
+    lobby_uid = self.new_crawl_lobby(user, 1)
+TypeError: new_crawl_lobby() takes 2 positional arguments but 3 were given
+DEBUG:root:DungeonBot initialized
+INFO:root:Telegram DungeonBot starting
+DEBUG:root:Got update with id 749699373
+DEBUG:root:Last update id is 749699374
+INFO:root:[MESSAGE] btseytlin: join
+DEBUG:root:Registration event fbb21495 created
+DEBUG:root:Got update with id 749699374
+DEBUG:root:Last update id is 749699375
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699375
+DEBUG:root:Last update id is 749699376
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699376
+DEBUG:root:Last update id is 749699377
+INFO:root:[MESSAGE] btseytlin: 11
+DEBUG:root:Removing event fbb21495
+DEBUG:root:Event fbb21495 removed
+DEBUG:root:Got update with id 749699377
+DEBUG:root:Last update id is 749699378
+INFO:root:[MESSAGE] btseytlin: 1
+DEBUG:root:Got update with id 749699378
+DEBUG:root:Last update id is 749699379
+INFO:root:[MESSAGE] btseytlin: join
+DEBUG:root:Lobby event 2eee8847 created
+DEBUG:root:User btseytlin joined lobby 2eee8847
+DEBUG:root:Got update with id 749699379
+DEBUG:root:Last update id is 749699380
+INFO:root:[MESSAGE] btseytlin: h
+ERROR:root:Exception 
+Traceback (most recent call last):
+  File "D:\projects\telegrambot\dungeon_bot\main.py", line 18, in <module>
+    dungeon_bot.start_main_loop()
+  File "D:\projects\telegrambot\dungeon_bot\dungeon_bot.py", line 103, in start_main_loop
+    updates = self.api.getUpdates(self.last_update_id)
+  File "telegram\bot.py", line 556, in getUpdates
+    json_data = self._requestUrl(url, 'POST', data=data)
+  File "telegram\bot.py", line 625, in _requestUrl
+    urllib.parse.urlencode(data).encode('utf8')
+  File "C:\Python34\lib\urllib\request.py", line 161, in urlopen
+    return opener.open(url, data, timeout)
+  File "C:\Python34\lib\urllib\request.py", line 463, in open
+    response = self._open(req, data)
+  File "C:\Python34\lib\urllib\request.py", line 481, in _open
+    '_open', req)
+  File "C:\Python34\lib\urllib\request.py", line 441, in _call_chain
+    result = func(*args)
+  File "C:\Python34\lib\urllib\request.py", line 1225, in https_open
+    context=self._context, check_hostname=self._check_hostname)
+  File "C:\Python34\lib\urllib\request.py", line 1182, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers)
+  File "C:\Python34\lib\http\client.py", line 1088, in request
+    self._send_request(method, url, body, headers)
+  File "C:\Python34\lib\http\client.py", line 1126, in _send_request
+    self.endheaders(body)
+  File "C:\Python34\lib\http\client.py", line 1084, in endheaders
+    self._send_output(message_body)
+  File "C:\Python34\lib\http\client.py", line 922, in _send_output
+    self.send(msg)
+  File "C:\Python34\lib\http\client.py", line 857, in send
+    self.connect()
+  File "C:\Python34\lib\http\client.py", line 1231, in connect
+    server_hostname=server_hostname)
+  File "C:\Python34\lib\ssl.py", line 365, in wrap_socket
+    _context=self)
+  File "C:\Python34\lib\ssl.py", line 583, in __init__
+    self.do_handshake()
+  File "C:\Python34\lib\ssl.py", line 810, in do_handshake
+    self._sslobj.do_handshake()
+KeyboardInterrupt

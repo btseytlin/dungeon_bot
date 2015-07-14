@@ -15,16 +15,19 @@ class BotEvent(object):
 			player = persistence_controller.get_ply(user)
 			player.event = uid
 
-	def handle_command(self, command, *args):
+	def handle_command(self, user, command, *args):
 		print("Base bot event shouldnt handle any messages!")
 
 	def add_user(self, user):
 		self.users.append(user)
 		player = persistence_controller.get_ply(user)
-		player.event = uid
+		player.event = self.uid
 
 	def remove_user(self, user):
-		self.users.remove(user)
+		for u in self.users:
+			if u.username == user.username and u.id == user.id:
+				self.users.remove(u)
+
 		player = persistence_controller.get_ply(user)
 		player.event = None
 
@@ -54,7 +57,7 @@ class RegistrationEvent(BotEvent):
 		self.greeting_message = 'You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?'
 		
 
-	def handle_command(self, command, *args):
+	def handle_command(self, user, command, *args):
 		if command == "restart":
 			self.current_step = 0
 			return("Let's begin. What is your name?")
@@ -116,7 +119,7 @@ class InventoryEvent(BotEvent):
 		return False, error_text
 
 
-	def handle_command(self, command, *args):
+	def handle_command(self, user, command, *args):
 		
 
 		if (command in ["help","info","h"]):
@@ -201,23 +204,27 @@ class DungeonLobbyEvent(BotEvent):
 		self.greeting_message = 'A dungeon crawl will start once there are enough players (%d). Use "abort" to leave, "start" to begin.'%(total_users)
 		self.total_users = total_users
 
-	def handle_command(self, command, *args):
+	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
 			return(util.print_available_commands(self.allowed_commands))
+		if (command in ["back","abort","b", "leave", "ab"]):
+			return(self.remove_user(user))
+		if (command in ["start"]):
+			return(self.start_crawl())
+		return 'Unknown command, try "help"'
 
 	def is_enough_players(self):
-		if len(self.users) < total_users:
+		if len(self.users) < self.total_users:
 			return False	
 		return True
 
 	def add_user(self, user):
-		super(BotEvent, self).add_user(user)
-
+		super(DungeonLobbyEvent, self).add_user(user)
 		broadcast = []
 		msg = "User %s joined the lobby"%(user.username)
 
-		msg_enough = 'The lobbdy has enough players to start, use "start" command to proceed'
-		msg_not_enough = 'The lobbdy needs %d more players to start'%( self.total_users - len(self.users) )
+		msg_enough = 'The lobby has enough players to start, use "start" command to proceed'
+		msg_not_enough = 'The lobby needs %d more players to start'%( self.total_users - len(self.users) )
 
 		broadcast.append([user, "You were added to lobby %s"%(self.uid)])
 		broadcast.append([user, self.greeting_message])
@@ -233,14 +240,13 @@ class DungeonLobbyEvent(BotEvent):
 		return broadcast
 
 	def remove_user(self, user):
-		super(BotEvent, self).remove_user(user)
+		super(DungeonLobbyEvent, self).remove_user(user)
 
-		if len(self.users) == 0:
-			return self.finish()
+
 
 		broadcast = []
-		msg_enough = 'The lobbdy has enough players to start, use "start" command to proceed'
-		msg_not_enough = 'The lobbdy needs %d more players to start'%( self.total_users - len(self.users) )
+		msg_enough = 'The lobby has enough players to start, use "start" command to proceed'
+		msg_not_enough = 'The lobby needs %d more players to start'%( self.total_users - len(self.users) )
 		msg = "User %s left the lobby"%(user.username)
 
 		broadcast.append([user, "You were removed from lobby %s"%(self.uid)])
@@ -251,7 +257,10 @@ class DungeonLobbyEvent(BotEvent):
 					broadcast.append([u, msg_enough])
 				else:
 					broadcast.append([u, msg_not_enough])
-		
+
+		if len(self.users) == 0:
+			self.finish()
+
 		return broadcast
 
 

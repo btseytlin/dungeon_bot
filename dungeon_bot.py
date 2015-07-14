@@ -88,8 +88,8 @@ class DungeonBot(object):
 			if len(args) < 1:
 				return "Specify the amount of players!"
 			amount = int(args[0])
-			lobby = self.new_crawl_lobby(amount)
-			return self.join_lobby(user, lobby.uid)
+			lobby_uid = self.new_crawl_lobby(amount)
+			return self.join_lobby(user, lobby_uid)
 
 		return 'Unknown command, try "help"'
 
@@ -110,7 +110,8 @@ class DungeonBot(object):
 				logging.debug("Last update id is %d"%(self.last_update_id))
 
 				message = update.message
-				if datetime.datetime.fromtimestamp(message.date) >= self.time_started:
+				close_enough = self.time_started - datetime.timedelta(minutes=15)
+				if datetime.datetime.fromtimestamp(message.date) >= close_enough :
 					logging.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
 					self.on_message(message)
 
@@ -130,16 +131,20 @@ class DungeonBot(object):
 			ply = persistence_controller.get_ply(user)
 			command, args = self.parse_command(user, message)
 			if ply.event and self.events[ply.event]: #Check if player is in event
-
-				response = self.events[ply.event].handle_command(command, *args)
+				response = self.events[ply.event].handle_command(user, command, *args)
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
-						self.api.sendMessage(message[0], message[1])
+						self.api.sendMessage(message[0].id, message[1])
 				else:
 					self.api.sendMessage(user.id, response) #If he is, let the event handle the message
 			else:
 				#parse command on your own
-				self.api.sendMessage(user.id, self.handle_command(user, command, *args))
+				response = self.handle_command(user, command, *args)
+				if isinstance(response, list): #it's a broadcast
+					for message in response:
+						self.api.sendMessage(message[0].id, message[1])
+				else:
+					self.api.sendMessage(user.id, response)
 
 	def register_player(self, user):
 		new_player = Player(None, None, None) #Create an empty player object
@@ -177,6 +182,8 @@ class DungeonBot(object):
 					lobbies.append(lobby_desc)
 		if len(lobbies) > 0:
 			lobbies.insert(0, "Currently open lobbies:")
+		else:
+			lobbies.insert(0, "No lobbies found")
 		return "\n".join(lobbies)
 
 	def join_lobby(self, user, lobby_uid=None):
@@ -184,12 +191,11 @@ class DungeonBot(object):
 			if len(list(self.open_lobbies.keys())) > 0:
 				lobby_uid = random.choice(list(self.open_lobbies.keys()))#select random lobby
 			else:
-				lobby_uid = self.new_crawl_lobby(user, 1)
+				lobby_uid = self.new_crawl_lobby(1)
 		if not lobby_uid in list(self.open_lobbies.keys()):
 			return "No such lobby!"
 
 		lobby = self.open_lobbies[lobby_uid]
-		lobby.add_user(user)
 		logging.debug("User %s joined lobby %s"%(user.username, lobby_uid))
 		return(lobby.add_user(user))
 
