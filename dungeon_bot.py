@@ -27,7 +27,6 @@ def lobby_event_lover_callback(uid):
 	del DungeonBot.open_lobbies[uid]
 	event_over_callback(uid)
 
-
 class DungeonBot(object):
 
 	allowed_commands = {

@@ -1,7 +1,9 @@
 import persistence
 import logging
 import items
+from dungeon import Dungeon
 import util
+from dungeon_bot import event_over_callback
 persistence_controller = persistence.PersistenceController.get_instance()
 
 
@@ -236,14 +238,10 @@ class DungeonLobbyEvent(BotEvent):
 			else:
 				broadcast.append([u, msg_not_enough])
 
-
 		return broadcast
 
 	def remove_user(self, user):
 		super(DungeonLobbyEvent, self).remove_user(user)
-
-
-
 		broadcast = []
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed'
 		msg_not_enough = 'The lobby needs %d more players to start'%( self.total_users - len(self.users) )
@@ -263,6 +261,130 @@ class DungeonLobbyEvent(BotEvent):
 
 		return broadcast
 
+	def move_players_to_dungeon(self, uid):
+		for users in self.users:
+			ply = persistence_controller.get_ply(user)
+			ply.event = uid
 
 	def start_crawl(self):
-		pass	
+		uid = util.get_uid() #generate new dungeon
+		dungeon_name = "Dungeon of rats"
+		dungeon_description = "A dungeon that only rats inhabit. It's actually a peasant's basement. \nA big basement. With rats."
+		dungeon_players = [persistence_controller.get_ply(u) for u in self.users]
+		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players)
+		dungeon.generate_rooms()
+		
+		uid = util.get_uid()
+		dungeon_crawl = DungeonCrawlEvent(event_over_callback, uid, users, dungeon)
+		self.move_players_to_dungeon(uid)
+
+		broadcast = []
+		msg = dungeon_crawl.greeting_message
+		for u in self.users:
+			broadcast.append([u, msg])
+
+		self.users = []
+		self.finished_callback(self.uid)
+		return broadcast
+
+class DungeonCrawlEvent(BotEvent):
+	def __init__(self, finished_callback, uid, users, dungeon):
+		BotEvent.__init__(self, finished_callback, uid, users):
+		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon_description)
+		self.dungeon = dungeon
+		self.can_advance = False
+		self.non_combat_events = {}
+
+	allowed_commands = {
+		"advance": "move to next room", "adv": "move to next room",
+		"inventory": "shows your inventory", "inv": "shows your inventory",
+		"examine": "shows your stats", "ex": "shows your stats", "stats": "shows your stats","st": "shows your stats",
+		"examine [character]": "shows a chracter's stats", "ex [character]": "shows a chracter's stats", "stats [character]": "shows a chracter's stats","st [character]": "shows a chracter's stats",
+		"info": "shows help","help": "shows help","h": "shows help",
+		"back": "leaves dungeon crawl","abort": "leaves dungeon crawl","ab": "leaves dungeon crawl","b": "leaves dungeon crawl", "leave": "leaves dungeon crawl",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
+		"levelup": "opens the level up dialogue", "lvl": "opens the level up dialogue", 
+	}
+
+	def check_if_can_advance(self):
+		if len(list(self.non_combat_events.keys())) > 0:
+			return False
+		return True
+
+	def remove_user(user):
+		super(DungeonLobbyEvent, self).remove_user(user)
+		broadcast = []
+		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is'%(persistence_controller.get_ply(user))
+
+		broadcast.append([user, "You were removed from lobby %s"%(self.uid)])
+		for u in self.users:
+			if u != user:
+				broadcast.append([u, msg])
+
+		if len(self.users) == 0:
+			self.finish()
+
+		return broadcast
+
+	def advance_room(self):
+		if not self.can_advance:
+			msg = "Can't advance, someone is inventory or leveling up"
+			broadcast = [(u, msg) for u in self.users]
+			return broadcast
+
+	def open_levelup(self, user):
+		pass
+		
+	def open_inventory(self, user):
+		uid = util.get_uid()
+
+		def inv_over_callback(uid):
+			for event in list(self.non_combat_events.keys()):
+				if self.non_combat_events[event] == uid:
+					del self.non_combat_events[event]
+					break
+
+		inv = InventoryEvent(inv_over_callback, uid, user) #Create an inventory event
+		self.non_combat_events[user.username] = inv
+		logging.debug("Inventory event  %s created within dungeon"%(uid, self.uid))
+
+		broadcast = []
+		msg = ' %s is rummaging in his inventory.'%(persistence_controller.get_ply(user))
+
+		broadcast.append([user, inv.greeting_message])
+		for u in self.users:
+			if u != user:
+				broadcast.append([u, msg])
+		return(broadcast)
+
+	def handle_command(self, user, command, *args):
+
+		if user.username in list(self.non_combat_events.keys()):
+			return self.non_combat_events[user.username].handle_command(user, command, *args)
+		if (command in ["help","info","h"]):
+			return(util.print_available_commands(self.allowed_commands))
+		if (command in ["back","abort","b", "leave", "ab"]):
+			return(self.remove_user(user))
+		if (command in ["advance","adv"]):
+			return(self.advance_room())
+		if (command in ["inventory","inv"]):
+			return(self.open_inventory(user))
+		if (command in ["levelup","lvl"]):
+			return(self.open_levelup(user))
+		if (command in ["examine", "stats", "ex", "st"]):
+			if len(args) > 0:
+				argument = " ".join(args)
+				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
+					return (persistence_controller.get_ply(user).examine_self())
+				else:
+					target_user = None
+					for u in self.users:
+						target_ply = persistence_controller.get_ply(u)
+						if u.username == argument or persistence_controller.get_ply(u).name == argument:
+							target_user = u
+							break
+					if target_user:
+						return (target_ply.examine_self())
+					else:
+						return "No such player or user in that dungeon"
+		return 'Unknown command, try "help"'

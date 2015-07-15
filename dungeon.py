@@ -2,15 +2,19 @@ import random
 import util
 import enemies
 class Dungeon(object):
-	def __init__(self, uid, name, description, players, rooms = [], current_room = 0):
+	def __init__(self, uid, name, description, players, rooms = [], current_room = 0, difficulty=None):
 		self.uid = uid
 		self.name = name
 		self.description = description
 		self.rooms = rooms		
 		self.players = players
-		self.current_room = 0
+		self.current_room = current_room
 
-		self.difficulty = sum([p.stats["level"] for p in players])/len(self.players)
+		if not difficulty:
+			self.difficulty = sum([p.stats["level"] for p in players])/len(self.players)
+		else:
+			self.difficulty = difficulty
+			
 		print("Dungeon difficulty = %d"%(self.difficulty))
 
 	def get_enemy(self, difficulty=None):
@@ -55,4 +59,4 @@ def test_dungeon_creation():
 		print("\nRoom #%s of type %s:"%(room.uid, room.room_type))
 		for enemy in room.combat_enemies:
 			print(enemy.examine_self())
-test_dungeon_creation()
+#test_dungeon_creation()
