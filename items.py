@@ -44,6 +44,12 @@ class Item(object):
 		big_dict["modifiers_granted"] = json.dumps(self.modifiers_granted)
 		return json.dumps(big_dict)
 
+	@staticmethod
+	def de_json(data):
+		if data.get("item_type") == "primary_weapon":
+			return PrimaryWeapon.de_json(data)
+
+
 
 default_weapon_stats= {
 	"damage" : 0,
@@ -88,4 +94,10 @@ class PrimaryWeapon(Item):
 			target.refresh_abilities()
 			return "Succesfully unequipped %s."%(self.name)
 		return "Not equipped!"
+
+	@staticmethod
+	def de_json(data):
+		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
+
+
 	

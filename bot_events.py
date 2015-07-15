@@ -2,7 +2,7 @@ import persistence
 import logging
 import items
 import util
-persistence_controller = persistence.get_persistence_controller_instance()
+persistence_controller = persistence.PersistenceController.get_instance()
 
 
 class BotEvent(object):

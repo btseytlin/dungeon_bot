@@ -9,7 +9,7 @@ import pprint
 import datetime
 # read apikey from file
 
-persistence_controller = persistence.get_persistence_controller_instance()
+persistence_controller = persistence.PersistenceController.get_instance()
 
 
 def get_dungeon_bot_instance():
@@ -60,6 +60,10 @@ class DungeonBot(object):
 		logging.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
 		instance = self
+
+	@staticmethod
+	def get_instance():
+		return instance
 
 	def parse_command(self, user, message):
 		words = message.text.strip().lower().split(' ')

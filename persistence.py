@@ -18,6 +18,10 @@ class PersistenceController(object):
 		#if is_registered(user.username):
 		return self.players[user.username]
 
+	@staticmethod
+	def get_instance():
+		return instance
+
 def get_persistence_controller_instance():
 	if not PersistenceController.instance:
 		PersistenceController.instance = PersistenceController()

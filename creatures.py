@@ -1,6 +1,7 @@
 import logging
 import util
 import json
+import items
 
 default_characteristics = {
 	"strength": 5, #how hard you hit
@@ -204,6 +205,10 @@ class Player(Creature):
 		desc += "It is of level %d.\n"%(self.stats["level"])
 		return desc
 
+	@staticmethod
+	def de_json(data):
+		return Player(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"))
+
 	def __str__(self):
 		return self.examine_self()
 
@@ -219,9 +224,30 @@ default_enemy_stats = {
 }
 
 class Enemy(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats = default_enemy_stats, description=None, tags=[],abilities=[], modifiers = []):
-		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, tags, abilities, modifiers)
-		self.level = level
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[]):
+		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+
+	@staticmethod
+	def de_json(data):
+		inventory = []
+		if data.get("inventory") and len(data.get("inventory"))!=0:
+			for thing in data.get("inventory"):
+				inventory.append(Item.de_json(thing))
+
+		equipment = {
+			"armor": None,
+			"primary_weapon": None,
+			"secondary_weapon": None,
+			"ring": None,
+			"talisman": None,
+			"headwear": None
+		}
+		if data.get("equipment") and len(data.get("equipment"))!=0:
+			for thing in len(data.get("equipment").keys()):
+				equipment[thing].append(Item.de_json(data.get("equipment")[thing]))
+					
+		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
+
 
 	def __str__(self):
 		desc = super(Player, self).examine_self()
