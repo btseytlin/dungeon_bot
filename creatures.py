@@ -39,25 +39,23 @@ default_equipment = {
 
 class Creature(object):
 	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats= default_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
+
 		self.name = name
 		self.race = race
 		self.combat_class = combat_class
 		self.description = description
 		self.event = None
-		self.uid = util.get_uid()
+		#self.uid = util.get_uid()
 
-		self.stats = default_stats
-		self.max_health = 0
-		self.health = 0
-		self.max_energy = 0
-		self.energy = 0
+		self.stats = stats
+
 
 		self.modifiers = []
 		self.characteristics = characteristics
 		
-		self.base_stats = default_stats.copy()
-		self.tags = []
-		self.abilities = []
+		self.base_stats = stats.copy()
+		self.tags = tags
+		self.abilities = abilities
 
 		self.inventory = inventory
 		self.equipment = equipment
@@ -225,6 +223,7 @@ default_enemy_stats = {
 
 class Enemy(Creature):
 	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[]):
+
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
 	@staticmethod

@@ -18,7 +18,7 @@ class Dungeon(object):
 		return enemies.retrieve_enemy_for_difficulty(difficulty)
 
 	def generate_rooms(self, amount):
-		for i in range(amount-1):
+		for i in range(amount):
 			room_type = random.choice(["enemy"])
 			uid = util.get_uid()
 			room = Room(uid, room_type)
@@ -53,5 +53,3 @@ def test_dungeon_creation():
 		print("\nRoom #%s of type %s:"%(room.uid, room.room_type))
 		for enemy in room.combat_enemies:
 			print(enemy.examine_self())
-
-test_dungeon_creation()
