@@ -3,8 +3,8 @@ import random
 from creatures import Enemy
 def retrieve_enemy_for_difficulty(difficulty):
 	candidates = []
-	for i in range(0, len(enemy_list)-1):
-		if abs(enemy_list[i][0] - difficulty < difficulty/4):
+	for i in range(0, len(enemy_list)):
+		if abs(enemy_list[i][0] - difficulty <= difficulty/4.0):
 			candidates.append(enemy_list[i][1])
 
 	if len(candidates) == 0:
@@ -15,7 +15,7 @@ def retrieve_enemy_for_difficulty(difficulty):
 
 enemy_list = [
 	(1, "rat"),
-	(2, "big rat")
+	(1, "big rat")
 ]
 
 enemy_listing = {

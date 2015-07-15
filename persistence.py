@@ -20,7 +20,7 @@ class PersistenceController(object):
 
 	@staticmethod
 	def get_instance():
-		return instance
+		return PersistenceController.instance
 
 def get_persistence_controller_instance():
 	if not PersistenceController.instance:

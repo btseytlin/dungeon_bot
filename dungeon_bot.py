@@ -63,7 +63,7 @@ class DungeonBot(object):
 
 	@staticmethod
 	def get_instance():
-		return instance
+		return DungeonBot.instance
 
 	def parse_command(self, user, message):
 		words = message.text.strip().lower().split(' ')

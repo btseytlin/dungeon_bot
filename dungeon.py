@@ -11,10 +11,12 @@ class Dungeon(object):
 		self.current_room = 0
 
 		self.difficulty = sum([p.stats["level"] for p in players])/len(self.players)
+		print("Dungeon difficulty = %d"%(self.difficulty))
 
 	def get_enemy(self, difficulty=None):
 		if not difficulty:
 			difficulty = self.difficulty
+
 		return enemies.retrieve_enemy_for_difficulty(difficulty)
 
 	def generate_rooms(self, amount):
@@ -53,3 +55,4 @@ def test_dungeon_creation():
 		print("\nRoom #%s of type %s:"%(room.uid, room.room_type))
 		for enemy in room.combat_enemies:
 			print(enemy.examine_self())
+test_dungeon_creation()
