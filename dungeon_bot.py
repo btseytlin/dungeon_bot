@@ -7,6 +7,7 @@ import logging
 import util
 import pprint
 import datetime
+from dungeon import Dungeon
 # read apikey from file
 
 persistence_controller = persistence.PersistenceController.get_instance()
@@ -23,9 +24,30 @@ def event_over_callback(uid):
 	logging.debug("Event %s removed"%(uid))
 
 def lobby_event_lover_callback(uid):
+	lobby = DungeonBot.events[uid]
+
 	logging.debug("Removing lobby %s"%(uid))
 	del DungeonBot.open_lobbies[uid]
 	event_over_callback(uid)
+	
+	uid = util.get_uid() #generate new dungeon
+	dungeon_name = "Dungeon of rats"
+	dungeon_description = "A dungeon that only rats inhabit. It's actually a peasant's basement. \nA big basement. With rats."
+	dungeon_players = [persistence_controller.get_ply(u) for u in lobby.users]
+	dungeon = Dungeon(uid, dungeon_name, dungeon_description, dungeon_players)
+	dungeon.generate_rooms(5)
+	lobby.move_players_to_dungeon(uid)
+
+
+	crawl_uid = util.get_uid()
+	dungeon_crawl = bot_events.DungeonCrawlEvent(event_over_callback, crawl_uid, lobby.users, dungeon)
+	DungeonBot.events[crawl_uid] = dungeon_crawl
+
+	broadcast = []
+	msg = dungeon_crawl.greeting_message
+	for u in lobby.users:
+		broadcast.append([u, msg])
+	return broadcast
 
 class DungeonBot(object):
 
@@ -58,10 +80,12 @@ class DungeonBot(object):
 	def __init__(self):
 		logging.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
-		instance = self
+		DungeonBot.instance = self
 
 	@staticmethod
 	def get_instance():
+		if not DungeonBot.instance:
+			DungeonBot.instance = DungeonBot()
 		return DungeonBot.instance
 
 	def parse_command(self, user, message):

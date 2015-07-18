@@ -4,7 +4,7 @@ class PersistenceController(object):
 	instance = None
 
 	def __init__(self):
-		instance = self
+		PersistenceController.instance = self
 		
 	def is_registered(self, user):
 		if user.username in self.players.keys():
@@ -20,6 +20,8 @@ class PersistenceController(object):
 
 	@staticmethod
 	def get_instance():
+		if not PersistenceController.instance:
+			PersistenceController.instance = PersistenceController()
 		return PersistenceController.instance
 
 def get_persistence_controller_instance():

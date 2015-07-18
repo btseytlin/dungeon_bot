@@ -1,9 +1,7 @@
 import persistence
 import logging
 import items
-from dungeon import Dungeon
 import util
-from dungeon_bot import event_over_callback
 persistence_controller = persistence.PersistenceController.get_instance()
 
 
@@ -262,35 +260,17 @@ class DungeonLobbyEvent(BotEvent):
 		return broadcast
 
 	def move_players_to_dungeon(self, uid):
-		for users in self.users:
+		for user in self.users:
 			ply = persistence_controller.get_ply(user)
 			ply.event = uid
 
 	def start_crawl(self):
-		uid = util.get_uid() #generate new dungeon
-		dungeon_name = "Dungeon of rats"
-		dungeon_description = "A dungeon that only rats inhabit. It's actually a peasant's basement. \nA big basement. With rats."
-		dungeon_players = [persistence_controller.get_ply(u) for u in self.users]
-		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players)
-		dungeon.generate_rooms()
-		
-		uid = util.get_uid()
-		dungeon_crawl = DungeonCrawlEvent(event_over_callback, uid, users, dungeon)
-		self.move_players_to_dungeon(uid)
-
-		broadcast = []
-		msg = dungeon_crawl.greeting_message
-		for u in self.users:
-			broadcast.append([u, msg])
-
-		self.users = []
-		self.finished_callback(self.uid)
-		return broadcast
+		return self.finished_callback(self.uid)
 
 class DungeonCrawlEvent(BotEvent):
 	def __init__(self, finished_callback, uid, users, dungeon):
-		BotEvent.__init__(self, finished_callback, uid, users):
-		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon_description)
+		BotEvent.__init__(self, finished_callback, uid, users)
+		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon.description)
 		self.dungeon = dungeon
 		self.can_advance = False
 		self.non_combat_events = {}
@@ -311,8 +291,8 @@ class DungeonCrawlEvent(BotEvent):
 			return False
 		return True
 
-	def remove_user(user):
-		super(DungeonLobbyEvent, self).remove_user(user)
+	def remove_user(self, user):
+		super(BotEvent, self).remove_user(user)
 		broadcast = []
 		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is'%(persistence_controller.get_ply(user))
 
@@ -334,7 +314,7 @@ class DungeonCrawlEvent(BotEvent):
 
 	def open_levelup(self, user):
 		pass
-		
+
 	def open_inventory(self, user):
 		uid = util.get_uid()
 
@@ -346,7 +326,7 @@ class DungeonCrawlEvent(BotEvent):
 
 		inv = InventoryEvent(inv_over_callback, uid, user) #Create an inventory event
 		self.non_combat_events[user.username] = inv
-		logging.debug("Inventory event  %s created within dungeon"%(uid, self.uid))
+		logging.debug("Inventory event  %s created within dungeon %s."%(uid, self.uid))
 
 		broadcast = []
 		msg = ' %s is rummaging in his inventory.'%(persistence_controller.get_ply(user))
