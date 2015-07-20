@@ -1,4 +1,6 @@
 import util
+import random
+import creatures
 class Ability(object):
 	def __init__(self, name, description, energy_required=0, requirements=None):
 		self.name = name
@@ -6,10 +8,11 @@ class Ability(object):
 		self.use = use
 		self.requirements = requirements
 		self.energy_required = energy_required
-	def use(self, user, target):
-		if not user.energy >= self.energy_required:
-			return False, "Not enough energy to use %s"%(self.name)
-		user.energy = user.energy - self.energy_required
+
+	@staticmethod
+	def can_use(energy, energy_required):
+		if not energy >= energy_required:
+			return False
 		return True
 
 	def examine_self(self):
@@ -28,11 +31,13 @@ class Swing(Ability):
 		Ability.__init__(self, name, description, energy_required, requirements)
 
 	@staticmethod
+	def can_use(user):
+		return Ability.can_use(user.energy, Swing.energy_required)
+
+	@staticmethod
 	def use(user, target):
-		enough_energy, message = super(Ability, self).use(user, target)
-		if not energy_required:
-			return message
-		
+		user.energy = user.energy - Swing.energy_required
+
 		chance_to_hit = (util.diceroll(user.primary_weapon.stats["accuracy"]) * user.characteristics["dexterity"]) - util.diceroll(target.stats["evasion"])
 
 		if random.randint(0, 100) < chance_to_hit:
@@ -52,10 +57,12 @@ class RodentBite(Ability):
 		Ability.__init__(self, name, description, energy_required, requirements)
 
 	@staticmethod
+	def can_use(user):
+		return Ability.can_use(user.energy, RodentBite.energy_required)
+
+	@staticmethod
 	def use(user, target):
-		enough_energy, message = super(Ability, self).use(user, target)
-		if not energy_required:
-			return message
+		user.energy = user.energy - RodentBite.energy_required
 		
 		chance_to_hit = (user.characteristics["dexterity"] * 10) - util.diceroll(target.stats["evasion"])
 

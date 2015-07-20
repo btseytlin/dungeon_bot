@@ -12,12 +12,12 @@ default_characteristics = {
 }
 
 default_stats = {
-	"health": 0,
-	"energy": 0,
-	"max_health": 0,
-	"max_energy": 0,
-	"defence": 0,
-	"evasion": 0,
+	"health": 100,
+	"energy": 100,
+	"max_health": 100,
+	"max_energy": 100,
+	"defence": "1d2",
+	"evasion": "1d2",
 	"level": 1
 }
 
@@ -194,9 +194,10 @@ class Creature(object):
 
 
 class Player(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[]):
+	def __init__(self, username, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[]):
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.level_perks = level_perks
+		self.username = username
 
 	def examine_self(self):
 		desc = super(Player, self).examine_self()

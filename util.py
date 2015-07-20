@@ -37,10 +37,10 @@ def print_available_commands(available_commands):
 	return help_text
 
 def diceroll(string):
-	nums = (int(x) for x in string.split(" "))
+	nums = [int(x) for x in string.split("d")]
 	total_sum = 0 
 	for i in range(0, nums[0]):
-		total_sum += randint(0, num[1])
+		total_sum += random.randint(0, nums[1])
 	return total_sum
 """
 def deep_jsonify(target):

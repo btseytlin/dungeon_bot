@@ -54,7 +54,7 @@ class Room(object):
 
 def test_dungeon_creation():
 	from creatures import Player
-	dung = Dungeon("01", "Dungeon of testing", "A creepy dungeon of bugs", [Player("Orc", "The orc", "orc")])
+	dung = Dungeon("01", "Dungeon of testing", "A creepy dungeon of bugs", [Player("uname","Orc", "The orc", "orc")])
 	dung.generate_rooms(2)
 	for room in dung.rooms:
 		print("\nRoom #%s of type %s:"%(room.uid, room.room_type))

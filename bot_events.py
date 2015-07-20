@@ -4,6 +4,7 @@ import items
 import util
 import abilities
 import random
+from creatures import Enemy
 persistence_controller = persistence.PersistenceController.get_instance()
 
 
@@ -367,7 +368,7 @@ class DungeonCrawlEvent(BotEvent):
 
 		broadcast.append([user, inv.greeting_message])
 		for u in self.users:
-			if u != user:
+			if u.username != user.username:
 				broadcast.append([u, msg])
 		return(broadcast)
 
@@ -410,8 +411,6 @@ class CombatEvent(BotEvent):
 		self.enemies = enemies
 		self.turn_qeue = self.create_turn_qeue()
 
-		self.greeting_message = 'Combat starts!\n %s vs %s\n.'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
-		self.greeting_message += "The combat qeue is:\n"+", ".join([str(i)+" "+self.turn_qeue[i].name for i in range(len(self.turn_qeue))])
 		self.turn = 0
 		self.round = 0
 
@@ -428,6 +427,30 @@ class CombatEvent(BotEvent):
 				ability = abilities.abilities[ability_name]
 				self.user_abilities[user.username][ability.name] = ability
 
+		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
+		self.greeting_message += "The combat qeue is:\n"+", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))]) + "\n"
+		self.greeting_message += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+		if isinstance(self.turn_qeue[self.turn], Enemy):
+			self.greeting_message += self.ai_turn()
+
+	def next_round(self):
+		self.round += 1
+		return "Round %d.\n"%(self.round+1)
+
+	def next_turn(self):
+		msg = ""
+		self.turn += 1
+
+		if self.turn > len(self.turn_qeue)-1:
+			self.turn = 0
+			msg += self.next_round()
+
+		msg += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+
+		if isinstance(self.turn_qeue[self.turn], Enemy):
+			msg += self.ai_turn()
+		return msg
+
 	def create_turn_qeue(self):
 		all_creatures = self.players + self.enemies
 		random.shuffle(all_creatures)
@@ -435,9 +458,9 @@ class CombatEvent(BotEvent):
 		return qeue
 
 	def ai_turn(self):
-		return self.turn_qeue[self.turn].act()
-
-
+		msg = self.turn_qeue[self.turn].act()
+		msg += self.next_turn()
+		return msg
 
 	allowed_commands = {
 		"examine": "shows your stats","ex": "shows your stats","stats": "shows your stats",
@@ -446,7 +469,29 @@ class CombatEvent(BotEvent):
 	}
 
 	def handle_combat_command(self, user, command, *args):
-		pass
+		if self.turn_qeue[self.turn].username == user.username: #current turn is of player who sent command
+			if command in list(self.user_abilities[user.username].keys()):
+				ability = self.user_abilities[user.username][command]
+				if len(args) > 0:
+					argument = " ".join(args)
+					for i in range(len(self.turn_qeue)):
+						target = self.turn_qeue[i]
+						if target.name == argument or argument.isdigit() and int(argument) == i:
+							if ability.can_use( persistence_controller.get_ply(user)) :
+								msg = ability.use(persistence_controller.get_ply(user), target)
+								msg += self.next_turn()
+								return msg
+							else:
+								return "Not enough energy to use %s."%(ability.name)
+
+					return "No such target in turn qeue"
+				else:
+					return "Specify your target"
+
+			return "No such ability!"
+		else:
+			return "It's not your turn!"
+
 
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
@@ -460,6 +505,10 @@ class CombatEvent(BotEvent):
 				argument = " ".join(args)
 				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
 					return (persistence_controller.get_ply(user).examine_self())
+				if argument.isdigit():
+					if int(argument) < len(self.turn_qeue):
+						return self.turn_qeue[int(argument)].examine_self()
+
 				else:
 					for u in self.users:
 						target_ply = persistence_controller.get_ply(u)
@@ -474,10 +523,10 @@ class CombatEvent(BotEvent):
 						if ability.name == argument:
 							return ability.examine_self()
 
-					return "No such player, user, enemy or ability."
+				return "No such player, user, enemy or ability."
 		else:
 			if command in list(self.user_abilities[user.username].keys()): #is it a combat ability?
-				return self.handle_combat_command(user, command, args)
+				return self.handle_combat_command(user, command, *args)
 			return "Unknown command, try help."
 				
 
