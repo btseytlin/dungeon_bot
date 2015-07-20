@@ -16,15 +16,19 @@ class Ability(object):
 		help_text = "%s\n"%(self.name)
 		help_text += "%s\n"%(self.description)
 		help_text += "Requires %s energy\n"%(self.energy_required)
-		help_text += "Requirements to use:\n %s\n"%(str(self.requirements))
+		help_text += "Requirements to use:\n %s\n"%( str(self.requirements) )
+		return help_text
 
-class Swing(object):
-	base_energy_required = 30
-	base_requirements = None
-	def __init__(self, energy_required=30, requirements=None):
-		Ability.__init__(self, "swing", "Swing your weapon and hope you hit something!", energy_required, requirements)
+class Swing(Ability):
+	name = "swing"
+	description = "Swing your weapon and hope you hit something!"
+	energy_required = 30
+	requirements = None
+	def __init__(self, name="swing", description="Swing your weapon and hope you hit something!", energy_required=30, requirements=None):
+		Ability.__init__(self, name, description, energy_required, requirements)
 
-	def use(self, user, target):
+	@staticmethod
+	def use(user, target):
 		enough_energy, message = super(Ability, self).use(user, target)
 		if not energy_required:
 			return message
@@ -34,28 +38,31 @@ class Swing(object):
 		if random.randint(0, 100) < chance_to_hit:
 			return "%s swings %s and misses %s"%(user.name, user.primary_weapon.name, target.name)
 		else:
-			dmg = util.diceroll(user.primary_weapon.stats["damage"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
+			dmg = (util.diceroll(user.primary_weapon.stats["damage"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
 			target.health = target.health - dmg
 			return "%s swings %s and deals %d damage to %s"%(user.name, user.primary_weapon.name, dmg, target.name)
 
-class RodentBite(objet):
+class RodentBite(Ability):
+	name = "rodent_bite"
+	description = "Rodents bite!"
+	energy_required = 10
+	requirements = None
 	base_damage = "1d" #  + str
-	base_energy_required = 10
-	base_requirements = None
-	def __init__(self, energy_required=10, requirements=None):
-		Ability.__init__(self, "rodent_bite", "Rodents bite!", energy_required, requirements)
+	def __init__(self, name="rodent_bite", description="Rodents bite!", energy_required=10, requirements=None):
+		Ability.__init__(self, name, description, energy_required, requirements)
 
-	def use(self, user, target):
+	@staticmethod
+	def use(user, target):
 		enough_energy, message = super(Ability, self).use(user, target)
 		if not energy_required:
 			return message
 		
-		chance_to_hit = ((user.characteristics["dexterity"] * 10) - util.diceroll(target.stats["evasion"])
+		chance_to_hit = (user.characteristics["dexterity"] * 10) - util.diceroll(target.stats["evasion"])
 
 		if random.randint(0, 100) < chance_to_hit:
 			return "%s tries to bite and misses %s."%(user.name, target.name)
 		else:
-			dmg = util.diceroll(self.base_damage + user.characteristics["strength"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
+			dmg = (util.diceroll(self.base_damage + user.characteristics["strength"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
 			target.health = target.health - dmg
 			return "%s bites %s and deals %d damage."%(user.name, target.name, dmg)
 

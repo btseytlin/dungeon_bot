@@ -316,6 +316,8 @@ class DungeonCrawlEvent(BotEvent):
 
 		combat = CombatEvent(combat_over_callback, uid, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
+		for user in self.users:
+			persistence_controller.get_ply(user).event = self.uid
 		logging.debug("Combat event  %s created within dungeon %s."%(uid, self.uid))
 
 		broadcast = []
@@ -406,9 +408,10 @@ class CombatEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, uid, users)
 		self.players = players
 		self.enemies = enemies
-		self.greeting_message = 'Combat starts!\n %s vs %s\n.'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
-
 		self.turn_qeue = self.create_turn_qeue()
+
+		self.greeting_message = 'Combat starts!\n %s vs %s\n.'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
+		self.greeting_message += "The combat qeue is:\n"+", ".join([str(i)+" "+self.turn_qeue[i].name for i in range(len(self.turn_qeue))])
 		self.turn = 0
 		self.round = 0
 
@@ -427,7 +430,8 @@ class CombatEvent(BotEvent):
 
 	def create_turn_qeue(self):
 		all_creatures = self.players + self.enemies
-		qeue = sorted(random.shuffle(all_creatures), key=lambda x: x.characteristics["dexterity"], reverse=True)
+		random.shuffle(all_creatures)
+		qeue = sorted(all_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
 		return qeue
 
 	def ai_turn(self):
@@ -447,7 +451,7 @@ class CombatEvent(BotEvent):
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
 			help_text = util.print_available_commands(self.allowed_commands)
-			help_text += "\n" + util.print_combat_commands(self.user_abilities[user.username])
+			help_text += "\n" + util.print_combat_abilities(self.user_abilities[user.username])
 			return help_text
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:
@@ -470,12 +474,11 @@ class CombatEvent(BotEvent):
 						if ability.name == argument:
 							return ability.examine_self()
 
-
 					return "No such player, user, enemy or ability."
 		else:
-			if command in list(self.user_abilities[user.username].keys()):
-				return handle_combat_command(user, command, args)
+			if command in list(self.user_abilities[user.username].keys()): #is it a combat ability?
+				return self.handle_combat_command(user, command, args)
 			return "Unknown command, try help."
-				#is it a combat ability?
+				
 
 
