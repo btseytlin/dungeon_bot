@@ -120,8 +120,6 @@ class InventoryEvent(BotEvent):
 
 
 	def handle_command(self, user, command, *args):
-		
-
 		if (command in ["help","info","h"]):
 			return(util.print_available_commands(self.allowed_commands))
 
@@ -272,8 +270,7 @@ class DungeonCrawlEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, uid, users)
 		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon.description)
 		self.dungeon = dungeon
-		self.can_advance = False
-		self.non_combat_events = {}
+		self.non_combat_events = {} # key: user.username, value: event.uid
 
 	allowed_commands = {
 		"advance": "move to next room", "adv": "move to next room",
@@ -307,7 +304,7 @@ class DungeonCrawlEvent(BotEvent):
 		return broadcast
 
 	def advance_room(self):
-		if not self.can_advance:
+		if not self.check_if_can_advance():
 			msg = "Can't advance, someone is inventory or leveling up"
 			broadcast = [(u, msg) for u in self.users]
 			return broadcast
@@ -319,13 +316,17 @@ class DungeonCrawlEvent(BotEvent):
 		uid = util.get_uid()
 
 		def inv_over_callback(uid):
-			for event in list(self.non_combat_events.keys()):
-				if self.non_combat_events[event] == uid:
-					del self.non_combat_events[event]
+			player = persistence_controller.get_ply(user)
+			player.event = self.uid # Free all players from event
+
+			for uname in list(self.non_combat_events.keys()):
+				if self.non_combat_events[uname].uid == uid:
+					del self.non_combat_events[uname]
 					break
 
 		inv = InventoryEvent(inv_over_callback, uid, user) #Create an inventory event
 		self.non_combat_events[user.username] = inv
+		persistence_controller.get_ply(user).event = self.uid
 		logging.debug("Inventory event  %s created within dungeon %s."%(uid, self.uid))
 
 		broadcast = []
@@ -338,7 +339,6 @@ class DungeonCrawlEvent(BotEvent):
 		return(broadcast)
 
 	def handle_command(self, user, command, *args):
-
 		if user.username in list(self.non_combat_events.keys()):
 			return self.non_combat_events[user.username].handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
