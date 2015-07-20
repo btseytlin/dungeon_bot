@@ -222,9 +222,12 @@ default_enemy_stats = {
 }
 
 class Enemy(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[]):
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[]):
 
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+
+	def act(self):
+		return "%s skips turn"%(self.name)
 
 	@staticmethod
 	def de_json(data):

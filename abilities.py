@@ -12,6 +12,12 @@ class Ability(object):
 		user.energy = user.energy - self.energy_required
 		return True
 
+	def examine_self(self):
+		help_text = "%s\n"%(self.name)
+		help_text += "%s\n"%(self.description)
+		help_text += "Requires %s energy\n"%(self.energy_required)
+		help_text += "Requirements to use:\n %s\n"%(str(self.requirements))
+
 class Swing(object):
 	base_energy_required = 30
 	base_requirements = None

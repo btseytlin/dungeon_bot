@@ -4,6 +4,15 @@ import json
 def get_uid():
 	return str(uuid.uuid4())[:8]
 
+def print_combat_abilities(combat_abilities):
+	help_text = "Available combat commands:\n"
+	help_text += " name | energy_required\n"
+	for key in list(combat_abilities.keys()):
+		ability = combat_abilities[key]
+		help_text += "%s | %s\n"%(ability.name, ability.energy_required )
+
+	return help_text
+
 def print_available_commands(available_commands):
 	help_text = "Available commands:\n"
 	allowed_comms_descs = {}

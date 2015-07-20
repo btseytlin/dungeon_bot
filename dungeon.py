@@ -25,7 +25,7 @@ class Dungeon(object):
 
 	def generate_rooms(self, amount):
 		for i in range(amount):
-			room_type = random.choice(["enemy"])
+			room_type = random.choice(["combat"])
 			uid = util.get_uid()
 			room = Room(uid, room_type)
 			if room_type == "loot":
@@ -34,7 +34,7 @@ class Dungeon(object):
 			elif room_type == "riddle":
 				#todo add riddle rooms
 				pass
-			elif room_type == "enemy":
+			elif room_type == "combat":
 				amount_of_enemies = random.randint(1, 3)
 				combat_enemies = []
 				for n in range(amount_of_enemies):
@@ -44,9 +44,10 @@ class Dungeon(object):
 			self.rooms.append(room)
 
 class Room(object):
-	def __init__(self, uid, room_type):
+	def __init__(self, uid, room_type, combat_enemies = []):
 		self.uid = uid
 		self.room_type = room_type
+		self.combat_enemies = combat_enemies
 
 	def enter(self):
 		pass

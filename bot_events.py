@@ -2,6 +2,8 @@ import persistence
 import logging
 import items
 import util
+import abilities
+import random
 persistence_controller = persistence.PersistenceController.get_instance()
 
 
@@ -271,6 +273,7 @@ class DungeonCrawlEvent(BotEvent):
 		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon.description)
 		self.dungeon = dungeon
 		self.non_combat_events = {} # key: user.username, value: event.uid
+		self.combat_event = None
 
 	allowed_commands = {
 		"advance": "move to next room", "adv": "move to next room",
@@ -303,11 +306,39 @@ class DungeonCrawlEvent(BotEvent):
 
 		return broadcast
 
+	def start_combat(self, players, enemies):
+		uid = util.get_uid()
+
+		def combat_over_callback(uid):
+			for player in players:
+				player.event = self.uid # Free all players from event
+			self.combat_event = None
+
+		combat = CombatEvent(combat_over_callback, uid, players, self.users, enemies) #Create an inventory event
+		self.combat_event = combat
+		logging.debug("Combat event  %s created within dungeon %s."%(uid, self.uid))
+
+		broadcast = []
+
+		for u in self.users:
+			broadcast.append([u, combat.greeting_message])
+		return(broadcast)
+
 	def advance_room(self):
 		if not self.check_if_can_advance():
 			msg = "Can't advance, someone is inventory or leveling up"
 			broadcast = [(u, msg) for u in self.users]
 			return broadcast
+
+		self.dungeon.current_room += 1
+		room = self.dungeon.rooms[self.dungeon.current_room]
+		if room.room_type == "combat":
+			enemies = room.combat_enemies
+			return self.start_combat(self.dungeon.players, enemies)
+		return "Room type not done yet"
+
+
+
 
 	def open_levelup(self, user):
 		pass
@@ -341,6 +372,8 @@ class DungeonCrawlEvent(BotEvent):
 	def handle_command(self, user, command, *args):
 		if user.username in list(self.non_combat_events.keys()):
 			return self.non_combat_events[user.username].handle_command(user, command, *args)
+		if self.combat_event:
+			return self.combat_event.handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(util.print_available_commands(self.allowed_commands))
 		if (command in ["back","abort","b", "leave", "ab"]):
@@ -352,6 +385,8 @@ class DungeonCrawlEvent(BotEvent):
 		if (command in ["levelup","lvl"]):
 			return(self.open_levelup(user))
 		if (command in ["examine", "stats", "ex", "st"]):
+			if len(args) == 0:
+				return  (persistence_controller.get_ply(user)).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args)
 				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
@@ -362,9 +397,85 @@ class DungeonCrawlEvent(BotEvent):
 						target_ply = persistence_controller.get_ply(u)
 						if u.username == argument or persistence_controller.get_ply(u).name == argument:
 							target_user = u
-							break
-					if target_user:
-						return (target_ply.examine_self())
-					else:
-						return "No such player or user in that dungeon"
+							return (target_ply.examine_self())
+					return "No such player or user in that dungeon"
 		return 'Unknown command, try "help"'
+
+class CombatEvent(BotEvent):
+	def __init__(self, finished_callback, uid, players, users, enemies):
+		BotEvent.__init__(self, finished_callback, uid, users)
+		self.players = players
+		self.enemies = enemies
+		self.greeting_message = 'Combat starts!\n %s vs %s\n.'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
+
+		self.turn_qeue = self.create_turn_qeue()
+		self.turn = 0
+		self.round = 0
+
+		self.user_abilities = { #  {user.username:  {ability.name: ability}}
+
+		}
+
+		for user in self.users:
+			if not user.username in list(self.user_abilities.keys()):
+				self.user_abilities[user.username] = {}
+
+			ply = persistence_controller.get_ply(user)
+			for ability_name in ply.abilities:
+				ability = abilities.abilities[ability_name]
+				self.user_abilities[user.username][ability.name] = ability
+
+	def create_turn_qeue(self):
+		all_creatures = self.players + self.enemies
+		qeue = sorted(random.shuffle(all_creatures), key=lambda x: x.characteristics["dexterity"], reverse=True)
+		return qeue
+
+	def ai_turn(self):
+		return self.turn_qeue[self.turn].act()
+
+
+
+	allowed_commands = {
+		"examine": "shows your stats","ex": "shows your stats","stats": "shows your stats",
+		"examine [creature]": "shows a creature's stats", "ex [creature]": "shows a creature's stats", 
+		"info": "shows help","help": "shows help","h": "shows help",
+	}
+
+	def handle_combat_command(self, user, command, *args):
+		pass
+
+	def handle_command(self, user, command, *args):
+		if (command in ["help","info","h"]):
+			help_text = util.print_available_commands(self.allowed_commands)
+			help_text += "\n" + util.print_combat_commands(self.user_abilities[user.username])
+			return help_text
+		elif (command in ["examine", "stats", "ex", "st"]):
+			if len(args) == 0:
+				return  (persistence_controller.get_ply(user)).examine_self()
+			if len(args) > 0:
+				argument = " ".join(args)
+				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
+					return (persistence_controller.get_ply(user).examine_self())
+				else:
+					for u in self.users:
+						target_ply = persistence_controller.get_ply(u)
+						if u.username == argument or target_ply.name == argument:
+							return target_ply.examine_self()
+
+					for enemy in self.enemies:
+						if enemy.name == argument:
+							return enemy.examine_self()
+
+					for ability in self.user_abilities[user.username]:
+						if ability.name == argument:
+							return ability.examine_self()
+
+
+					return "No such player, user, enemy or ability."
+		else:
+			if command in list(self.user_abilities[user.username].keys()):
+				return handle_combat_command(user, command, args)
+			return "Unknown command, try help."
+				#is it a combat ability?
+
+
