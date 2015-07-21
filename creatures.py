@@ -2,7 +2,7 @@ import logging
 import util
 import json
 import items
-
+import abilities
 default_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
@@ -37,6 +37,8 @@ default_equipment = {
 	"headwear": None
 }
 
+default_abilties = ["rest"]
+
 class Creature(object):
 	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats= default_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
 
@@ -50,12 +52,12 @@ class Creature(object):
 		self.stats = stats
 
 
-		self.modifiers = []
+		self.modifiers = modifiers
 		self.characteristics = characteristics
 		
 		self.base_stats = stats.copy()
 		self.tags = tags
-		self.abilities = abilities
+		self.abilities = abilities + default_abilties
 
 		self.inventory = inventory
 		self.equipment = equipment
@@ -66,6 +68,8 @@ class Creature(object):
 
 	@health.setter
 	def health(self, value):
+		if value > self.stats["max_health"]:
+			value = self.stats["max_health"]
 		self.stats["health"] = value
 
 	@property
@@ -74,6 +78,8 @@ class Creature(object):
 
 	@energy.setter
 	def energy(self, value):
+		if value > self.stats["max_energy"]:
+			value = self.stats["max_energy"]
 		self.stats["energy"] = value
 
 	@property
@@ -123,6 +129,11 @@ class Creature(object):
 	@headwear.setter
 	def headwear(self, value):
 		self.equipment["headwear"] = value
+
+	def die(self, killer=None):
+		if killer:
+			return "%s is killed by %s."%(self.name, killer)
+		return "%s dies."%(self.name)
 
 	def examine_equipment(self):
 		desc = "%s's equipment:\n"%(self.name)
@@ -193,11 +204,45 @@ class Creature(object):
 		return json.dumps(big_dict)
 
 
+default_player_stats = {
+	"health": 100,
+	"energy": 100,
+	"max_health": 100,
+	"max_energy": 100,
+	"defence": "1d2",
+	"evasion": "1d2",
+	"level": 1,
+	"experience": 0
+	"max_experience": 1000
+}
+
+
 class Player(Creature):
-	def __init__(self, username, name, race, combat_class, characteristics = default_characteristics, stats=default_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[]):
+	def __init__(self, username, name, race, combat_class, characteristics = default_characteristics, stats=default_player_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[]):
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.level_perks = level_perks
 		self.username = username
+
+	@property
+	def experience(self):
+		return self.stats["experience"]
+
+	@experience.setter
+	def experience(self, value):
+		if value > self.stats["max_experience"]:
+			over_cur_level = value - (self.stats["max_experience"] - self.experience)
+			self.level = self.level +  1
+			self.experience = over_cur_level
+		self.stats["experience"] = value
+
+	@property
+	def level(self):
+		return self.stats["level"]
+
+	@level.setter
+	def level(self, value):
+		self.stats["level"] = value
+		self.stats["max_experience"] = value * 1000
 
 	def examine_self(self):
 		desc = super(Player, self).examine_self()
@@ -223,12 +268,23 @@ default_enemy_stats = {
 }
 
 class Enemy(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[]):
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=["rest"],modifiers=[]):
 
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
 	def act(self):
+		ability = abilities.abilities["rest"]
+		msg = ability.use(self)
+		return msg
+
 		return "%s skips turn"%(self.name)
+
+	def die(self, killer=None):
+		if killer:
+			if isinstance(killer, Player):
+				killer.experience += self.stats["exp_value"]
+			return "%s is killed by %s."%(self.name, killer)
+		return "%s dies."%(self.name)
 
 	@staticmethod
 	def de_json(data):

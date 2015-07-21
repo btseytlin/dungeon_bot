@@ -77,7 +77,7 @@ class RegistrationEvent(BotEvent):
 
 		elif self.current_step == 2:
 			self.new_player.combat_class = command
-			club = items.PrimaryWeapon("club", "A rough wooden club, good enough to break a skull!", "blunt", {"damage" : "1d3", "accuracy" : "3d6"}, ["swing"])
+			club = items.get_item_by_name("club")
 			self.new_player.inventory = [club]
 			self.finish()
 			return('Registration complete! Try "examine" to see your stats, "inventory" to see your items.')
@@ -445,7 +445,7 @@ class CombatEvent(BotEvent):
 			self.turn = 0
 			msg += self.next_round()
 
-		msg += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name)
 
 		if isinstance(self.turn_qeue[self.turn], Enemy):
 			msg += self.ai_turn()
@@ -466,6 +466,7 @@ class CombatEvent(BotEvent):
 		"examine": "shows your stats","ex": "shows your stats","stats": "shows your stats",
 		"examine [creature]": "shows a creature's stats", "ex [creature]": "shows a creature's stats", 
 		"info": "shows help","help": "shows help","h": "shows help",
+		"skip": "skips turn, restores energy based on strength", "wait": "skips turn, restores energy based on strength", "s": "skips turn, restores energy based on strength", 
 	}
 
 	def handle_combat_command(self, user, command, *args):
@@ -487,7 +488,11 @@ class CombatEvent(BotEvent):
 					return "No such target in turn qeue"
 				else:
 					return "Specify your target"
-
+			elif (command in ["skip", "s", "wait"]):
+				ability = self.user_abilities[user.username]["rest"]
+				msg = ability.use(persistence_controller.get_ply(user))
+				msg += self.next_turn()
+				return msg
 			return "No such ability!"
 		else:
 			return "It's not your turn!"

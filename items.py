@@ -100,4 +100,22 @@ class PrimaryWeapon(Item):
 		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
 
 
-	
+def get_item_by_name(name):
+	item_args = None
+	item_type = None
+	for key in list(item_listing.keys()):
+		for item in list(item_listing[key].keys()):
+			if item == name:
+				item_args = item_listing[key][item]
+				item_type = key
+				break
+
+	if item_type == "primary_weapon":
+		return PrimaryWeapon(*item_args)
+	return "Unknown item"
+
+item_listing = { #itemname : tuple of args
+	"primary_weapon":{
+		"club": ("club", "A rough wooden club, good enough to break a skull!", "blunt", {"damage" : "1d3", "accuracy" : "3d6"}, ["swing"])
+	}
+}
