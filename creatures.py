@@ -61,6 +61,7 @@ class Creature(object):
 
 		self.inventory = inventory
 		self.equipment = equipment
+		self.dead = False
 
 	@property
 	def health(self):
@@ -130,9 +131,15 @@ class Creature(object):
 	def headwear(self, value):
 		self.equipment["headwear"] = value
 
+	def kill_if_nececary(self):
+		if self.health <= 0:
+			return True, self.die()
+		return False
+
 	def die(self, killer=None):
+		self.dead = True
 		if killer:
-			return "%s is killed by %s."%(self.name, killer)
+			return "%s is killed by %s."%(self.name, killer.name)
 		return "%s dies."%(self.name)
 
 	def examine_equipment(self):
@@ -281,9 +288,11 @@ class Enemy(Creature):
 
 	def die(self, killer=None):
 		if killer:
+			msg = "%s is killed by %s.\n"%(self.name, killer.name)
 			if isinstance(killer, Player):
 				killer.experience += self.stats["exp_value"]
-			return "%s is killed by %s."%(self.name, killer)
+				msg += "%s earns %d experience.\n"%(killer.name, self.stats["exp_value"])
+			return msg
 		return "%s dies."%(self.name)
 
 	@staticmethod
@@ -303,10 +312,9 @@ class Enemy(Creature):
 		}
 		if data.get("equipment") and len(data.get("equipment"))!=0:
 			for thing in len(data.get("equipment").keys()):
-				equipment[thing].append(Item.de_json(data.get("equipment")[thing]))
+				equipment[thing] = Item.de_json(data.get("equipment")[thing])
 					
 		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
-
 
 	def __str__(self):
 		desc = super(Player, self).examine_self()

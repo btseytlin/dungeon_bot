@@ -437,18 +437,47 @@ class CombatEvent(BotEvent):
 		self.round += 1
 		return "Round %d.\n"%(self.round+1)
 
+	def check_winning_conditions(self):
+		alive_enemy = False
+		alive_player = False
+		for c in self.turn_qeue:
+			if not c.dead:
+				if isinstance(c, Player):
+					alive_player = True
+				elif isinstance(c, Enemy):
+					alive_enemy = True
+
+		if alive_enemy and not alive_player:
+			return True
+		elif alive_player and not alive_enemy:
+			return True
+		return False
+
 	def next_turn(self):
 		msg = ""
+
+		for c in self.turn_qeue:
+			killed, kill_message = c.kill_if_nececary()
+			if killed == True:
+				msg += kill_message
 		self.turn += 1
 
 		if self.turn > len(self.turn_qeue)-1:
 			self.turn = 0
 			msg += self.next_round()
-
+		if (self.turn_qeue[self.turn].dead):
+			return self.next_turn()
 		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name)
 
 		if isinstance(self.turn_qeue[self.turn], Enemy):
 			msg += self.ai_turn()
+
+		fight_ended = check_winning_conditions
+		
+		if fight_ended:
+			msg += "Combat is over.\n"
+			return msg, self.finish()
+
 		return msg
 
 	def create_turn_qeue(self):
