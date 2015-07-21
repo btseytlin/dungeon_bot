@@ -4,7 +4,7 @@ import items
 import util
 import abilities
 import random
-from creatures import Enemy
+from creatures import Enemy, Player
 persistence_controller = persistence.PersistenceController.get_instance()
 
 
@@ -313,6 +313,11 @@ class DungeonCrawlEvent(BotEvent):
 		def combat_over_callback(uid):
 			for player in players:
 				player.event = self.uid # Free all players from event
+
+			if self.combat_event.winner == "enemies":
+				self.finish()
+			elif self.combat_event.winner == "players":
+				pass
 			self.combat_event = None
 
 		combat = CombatEvent(combat_over_callback, uid, players, self.users, enemies) #Create an inventory event
@@ -442,14 +447,16 @@ class CombatEvent(BotEvent):
 		alive_player = False
 		for c in self.turn_qeue:
 			if not c.dead:
-				if isinstance(c, Player):
+				if isinstance(c,Player):
 					alive_player = True
 				elif isinstance(c, Enemy):
 					alive_enemy = True
 
 		if alive_enemy and not alive_player:
+			self.winner = "enemies"
 			return True
 		elif alive_player and not alive_enemy:
+			self.winner = "players"
 			return True
 		return False
 
@@ -472,8 +479,8 @@ class CombatEvent(BotEvent):
 		if isinstance(self.turn_qeue[self.turn], Enemy):
 			msg += self.ai_turn()
 
-		fight_ended = check_winning_conditions
-		
+		fight_ended = self.check_winning_conditions()
+
 		if fight_ended:
 			msg += "Combat is over.\n"
 			return msg, self.finish()
@@ -487,7 +494,7 @@ class CombatEvent(BotEvent):
 		return qeue
 
 	def ai_turn(self):
-		msg = self.turn_qeue[self.turn].act()
+		msg = self.turn_qeue[self.turn].act(self.turn_qeue)
 		msg += self.next_turn()
 		return msg
 
@@ -517,8 +524,8 @@ class CombatEvent(BotEvent):
 					return "No such target in turn qeue"
 				else:
 					return "Specify your target"
-			elif (command in ["skip", "s", "wait"]):
-				ability = self.user_abilities[user.username]["rest"]
+			elif (command in ["skip", "s", "wait", "rest"]):
+				ability = abilities.abilities["rest"]
 				msg = ability.use(persistence_controller.get_ply(user))
 				msg += self.next_turn()
 				return msg
@@ -559,7 +566,7 @@ class CombatEvent(BotEvent):
 
 				return "No such player, user, enemy or ability."
 		else:
-			if command in list(self.user_abilities[user.username].keys()): #is it a combat ability?
+			if command in list(self.user_abilities[user.username].keys()) or command in ["skip", "s", "wait", "rest"]: #is it a combat ability?
 				return self.handle_combat_command(user, command, *args)
 			return "Unknown command, try help."
 				

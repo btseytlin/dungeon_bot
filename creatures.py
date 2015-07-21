@@ -134,7 +134,7 @@ class Creature(object):
 	def kill_if_nececary(self):
 		if self.health <= 0:
 			return True, self.die()
-		return False
+		return False, None
 
 	def die(self, killer=None):
 		self.dead = True
@@ -162,7 +162,7 @@ class Creature(object):
 		pass
 
 	def refresh_abilities(self):
-		self.abilities = []
+		self.abilities = default_abilties
 		for perk in self.level_perks:
 			self.abilities = list(set(self.abilities + perk.abilities_granted))
 
@@ -219,7 +219,7 @@ default_player_stats = {
 	"defence": "1d2",
 	"evasion": "1d2",
 	"level": 1,
-	"experience": 0
+	"experience": 0,
 	"max_experience": 1000
 }
 
@@ -315,9 +315,5 @@ class Enemy(Creature):
 				equipment[thing] = Item.de_json(data.get("equipment")[thing])
 					
 		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
-
-	def __str__(self):
-		desc = super(Player, self).examine_self()
-		desc += "It is of level %d.\n"%(self.stats["level"])
 
 		return desc

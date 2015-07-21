@@ -1,6 +1,8 @@
 import math
 import random
-from creatures import Enemy
+import abilities
+import util
+from creatures import Enemy, Player
 def retrieve_enemy_for_difficulty(difficulty):
 	candidates = []
 	difficulty_margin = 0.25
@@ -9,9 +11,11 @@ def retrieve_enemy_for_difficulty(difficulty):
 			candidates.append(enemy_list[i][1])
 
 	if len(candidates) == 0:
-		candidates.append(random.choice(enemy_list)[1])
+		candidates.append(random.choice(enemy_list))
 
-	return enemy_listing[random.choice(candidates)]()
+	prototype = random.choice(candidates)
+	uid = util.get_uid()
+	return prototype(uid)
 
 
 rat_characteristics = {
@@ -22,7 +26,7 @@ rat_characteristics = {
 			"faith": 1, #how much energy you have
 		}
 
-rat_stats = "stats": {
+rat_stats = {
 			"health": 10,
 			"energy": 10,
 			"max_health": 10,
@@ -35,21 +39,27 @@ rat_stats = "stats": {
 
 rat_abilities = ["rodent_bite"]
 class Rat(Enemy):
-	def __init__(self, name="rat", race="rodent", combat_class="animal", characteristics = rat_characteristics, stats=rat_stats, description="An angry grey rat.", inventory=[], equipment=None, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
-
+	def __init__(self, uid = None, name="rat", race="rodent", combat_class="animal", characteristics = rat_characteristics, stats=rat_stats, description="An angry grey rat.", inventory=[], equipment=None, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
 		Enemy.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+		self.uid = uid
 
-	def act(self):
-		pass
+	def act(self, turn_qeue):
+		if self.energy < 10:
+			return abilities.abilities["rest"].use(self)
 
-big_rat_characteristis: {
+		for c in turn_qeue:
+			if not c.dead and isinstance(c, Player):
+				return abilities.abilities["rodent_bite"].use(self, c)
+
+
+big_rat_characteristics = {
 	"strength": 1, #how hard you hit
 	"vitality": 2, #how much hp you have
 	"dexterity": 2, #how fast you act, your position in turn qeue
 	"intelligence": 1, #how likely you are to strike a critical
 	"faith": 1, #how much energy you have
 }
-big_rat_stats: {
+big_rat_stats = {
 	"health": 20,
 	"energy": 10,
 	"max_health": 20,
@@ -60,20 +70,23 @@ big_rat_stats: {
 	"exp_value": 10
 }
 class BigRat(Enemy):
-	def __init__(self, name="big rat", race="rodent", combat_class="animal", characteristics = big_rat_characteristis, stats=big_rat_stats, description="A big angry grey rat.", inventory=[], equipment=None, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
+	def __init__(self, name="big rat", race="rodent", combat_class="animal", characteristics = big_rat_characteristics, stats=big_rat_stats, description="A big angry grey rat.", inventory=[], equipment=None, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
 
 		Enemy.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
-	def act(self):
-		pass
+	def act(self, turn_qeue):
+		if self.energy < 10:
+			return abilities.abilities["rest"].use(self)
+
+		for c in turn_qeue:
+			if not c.dead and isinstance(c, Player):
+				return abilities.abilities["rodent_bite"].use(self, c)
 
 enemy_list = [
-	(1, "rat"),
-	(1, "big rat")
+	(1, Rat),
+	(1, BigRat)
 ]
 
-enemy_listing = {
-	"rat": Rat,
-	"big rat": BigRat
-}
 
+print(retrieve_enemy_for_difficulty(1))
+print(retrieve_enemy_for_difficulty(1))

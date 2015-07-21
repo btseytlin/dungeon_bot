@@ -59,7 +59,7 @@ class RodentBite(Ability):
 		if random.randint(0, 100) < chance_to_hit:
 			return "%s tries to bite and misses %s.\n"%(user.name, target.name)
 		else:
-			dmg = (util.diceroll(self.base_damage + user.characteristics["strength"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
+			dmg = (util.diceroll(RodentBite.base_damage + str(user.characteristics["strength"])) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
 			target.health = target.health - dmg
 			return "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
 
