@@ -491,6 +491,7 @@ class CombatEvent(BotEvent):
 		all_creatures = self.players + self.enemies
 		random.shuffle(all_creatures)
 		qeue = sorted(all_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
+		print('turn qeue', qeue)
 		return qeue
 
 	def ai_turn(self):
@@ -546,10 +547,9 @@ class CombatEvent(BotEvent):
 				argument = " ".join(args)
 				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
 					return (persistence_controller.get_ply(user).examine_self())
-				if argument.isdigit():
+				elif argument.isdigit():
 					if int(argument) < len(self.turn_qeue):
 						return self.turn_qeue[int(argument)].examine_self()
-
 				else:
 					for u in self.users:
 						target_ply = persistence_controller.get_ply(u)
@@ -560,9 +560,9 @@ class CombatEvent(BotEvent):
 						if enemy.name == argument:
 							return enemy.examine_self()
 
-					for ability in self.user_abilities[user.username]:
-						if ability.name == argument:
-							return ability.examine_self()
+					for key in list(self.user_abilities[user.username].keys()):
+						if key == argument:
+							return self.user_abilities[user.username][key].examine_self(self.user_abilities[user.username][key])
 
 				return "No such player, user, enemy or ability."
 		else:

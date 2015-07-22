@@ -37,9 +37,19 @@ rat_stats = {
 			"exp_value": 10
 		}
 
+default_equipment = {
+	"armor": None,
+	"primary_weapon": None,
+	"secondary_weapon": None,
+	"ring": None,
+	"talisman": None,
+	"headwear": None
+}
+
+
 rat_abilities = ["rodent_bite"]
 class Rat(Enemy):
-	def __init__(self, uid = None, name="rat", race="rodent", combat_class="animal", characteristics = rat_characteristics, stats=rat_stats, description="An angry grey rat.", inventory=[], equipment=None, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
+	def __init__(self, uid = None, name="rat", race="rodent", combat_class="animal", characteristics = rat_characteristics, stats=rat_stats, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
 		Enemy.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.uid = uid
 
@@ -70,9 +80,9 @@ big_rat_stats = {
 	"exp_value": 10
 }
 class BigRat(Enemy):
-	def __init__(self, name="big rat", race="rodent", combat_class="animal", characteristics = big_rat_characteristics, stats=big_rat_stats, description="A big angry grey rat.", inventory=[], equipment=None, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
-
-		Enemy.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+	def __init__(self, uid = None, name="big rat", race="rodent", combat_class="animal", characteristics = big_rat_characteristics, stats=big_rat_stats, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
+		Enemy.__init__(self, name, race, combat_class,characteristics.copy(), stats.copy(), description, inventory.copy(), equipment.copy(), tags, abilities.copy(), modifiers.copy())
+		self.uid = uid
 
 	def act(self, turn_qeue):
 		if self.energy < 10:
@@ -87,6 +97,34 @@ enemy_list = [
 	(1, BigRat)
 ]
 
+def test_turn_qeue():
+	enemy = retrieve_enemy_for_difficulty(1)
+	print(enemy)
+	print("%s hp: %d"%(enemy.name+":"+enemy.uid, enemy.health))
+	print("Taking 5 hp from %s"%(enemy.name + ":" + enemy.uid))
+	enemy.health = enemy.health - 5
+	print("%s hp: %d"%(enemy.name+":"+enemy.uid, enemy.health))
+	print("\n")
+	enemy2 = Rat("someuid")
+	print(enemy2)
+	print("%s hp: %d"%(enemy2.name+":"+enemy2.uid, enemy2.health))
+	print("Taking 5 hp from %s"%(enemy2.name + ":" + enemy2.uid))
+	enemy2.health = enemy2.health - 5
+	print("%s hp: %d"%(enemy2.name+":"+enemy2.uid, enemy2.health))
+	print("\n")
 
-print(retrieve_enemy_for_difficulty(1))
-print(retrieve_enemy_for_difficulty(1))
+	turn_qeue = [retrieve_enemy_for_difficulty(1) for i in range(0, 5)]
+	print(turn_qeue)
+	for thing in turn_qeue:
+		print(thing.name, thing.uid)
+
+	
+	print("HP was")
+	for thing in turn_qeue:
+		print("%s hp: %d"%(thing.name+":"+thing.uid, thing.health))
+	print("Taking 5 hp from %s"%(turn_qeue[0].name + ":" + turn_qeue[0].uid))
+	turn_qeue[0].heatlh = turn_qeue[0].health - 5
+	print("HP now")
+	for thing in turn_qeue:
+		print("%s hp: %d"%(thing.name+":"+thing.uid, thing.health))
+test_turn_qeue()

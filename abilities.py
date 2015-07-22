@@ -8,11 +8,11 @@ class Ability(object):
 			return False
 		return True
 
-	def examine_self(self):
-		help_text = "%s\n"%(self.name)
-		help_text += "%s\n"%(self.description)
-		help_text += "Requires %s energy\n"%(self.energy_required)
-		help_text += "Requirements to use:\n %s\n"%( str(self.requirements) )
+	def examine_self(ability):
+		help_text = "%s\n"%(ability.name)
+		help_text += "%s\n"%(ability.description)
+		help_text += "Requires %s energy\n"%(ability.energy_required)
+		help_text += "Requirements to use:\n %s\n"%( str(ability.requirements) )
 		return help_text
 
 class Swing(Ability):
@@ -32,11 +32,12 @@ class Swing(Ability):
 		chance_to_hit = (util.diceroll(user.primary_weapon.stats["accuracy"]) * user.characteristics["dexterity"]) - util.diceroll(target.stats["evasion"])
 
 		if random.randint(0, 100) < chance_to_hit:
-			return "%s swings %s and misses %s.\n"%(user.name, user.primary_weapon.name, target.name)
+			return "%s swings %s at %s but misses .\n"%(user.name, user.primary_weapon.name, target.name)
 		else:
 			dmg = (util.diceroll(user.primary_weapon.stats["damage"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
 			target.health = target.health - dmg
 			return "%s swings %s and deals %d damage to %s.\n"%(user.name, user.primary_weapon.name, dmg, target.name)
+
 
 class RodentBite(Ability):
 	name = "rodent_bite"
@@ -57,7 +58,7 @@ class RodentBite(Ability):
 		chance_to_hit = (user.characteristics["dexterity"] * 10) - util.diceroll(target.stats["evasion"])
 
 		if random.randint(0, 100) < chance_to_hit:
-			return "%s tries to bite and misses %s.\n"%(user.name, target.name)
+			return "%s tries to bite %s and misses.\n"%(user.name, target.name)
 		else:
 			dmg = (util.diceroll(RodentBite.base_damage + str(user.characteristics["strength"])) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"])
 			target.health = target.health - dmg

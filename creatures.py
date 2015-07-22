@@ -49,18 +49,18 @@ class Creature(object):
 		self.event = None
 		#self.uid = util.get_uid()
 
-		self.stats = stats
+		self.stats = stats.copy()
 
 
 		self.modifiers = modifiers
-		self.characteristics = characteristics
+		self.characteristics = characteristics.copy()
 		
 		self.base_stats = stats.copy()
-		self.tags = tags
-		self.abilities = abilities + default_abilties
+		self.tags = tags.copy()
+		self.abilities = abilities + default_abilties.copy()
 
-		self.inventory = inventory
-		self.equipment = equipment
+		self.inventory = inventory.copy()
+		self.equipment = equipment.copy()
 		self.dead = False
 
 	@property
@@ -71,6 +71,8 @@ class Creature(object):
 	def health(self, value):
 		if value > self.stats["max_health"]:
 			value = self.stats["max_health"]
+		if value < 0:
+			value = 0
 		self.stats["health"] = value
 
 	@property
@@ -81,6 +83,8 @@ class Creature(object):
 	def energy(self, value):
 		if value > self.stats["max_energy"]:
 			value = self.stats["max_energy"]
+		if value < 0:
+			value = 0
 		self.stats["energy"] = value
 
 	@property
@@ -227,7 +231,7 @@ default_player_stats = {
 class Player(Creature):
 	def __init__(self, username, name, race, combat_class, characteristics = default_characteristics, stats=default_player_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[]):
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
-		self.level_perks = level_perks
+		self.level_perks = level_perks.copy()
 		self.username = username
 
 	@property
