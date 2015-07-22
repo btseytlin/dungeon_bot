@@ -42,7 +42,7 @@ class BotEvent(object):
 
 	def finish(self):
 		self.free_users()
-		self.finished_callback(self.uid)
+		return self.finished_callback(self.uid)
 
 class RegistrationEvent(BotEvent):
 
@@ -311,14 +311,16 @@ class DungeonCrawlEvent(BotEvent):
 		uid = util.get_uid()
 
 		def combat_over_callback(uid):
+			msg = ""
 			for player in players:
 				player.event = self.uid # Free all players from event
 
 			if self.combat_event.winner == "enemies":
 				self.finish()
 			elif self.combat_event.winner == "players":
-				pass
+				msg = "Players win  the battle!"
 			self.combat_event = None
+			return msg
 
 		combat = CombatEvent(combat_over_callback, uid, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
@@ -462,16 +464,16 @@ class CombatEvent(BotEvent):
 
 	def next_turn(self):
 		msg = ""
+		fight_ended = self.check_winning_conditions()
+		if fight_ended:
+			return self.finish()
 
-		for c in self.turn_qeue:
-			killed, kill_message = c.kill_if_nececary()
-			if killed == True:
-				msg += kill_message
 		self.turn += 1
-
 		if self.turn > len(self.turn_qeue)-1:
 			self.turn = 0
 			msg += self.next_round()
+
+
 		if (self.turn_qeue[self.turn].dead):
 			return self.next_turn()
 		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name)
@@ -479,11 +481,8 @@ class CombatEvent(BotEvent):
 		if isinstance(self.turn_qeue[self.turn], Enemy):
 			msg += self.ai_turn()
 
-		fight_ended = self.check_winning_conditions()
 
-		if fight_ended:
-			msg += "Combat is over.\n"
-			return msg, self.finish()
+
 
 		return msg
 
@@ -491,7 +490,6 @@ class CombatEvent(BotEvent):
 		all_creatures = self.players + self.enemies
 		random.shuffle(all_creatures)
 		qeue = sorted(all_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
-		print('turn qeue', qeue)
 		return qeue
 
 	def ai_turn(self):
@@ -515,12 +513,18 @@ class CombatEvent(BotEvent):
 					for i in range(len(self.turn_qeue)):
 						target = self.turn_qeue[i]
 						if target.name == argument or argument.isdigit() and int(argument) == i:
-							if ability.can_use( persistence_controller.get_ply(user)) :
+							can_use, cant_use_msg = ability.can_use( persistence_controller.get_ply(user), target )
+							if can_use:
 								msg = ability.use(persistence_controller.get_ply(user), target)
 								msg += self.next_turn()
-								return msg
+
+								broadcast = []
+								for u in self.users:
+									broadcast.append([u, msg])
+								return broadcast
+								
 							else:
-								return "Not enough energy to use %s."%(ability.name)
+								return cant_use_msg
 
 					return "No such target in turn qeue"
 				else:
@@ -529,7 +533,12 @@ class CombatEvent(BotEvent):
 				ability = abilities.abilities["rest"]
 				msg = ability.use(persistence_controller.get_ply(user))
 				msg += self.next_turn()
-				return msg
+				
+				broadcast = []
+				for u in self.users:
+					broadcast.append([u, msg])
+				return broadcast
+
 			return "No such ability!"
 		else:
 			return "It's not your turn!"

@@ -96,35 +96,3 @@ enemy_list = [
 	(1, Rat),
 	(1, BigRat)
 ]
-
-def test_turn_qeue():
-	enemy = retrieve_enemy_for_difficulty(1)
-	print(enemy)
-	print("%s hp: %d"%(enemy.name+":"+enemy.uid, enemy.health))
-	print("Taking 5 hp from %s"%(enemy.name + ":" + enemy.uid))
-	enemy.health = enemy.health - 5
-	print("%s hp: %d"%(enemy.name+":"+enemy.uid, enemy.health))
-	print("\n")
-	enemy2 = Rat("someuid")
-	print(enemy2)
-	print("%s hp: %d"%(enemy2.name+":"+enemy2.uid, enemy2.health))
-	print("Taking 5 hp from %s"%(enemy2.name + ":" + enemy2.uid))
-	enemy2.health = enemy2.health - 5
-	print("%s hp: %d"%(enemy2.name+":"+enemy2.uid, enemy2.health))
-	print("\n")
-
-	turn_qeue = [retrieve_enemy_for_difficulty(1) for i in range(0, 5)]
-	print(turn_qeue)
-	for thing in turn_qeue:
-		print(thing.name, thing.uid)
-
-	
-	print("HP was")
-	for thing in turn_qeue:
-		print("%s hp: %d"%(thing.name+":"+thing.uid, thing.health))
-	print("Taking 5 hp from %s"%(turn_qeue[0].name + ":" + turn_qeue[0].uid))
-	turn_qeue[0].heatlh = turn_qeue[0].health - 5
-	print("HP now")
-	for thing in turn_qeue:
-		print("%s hp: %d"%(thing.name+":"+thing.uid, thing.health))
-test_turn_qeue()

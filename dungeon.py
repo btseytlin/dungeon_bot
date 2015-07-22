@@ -40,8 +40,6 @@ class Dungeon(object):
 				for n in range(amount_of_enemies):
 					combat_enemies.append(self.get_enemy())
 				room.combat_enemies = combat_enemies
-				print("Added enemies to room %d\n"%(i), combat_enemies)
-				print("\n")
 			self.rooms.append(room)
 
 class Room(object):

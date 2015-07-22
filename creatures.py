@@ -135,9 +135,9 @@ class Creature(object):
 	def headwear(self, value):
 		self.equipment["headwear"] = value
 
-	def kill_if_nececary(self):
+	def kill_if_nececary(self, killer=None):
 		if self.health <= 0:
-			return True, self.die()
+			return True, self.die(killer)
 		return False, None
 
 	def die(self, killer=None):
@@ -291,6 +291,7 @@ class Enemy(Creature):
 		return "%s skips turn"%(self.name)
 
 	def die(self, killer=None):
+		self.dead = True
 		if killer:
 			msg = "%s is killed by %s.\n"%(self.name, killer.name)
 			if isinstance(killer, Player):
