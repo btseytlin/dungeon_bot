@@ -1,6 +1,6 @@
 import util
 import random
-import creatures
+
 class Ability(object):
 	@staticmethod
 	def use(user, target):
@@ -41,8 +41,7 @@ class Swing(Ability):
 		user.energy = user.energy - Swing.energy_required
 
 		chance_to_hit = util.clamp( (util.diceroll(user.primary_weapon.stats["accuracy"]) * user.characteristics["dexterity"]*10) - util.diceroll(target.stats["evasion"]), 0, 100 )
-
-		if random.randint(0, 100) <= chance_to_hit:
+		if random.randint(0, 100) > chance_to_hit:
 			msg = "%s swings %s at %s but misses .\n"%(user.name, user.primary_weapon.name, target.name)
 		else:
 			dmg = util.clamp( (util.diceroll(user.primary_weapon.stats["damage"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"]), 0, 99999999 )
@@ -50,13 +49,12 @@ class Swing(Ability):
 			msg = "%s swings %s and deals %d damage to %s.\n"%(user.name, user.primary_weapon.name, dmg, target.name)
 		return msg + str(Ability.use(user, target))
 
-
 class RodentBite(Ability):
 	name = "rodent_bite"
 	description = "Rodents bite!"
 	energy_required = 10
 	requirements = None
-	base_damage = "1d" #  + str
+	base_damage = "2d" #  + str
 
 
 	@staticmethod

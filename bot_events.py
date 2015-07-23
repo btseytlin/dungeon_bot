@@ -341,6 +341,11 @@ class DungeonCrawlEvent(BotEvent):
 			return broadcast
 
 		self.dungeon.current_room += 1
+
+		if self.dungeon.current_room > len(self.dungeon.rooms)-1:
+			self.finish()
+			return "Dungeon completed"
+
 		room = self.dungeon.rooms[self.dungeon.current_room]
 		if room.room_type == "combat":
 			enemies = room.combat_enemies
@@ -522,7 +527,7 @@ class CombatEvent(BotEvent):
 								for u in self.users:
 									broadcast.append([u, msg])
 								return broadcast
-								
+
 							else:
 								return cant_use_msg
 
