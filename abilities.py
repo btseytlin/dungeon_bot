@@ -47,12 +47,14 @@ class Swing(Ability):
 			dmg = util.clamp( (util.diceroll(user.primary_weapon.stats["damage"]) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"]), 0, 99999999 )
 			target.health = target.health - dmg
 			msg = "%s swings %s and deals %d damage to %s.\n"%(user.name, user.primary_weapon.name, dmg, target.name)
+
+		msg += "%s has %d energy left.\n"%(user.name, user.energy)
 		return msg + str(Ability.use(user, target))
 
 class RodentBite(Ability):
 	name = "rodent_bite"
 	description = "Rodents bite!"
-	energy_required = 10
+	energy_required = 15
 	requirements = None
 	base_damage = "2d" #  + str
 
@@ -68,38 +70,19 @@ class RodentBite(Ability):
 	def use(user, target):
 		user.energy = user.energy - RodentBite.energy_required
 		msg = ""
-		chance_to_hit = util.clamp( (user.characteristics["dexterity"] * 10) - util.diceroll(target.stats["evasion"]), 0, 100 )
+		chance_to_hit = util.clamp( (user.characteristics["dexterity"] * 20) - util.diceroll(target.stats["evasion"]), 0, 100 )
 
-		if random.randint(0, 100) < chance_to_hit:
+		if random.randint(0, 100) > chance_to_hit:
 			msg = "%s tries to bite %s and misses.\n"%(user.name, target.name)
 		else:
-			dmg = util.clamp( (util.diceroll(RodentBite.base_damage + str(user.characteristics["strength"])) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"]), 0, 99999999 )
+			dmg = util.clamp( (util.diceroll(RodentBite.base_damage + str(user.characteristics["strength"])*2) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"]), 0, 99999999 )
 			target.health = target.health - dmg
 			msg = "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
+
+		msg += "%s has %d energy left.\n"%(user.name, user.energy)
 		return msg + Ability.use(user, target)
-
-
-class Rest(Ability):
-	name = "Rest a turn."
-	description = "Regenerate energy based on strength."
-	energy_required = 0
-	requirements = None
-
-	@staticmethod
-	def can_use(user):
-		return True
-
-	@staticmethod
-	def use(user):
-
-		energy_regenerated = user.characteristics["strength"] * 10
-		user.energy = user.energy + energy_regenerated
-	
-		return "%s waits and regenerates %d energy.\n"%(user.name, energy_regenerated)
 
 abilities = {
 	"swing": Swing,
-	"rodent_bite": RodentBite,
-	"rest": Rest
-
+	"rodent_bite": RodentBite
 }

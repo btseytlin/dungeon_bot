@@ -317,8 +317,9 @@ class DungeonCrawlEvent(BotEvent):
 
 			if self.combat_event.winner == "enemies":
 				self.finish()
+				msg = "Enemies defeated the players!"
 			elif self.combat_event.winner == "players":
-				msg = "Players win  the battle!"
+				msg = "Players win the battle!"
 			self.combat_event = None
 			return msg
 
@@ -423,6 +424,9 @@ class CombatEvent(BotEvent):
 		self.enemies = enemies
 		self.turn_qeue = self.create_turn_qeue()
 
+		for creature in self.turn_qeue:
+			creature.apply_combat_start_effects()
+
 		self.turn = 0
 		self.round = 0
 
@@ -469,6 +473,9 @@ class CombatEvent(BotEvent):
 
 	def next_turn(self):
 		msg = ""
+		for creature in self.turn_qeue:
+			creature.apply_turn_effects()
+
 		fight_ended = self.check_winning_conditions()
 		if fight_ended:
 			return self.finish()
@@ -485,9 +492,6 @@ class CombatEvent(BotEvent):
 
 		if isinstance(self.turn_qeue[self.turn], Enemy):
 			msg += self.ai_turn()
-
-
-
 
 		return msg
 
@@ -506,7 +510,7 @@ class CombatEvent(BotEvent):
 		"examine": "shows your stats","ex": "shows your stats","stats": "shows your stats",
 		"examine [creature]": "shows a creature's stats", "ex [creature]": "shows a creature's stats", 
 		"info": "shows help","help": "shows help","h": "shows help",
-		"skip": "skips turn, restores energy based on strength", "wait": "skips turn, restores energy based on strength", "s": "skips turn, restores energy based on strength", 
+		"turn": "ends turn", "t": "ends turn",
 	}
 
 	def handle_combat_command(self, user, command, *args):
@@ -521,8 +525,6 @@ class CombatEvent(BotEvent):
 							can_use, cant_use_msg = ability.can_use( persistence_controller.get_ply(user), target )
 							if can_use:
 								msg = ability.use(persistence_controller.get_ply(user), target)
-								msg += self.next_turn()
-
 								broadcast = []
 								for u in self.users:
 									broadcast.append([u, msg])
@@ -534,15 +536,6 @@ class CombatEvent(BotEvent):
 					return "No such target in turn qeue"
 				else:
 					return "Specify your target"
-			elif (command in ["skip", "s", "wait", "rest"]):
-				ability = abilities.abilities["rest"]
-				msg = ability.use(persistence_controller.get_ply(user))
-				msg += self.next_turn()
-				
-				broadcast = []
-				for u in self.users:
-					broadcast.append([u, msg])
-				return broadcast
 
 			return "No such ability!"
 		else:
@@ -579,10 +572,23 @@ class CombatEvent(BotEvent):
 							return self.user_abilities[user.username][key].examine_self(self.user_abilities[user.username][key])
 
 				return "No such player, user, enemy or ability."
+
+		elif (command in ["turn", "t"]):
+			#broadcast new turn 
+			msg = self.next_turn()
+
+			broadcast = []
+			for u in self.users:
+				broadcast.append([u, msg])
+			return broadcast
 		else:
-			if command in list(self.user_abilities[user.username].keys()) or command in ["skip", "s", "wait", "rest"]: #is it a combat ability?
+			if command in list(self.user_abilities[user.username].keys()): #is it a combat ability?
 				return self.handle_combat_command(user, command, *args)
 			return "Unknown command, try help."
-				
+	
+	def finish(self):
+		for creature in self.turn_qeue:
+			creature.apply_combat_over_effects()
+		return super(CombatEvent, self).finish()
 
 

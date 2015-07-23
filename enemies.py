@@ -28,9 +28,10 @@ rat_characteristics = {
 
 rat_stats = {
 			"health": 10,
-			"energy": 10,
+			"energy": 40,
 			"max_health": 10,
-			"max_energy": 10,
+			"max_energy": 40,
+			"energy_regen": 20,
 			"defence": "1d1",
 			"evasion": "1d1",
 			"level": 1,
@@ -54,12 +55,19 @@ class Rat(Enemy):
 		self.uid = uid
 
 	def act(self, turn_qeue):
-		if self.energy < 10:
-			return abilities.abilities["rest"].use(self)
+		attack_msgs = ""
 
-		for c in turn_qeue:
-			if not c.dead and isinstance(c, Player):
-				return abilities.abilities["rodent_bite"].use(self, c)
+		while self.energy > 15:
+			targets = False
+			for c in turn_qeue:
+				if not c.dead and isinstance(c, Player):
+					targets = True
+					attack_msgs += abilities.abilities["rodent_bite"].use(self, c)
+			if not targets:
+				break
+
+		return attack_msgs
+
 
 
 big_rat_characteristics = {
@@ -71,9 +79,10 @@ big_rat_characteristics = {
 }
 big_rat_stats = {
 	"health": 20,
-	"energy": 10,
+	"energy": 50,
 	"max_health": 20,
-	"max_energy": 10,
+	"max_energy": 50,
+	"energy_regen": 20,
 	"defence": "1d2",
 	"evasion": "1d1",
 	"level": 1,
@@ -85,12 +94,19 @@ class BigRat(Enemy):
 		self.uid = uid
 
 	def act(self, turn_qeue):
-		if self.energy < 10:
-			return abilities.abilities["rest"].use(self)
+		attack_msgs = ""
 
-		for c in turn_qeue:
-			if not c.dead and isinstance(c, Player):
-				return abilities.abilities["rodent_bite"].use(self, c)
+		while self.energy > 15:
+			targets = False
+			for c in turn_qeue:
+				if not c.dead and isinstance(c, Player):
+					targets = True
+					attack_msgs += abilities.abilities["rodent_bite"].use(self, c)
+			if not targets:
+				break
+
+		return attack_msgs
+
 
 enemy_list = [
 	(1, Rat),

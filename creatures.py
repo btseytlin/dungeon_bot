@@ -16,6 +16,7 @@ default_stats = {
 	"energy": 100,
 	"max_health": 100,
 	"max_energy": 100,
+	"energy_regen": 30,
 	"defence": "1d2",
 	"evasion": "1d2",
 	"level": 1
@@ -37,7 +38,7 @@ default_equipment = {
 	"headwear": None
 }
 
-default_abilties = ["rest"]
+default_abilties = []
 
 class Creature(object):
 	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats= default_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
@@ -135,6 +136,17 @@ class Creature(object):
 	def headwear(self, value):
 		self.equipment["headwear"] = value
 
+	def apply_combat_start_effects(self):
+		pass
+
+	def apply_combat_over_effects(self):
+		self.energy = self.stats["max_energy"]
+
+	def apply_turn_effects(self):
+		#regenerate energy
+		self.energy += self.stats["energy_regen"]
+		#apply the effects of all modifiers
+
 	def kill_if_nececary(self, killer=None):
 		if self.health <= 0:
 			return True, self.die(killer)
@@ -220,6 +232,7 @@ default_player_stats = {
 	"energy": 100,
 	"max_health": 100,
 	"max_energy": 100,
+	"energy_regen": 30,
 	"defence": "1d2",
 	"evasion": "1d2",
 	"level": 1,
@@ -272,6 +285,7 @@ default_enemy_stats = {
 	"energy": 0,
 	"max_health": 0,
 	"max_energy": 0,
+	"energy_regen": 0,
 	"defence": "1d2",
 	"evasion": "1d2",
 	"level": 1,
@@ -279,16 +293,12 @@ default_enemy_stats = {
 }
 
 class Enemy(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=["rest"],modifiers=[]):
+	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[]):
 
 		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
 	def act(self):
-		ability = abilities.abilities["rest"]
-		msg = ability.use(self)
-		return msg
-
-		return "%s skips turn"%(self.name)
+		return ""
 
 	def die(self, killer=None):
 		self.dead = True

@@ -40,6 +40,7 @@ class Dungeon(object):
 				for n in range(amount_of_enemies):
 					combat_enemies.append(self.get_enemy())
 				room.combat_enemies = combat_enemies
+
 			self.rooms.append(room)
 
 class Room(object):
