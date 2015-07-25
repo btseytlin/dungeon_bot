@@ -48,7 +48,7 @@ class Creature(object):
 		self.combat_class = combat_class
 		self.description = description
 		self.event = None
-		#self.uid = util.get_uid()
+		self.uid = util.get_uid()
 
 		self.stats = stats.copy()
 

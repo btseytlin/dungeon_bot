@@ -9,14 +9,15 @@ persistence_controller = persistence.PersistenceController.get_instance()
 
 
 class BotEvent(object):
-	def __init__(self, finished_callback, uid, users):
+	def __init__(self, finished_callback, users):
 		self.finished_callback = finished_callback
-		self.uid = uid
+		
 		self.users = users
+		self.uid = util.get_uid()
 
 		for user in users:
 			player = persistence_controller.get_ply(user)
-			player.event = uid
+			player.event = self
 
 	def handle_command(self, user, command, *args):
 		print("Base bot event shouldnt handle any messages!")
@@ -24,25 +25,26 @@ class BotEvent(object):
 	def add_user(self, user):
 		self.users.append(user)
 		player = persistence_controller.get_ply(user)
-		player.event = self.uid
+		player.event = self
+
+	def on_player_leave(self, user):
+		player = persistence_controller.get_ply(user)
+		player.event = None
 
 	def remove_user(self, user):
 		for u in self.users:
 			if u.username == user.username and u.id == user.id:
 				self.users.remove(u)
-
-		player = persistence_controller.get_ply(user)
-		player.event = None
+		self.on_player_leave(user)
 
 	def free_users(self):
 		for user in self.users:
 			if persistence_controller.is_registered(user):
-				player = persistence_controller.get_ply(user)
-				player.event = None # Free all players from event
-
+				self.on_player_leave(user)
+				
 	def finish(self):
 		self.free_users()
-		return self.finished_callback(self.uid)
+		return self.finished_callback(self)
 
 class RegistrationEvent(BotEvent):
 
@@ -52,8 +54,8 @@ class RegistrationEvent(BotEvent):
 		"combat_class"
 	]
 
-	def __init__(self, finished_callback, uid, user):
-		BotEvent.__init__(self, finished_callback, uid, [user])
+	def __init__(self, finished_callback, user):
+		BotEvent.__init__(self, finished_callback, [user])
 		self.user = user
 		self.current_step = 0
 		self.new_player = persistence_controller.get_ply(user)
@@ -99,8 +101,8 @@ class InventoryEvent(BotEvent):
 		"back": "closes inventory","abort": "closes inventory","ab": "closes inventory","b": "closes inventory",
 	}
 
-	def __init__(self, finished_callback, uid, user):
-		BotEvent.__init__(self, finished_callback, uid, [user])
+	def __init__(self, finished_callback, user):
+		BotEvent.__init__(self, finished_callback, [user])
 		self.user = user
 		self.player = persistence_controller.get_ply(user)
 		self.greeting_message = 'You can close inventory at any time by sending "back" or "abort".'
@@ -200,8 +202,8 @@ class DungeonLobbyEvent(BotEvent):
 		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby"
 	}
 
-	def __init__(self, finished_callback, uid, total_users):
-		BotEvent.__init__(self, finished_callback, uid, [])
+	def __init__(self, finished_callback, total_users):
+		BotEvent.__init__(self, finished_callback, [])
 		self.greeting_message = 'A dungeon crawl will start once there are enough players (%d). Use "abort" to leave, "start" to begin.'%(total_users)
 		self.total_users = total_users
 
@@ -245,7 +247,6 @@ class DungeonLobbyEvent(BotEvent):
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed'
 		msg_not_enough = 'The lobby needs %d more players to start'%( self.total_users - len(self.users) )
 		msg = "User %s left the lobby"%(user.username)
-
 		broadcast.append([user, "You were removed from lobby %s"%(self.uid)])
 		for u in self.users:
 			if u != user:
@@ -260,17 +261,17 @@ class DungeonLobbyEvent(BotEvent):
 
 		return broadcast
 
-	def move_players_to_dungeon(self, uid):
+	def move_players_to_dungeon(self, dungeon_event):
 		for user in self.users:
 			ply = persistence_controller.get_ply(user)
-			ply.event = uid
+			ply.event = dungeon_event
 
 	def start_crawl(self):
-		return self.finished_callback(self.uid)
+		return self.finished_callback(self)
 
 class DungeonCrawlEvent(BotEvent):
-	def __init__(self, finished_callback, uid, users, dungeon):
-		BotEvent.__init__(self, finished_callback, uid, users)
+	def __init__(self, finished_callback, users, dungeon):
+		BotEvent.__init__(self, finished_callback, users)
 		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon.description)
 		self.dungeon = dungeon
 		self.non_combat_events = {} # key: user.username, value: event.uid
@@ -308,26 +309,28 @@ class DungeonCrawlEvent(BotEvent):
 		return broadcast
 
 	def start_combat(self, players, enemies):
-		uid = util.get_uid()
-
-		def combat_over_callback(uid):
-			msg = ""
+		def combat_over_callback(event):
+			print("Combat over callback")
+			msg = "No one won, apparently"
 			for player in players:
-				player.event = self.uid # Free all players from event
+				player.event = self # Free all players from event
 
 			if self.combat_event.winner == "enemies":
+				print("Enemies won over callback")
 				self.finish()
 				msg = "Enemies defeated the players!"
-			elif self.combat_event.winner == "players":
-				msg = "Players win the battle!"
-			self.combat_event = None
-			return msg
+				return msg
 
-		combat = CombatEvent(combat_over_callback, uid, players, self.users, enemies) #Create an inventory event
+			elif self.combat_event.winner == "players":
+				print("Players won")
+				msg = "Players win the battle!"
+				self.combat_event = None
+				msg += self.greeting_message
+				return msg
+
+		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
-		for user in self.users:
-			persistence_controller.get_ply(user).event = self.uid
-		logging.debug("Combat event  %s created within dungeon %s."%(uid, self.uid))
+		logging.debug("Combat event  %s created within dungeon %s."%(combat.uid, self.uid))
 
 		broadcast = []
 
@@ -354,30 +357,26 @@ class DungeonCrawlEvent(BotEvent):
 		return "Room type not done yet"
 
 
-
-
 	def open_levelup(self, user):
 		pass
 
 	def open_inventory(self, user):
-		uid = util.get_uid()
-
 		def inv_over_callback(uid):
 			player = persistence_controller.get_ply(user)
-			player.event = self.uid # Free all players from event
+			player.event = self # Free all players from event
 
 			for uname in list(self.non_combat_events.keys()):
 				if self.non_combat_events[uname].uid == uid:
 					del self.non_combat_events[uname]
 					break
 
-		inv = InventoryEvent(inv_over_callback, uid, user) #Create an inventory event
+		inv = InventoryEvent(inv_over_callback, user) #Create an inventory event
 		self.non_combat_events[user.username] = inv
-		persistence_controller.get_ply(user).event = self.uid
-		logging.debug("Inventory event  %s created within dungeon %s."%(uid, self.uid))
+		persistence_controller.get_ply(user).event = inv
+		logging.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
 
 		broadcast = []
-		msg = ' %s is rummaging in his inventory.'%(persistence_controller.get_ply(user))
+		msg = '%s is rummaging in his inventory.'%(persistence_controller.get_ply(user).username.title())
 
 		broadcast.append([user, inv.greeting_message])
 		for u in self.users:
@@ -386,21 +385,21 @@ class DungeonCrawlEvent(BotEvent):
 		return(broadcast)
 
 	def handle_command(self, user, command, *args):
-		if user.username in list(self.non_combat_events.keys()):
-			return self.non_combat_events[user.username].handle_command(user, command, *args)
-		if self.combat_event:
-			return self.combat_event.handle_command(user, command, *args)
+		#if user.username in list(self.non_combat_events.keys()):
+		#	return self.non_combat_events[user.username].handle_command(user, command, *args)
+		#elif self.combat_event:
+		#	return self.combat_event.handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(util.print_available_commands(self.allowed_commands))
-		if (command in ["back","abort","b", "leave", "ab"]):
+		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
-		if (command in ["advance","adv"]):
+		elif (command in ["advance","adv"]):
 			return(self.advance_room())
-		if (command in ["inventory","inv"]):
+		elif (command in ["inventory","inv"]):
 			return(self.open_inventory(user))
-		if (command in ["levelup","lvl"]):
+		elif (command in ["levelup","lvl"]):
 			return(self.open_levelup(user))
-		if (command in ["examine", "stats", "ex", "st"]):
+		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:
 				return  (persistence_controller.get_ply(user)).examine_self()
 			if len(args) > 0:
@@ -418,8 +417,8 @@ class DungeonCrawlEvent(BotEvent):
 		return 'Unknown command, try "help"'
 
 class CombatEvent(BotEvent):
-	def __init__(self, finished_callback, uid, players, users, enemies):
-		BotEvent.__init__(self, finished_callback, uid, users)
+	def __init__(self, finished_callback, players, users, enemies):
+		BotEvent.__init__(self, finished_callback, users)
 		self.players = players
 		self.enemies = enemies
 		self.turn_qeue = self.create_turn_qeue()
@@ -576,7 +575,6 @@ class CombatEvent(BotEvent):
 		elif (command in ["turn", "t"]):
 			#broadcast new turn 
 			msg = self.next_turn()
-
 			broadcast = []
 			for u in self.users:
 				broadcast.append([u, msg])
@@ -589,6 +587,9 @@ class CombatEvent(BotEvent):
 	def finish(self):
 		for creature in self.turn_qeue:
 			creature.apply_combat_over_effects()
-		return super(CombatEvent, self).finish()
+
+		msg = super(CombatEvent, self).finish()
+
+		return msg
 
 

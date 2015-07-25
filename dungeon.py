@@ -2,8 +2,8 @@ import random
 import util
 import enemies
 class Dungeon(object):
-	def __init__(self, uid, name, description, players, rooms = [], current_room = 0, difficulty=None):
-		self.uid = uid
+	def __init__(self, name, description, players, rooms = [], current_room = 0, difficulty=None):
+		self.uid = util.get_uid()
 		self.name = name
 		self.description = description
 		self.rooms = rooms		
@@ -17,6 +17,15 @@ class Dungeon(object):
 			
 		print("Dungeon difficulty = %d"%(self.difficulty))
 
+	@staticmethod
+	def new_dungeon(players): #TODO add biomes, randomize dungeon creation
+		dungeon_name = "Dungeon of rats"
+		dungeon_description = "A dungeon that only rats inhabit. It's actually a peasant's basement.\nA big basement. With rats."
+		dungeon_players = players 
+		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players)
+		dungeon.generate_rooms(5)
+		return dungeon
+
 	def get_enemy(self, difficulty=None):
 		if not difficulty:
 			difficulty = self.difficulty
@@ -26,8 +35,7 @@ class Dungeon(object):
 	def generate_rooms(self, amount):
 		for i in range(amount):
 			room_type = random.choice(["combat"])
-			uid = util.get_uid()
-			room = Room(uid, room_type)
+			room = Room(room_type)
 			if room_type == "loot":
 				#todo add loot rooms
 				pass #retrieve a loot distribution event
@@ -44,8 +52,8 @@ class Dungeon(object):
 			self.rooms.append(room)
 
 class Room(object):
-	def __init__(self, uid, room_type, combat_enemies = []):
-		self.uid = uid
+	def __init__(self, room_type, combat_enemies = []):
+		self.uid = util.get_uid()
 		self.room_type = room_type
 		self.combat_enemies = combat_enemies
 

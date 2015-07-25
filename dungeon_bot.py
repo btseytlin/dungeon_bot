@@ -17,37 +17,26 @@ def get_dungeon_bot_instance():
 	if DungeonBot.instance:
 		return DungeonBot.instance
 
-def event_over_callback(uid):
-	logging.debug("Removing event %s"%(uid))
-	event = DungeonBot.events[uid]
-	del DungeonBot.events[uid] #delete event
-	logging.debug("Event %s removed"%(uid))
+def event_over_callback(event):
+	logging.debug("Removing event %s"%(event.uid))
+	del DungeonBot.events[event.uid] #delete event
+	logging.debug("Event %s removed"%(event.uid))
 
-def lobby_event_lover_callback(uid):
-	lobby = DungeonBot.events[uid]
+def lobby_event_lover_callback(lobby):
+	logging.debug("Removing lobby %s"%(lobby.uid))
+	del DungeonBot.open_lobbies[lobby.uid]
+	event_over_callback(lobby)
+	if len(lobby.users) > 0:
+		dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in lobby.users])
+		
+		dungeon_crawl = bot_events.DungeonCrawlEvent(event_over_callback, lobby.users, dungeon)
+		DungeonBot.events[dungeon_crawl.uid] = dungeon_crawl
 
-	logging.debug("Removing lobby %s"%(uid))
-	del DungeonBot.open_lobbies[uid]
-	event_over_callback(uid)
-	
-	uid = util.get_uid() #generate new dungeon
-	dungeon_name = "Dungeon of rats"
-	dungeon_description = "A dungeon that only rats inhabit. It's actually a peasant's basement. \nA big basement. With rats."
-	dungeon_players = [persistence_controller.get_ply(u) for u in lobby.users]
-	dungeon = Dungeon(uid, dungeon_name, dungeon_description, dungeon_players)
-	dungeon.generate_rooms(5)
-	lobby.move_players_to_dungeon(uid)
-
-
-	crawl_uid = util.get_uid()
-	dungeon_crawl = bot_events.DungeonCrawlEvent(event_over_callback, crawl_uid, lobby.users, dungeon)
-	DungeonBot.events[crawl_uid] = dungeon_crawl
-
-	broadcast = []
-	msg = dungeon_crawl.greeting_message
-	for u in lobby.users:
-		broadcast.append([u, msg])
-	return broadcast
+		broadcast = []
+		msg = dungeon_crawl.greeting_message
+		for u in lobby.users:
+			broadcast.append([u, msg])
+		return broadcast
 
 class DungeonBot(object):
 
@@ -157,9 +146,11 @@ class DungeonBot(object):
 		else:
 			ply = persistence_controller.get_ply(user)
 			command, args = self.parse_command(user, message)
-			if ply.event and self.events[ply.event]: #Check if player is in event
-				response = self.events[ply.event].handle_command(user, command, *args)
+			if ply.event: #Check if player is in event
+				response = ply.event.handle_command(user, command, *args)
+
 				if isinstance(response, list): #it's a broadcast
+					print("its a fooking broadcast mate")
 					for message in response:
 						self.api.sendMessage(message[0].id, message[1])
 				else:
@@ -176,26 +167,23 @@ class DungeonBot(object):
 	def register_player(self, user):
 		new_player = Player(user.username, None, None, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
-		uid = util.get_uid()
-		registration = bot_events.RegistrationEvent(event_over_callback, uid, user) #Create a registration event
-		self.events[uid] = registration #add event to collection of events
+		registration = bot_events.RegistrationEvent(event_over_callback, user) #Create a registration event
+		self.events[registration.uid] = registration #add event to collection of events
 		self.api.sendMessage(user.id, registration.greeting_message)
-		logging.debug("Registration event %s created"%(uid))
+		logging.debug("Registration event %s created"%(registration.uid))
 
 	def open_inventory(self, user):
-		uid = util.get_uid()
-		inv = bot_events.InventoryEvent(event_over_callback, uid, user) #Create an inventory event
-		self.events[uid] = inv #add event to collection of events
-		logging.debug("Inventory event %s created"%(uid))
+		inv = bot_events.InventoryEvent(event_over_callback, user) #Create an inventory event
+		self.events[inv.uid] = inv #add event to collection of events
+		logging.debug("Inventory event %s created"%(inv.uid))
 		return(inv.greeting_message)
 		
 	def new_crawl_lobby(self, total_users):
-		uid = util.get_uid()
-		lobby = bot_events.DungeonLobbyEvent(lobby_event_lover_callback, uid, total_users) #Create a dungeon lobby event
-		self.events[uid] = lobby #add event to collection of events
-		self.open_lobbies[uid] = lobby
-		logging.debug("Lobby event %s created"%(uid))
-		return(uid)
+		lobby = bot_events.DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
+		self.events[lobby.uid] = lobby #add event to collection of events
+		self.open_lobbies[lobby.uid] = lobby
+		logging.debug("Lobby event %s created"%(lobby.uid))
+		return(lobby.uid)
 
 	def list_lobbies(self):
 		lobbies = []

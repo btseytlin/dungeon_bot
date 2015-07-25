@@ -14,8 +14,7 @@ def retrieve_enemy_for_difficulty(difficulty):
 		candidates.append(random.choice(enemy_list))
 
 	prototype = random.choice(candidates)
-	uid = util.get_uid()
-	return prototype(uid)
+	return prototype()
 
 
 rat_characteristics = {
@@ -50,9 +49,8 @@ default_equipment = {
 
 rat_abilities = ["rodent_bite"]
 class Rat(Enemy):
-	def __init__(self, uid = None, name="rat", race="rodent", combat_class="animal", characteristics = rat_characteristics, stats=rat_stats, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
+	def __init__(self, name="rat", race="rodent", combat_class="animal", characteristics = rat_characteristics, stats=rat_stats, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
 		Enemy.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
-		self.uid = uid
 
 	def act(self, turn_qeue):
 		attack_msgs = ""
@@ -89,9 +87,8 @@ big_rat_stats = {
 	"exp_value": 10
 }
 class BigRat(Enemy):
-	def __init__(self, uid = None, name="big rat", race="rodent", combat_class="animal", characteristics = big_rat_characteristics, stats=big_rat_stats, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
+	def __init__(self, name="big rat", race="rodent", combat_class="animal", characteristics = big_rat_characteristics, stats=big_rat_stats, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[]):
 		Enemy.__init__(self, name, race, combat_class,characteristics.copy(), stats.copy(), description, inventory.copy(), equipment.copy(), tags, abilities.copy(), modifiers.copy())
-		self.uid = uid
 
 	def act(self, turn_qeue):
 		attack_msgs = ""
