@@ -1,10 +1,13 @@
 import logging
+import json
+from creatures import Player
 class PersistenceController(object):
 	players = {}
 	instance = None
 
 	def __init__(self):
 		PersistenceController.instance = self
+		self.players = self.load_players()
 		
 	def is_registered(self, user):
 		if user.username in self.players.keys():
@@ -17,6 +20,32 @@ class PersistenceController(object):
 	def get_ply(self, user):
 		#if is_registered(user.username):
 		return self.players[user.username]
+
+	def save_players(self):
+		players_to_save = {}
+		for uname in list(self.players.keys()):
+			players_to_save[uname] = json.dumps(self.players[uname].to_json())
+
+		players_to_save = json.dumps(players_to_save)
+
+		f = open('players.json', 'w')
+		f.write(players_to_save)
+
+		print("Players saved")
+
+	def load_players(self):
+		players_dict = {}
+		try:
+			with open('players.json', 'r') as f:
+				players_dict = json.loads(f.read())
+				for uname in list(players_dict.keys()):
+					players_dict[uname] = Player.de_json(json.loads(players_dict[uname]))
+				self.players = players_dict
+				print("Players loaded")
+		except FileNotFoundError:
+			print("No player data found")
+
+		return players_dict
 
 	@staticmethod
 	def get_instance():

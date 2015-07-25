@@ -210,21 +210,21 @@ class Creature(object):
 	def to_json(self):
 		big_dict = self.__dict__.copy()
 		big_dict["characteristics"] = json.dumps(self.characteristics)
-		big_dict["tags"] = json.dumps(self.tags)
-		big_dict["abilities"] = json.dumps(self.abilities)
-		big_dict["stats"] = json.dumps(self.stats)
-		big_dict["modifiers"] = json.dumps(self.modifiers)
+		# big_dict["tags"] = json.dumps(self.tags)
+		# big_dict["modifiers"] = json.dumps(self.modifiers)
+		# big_dict["abilities"] = json.dumps(self.abilities)
+		big_dict["stats"] = json.dumps(self.base_stats)
+		big_dict["base_stats"] = json.dumps(self.base_stats)
 
 		big_dict["inventory"] = []
 		for item in self.inventory:
 			big_dict["inventory"].append(item.to_json())
-		big_dict["inventory"] = json.dumps(big_dict["inventory"])
-		big_dict["equipment"] = default_equipment
+		big_dict["equipment"] = default_equipment.copy()
 		for key in self.equipment:
 			if self.equipment[key]:
-				big_dict["equipment"]["key"] = self.equipment[key].to_json()
-		big_dict["equipment"] = json.dumps(big_dict["equipment"])
-		return json.dumps(big_dict)
+				big_dict["equipment"][key] = self.equipment[key].to_json()
+		#big_dict["equipment"] = json.dumps(big_dict["equipment"])
+		return big_dict
 
 
 default_player_stats = {
@@ -275,7 +275,33 @@ class Player(Creature):
 
 	@staticmethod
 	def de_json(data):
-		return Player(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"))
+		data["characteristics"] = json.loads(data["characteristics"])
+		data["stats"] = json.loads(data["stats"])
+		# data["tags"] = json.loads(data["tags"])
+		# data["modifiers"] = json.loads(data["modifiers"])
+		# data["level_perks"] = json.loads(data["level_perks"])
+		# data["abilities"] = json.loads(data["abilities"])
+
+		for i in range(len(data["inventory"])):
+			data["inventory"][i] = items.Item.de_json(data["inventory"][i])
+			print("dejsond item", data["inventory"][i].examine_self())
+
+		equipment = default_equipment.copy()
+		eq = data["equipment"]
+		for key in list(eq.keys()):
+			if eq[key]:
+				equipment[key] = items.Item.de_json(eq[key])
+
+		data["equipment"] = equipment
+		
+		return Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"))
+
+	def to_json(self):
+		big_dict = super(Player, self).to_json()
+		#big_dict["level_perks"] = json.dumps(self.level_perks)
+		big_dict["username"] = self.username
+		big_dict["event"] = None
+		return big_dict
 
 	def __str__(self):
 		return self.examine_self()
@@ -317,14 +343,7 @@ class Enemy(Creature):
 			for thing in data.get("inventory"):
 				inventory.append(Item.de_json(thing))
 
-		equipment = {
-			"armor": None,
-			"primary_weapon": None,
-			"secondary_weapon": None,
-			"ring": None,
-			"talisman": None,
-			"headwear": None
-		}
+		equipment = default_equipment.copy()
 		if data.get("equipment") and len(data.get("equipment"))!=0:
 			for thing in len(data.get("equipment").keys()):
 				equipment[thing] = Item.de_json(data.get("equipment")[thing])
@@ -332,3 +351,11 @@ class Enemy(Creature):
 		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
 
 		return desc
+
+def jsonify_test():
+	ply = Player("testman", "test", "test", "test")
+	print("Player:\n", ply.examine_self() )
+	json = ply.to_json()
+	print("Jsonified player:\n", json)
+	print("Dejsonified player:\n", Player.de_json(json).examine_self() )
+

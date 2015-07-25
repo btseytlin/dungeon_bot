@@ -38,16 +38,17 @@ class Item(object):
 
 	def to_json(self):
 		big_dict = self.__dict__.copy()
-		big_dict["requirements"] = json.dumps(self.requirements)
-		big_dict["abilities_granted"] = json.dumps(self.abilities_granted)
-		big_dict["stats"] = json.dumps(self.stats)
-		big_dict["modifiers_granted"] = json.dumps(self.modifiers_granted)
-		return json.dumps(big_dict)
+		big_dict["requirements"] = self.requirements
+		big_dict["abilities_granted"] = self.abilities_granted
+		big_dict["stats"] = self.stats
+		big_dict["modifiers_granted"] = self.modifiers_granted
+		return big_dict
 
 	@staticmethod
 	def de_json(data):
 		if data.get("item_type") == "primary_weapon":
 			return PrimaryWeapon.de_json(data)
+		print('wrong item type')
 
 
 
@@ -116,6 +117,6 @@ def get_item_by_name(name):
 
 item_listing = { #itemname : tuple of args
 	"primary_weapon":{
-		"club": ("club", "A rough wooden club, good enough to break a skull!", "blunt", {"damage" : "1d3", "accuracy" : "3d6"}, ["swing"])
+		"club": ("club", "A rough wooden club, good enough to break a skull!", "primary_weapon", {"damage" : "1d3", "accuracy" : "3d6"}, ["swing"])
 	}
 }

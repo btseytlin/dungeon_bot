@@ -41,9 +41,10 @@ class BotEvent(object):
 		for user in self.users:
 			if persistence_controller.is_registered(user):
 				self.on_player_leave(user)
-				
+
 	def finish(self):
 		self.free_users()
+		persistence_controller.save_players()
 		return self.finished_callback(self)
 
 class RegistrationEvent(BotEvent):
@@ -60,7 +61,6 @@ class RegistrationEvent(BotEvent):
 		self.current_step = 0
 		self.new_player = persistence_controller.get_ply(user)
 		self.greeting_message = 'You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?'
-		
 
 	def handle_command(self, user, command, *args):
 		if command == "restart":
@@ -122,7 +122,6 @@ class InventoryEvent(BotEvent):
 		else:
 			error_text += "."
 		return False, error_text
-
 
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
