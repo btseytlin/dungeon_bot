@@ -22,12 +22,6 @@ default_stats = {
 	"level": 1
 }
 
-"""
-Tags:
-	animate - Marks objects that are living biological creatures. For example gargolyes are not animate, golems are not animate.
-	humanoid - Marks objects that have humanoid traits. Most sentinent creatures are humanoid.
-
-"""
 
 default_equipment = {
 	"armor": None,
