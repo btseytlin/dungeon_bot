@@ -1,4 +1,3 @@
-import json
 class Item(object):
 	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None):
 		self.name = name
@@ -117,6 +116,6 @@ def get_item_by_name(name):
 
 item_listing = { #itemname : tuple of args
 	"primary_weapon":{
-		"club": ("club", "A rough wooden club, good enough to break a skull!", "primary_weapon", {"damage" : "1d3", "accuracy" : "3d6"}, ["swing"])
+		"club": ("club", "A rough wooden club, good enough to break a skull!", "primary_weapon", {"damage" : "1d3", "accuracy" : "3d6"}, ["smash"])
 	}
 }

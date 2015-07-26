@@ -1,8 +1,5 @@
-import math
+from creatures import Enemy 
 import random
-import abilities
-import util
-from creatures import Enemy, Player
 def retrieve_enemy_for_difficulty(difficulty):
 	candidates = []
 	difficulty_margin = 0.25

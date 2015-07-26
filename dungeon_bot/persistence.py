@@ -1,6 +1,6 @@
-import logging
 import json
 from creatures import Player
+players_file_path = "./data/players.json"
 class PersistenceController(object):
 	players = {}
 	instance = None
@@ -28,7 +28,7 @@ class PersistenceController(object):
 
 		players_to_save = json.dumps(players_to_save)
 
-		f = open('players.json', 'w')
+		f = open(players_file_path, 'w')
 		f.write(players_to_save)
 
 		print("Players saved")
@@ -36,7 +36,7 @@ class PersistenceController(object):
 	def load_players(self):
 		players_dict = {}
 		try:
-			with open('players.json', 'r') as f:
+			with open(players_file_path, 'r') as f:
 				players_dict = json.loads(f.read())
 				for uname in list(players_dict.keys()):
 					players_dict[uname] = Player.de_json(json.loads(players_dict[uname]))

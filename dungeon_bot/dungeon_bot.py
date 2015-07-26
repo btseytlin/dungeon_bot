@@ -1,35 +1,31 @@
-import persistence
+from persistence import PersistenceController
 from creatures import Player
-import bot_events
-import uuid
-import json
+from bot_events import *
+from util import *
 import logging
-import util
-import pprint
 import datetime
-from dungeon import Dungeon
-# read apikey from file
+from dungeon import *
+import random
+persistence_controller = PersistenceController.get_instance()
 
-persistence_controller = persistence.PersistenceController.get_instance()
-
-
+logger = logging.getLogger('dungeon_bot')
 def get_dungeon_bot_instance():
 	if DungeonBot.instance:
 		return DungeonBot.instance
 
 def event_over_callback(event):
-	logging.debug("Removing event %s"%(event.uid))
+	logger.debug("Removing event %s"%(event.uid))
 	del DungeonBot.events[event.uid] #delete event
-	logging.debug("Event %s removed"%(event.uid))
+	logger.debug("Event %s removed"%(event.uid))
 
 def lobby_event_lover_callback(lobby):
-	logging.debug("Removing lobby %s"%(lobby.uid))
+	logger.debug("Removing lobby %s"%(lobby.uid))
 	del DungeonBot.open_lobbies[lobby.uid]
 	event_over_callback(lobby)
 	if len(lobby.users) > 0:
 		dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in lobby.users])
 		
-		dungeon_crawl = bot_events.DungeonCrawlEvent(event_over_callback, lobby.users, dungeon)
+		dungeon_crawl = DungeonCrawlEvent(event_over_callback, lobby.users, dungeon)
 		DungeonBot.events[dungeon_crawl.uid] = dungeon_crawl
 
 		broadcast = []
@@ -67,7 +63,7 @@ class DungeonBot(object):
 	#set webhook
 
 	def __init__(self):
-		logging.debug("DungeonBot initialized")
+		logger.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
 		DungeonBot.instance = self
 
@@ -121,14 +117,14 @@ class DungeonBot(object):
 				updates = self.api.getUpdates()
 
 			for update in updates:
-				logging.debug("Got update with id %d"%(update.update_id))
+				logger.debug("Got update with id %d"%(update.update_id))
 				self.last_update_id = update.update_id+1
-				logging.debug("Last update id is %d"%(self.last_update_id))
+				logger.debug("Last update id is %d"%(self.last_update_id))
 
 				message = update.message
 				close_enough = self.time_started - datetime.timedelta(minutes=15)
 				if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-					logging.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
+					logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
 					self.on_message(message)
 
 
@@ -167,22 +163,22 @@ class DungeonBot(object):
 	def register_player(self, user):
 		new_player = Player(user.username, None, None, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
-		registration = bot_events.RegistrationEvent(event_over_callback, user) #Create a registration event
+		registration = RegistrationEvent(event_over_callback, user) #Create a registration event
 		self.events[registration.uid] = registration #add event to collection of events
 		self.api.sendMessage(user.id, registration.greeting_message)
-		logging.debug("Registration event %s created"%(registration.uid))
+		logger.debug("Registration event %s created"%(registration.uid))
 
 	def open_inventory(self, user):
-		inv = bot_events.InventoryEvent(event_over_callback, user) #Create an inventory event
+		inv = InventoryEvent(event_over_callback, user) #Create an inventory event
 		self.events[inv.uid] = inv #add event to collection of events
-		logging.debug("Inventory event %s created"%(inv.uid))
+		logger.debug("Inventory event %s created"%(inv.uid))
 		return(inv.greeting_message)
 		
 	def new_crawl_lobby(self, total_users):
-		lobby = bot_events.DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
+		lobby = DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
 		self.events[lobby.uid] = lobby #add event to collection of events
 		self.open_lobbies[lobby.uid] = lobby
-		logging.debug("Lobby event %s created"%(lobby.uid))
+		logger.debug("Lobby event %s created"%(lobby.uid))
 		return(lobby.uid)
 
 	def list_lobbies(self):
@@ -211,7 +207,7 @@ class DungeonBot(object):
 			return "No such lobby!"
 
 		lobby = self.open_lobbies[lobby_uid]
-		logging.debug("User %s joined lobby %s"%(user.username, lobby_uid))
+		logger.debug("User %s joined lobby %s"%(user.username, lobby_uid))
 		return(lobby.add_user(user))
 
 

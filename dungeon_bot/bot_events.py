@@ -1,19 +1,19 @@
-import persistence
-import logging
-import items
-import util
+import json
+from persistence import PersistenceController
+from util import *
 import abilities
 import random
-from creatures import Enemy, Player
-persistence_controller = persistence.PersistenceController.get_instance()
+from creatures import *
+import logging
 
-
+combat_logger = logging.getLogger('combat')
+persistence_controller = PersistenceController.get_instance()
 class BotEvent(object):
 	def __init__(self, finished_callback, users):
 		self.finished_callback = finished_callback
 		
 		self.users = users
-		self.uid = util.get_uid()
+		self.uid = get_uid()
 
 		for user in users:
 			player = persistence_controller.get_ply(user)
@@ -125,7 +125,7 @@ class InventoryEvent(BotEvent):
 
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
-			return(util.print_available_commands(self.allowed_commands))
+			return(print_available_commands(self.allowed_commands))
 
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
@@ -208,7 +208,7 @@ class DungeonLobbyEvent(BotEvent):
 
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
-			return(util.print_available_commands(self.allowed_commands))
+			return(print_available_commands(self.allowed_commands))
 		if (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
 		if (command in ["start"]):
@@ -329,7 +329,7 @@ class DungeonCrawlEvent(BotEvent):
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
-		logging.debug("Combat event  %s created within dungeon %s."%(combat.uid, self.uid))
+		combat_logger.debug("Combat event  %s created within dungeon %s."%(combat.uid, self.uid))
 
 		broadcast = []
 
@@ -372,7 +372,7 @@ class DungeonCrawlEvent(BotEvent):
 		inv = InventoryEvent(inv_over_callback, user) #Create an inventory event
 		self.non_combat_events[user.username] = inv
 		persistence_controller.get_ply(user).event = inv
-		logging.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
+		combat_logger.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
 
 		broadcast = []
 		msg = '%s is rummaging in his inventory.'%(persistence_controller.get_ply(user).username.title())
@@ -389,7 +389,7 @@ class DungeonCrawlEvent(BotEvent):
 		#elif self.combat_event:
 		#	return self.combat_event.handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
-			return(util.print_available_commands(self.allowed_commands))
+			return(print_available_commands(self.allowed_commands))
 		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
 		elif (command in ["advance","adv"]):
@@ -542,8 +542,8 @@ class CombatEvent(BotEvent):
 
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
-			help_text = util.print_available_commands(self.allowed_commands)
-			help_text += "\n" + util.print_combat_abilities(self.user_abilities[user.username])
+			help_text = print_available_commands(self.allowed_commands)
+			help_text += "\n" + print_combat_abilities(self.user_abilities[user.username])
 			return help_text
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:

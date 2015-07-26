@@ -1,6 +1,6 @@
 import uuid
-import random 
 import json
+import random
 def get_uid():
 	return str(uuid.uuid4())[:8]
 

@@ -1,9 +1,9 @@
+from util import *
+from enemies import *
 import random
-import util
-import enemies
 class Dungeon(object):
 	def __init__(self, name, description, players, rooms = [], current_room = 0, difficulty=None):
-		self.uid = util.get_uid()
+		self.uid = get_uid()
 		self.name = name
 		self.description = description
 		self.rooms = rooms		
@@ -30,7 +30,7 @@ class Dungeon(object):
 		if not difficulty:
 			difficulty = self.difficulty
 
-		return enemies.retrieve_enemy_for_difficulty(difficulty)
+		return retrieve_enemy_for_difficulty(difficulty)
 
 	def generate_rooms(self, amount):
 		for i in range(amount):
@@ -53,7 +53,7 @@ class Dungeon(object):
 
 class Room(object):
 	def __init__(self, room_type, combat_enemies = []):
-		self.uid = util.get_uid()
+		self.uid = get_uid()
 		self.room_type = room_type
 		self.combat_enemies = combat_enemies
 

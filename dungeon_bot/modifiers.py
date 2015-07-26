@@ -1,9 +1,7 @@
-#Modifiers are effects that are applied at run time, meaning they are not saved to persistance
-#That means modifiers are not required to be serializable
-import util
+from util import *
 class Modifier(object):
 	def __init__(self, name, description, on_applied, on_lifted, turns_left):
-		self.uid = util.get_uid()
+		self.uid = get_uid()
 		self.name = name
 		self.description = description
 		self.on_applied = on_applied

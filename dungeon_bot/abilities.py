@@ -98,13 +98,13 @@ class Smash(Ability):
 		if random.randint(0, 100) > chance_to_hit:
 			msg = "%s smashes %s at %s but misses.\n"%(user.name, user.primary_weapon.name, target.name)
 		else:
-			weapon_dmg = util.diceroll(user.primary_weapon.stats["damage"])
+			weapon_dmg = diceroll(user.primary_weapon.stats["damage"])
 			strength = user.characteristics["strength"]
-			defence = util.diceroll(target.stats["defence"])
+			defence = diceroll(target.stats["defence"])
 			is_armored = int("armor" in target.tags()) * 2
 			is_heavy_armored = int("heavy armor" in target.tags()) * 3
 
-			dmg = Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+			dmg = Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
 
 			target.health = target.health - dmg
 			msg = "%s smashes %s and deals %d damage to %s.\n"%(user.name, user.primary_weapon.name, dmg, target.name)
@@ -142,12 +142,12 @@ class RodentBite(Ability):
 	def use(user, target):
 		user.energy = user.energy - RodentBite.energy_required
 		msg = ""
-		chance_to_hit = util.clamp( (user.characteristics["dexterity"] * 20) - util.diceroll(target.stats["evasion"]), 0, 100 )
+		chance_to_hit = clamp( (user.characteristics["dexterity"] * 20) - diceroll(target.stats["evasion"]), 0, 100 )
 
 		if random.randint(0, 100) > chance_to_hit:
 			msg = "%s tries to bite %s and misses.\n"%(user.name, target.name)
 		else:
-			dmg = util.clamp( (util.diceroll(RodentBite.base_damage + str(user.characteristics["strength"])*2) * user.characteristics["strength"]) - util.diceroll(target.stats["defence"]), 0, 99999999 )
+			dmg = clamp( (diceroll(RodentBite.base_damage + str(user.characteristics["strength"])*2) * user.characteristics["strength"]) - diceroll(target.stats["defence"]), 0, 99999999 )
 			target.health = target.health - dmg
 			msg = "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
 

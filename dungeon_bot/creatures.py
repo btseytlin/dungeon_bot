@@ -1,8 +1,6 @@
-import logging
-import util
 import json
-import items
-import abilities
+from items import Item
+from util import *
 default_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
@@ -42,7 +40,7 @@ class Creature(object):
 		self.combat_class = combat_class
 		self.description = description
 		self.event = None
-		self.uid = util.get_uid()
+		self.uid = get_uid()
 
 		self.stats = stats.copy()
 
@@ -277,14 +275,14 @@ class Player(Creature):
 		# data["abilities"] = json.loads(data["abilities"])
 
 		for i in range(len(data["inventory"])):
-			data["inventory"][i] = items.Item.de_json(data["inventory"][i])
+			data["inventory"][i] = Item.de_json(data["inventory"][i])
 			print("dejsond item", data["inventory"][i].examine_self())
 
 		equipment = default_equipment.copy()
 		eq = data["equipment"]
 		for key in list(eq.keys()):
 			if eq[key]:
-				equipment[key] = items.Item.de_json(eq[key])
+				equipment[key] = Item.de_json(eq[key])
 
 		data["equipment"] = equipment
 		
