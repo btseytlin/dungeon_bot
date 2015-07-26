@@ -85,10 +85,10 @@ class Smash(Ability):
 		msg = ""
 		user.energy = user.energy - Smash.energy_required
 
-		is_small = int("small" in target.tags())*2
-		is_quick = int("quick" in target.tags())*2
-		is_big = int("big" in target.tags())*2
-		is_slow = int("slow" in target.tags())*2
+		is_small = int("small" in target.tags)*2
+		is_quick = int("quick" in target.tags)*2
+		is_big = int("big" in target.tags)*2
+		is_slow = int("slow" in target.tags)*2
 		evasion = target.stats["evasion"]
 		accuracy = user.primary_weapon.stats["accuracy"]
 		dexterity = user.characteristics["dexterity"]
@@ -98,11 +98,11 @@ class Smash(Ability):
 		if random.randint(0, 100) > chance_to_hit:
 			msg = "%s smashes %s at %s but misses.\n"%(user.name, user.primary_weapon.name, target.name)
 		else:
-			weapon_dmg = diceroll(user.primary_weapon.stats["damage"])
+			weapon_dmg = user.primary_weapon.stats["damage"]
 			strength = user.characteristics["strength"]
-			defence = diceroll(target.stats["defence"])
-			is_armored = int("armor" in target.tags()) * 2
-			is_heavy_armored = int("heavy armor" in target.tags()) * 3
+			defence = target.stats["defence"]
+			is_armored = int("armor" in target.tags) * 2
+			is_heavy_armored = int("heavy armor" in target.tags) * 3
 
 			dmg = Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
 

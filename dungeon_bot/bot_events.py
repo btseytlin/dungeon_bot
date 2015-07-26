@@ -1,7 +1,7 @@
 import json
 from persistence import PersistenceController
 from util import *
-import abilities
+from abilities import *
 import random
 from creatures import *
 import logging
@@ -293,7 +293,7 @@ class DungeonCrawlEvent(BotEvent):
 		return True
 
 	def remove_user(self, user):
-		super(BotEvent, self).remove_user(user)
+		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
 		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is'%(persistence_controller.get_ply(user))
 
@@ -438,7 +438,7 @@ class CombatEvent(BotEvent):
 
 			ply = persistence_controller.get_ply(user)
 			for ability_name in ply.abilities:
-				ability = abilities.abilities[ability_name]
+				ability = abilities[ability_name]
 				self.user_abilities[user.username][ability.name] = ability
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))

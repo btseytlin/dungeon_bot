@@ -1,4 +1,5 @@
-from creatures import Enemy 
+from creatures import Enemy, Player
+from abilities import *
 import random
 def retrieve_enemy_for_difficulty(difficulty):
 	candidates = []
@@ -57,7 +58,7 @@ class Rat(Enemy):
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_msgs += abilities.abilities["rodent_bite"].use(self, c)
+					attack_msgs += abilities["rodent_bite"].use(self, c)
 			if not targets:
 				break
 
@@ -95,7 +96,7 @@ class BigRat(Enemy):
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_msgs += abilities.abilities["rodent_bite"].use(self, c)
+					attack_msgs += abilities["rodent_bite"].use(self, c)
 			if not targets:
 				break
 
