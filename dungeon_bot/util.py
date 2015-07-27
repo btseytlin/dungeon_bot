@@ -1,6 +1,7 @@
 import uuid
 import json
 import random
+import math
 def get_uid():
 	return str(uuid.uuid4())[:8]
 
@@ -51,5 +52,24 @@ def diceroll(string):
 
 	return total_sum
 
+def random_in_range_for_coolity(left, right, coolity, mode_divider=3, coolity_multiplier = 2):
+	coolity_effect = random.uniform(0, coolity) * coolity_multiplier * 3
+	mode_divider = clamp( mode_divider - coolity_effect, 1, 999)
+	mode = clamp( int( (right) / mode_divider), left, right )
+	return random.triangular( left, right, mode )
+
+def get_dice_in_range(dice_range, coolity): #returns dice in range. Coolity is 0..1, more means values are more likely to be closer to right boundary
+	dice_amount_range = range(int(dice_range[0][0]), int(dice_range[1][0])+1)
+	random_for_coolity = random_in_range_for_coolity(0, len(dice_amount_range)-1, coolity)
+	random_amount_index = int( math.ceil(random_for_coolity ))
+	dice_amount = dice_amount_range[random_amount_index]
+
+	dice_nominal_range = range(int(dice_range[0][2]), int(dice_range[1][2])+1)
+	random_nominal_index = int( math.ceil(random_in_range_for_coolity(0, len(dice_nominal_range)-1, coolity)) )
+	dice_nominal = dice_nominal_range[random_nominal_index]
+
+	return str(dice_amount) + "d" + str(dice_nominal)
+
 def clamp(value, range_min, range_max):
 	return max(range_min, min(value, range_max))
+
