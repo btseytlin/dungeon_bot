@@ -114,11 +114,6 @@ class PrimaryWeapon(Item):
 	def de_json(data):
 		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
 
-# class Club(PrimaryWeapon):
-# 	def  __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = ["smash"], modifiers_granted = [], requirements = default_weapon_requirements):
-# 		PrimaryWeapon.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements)
-
-
 def get_item_by_name(name):
 	item_args = None
 	item_stats = None
