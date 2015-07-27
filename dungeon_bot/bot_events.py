@@ -405,12 +405,12 @@ class DungeonCrawlEvent(BotEvent):
 		pass
 
 	def open_inventory(self, user):
-		def inv_over_callback(uid):
+		def inv_over_callback(event):
 			player = persistence_controller.get_ply(user)
 			player.event = self # Free all players from event
 
 			for uname in list(self.non_combat_events.keys()):
-				if self.non_combat_events[uname].uid == uid:
+				if self.non_combat_events[uname] == event:
 					del self.non_combat_events[uname]
 					break
 

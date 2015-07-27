@@ -47,7 +47,7 @@ class Rat(Enemy):
 	def act(self, turn_qeue):
 		attack_msgs = ""
 
-		while self.energy >= 4:
+		while self.energy >= 2:
 			targets = False
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
@@ -80,7 +80,7 @@ class BigRat(Enemy):
 	def act(self, turn_qeue):
 		attack_msgs = ""
 
-		while self.energy >= 4:
+		while self.energy >= 2:
 			targets = False
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):

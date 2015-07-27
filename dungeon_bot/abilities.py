@@ -118,7 +118,7 @@ class Smash(Ability):
 class RodentBite(Ability):
 	name = "rodent_bite"
 	description = "Rodents bite!"
-	energy_required = 4
+	energy_required = 2
 	requirements = None
 	base_accuracy = "4d6"
 	base_damage = "2d6"
@@ -175,13 +175,13 @@ class RodentBite(Ability):
 			msg = "%s tries to bite %s but misses.\n"%(user.name, target.name)
 		else:
 
-			dmg = diceroll(RodentBite.base_damage)
+			rough_dmg = diceroll(RodentBite.base_damage)
 			strength = user.characteristics["strength"]
 			defence = target.defence
 			is_armored = int("armor" in target.tags) * 3
 			is_heavy_armored = int("heavy armor" in target.tags) * 5
 
-			dmg = RodentBite.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
+			dmg = RodentBite.get_damage(rough_dmg, strength, defence, is_armored, is_heavy_armored)
 
 			target.health = target.health - dmg
 			msg = "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
