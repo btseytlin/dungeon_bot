@@ -17,6 +17,9 @@ Tags:
 	physical ressitant - Resistant to physical damage
 	magic ressitant - Resistant to magic damage
 
+	animal - Animal creatures
+	rodent - Rat creatures and similar
+
 
 """
 
@@ -71,12 +74,13 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
-		dmg = clamp( diceroll(weapon_dmg) * strength - diceroll(defence) - is_armored*diceroll(defence) - is_heavy_armored * diceroll(defence), 0, 99999999 )
+
+		dmg = clamp( weapon_dmg * strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
 	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp( diceroll(accuracy)*dexterity - diceroll(evasion) - is_small*diceroll(evasion) - is_quick *diceroll(evasion) + is_big * diceroll(evasion) + is_slow * diceroll(evasion) , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
 
@@ -89,8 +93,8 @@ class Smash(Ability):
 		is_quick = int("quick" in target.tags)*2
 		is_big = int("big" in target.tags)*2
 		is_slow = int("slow" in target.tags)*2
-		evasion = target.stats["evasion"]
-		accuracy = user.primary_weapon.stats["accuracy"]
+		evasion = target.evasion
+		accuracy = diceroll(user.primary_weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = Smash.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
@@ -98,9 +102,9 @@ class Smash(Ability):
 		if random.randint(0, 100) > chance_to_hit:
 			msg = "%s smashes %s at %s but misses.\n"%(user.name, user.primary_weapon.name, target.name)
 		else:
-			weapon_dmg = user.primary_weapon.stats["damage"]
+			weapon_dmg = diceroll(user.primary_weapon.stats["damage"])
 			strength = user.characteristics["strength"]
-			defence = target.stats["defence"]
+			defence = target.defence
 			is_armored = int("armor" in target.tags) * 2
 			is_heavy_armored = int("heavy armor" in target.tags) * 3
 
@@ -136,12 +140,12 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
-		dmg = clamp( diceroll(weapon_dmg) * strength - diceroll(defence) - is_armored*diceroll(defence) - is_heavy_armored * diceroll(defence), 0, 99999999 )
+		dmg = clamp( weapon_dmg* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
 	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp( diceroll(accuracy)*dexterity - diceroll(evasion) - is_small*diceroll(evasion) - is_quick *diceroll(evasion) + is_big * diceroll(evasion) + is_slow * diceroll(evasion) , 0, 100 )
+		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
 
@@ -161,8 +165,8 @@ class RodentBite(Ability):
 		is_quick = int("quick" in target.tags)
 		is_big = int("big" in target.tags)
 		is_slow = int("slow" in target.tags)
-		evasion = target.stats["evasion"]
-		accuracy = RodentBite.base_accuracy
+		evasion = target.evasion
+		accuracy = diceroll(RodentBite.base_accuracy)
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = RodentBite.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
@@ -171,9 +175,9 @@ class RodentBite(Ability):
 			msg = "%s tries to bite %s but misses.\n"%(user.name, target.name)
 		else:
 
-			dmg = RodentBite.base_damage
+			dmg = diceroll(RodentBite.base_damage)
 			strength = user.characteristics["strength"]
-			defence = target.stats["defence"]
+			defence = target.defence
 			is_armored = int("armor" in target.tags) * 3
 			is_heavy_armored = int("heavy armor" in target.tags) * 5
 

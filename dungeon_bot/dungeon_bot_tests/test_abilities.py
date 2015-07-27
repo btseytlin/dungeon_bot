@@ -11,8 +11,6 @@ def get_attack_stastics(get_chance, get_damage):
 	for i in range(1000):
 		chances.append(get_chance())
 
-	#logger.info("Chanes to hit are", chances)
-
 	logger.info("Average chance to hit: %f"%(sum(chances)/len(chances)))
 	logger.info("Median chance to hit %f"%(statistics.median(chances)))
 
@@ -35,8 +33,8 @@ def get_smash_chance_to_hit():
 	is_quick = int(False)*2
 	is_big = int(False)*3
 	is_slow = int(False)*3
-	evasion = "2d6"
-	accuracy = "4d6"
+	evasion = diceroll("2d6")
+	accuracy = diceroll("4d6")
 	dexterity = 5
 
 	chance_to_hit = abilities.Smash.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
@@ -44,9 +42,9 @@ def get_smash_chance_to_hit():
 	return chance_to_hit
 
 def get_smash_dmg():
-	weapon_dmg = "2d6"
+	weapon_dmg = diceroll("2d6")
 	strength = 5
-	defence = "5d6"
+	defence = diceroll("5d6")
 	is_armored = int(False) * 2
 	is_heavy_armored = int(False) * 3
 	dmg = abilities.Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
@@ -58,8 +56,8 @@ def get_rodent_bite_chance_to_hit():
 	is_quick = int(False)
 	is_big = int(False)
 	is_slow = int(False)
-	evasion = "2d6"
-	accuracy = abilities.RodentBite.base_accuracy
+	evasion = diceroll("2d6")
+	accuracy = diceroll(abilities.RodentBite.base_accuracy)
 	dexterity = 5
 
 	chance_to_hit = abilities.RodentBite.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
@@ -67,9 +65,9 @@ def get_rodent_bite_chance_to_hit():
 	return chance_to_hit
 
 def get_rodent_bite_dmg():
-	dmg = abilities.RodentBite.base_damage
+	dmg = diceroll(abilities.RodentBite.base_damage)
 	strength = 3
-	defence = "5d6"
+	defence = diceroll("5d6")
 	is_armored = int(False) * 3
 	is_heavy_armored = int(False) * 5
 

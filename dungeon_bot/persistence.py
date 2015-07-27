@@ -39,7 +39,7 @@ class PersistenceController(object):
 			with open(players_file_path, 'r') as f:
 				players_dict = json.loads(f.read())
 				for uname in list(players_dict.keys()):
-					players_dict[uname] = Player.de_json(json.loads(players_dict[uname]))
+					players_dict[uname] = Player.de_json(players_dict[uname])
 				self.players = players_dict
 				print("Players loaded")
 		except FileNotFoundError:

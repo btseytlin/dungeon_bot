@@ -37,45 +37,19 @@ def print_available_commands(available_commands):
 	return help_text
 
 def diceroll(string):
+	negative = False
+	if string[0] == "-":
+		negative = True
+		string = string[1:]
 	nums = [int(x) for x in string.split("d")]
 	total_sum = 0 
 	for i in range(0, nums[0]):
 		total_sum += random.randint(0, nums[1])
+
+	if negative:
+		total_sum *= -1
+
 	return total_sum
-"""
-def deep_jsonify(target):
-	print("")
-	print("Jsonifying ", target)
-	try:
-		print("Success, return as it is")
-		return target
-	except:
-		print("Unserializable!")
-		if hasattr(target, '__dict__'): 
-			print("a class")
-			target = target.__dict__
-			return deep_jsonify(target)
-		if isinstance(target, dict):
-			print("a dict")
-			for key in target.keys():
-				value = target[key]
-				print("Now parsing", value)
-				try:
-					json.dumps(value)
-				except (Exception, TypeError):
-					print("Unserializable dict val!")
-					target[key] = deep_jsonify(value)
-			return deep_jsonify(target)
-
-		if hasattr(target, '__iter__'): #if its a list-kinda thing iterate over list
-			print("A list", target)
-			new_list = []
-			for item in target:
-				new_list.append(deep_jsonify(item))
-			print("Newlist is ", new_list)
-			return new_list
-
-"""
 
 def clamp(value, range_min, range_max):
 	return max(range_min, min(value, range_max))

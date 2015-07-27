@@ -11,7 +11,7 @@ class Dungeon(object):
 		self.current_room = current_room
 
 		if not difficulty:
-			self.difficulty = sum([p.stats["level"] for p in players])/len(self.players)
+			self.difficulty = sum([p.level for p in players])/len(self.players)
 		else:
 			self.difficulty = difficulty
 			

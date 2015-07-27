@@ -4,22 +4,10 @@ from util import *
 default_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
-	"intelligence": 5, #how likely you are to strike a critical
+	"dexterity": 5, #how much energy you have, your position in turn qeue
+	"intelligence": 5, #how likely you are to cause critical effects when attacking
 	"faith": 5, #how much energy you have
 }
-
-default_stats = {
-	"health": 100,
-	"energy": 100,
-	"max_health": 100,
-	"max_energy": 100,
-	"energy_regen": 30,
-	"defence": "1d2",
-	"evasion": "1d2",
-	"level": 1
-}
-
 
 default_equipment = {
 	"armor": None,
@@ -33,28 +21,50 @@ default_equipment = {
 default_abilties = []
 
 class Creature(object):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats= default_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
+	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
 
+		self.uid = get_uid()
 		self.name = name
 		self.race = race
 		self.combat_class = combat_class
 		self.description = description
 		self.event = None
-		self.uid = get_uid()
-
-		self.stats = stats.copy()
+		self._level = level
 
 
-		self.modifiers = modifiers
+		self.modifiers = modifiers.copy()
 		self.characteristics = characteristics.copy()
 		
-		self.base_stats = stats.copy()
 		self.tags = tags.copy()
 		self.abilities = abilities + default_abilties.copy()
 
 		self.inventory = inventory.copy()
 		self.equipment = equipment.copy()
+
+		self.base_stats = self.get_base_stats_from_characteristics(self.characteristics)
+
+		if stats:
+			self.stats = stats.copy()
+		else:
+			self.stats = self.base_stats
+
 		self.dead = False
+
+	def get_base_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
+		stats =  {
+			"health": 0,
+			"energy": 0,
+			"max_health": 0,
+			"max_energy": 0,
+			"energy_regen": 0
+		}
+
+		stats["max_health"] = characteristics["vitality"]* 10
+		stats["max_energy"] = characteristics["dexterity"]
+		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3), 2, 10)
+		stats["health"] = stats["max_health"]
+		stats["energy"] = stats["max_energy"]
+		return stats
 
 	@property
 	def health(self):
@@ -127,6 +137,40 @@ class Creature(object):
 	@headwear.setter
 	def headwear(self, value):
 		self.equipment["headwear"] = value
+
+	@property
+	def defence(self):
+		base_def = diceroll("1d1")
+		defence = base_def
+		for key in list(self.equipment.keys()):
+			if self.equipment[key] and "defence" in list(self.equipment[key].stats.keys()):
+				defence += diceroll(self.equipment[key]["defence"])
+
+		#todo defence from modifiers
+		#todo defence from level perks
+
+		return defence
+
+	@property
+	def evasion(self):
+		base_ev = diceroll("1d1")
+		evasion = base_ev
+		for key in list(self.equipment.keys()):
+			if self.equipment[key] and "evasion" in list(self.equipment[key].stats.keys()):
+				evasion += diceroll(self.equipment[key]["evasion"])
+
+		#todo evasion from modifiers
+		#todo evasion from level perks
+		return evasion
+
+
+	@property
+	def level(self):
+		return self._level
+
+	@level.setter
+	def level(self, value):
+		self._level = value
 
 	def apply_combat_start_effects(self):
 		pass
@@ -201,13 +245,11 @@ class Creature(object):
 
 	def to_json(self):
 		big_dict = self.__dict__.copy()
+		del big_dict["uid"]
 		big_dict["characteristics"] = json.dumps(self.characteristics)
 		# big_dict["tags"] = json.dumps(self.tags)
 		# big_dict["modifiers"] = json.dumps(self.modifiers)
 		# big_dict["abilities"] = json.dumps(self.abilities)
-		big_dict["stats"] = json.dumps(self.base_stats)
-		big_dict["base_stats"] = json.dumps(self.base_stats)
-
 		big_dict["inventory"] = []
 		for item in self.inventory:
 			big_dict["inventory"].append(item.to_json())
@@ -218,65 +260,55 @@ class Creature(object):
 		#big_dict["equipment"] = json.dumps(big_dict["equipment"])
 		return big_dict
 
-
-default_player_stats = {
-	"health": 100,
-	"energy": 100,
-	"max_health": 100,
-	"max_energy": 100,
-	"energy_regen": 30,
-	"defence": "1d2",
-	"evasion": "1d2",
-	"level": 1,
-	"experience": 0,
-	"max_experience": 1000
-}
-
-
 class Player(Creature):
-	def __init__(self, username, name, race, combat_class, characteristics = default_characteristics, stats=default_player_stats, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[]):
-		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+	def __init__(self, username, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
+		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.level_perks = level_perks.copy()
+		self._experience = experience
+		self.max_experience = max_experience
 		self.username = username
 
 	@property
 	def experience(self):
-		return self.stats["experience"]
+		return self._experience
 
 	@experience.setter
 	def experience(self, value):
-		if value > self.stats["max_experience"]:
-			over_cur_level = value - (self.stats["max_experience"] - self.experience)
+		if value > self.max_experience:
+			over_cur_level = value - (self.max_experience - self.experience)
 			self.level = self.level +  1
 			self.experience = over_cur_level
-		self.stats["experience"] = value
+		else:
+			self._experience = value
 
 	@property
 	def level(self):
-		return self.stats["level"]
+		return self._level
 
 	@level.setter
 	def level(self, value):
-		self.stats["level"] = value
-		self.stats["max_experience"] = value * 1000
+		self._level = value
+		self.max_experience = value * 1000
 
 	def examine_self(self):
 		desc = super(Player, self).examine_self()
-		desc += "It is of level %d.\n"%(self.stats["level"])
+		desc += "It is of level %d.\n"%(self.level)
 		return desc
 
 	@staticmethod
 	def de_json(data):
+		if isinstance(data, str):
+			data = json.loads(data)
 		data["characteristics"] = json.loads(data["characteristics"])
-		data["stats"] = json.loads(data["stats"])
-		# data["tags"] = json.loads(data["tags"])
-		# data["modifiers"] = json.loads(data["modifiers"])
-		# data["level_perks"] = json.loads(data["level_perks"])
-		# data["abilities"] = json.loads(data["abilities"])
+		stats = None
+		if "stats" in list(data.keys()):
+			stats = data["stats"]
+			if isinstance(data["stats"], str):
+				data["stats"] = json.loads(data["stats"])
+				stats = data["stats"]
 
 		for i in range(len(data["inventory"])):
 			data["inventory"][i] = Item.de_json(data["inventory"][i])
-			print("dejsond item", data["inventory"][i].examine_self())
 
 		equipment = default_equipment.copy()
 		eq = data["equipment"]
@@ -286,7 +318,7 @@ class Player(Creature):
 
 		data["equipment"] = equipment
 		
-		return Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"))
+		return Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
 
 	def to_json(self):
 		big_dict = super(Player, self).to_json()
@@ -298,56 +330,46 @@ class Player(Creature):
 	def __str__(self):
 		return self.examine_self()
 
-default_enemy_stats = {
-	"health": 0,
-	"energy": 0,
-	"max_health": 0,
-	"max_energy": 0,
-	"energy_regen": 0,
-	"defence": "1d2",
-	"evasion": "1d2",
-	"level": 1,
-	"exp_value": 0
-}
+
 
 class Enemy(Creature):
-	def __init__(self, name, race, combat_class, characteristics = default_characteristics, stats=default_enemy_stats, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[]):
-
-		Creature.__init__(self, name, race, combat_class,characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
+		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+		self.exp_value = exp_value
 
 	def act(self):
-		return ""
+		return "Base enemy has no AI"
 
 	def die(self, killer=None):
 		self.dead = True
 		if killer:
 			msg = "%s is killed by %s.\n"%(self.name, killer.name)
 			if isinstance(killer, Player):
-				killer.experience += self.stats["exp_value"]
-				msg += "%s earns %d experience.\n"%(killer.name, self.stats["exp_value"])
+				killer.experience += self.exp_value
+				msg += "%s earns %d experience.\n"%(killer.name, self.exp_value)
 			return msg
 		return "%s dies."%(self.name)
 
 	@staticmethod
 	def de_json(data):
-		inventory = []
-		if data.get("inventory") and len(data.get("inventory"))!=0:
-			for thing in data.get("inventory"):
-				inventory.append(Item.de_json(thing))
+		data["characteristics"] = json.loads(data["characteristics"])
+
+		stats = None
+		if "stats" in list(data.keys()):
+			data["stats"] = json.loads(data["stats"])
+			stats = data["stats"]
+					
+		for i in range(len(data["inventory"])):
+			data["inventory"][i] = Item.de_json(data["inventory"][i])
 
 		equipment = default_equipment.copy()
-		if data.get("equipment") and len(data.get("equipment"))!=0:
-			for thing in len(data.get("equipment").keys()):
-				equipment[thing] = Item.de_json(data.get("equipment")[thing])
-					
-		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("characteristics"), data.get("stats"), data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
+		eq = data["equipment"]
+		for key in list(eq.keys()):
+			if eq[key]:
+				equipment[key] = Item.de_json(eq[key])
+		data["equipment"] = equipment
+
+		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
 
 		return desc
-
-def jsonify_test():
-	ply = Player("testman", "test", "test", "test")
-	print("Player:\n", ply.examine_self() )
-	json = ply.to_json()
-	print("Jsonified player:\n", json)
-	print("Dejsonified player:\n", Player.de_json(json).examine_self() )
 
