@@ -1,6 +1,7 @@
 import json
-from items import Item
+from items import *
 from util import *
+import random
 default_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
@@ -330,8 +331,6 @@ class Player(Creature):
 	def __str__(self):
 		return self.examine_self()
 
-
-
 class Enemy(Creature):
 	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
 		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
@@ -347,6 +346,15 @@ class Enemy(Creature):
 			if isinstance(killer, Player):
 				killer.experience += self.exp_value
 				msg += "%s earns %d experience.\n"%(killer.name, self.exp_value)
+
+				drop_table = self.__class__.drop_table
+				for probability in list(drop_table.keys()):
+					prob = int(probability)
+					got_item = random.randint(0, 100) <= prob 
+					if got_item:
+						item = get_item_by_name(drop_table[probability], self.__class__.loot_coolity)
+						killer.inventory.append(item)
+						msg += "%s got loot: %s."%(killer.name.title(), item.name)
 			return msg
 		return "%s dies."%(self.name)
 

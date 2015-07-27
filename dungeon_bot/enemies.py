@@ -36,6 +36,11 @@ default_equipment = {
 
 rat_abilities = ["rodent_bite"]
 class Rat(Enemy):
+	drop_table = {
+		"20": "club"
+	}
+	loot_coolity = 0.5
+
 	def __init__(self, name="rat", race="rodent", combat_class="animal", level=1, characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[], exp_value=10):
 		Enemy.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 
@@ -64,8 +69,13 @@ big_rat_characteristics = {
 }
 
 class BigRat(Enemy):
+	drop_table = {
+		"20": "club"
+	}
+	loot_coolity = 0.5
+
 	def __init__(self, name="big rat", race="rodent", combat_class="animal", level=1, characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[], exp_value=20):
-		Enemy.__init__(self, name, race, combat_class,characteristics, level, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		Enemy.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 
 	def act(self, turn_qeue):
 		attack_msgs = ""

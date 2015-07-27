@@ -114,7 +114,7 @@ class PrimaryWeapon(Item):
 	def de_json(data):
 		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
 
-def get_item_by_name(name):
+def get_item_by_name(name, coolity=0):
 	item_args = None
 	item_stats = None
 	item_type = None
@@ -126,7 +126,7 @@ def get_item_by_name(name):
 				item_type = key
 
 	if item_type == "primary_weapon":
-		return PrimaryWeapon.get_randomized_item(0, item_stats, item_args)
+		return PrimaryWeapon.get_randomized_item(coolity, item_stats, item_args)
 	return "Unknown item"
 
 item_listing = { #itemname : tuple of args
