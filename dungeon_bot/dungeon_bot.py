@@ -88,7 +88,7 @@ class DungeonBot(object):
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
 		elif (command in ["help","info","h"]):
-			return(util.print_available_commands(self.allowed_commands))
+			return(print_available_commands(self.allowed_commands))
 		elif (command in ["lob","lobbies"]):
 			return(self.list_lobbies())
 		elif (command in ["join"]):
@@ -146,7 +146,6 @@ class DungeonBot(object):
 				response = ply.event.handle_command(user, command, *args)
 
 				if isinstance(response, list): #it's a broadcast
-					print("its a fooking broadcast mate")
 					for message in response:
 						self.api.sendMessage(message[0].id, message[1])
 				else:

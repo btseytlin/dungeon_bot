@@ -4,6 +4,7 @@ from util import *
 from abilities import *
 import random
 from creatures import *
+from items import *
 import logging
 
 combat_logger = logging.getLogger('combat')
@@ -79,7 +80,7 @@ class RegistrationEvent(BotEvent):
 
 		elif self.current_step == 2:
 			self.new_player.combat_class = command
-			club = items.get_item_by_name("club")
+			club = get_item_by_name("club")
 			self.new_player.inventory = [club]
 			self.finish()
 			return('Registration complete! Try "examine" to see your stats, "inventory" to see your items.')
@@ -90,6 +91,7 @@ class InventoryEvent(BotEvent):
 
 	allowed_commands = {
 		"examine": "shows your stats and inventory","ex": "shows your stats and inventory","stats": "shows your stats and inventory",
+		"list": "lists your inventory","l": "lists your inventory",
 		"examine [item]": "shows an item's stats", "ex [item]": "shows an item's stats", 
 		"equip [item]": "equips an item","eq [item]": "equips an item",
 		"unequip [item]": "equips an item","uneq [item]": "unequips an item",
@@ -107,13 +109,52 @@ class InventoryEvent(BotEvent):
 		self.player = persistence_controller.get_ply(user)
 		self.greeting_message = 'You can close inventory at any time by sending "back" or "abort".'
 
-	def find_item(self, itemname, player, inventory_only = False):
+	def find_item(self, arg, player, inventory_only = False):
+		if not inventory_only:
+			if arg in ["primary_weapon", "pweapon", "pw"]:
+				if player.primary_weapon:
+					return True, player.primary_weapon
+				else:
+					return False, "Primary weapon not equipped."
+			elif arg in ["secondary_weapon", "sweapon", "sw"]:				
+				if player.secondary_weapon:
+					return True, player.secondary_weapon
+				else:
+					return False, "Secondary weapon not equipped."
+			elif arg in ["armor", "a"]:				
+				if player.armor:
+					return True, player.armor
+				else:
+					return False, "Armor not equipped."
+			elif arg in ["ring", "r"]:				
+				if player.ring:
+					return True, player.ring
+				else:
+					return False, "Ring not equipped."
+			elif arg in ["headwear", "h"]:				
+				if player.headwear:
+					return True, player.headwear
+				else:
+					return False, "Headwear not equipped."
+			elif arg in ["talisamn", "t"]:				
+				if player.talisamn:
+					return True, player.talisamn
+				else:
+					return False, "Talisman not equipped."
+
+		if arg.isdigit():
+			arg = int(arg)-1
+			if int(arg) >= 0 and int(arg) < len(self.player.inventory):
+				return True, self.player.inventory[arg]
+			return False, "No item under such number in inventory."
+
 		all_items = self.player.inventory.copy()
 		if not inventory_only:
 			all_items += list(player.equipment.values())
 
-		for item in all_items:
-			if item and item.name == itemname:
+		for i in range(len(all_items)):
+			item = all_items[i]
+			if item and item.name == arg or i == int(arg):
 				return True, item
 
 		error_text = "No such item in your inventory"
@@ -129,7 +170,7 @@ class InventoryEvent(BotEvent):
 
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
-				desc = (persistence_controller.get_ply(self.user)).examine_self()
+				desc = self.player.examine_self()
 				desc += "\n"+self.player.examine_equipment()
 				desc += self.player.examine_inventory()
 				return desc
@@ -140,6 +181,10 @@ class InventoryEvent(BotEvent):
 					return(msg)
 				else:
 					return item
+		elif (command in ["list","l"]):
+			desc = "\n"+self.player.examine_equipment()
+			desc += self.player.examine_inventory()
+			return desc
 
 		elif (command in ["equip", "eq"]):
 			if len(args) == 0:

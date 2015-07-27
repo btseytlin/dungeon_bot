@@ -206,9 +206,10 @@ class Creature(object):
 	def examine_inventory(self):
 		desc = "%s's inventory:\n"%(self.name)
 		items = []
-		for item in self.inventory:
+		for i in range(len(self.inventory)):
+			item = self.inventory[i]
 			if item:
-				items.append(item.name)
+				items.append(str(i+1)+"."+item.name)
 		return desc + ', '.join(items)
 
 	def refresh_modifiers(self):
@@ -318,7 +319,6 @@ class Player(Creature):
 				equipment[key] = Item.de_json(eq[key])
 
 		data["equipment"] = equipment
-		
 		return Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
 
 	def to_json(self):
@@ -380,4 +380,3 @@ class Enemy(Creature):
 		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
 
 		return desc
-
