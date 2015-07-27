@@ -9,14 +9,18 @@ import random
 import math
 import sys
 
+
 sys.path.append("dungeon_bot/")
-from util import *
-from modifiers import *
-from items import *
-from abilities import *
-from creatures import *
-from persistence import *
-from enemies import *
-from dungeon import *
-from bot_events import *
-from dungeon_bot import *
+# from util import *
+# from modifiers import *
+# from items import *
+# from abilities import *
+# from creatures import *
+# from persistence import *
+# from enemies import *
+# from dungeon import *
+# from bot_events import *
+# from dungeon_bot import *
+
+# this is the package we are inspecting -- for example 'email' from stdlib
+

@@ -46,9 +46,9 @@ class Ability(object):
 class Smash(Ability):
 
 	"""
-	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion + is_big * target_evasion + is_slow * target_evasion
+	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength - defence - is_armored * defence - is_heavy_armored * defence
+	dmg = weapon_dmg * strength - defence - is_armored * defence * 2 - is_heavy_armored * defence * 3
 
 	avg chance to hit = 45
 
@@ -59,7 +59,7 @@ class Smash(Ability):
 	"""
 	name = "smash"
 	description = "Smash your weapon and hope you hit something!"
-	energy_required = 30
+	energy_required = 3
 	requirements = None
 
 	@staticmethod
@@ -114,22 +114,36 @@ class Smash(Ability):
 class RodentBite(Ability):
 	name = "rodent_bite"
 	description = "Rodents bite!"
-	energy_required = 15
+	energy_required = 4
 	requirements = None
-	base_damage = "2d" #  + str
+	base_accuracy = "4d6"
+	base_damage = "2d6"
 
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
 
-	dmg = base_damage * strength - defence - is_armored * defence - is_heavy_armored * defence
+	dmg = base_damage * strength - defence - is_armored * defence * 3 - is_heavy_armored * defence * 5
 
 	avg chance to hit = 55
 
-	chance to cause "knockdown" = ?
+	avg damage = 5
 
-	chance to cause "concussion" = ?
+	chance to cause "poisoned" = ?
+
+	chance to cause "bleeding" = ?
 
 	"""
+
+	@staticmethod
+	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+		dmg = clamp( diceroll(weapon_dmg) * strength - diceroll(defence) - is_armored*diceroll(defence) - is_heavy_armored * diceroll(defence), 0, 99999999 )
+		return dmg
+
+	@staticmethod
+	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
+		chance_to_hit = clamp( diceroll(accuracy)*dexterity - diceroll(evasion) - is_small*diceroll(evasion) - is_quick *diceroll(evasion) + is_big * diceroll(evasion) + is_slow * diceroll(evasion) , 0, 100 )
+
+		return chance_to_hit
 
 	@staticmethod
 	def can_use(user, target):
@@ -142,12 +156,29 @@ class RodentBite(Ability):
 	def use(user, target):
 		user.energy = user.energy - RodentBite.energy_required
 		msg = ""
-		chance_to_hit = clamp( (user.characteristics["dexterity"] * 20) - diceroll(target.stats["evasion"]), 0, 100 )
+
+		is_small = int("small" in target.tags)
+		is_quick = int("quick" in target.tags)
+		is_big = int("big" in target.tags)
+		is_slow = int("slow" in target.tags)
+		evasion = target.stats["evasion"]
+		accuracy = RodentBite.base_accuracy
+		dexterity = user.characteristics["dexterity"]
+
+		chance_to_hit = RodentBite.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
 
 		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s tries to bite %s and misses.\n"%(user.name, target.name)
+			msg = "%s tries to bite %s but misses.\n"%(user.name, target.name)
 		else:
-			dmg = clamp( (diceroll(RodentBite.base_damage + str(user.characteristics["strength"])*2) * user.characteristics["strength"]) - diceroll(target.stats["defence"]), 0, 99999999 )
+
+			dmg = RodentBite.base_damage
+			strength = user.characteristics["strength"]
+			defence = target.stats["defence"]
+			is_armored = int("armor" in target.tags) * 3
+			is_heavy_armored = int("heavy armor" in target.tags) * 5
+
+			dmg = RodentBite.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
+
 			target.health = target.health - dmg
 			msg = "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
 

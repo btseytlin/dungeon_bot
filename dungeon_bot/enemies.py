@@ -16,9 +16,9 @@ def retrieve_enemy_for_difficulty(difficulty):
 
 
 rat_characteristics = {
-			"strength": 1, #how hard you hit
-			"vitality": 1, #how much hp you have
-			"dexterity": 2, #how fast you act, your position in turn qeue
+			"strength": 3, #how hard you hit
+			"vitality": 2, #how much hp you have
+			"dexterity": 3, #how fast you act, your position in turn qeue
 			"intelligence": 1, #how likely you are to strike a critical
 			"faith": 1, #how much energy you have
 		}
@@ -67,9 +67,9 @@ class Rat(Enemy):
 
 
 big_rat_characteristics = {
-	"strength": 1, #how hard you hit
-	"vitality": 2, #how much hp you have
-	"dexterity": 2, #how fast you act, your position in turn qeue
+	"strength": 4, #how hard you hit
+	"vitality": 3, #how much hp you have
+	"dexterity": 3, #how fast you act, your position in turn qeue
 	"intelligence": 1, #how likely you are to strike a critical
 	"faith": 1, #how much energy you have
 }
