@@ -35,7 +35,8 @@ class Creature(object):
 
 
 		self.modifiers = modifiers.copy()
-		self.characteristics = characteristics.copy()
+		#self.characteristics = characteristics.copy()
+		self.base_characteristics = characteristics.copy()
 		
 		self.base_tags = tags.copy()
 		self.base_abilities = abilities + default_abilties.copy()
@@ -45,15 +46,14 @@ class Creature(object):
 
 		self.base_stats = self.get_base_stats_from_characteristics(self.characteristics)
 
-		if stats:
-			self.stats = stats.copy()
-		else:
-			self.stats = self.base_stats
+		#if stats:
+		#	self.stats = stats.copy()
+		#else:
+		#	self.stats = self.base_stats
 
 		self.dead = False
-		self.refresh_abilities()
-		self.refresh_modifiers()
-		self.refresh_tags()
+
+		self.refresh_derived()
 
 	def get_base_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
@@ -151,7 +151,10 @@ class Creature(object):
 			if self.equipment[key] and "defence" in list(self.equipment[key].stats.keys()):
 				defence += diceroll(self.equipment[key].stats["defence"])
 
-		#todo defence from modifiers
+		for modifier in self.modifiers:
+			if hasattr(modifier, "defence"):
+				defence += diceroll(modifier.defence)
+
 		#todo defence from level perks
 
 		return defence
@@ -164,7 +167,10 @@ class Creature(object):
 			if self.equipment[key] and "evasion" in list(self.equipment[key].stats.keys()):
 				evasion += diceroll(self.equipment[key].stats["evasion"])
 
-		#todo evasion from modifiers
+		for modifier in self.modifiers:
+			if hasattr(modifier, "evasion"):
+				evasion += diceroll(modifier.evasion)
+				
 		#todo evasion from level perks
 		return evasion
 
@@ -250,6 +256,42 @@ class Creature(object):
 			if self.equipment[key]:
 				for ability in self.equipment[key].abilities_granted:
 					self.abilities.append({"granted_by":self.equipment[key], "ability_name": ability})
+
+	def refresh_derived(self):
+		self.refresh_modifiers()
+		self.refresh_abilities()
+		self.refresh_tags()
+		self.characteristics = self.base_characteristics.copy()
+		#refresh characteristics
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				for characteristic in list(perk.characteristics_change.keys()):
+					self.characteristics[characteristic] += perk.characteristics_change[characteristic]
+
+		for modifier in self.modifiers:
+			for characteristic in list(modifier.characteristics_change.keys()):
+					self.characteristics[characteristic] += modifier.characteristics_change[characteristic]
+		
+		for item in list(self.equipment.keys()):
+			if self.equipment[item] and "characteristics_change" in list(self.equipment[item].stats.keys()):
+				for characteristic in list(self.equipment[item].stats["characteristics_change"].keys()):
+					self.characteristics[characteristic] += self.equipment[item].stats["characteristics_change"][characteristic]
+
+		self.stats = self.base_stats.copy()
+		#refresh stats
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				for stat in list(perk.stats_change.keys()):
+					self.stats[stat] += perk.stats_change[stat]
+
+		for modifier in self.modifiers:
+			for stat in list(modifier.stats_change.keys()):
+					self.stats[stat] += modifier.stats_change[stat]
+		
+		for item in list(self.equipment.keys()):
+			if self.equipment[item] and "stats_change" in list(self.equipment[item].stats.keys()):
+				for stat in list(self.equipment[item].stats["stats_change"].keys()):
+					self.stats[stat] += self.equipment[item].stats["stats_change"][stat]
 
 	def examine_self(self):
 		desc = "\n".join(

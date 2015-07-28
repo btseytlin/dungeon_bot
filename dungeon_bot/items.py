@@ -188,6 +188,8 @@ item_listing = {
 	},
 	"ring":{
 		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d2", "5d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.","modifiers_granted": []}},
+		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."},
+		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."},
 		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
 	},
 	"headwear":{
