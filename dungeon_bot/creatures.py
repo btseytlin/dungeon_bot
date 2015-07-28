@@ -45,18 +45,12 @@ class Creature(object):
 		self.inventory = inventory.copy()
 		self.equipment = equipment.copy()
 
-		self.base_stats = self.get_base_stats_from_characteristics(self.characteristics)
-
-		#if stats:
-		#	self.stats = stats.copy()
-		#else:
-		#	self.stats = self.base_stats
-
+		self.refresh_derived()
 		self.dead = False
 
-		self.refresh_derived()
+		
 
-	def get_base_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
+	def get_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
 			"health": 0,
 			"energy": 0,
@@ -198,22 +192,18 @@ class Creature(object):
 		self.equipment[target_item.item_type] = target_item
 		for item in self.inventory:
 			if item == target_item:
-				target_item.inventory.remove(item)
+				self.inventory.remove(item)
 
-		self.refresh_abilities()
-		self.refresh_modifiers()
-		self.refresh_tags()
+		self.refresh_derived()
 		return "Succesfully equipped %s."%(target_item.name)
 
 	def unequip(self, target_item):
 		if target_item.item_type == "consumable":
 			return "Can't unequip %s."%(target_item.name)
-		if self.equipment[self.item_type] == self:
-			self.equipment[self.item_type] = None
+		if self.equipment[target_item.item_type] == target_item:
+			self.equipment[target_item.item_type] = None
 			self.inventory.append(self)
-			self.refresh_abilities()
-			self.refresh_modifiers()
-			self.refresh_tags()
+			self.refresh_derived()
 			return "Succesfully unequipped %s."%(target_item.name)
 		return "Not equipped!"
 
@@ -334,7 +324,7 @@ class Creature(object):
 				for characteristic in list(self.equipment[item].stats["characteristics_change"].keys()):
 					self.characteristics[characteristic] += self.equipment[item].stats["characteristics_change"][characteristic]
 
-		self.stats = self.base_stats.copy()
+		self.stats = self.get_stats_from_characteristics(self.characteristics)
 		#refresh stats
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:

@@ -78,7 +78,8 @@ class Headwear(Item):
 def get_randomized_item(prototype, coolity, stats, item_args):
 		real_stats = stats.copy()
 		for key in list(stats.keys()):
-			real_stats[key] = get_dice_in_range(stats[key], coolity)
+			if isinstance(stats[key], list): #is a dice range
+				real_stats[key] = get_dice_in_range(stats[key], coolity)
 
 		if not "modifiers_granted" in item_args.keys():
 				item_args["modifiers_granted"] = []
@@ -138,11 +139,14 @@ item_listing = {
 	},
 	"ring":{
 		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d2", "5d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.","modifiers_granted": []}},
-		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."},
 
-		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 str, but via a modifier.", "modifiers_granted": [ {"name":"bonus", "params":{"characteristics_change": {"strength": 1}}}] },
+		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."} },
 
-		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."},
+		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : 1}} , "args":{"name":"ring of more vitality", "description":"Just gives you +1 vit."} },
+
+		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 str, but via a modifier.", "modifiers_granted": [ {"name":"bonus", "params":{"characteristics_change": {"strength": 1}}}] } },
+
+		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."}}  ,
 		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
 	},
 	"headwear":{
