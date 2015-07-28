@@ -192,7 +192,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player, True)
 				if found:
-					msg = item.equip(self.player)
+					msg = self.player.equip(item)
 					return(msg)
 				else:
 					return item
@@ -203,7 +203,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
-					msg = item.unequip(self.player)
+					msg = self.player.unequip(item)
 					return(msg)
 				else:
 					return item
@@ -214,7 +214,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
-					msg = item.use(self.player)
+					msg = self.player.use(item)
 					return(msg)
 				else:
 					return item
@@ -225,7 +225,7 @@ class InventoryEvent(BotEvent):
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
 				if found:
-					msg = item.destroy(self.player)
+					msg = self.player.destroy(item)
 					return(msg)
 				else:
 					return item

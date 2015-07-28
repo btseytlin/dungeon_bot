@@ -72,7 +72,13 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
 		self.defence = "3d6"
 		self.evasion = "-1d6"
-		
+
+class Bonus(Modifier): #simply adds defence, hinders evasion
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="shielded", description="grants defence"):
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
+		self.defence = "3d6"
+		self.evasion = "-1d6"
+
 def get_modifier_by_name(modifier_name, source, target, params={}):
 	if not "duration" in params.keys():
 		params["duration"] = -1
@@ -87,5 +93,6 @@ def get_modifier_by_name(modifier_name, source, target, params={}):
 	return modifier_listing[modifier_name](source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"])
 
 modifier_listing = {
-	"shielded" : Shielded
+	"shielded" : Shielded,
+	"bonus" : Bonus,
 }

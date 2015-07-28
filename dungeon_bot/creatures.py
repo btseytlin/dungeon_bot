@@ -2,6 +2,7 @@ import json
 from pprint import pformat
 from items import *
 from util import *
+from modifiers import *
 import random
 default_characteristics = {
 	"strength": 5, #how hard you hit
@@ -170,7 +171,7 @@ class Creature(object):
 		for modifier in self.modifiers:
 			if hasattr(modifier, "evasion"):
 				evasion += diceroll(modifier.evasion)
-				
+
 		#todo evasion from level perks
 		return evasion
 
@@ -182,6 +183,50 @@ class Creature(object):
 	@level.setter
 	def level(self, value):
 		self._level = value
+
+	def equip(self, target_item):
+		if target_item.item_type == "consumable":
+			return "Can't equip %s."%(target_item.name)
+
+		if self.equipment[target_item.item_type] == target_item:
+			return "Already equipped %s."%(target_item.name)
+
+		if self.equipment[target_item.item_type]:
+			temp = self.equipment[target_item.item_type]
+			self.unequip(temp)
+
+		self.equipment[target_item.item_type] = target_item
+		for item in self.inventory:
+			if item == target_item:
+				target_item.inventory.remove(item)
+
+		self.refresh_abilities()
+		self.refresh_modifiers()
+		self.refresh_tags()
+		return "Succesfully equipped %s."%(target_item.name)
+
+	def unequip(self, target_item):
+		if target_item.item_type == "consumable":
+			return "Can't unequip %s."%(target_item.name)
+		if self.equipment[self.item_type] == self:
+			self.equipment[self.item_type] = None
+			self.inventory.append(self)
+			self.refresh_abilities()
+			self.refresh_modifiers()
+			self.refresh_tags()
+			return "Succesfully unequipped %s."%(target_item.name)
+		return "Not equipped!"
+
+	def destroy(self, target_item):
+		self.unequip(target_item)
+		for item in self.inventory:
+			if item == self:
+				self.inventory.remove(item)
+		return "Succesfully destroyed %s."%(target_item.name)
+
+	def use(self, item, target):
+		if item in self.inventory:
+			return item.use(self, target)
 
 	def apply_combat_start_effects(self):
 		pass
@@ -239,7 +284,19 @@ class Creature(object):
 					self.tags.append(tag)
 
 	def refresh_modifiers(self):
-		pass
+		self.modifiers = []
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				for modifier in perk.modifiers_granted:
+					modifier_object = get_modifier_by_name( modifier["name"], perk, self, modifier["params"] )
+					self.modifiers.append(modifier_object)
+					modifier_object.apply()
+
+		for key in self.equipment.keys():
+			if self.equipment[key]:
+				for modifier in self.equipment[key].modifiers_granted:
+					modifier_object = get_modifier_by_name( modifier["name"], perk, self, modifier["params"] )
+					modifier_object.apply()
 
 	def refresh_abilities(self):
 		self.abilities = self.base_abilities.copy()

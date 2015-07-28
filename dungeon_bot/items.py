@@ -12,50 +12,8 @@ class Item(object):
 		self.modifiers_granted = modifiers_granted.copy()
 		self.tags_granted = tags_granted.copy()
 
-	def use(self, target):
+	def use(self, user, target ):
 		return "Can't use %s."%(self.name)
-
-	def equip(self, target):
-		if self.item_type == "consumable":
-			return "Can't equip %s."%(self.name)
-
-		if target.equipment[self.item_type] == self:
-			return "Already equipped %s."%(self.name)
-
-		if target.equipment[self.item_type]:
-			temp = target.equipment[self.item_type]
-			temp.unequip(target)
-
-		target.equipment[self.item_type] = self
-		for item in target.inventory:
-			if item == self:
-				target.inventory.remove(item)
-
-		target.refresh_abilities()
-		target.refresh_modifiers()
-		target.refresh_tags()
-		return "Succesfully equipped %s."%(self.name)
-		
-
-	def unequip(self, target):
-		if self.item_type == "consumable":
-			return "Can't unequip %s."%(self.name)
-		if target.equipment[self.item_type] == self:
-			target.equipment[self.item_type] = None
-			target.inventory.append(self)
-			target.refresh_abilities()
-			target.refresh_modifiers()
-			target.refresh_tags()
-			return "Succesfully unequipped %s."%(self.name)
-		return "Not equipped!"
-
-	def destroy(self, target):
-		self.unequip(target)
-		for item in target.inventory:
-			if item == self:
-				target.inventory.remove(item)
-		del self
-		return "Succesfully destroyed."
 
 	def examine_self(self):
 		desc = "\n".join([
@@ -75,14 +33,6 @@ class Item(object):
 		big_dict["stats"] = self.stats
 		big_dict["modifiers_granted"] = self.modifiers_granted
 		return big_dict
-
-	@staticmethod
-	def de_json(data):
-		if data.get("item_type") == "primary_weapon":
-			return PrimaryWeapon.de_json(data)
-		print('wrong item type')
-
-
 
 default_weapon_stats= {
 	"damage" : "1d1",
@@ -189,6 +139,9 @@ item_listing = {
 	"ring":{
 		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d2", "5d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.","modifiers_granted": []}},
 		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."},
+
+		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 str, but via a modifier.", "modifiers_granted": [ {"name":"bonus", "params":{"characteristics_change": {"strength": 1}}}] },
+
 		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."},
 		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
 	},

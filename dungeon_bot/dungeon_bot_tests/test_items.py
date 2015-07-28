@@ -87,20 +87,42 @@ def test_armor_equip():
 	logger.info("Average defence, evasion without armor:\n%f, %f"%(sum(defences)/len(defences), sum(evasions)/len(evasions)))
 	ply.inventory.append(armor)
 	logger.info("Gave player the item:\n%s"%(ply.examine_inventory()))
-	armor.equip(ply)
-	assert "armor" or "heavy armor" in ply.tags
+	ply.equip(armor)
+	assert ("armor" or "heavy armor" in ply.tags)
 	logger.info("Player equipped the item:%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
 	defences = [ply.defence for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
 	logger.info("Average defence, evasion with armor:\n%f, %f"%(sum(defences)/len(defences), sum(evasions)/len(evasions)))
 	
-	armor.unequip(ply)
+	ply.unequip(armor)
 	
-	assert not "armor" in ply.tags
+	assert (not "armor" in ply.tags)
 	logger.info("Player unequipped the item:\n%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
 	defences = [ply.defence for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
 	logger.info("Average defence, evasion without armor:\n%f, %f"%(sum(defences)/len(defences), sum(evasions)/len(evasions)))
+
+def test_char_and_stat_changes():
+	logger.info("Testing char changes.\n\n")
+	item = get_item_by_name("ring of more strength", 1)
+	logger.info("Retrieved item:\n%s"%(item.examine_self()))
+	ply = Player("testman", "test", "test", "test")
+	logger.info("Retrieved player:\n%s\n"%(ply.examine_self())
+	ply.inventory.append(item)
+	ply.equip(item)
+	logger.info("Player equipped the item:%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
+	ply.unequip(item)
+	logger.info("Player unequipped the item:%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
+
+	log.info("Testing stat changes.\n\n")
+	item = get_item_by_name("ring of more hp")
+	logger.info("Retrieved item:\n%s"%(item.examine_self()))
+	logger.info("Retrieved player:\n%s\n"%(ply.examine_self())
+	ply.inventory.append(item)
+	ply.equip(item)
+	logger.info("Player equipped the item:%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
+	ply.unequip(item)
+	logger.info("Player unequipped the item:%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
 
 def run_tests():
 	logger.info(" -- Testing random dice generation in range.")
@@ -111,3 +133,6 @@ def run_tests():
 
 	logger.info(" -- Testing armor equip.")
 	test_armor_equip()
+
+	logger.info(" -- Testing char and stat changes using rings.")
+	test_char_and_stat_changes()
