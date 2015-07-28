@@ -37,7 +37,17 @@ default_equipment = {
 rat_abilities = ["rodent_bite"]
 class Rat(Enemy):
 	drop_table = {
-		"20": "club"
+		"club" : 20,
+		"sword" : 10,
+		"plate armor" : 10,
+		"helmet" : 10,
+		"dagger" : 10,
+		"chainmail" : 10,
+		"amulet of defence" : 10,
+		"amulet of healing" : 10,
+		"ring of fire" : 10,
+		"shield" : 10,
+		"ring of not dying" : 1,
 	}
 	loot_coolity = 0.5
 
@@ -70,8 +80,19 @@ big_rat_characteristics = {
 
 class BigRat(Enemy):
 	drop_table = {
-		"20": "club"
+		"club" : 20,
+		"sword" : 10,
+		"plate armor" : 10,
+		"helmet" : 10,
+		"dagger" : 10,
+		"chainmail" : 10,
+		"amulet of defence" : 10,
+		"amulet of healing" : 10,
+		"ring of fire" : 10,
+		"shield" : 10,
+		"ring of not dying" : 1,
 	}
+	
 	loot_coolity = 0.5
 
 	def __init__(self, name="big rat", race="rodent", combat_class="animal", level=1, characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[], exp_value=20):

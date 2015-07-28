@@ -21,6 +21,3 @@ sys.path.append("dungeon_bot/")
 # from dungeon import *
 # from bot_events import *
 # from dungeon_bot import *
-
-# this is the package we are inspecting -- for example 'email' from stdlib
-

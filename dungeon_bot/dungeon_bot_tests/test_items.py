@@ -75,7 +75,7 @@ def test_loot_drop():
 
 """ Test equipping armor: defence change, evasion change, granting tags, modifiers and abiltiies """
 def test_armor_equip():
-	item = "plate_armor"
+	item = "plate armor"
 	armor = get_item_by_name(item, 1)
 	assert armor
 	logger.info("Retrieved item:\n%s"%(armor.examine_self()))

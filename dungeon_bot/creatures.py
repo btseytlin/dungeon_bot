@@ -375,11 +375,11 @@ class Enemy(Creature):
 				msg += "%s earns %d experience.\n"%(killer.name, self.exp_value)
 
 				drop_table = self.__class__.drop_table
-				for probability in list(drop_table.keys()):
-					prob = int(probability)
+				for item in list(drop_table.keys()):
+					prob = int(drop_table[item])
 					got_item = random.randint(0, 100) <= prob 
 					if got_item:
-						item = get_item_by_name(drop_table[probability], self.__class__.loot_coolity)
+						item = get_item_by_name(item, self.__class__.loot_coolity)
 						killer.inventory.append(item)
 						msg += "%s got loot: %s."%(killer.name.title(), item.name)
 			return msg

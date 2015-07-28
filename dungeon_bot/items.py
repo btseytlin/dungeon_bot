@@ -102,58 +102,30 @@ class PrimaryWeapon(Item):
 	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted = []):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
-	@staticmethod
-	def get_randomized_item(coolity, stats, item_args):
-		real_stats = stats.copy()
-
-		for key in list(stats.keys()):
-			real_stats[key] = get_dice_in_range(stats[key], coolity)
-
-		if not "modifiers_granted" in item_args.keys():
-				item_args["modifiers_granted"] = []
-		if not "requirements" in item_args.keys():
-				item_args["requirements"] = []
-		if not "abilities_granted" in item_args.keys():
-				item_args["abilities_granted"] = []
-		if not "tags_granted" in item_args.keys():
-				item_args["tags_granted"] = []
-		return PrimaryWeapon(item_args["name"], item_args["description"], "primary_weapon", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
-
-	@staticmethod
-	def de_json(data):
-		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
-
 class SecondaryWeapon(Item):
 	def __init__(self, name, description, item_type="secondary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
-	@staticmethod
-	def get_randomized_item(coolity, stats, item_args):
-		real_stats = stats.copy()
-
-		for key in list(stats.keys()):
-			real_stats[key] = get_dice_in_range(stats[key], coolity)
-
-		if not "modifiers_granted" in item_args.keys():
-				item_args["modifiers_granted"] = []
-		if not "requirements" in item_args.keys():
-				item_args["requirements"] = []
-		if not "abilities_granted" in item_args.keys():
-				item_args["abilities_granted"] = []
-		if not "tags_granted" in item_args.keys():
-				item_args["tags_granted"] = []
-		return SecondaryWeapon(item_args["name"], item_args["description"], "secondary_weapon", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
-
-	@staticmethod
-	def de_json(data):
-		return SecondaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
 
 class Armor(Item):
 	def __init__(self, name, description, item_type="armor", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
-	@staticmethod
-	def get_randomized_item(coolity, stats, item_args):
+class Talisman(Item):
+	def __init__(self, name, description, item_type="talisman", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+class Ring(Item):
+	def __init__(self, name, description, item_type="ring", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+
+class Headwear(Item):
+	def __init__(self, name, description, item_type="ring", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+
+def get_randomized_item(prototype, coolity, stats, item_args):
 		real_stats = stats.copy()
 		for key in list(stats.keys()):
 			real_stats[key] = get_dice_in_range(stats[key], coolity)
@@ -166,11 +138,7 @@ class Armor(Item):
 				item_args["abilities_granted"] = []
 		if not "tags_granted" in item_args.keys():
 			 item_args["tags_granted"] = []
-		return Armor(item_args["name"], item_args["description"], "armor", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
-
-	@staticmethod
-	def de_json(data):
-		return Armor(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
+		return prototype(item_args["name"], item_args["description"], item_args["item_type"], real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 def get_item_by_name(name, coolity=0):
 	item_args = None
@@ -182,18 +150,29 @@ def get_item_by_name(name, coolity=0):
 				item_args = item_listing[key][item]["args"]
 				item_stats = item_listing[key][item]["stats"]
 				item_type = key
-
+	prototype = None
 	if item_type == "primary_weapon":
-		return PrimaryWeapon.get_randomized_item(coolity, item_stats, item_args)
+		prototype = PrimaryWeapon
 	elif item_type == "secondary_weapon":
-		return SecondaryWeapon.get_randomized_item(coolity, item_stats, item_args)
+		prototype = SecondaryWeapon
 	elif item_type == "armor":
-		return Armor.get_randomized_item(coolity, item_stats, item_args)
+		prototype = Armor	
+	elif item_type == "talisman":
+		prototype = Talisman
+	elif item_type == "ring":
+		prototype = Ring
+	elif item_type == "headwear":
+		prototype = Headwear
+
+	if prototype:
+		item_args["item_type"] = item_type
+		return get_randomized_item(prototype, coolity, item_stats, item_args)
 	return "Unknown item"
 
 item_listing = { 
 	"primary_weapon":{
-		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}}
+		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
+		"sword": {"stats": {"damage" : ["1d6","4d6"], "accuracy" : ["3d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
 	},
 	"secondary_weapon":{
 		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["stab", "cut", "quick stab", "quick cut"]}},
@@ -201,7 +180,18 @@ item_listing = {
 	},
 	"armor":{
 		"chainmail": {"stats": {"defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate_armor": {"stats": {"defence" : ["3d6","7d6"], "evasion" : ["-7d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.", "tags_granted":["heavy armor"]}},
+		"plate armor": {"stats": {"defence" : ["3d6","7d6"], "evasion" : ["-7d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.", "tags_granted":["heavy armor"]}},
+	},
+	"talisman":{
+		"amulet of defence": {"stats": {"defence" : ["1d6","2d6"]} , "args":{"name":"amulet of defence", "description":"The most boring talisman, it just protects you."}},
+		"amulet of healing": {"stats": {"healing" : ["1d6", "2d6"], "healing_chance": ["1d3", "2d6"]} , "args":{"name":"amulet of healing", "description":"Periodically heals you for random amounts of health.", "modifiers_granted": []}},
+	},
+	"ring":{
+		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d2", "5d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.","modifiers_granted": []}},
+		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
+	},
+	"headwear":{
+		"helmet": {"stats": {"defence" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet."}},
+		"top hat of wisdom": {"stats": {"exp_bonus" : ["1d1","6d6"]} , "args":{"name":"top hat of wisdom", "description":"This top hat adds bonus exp every time you gain exp.","modifiers_granted": []}},
 	}
-
 }

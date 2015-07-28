@@ -528,9 +528,10 @@ class Bash(Ability): #TODO test and adapt
 class ShieldUp(Ability): #TODO test and adapt
 
 	"""
-	Raise the shield to protect yourself, gain a big defence bonus for one turn.
+	Raise the shield to protect yourself, gain a defence bonus and a pennalty to evasion for one turn.
 
 	defence_gained = ?
+	evasion_lost = ?
 
 	"""
 	name = "shield up"
