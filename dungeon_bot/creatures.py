@@ -1,4 +1,5 @@
 import json
+from pprint import pformat
 from items import *
 from util import *
 import random
@@ -36,8 +37,8 @@ class Creature(object):
 		self.modifiers = modifiers.copy()
 		self.characteristics = characteristics.copy()
 		
-		self.tags = tags.copy()
-		self.abilities = abilities + default_abilties.copy()
+		self.base_tags = tags.copy()
+		self.base_abilities = abilities + default_abilties.copy()
 
 		self.inventory = inventory.copy()
 		self.equipment = equipment.copy()
@@ -52,6 +53,7 @@ class Creature(object):
 		self.dead = False
 		self.refresh_abilities()
 		self.refresh_modifiers()
+		self.refresh_tags()
 
 	def get_base_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
@@ -147,7 +149,7 @@ class Creature(object):
 		defence = base_def
 		for key in list(self.equipment.keys()):
 			if self.equipment[key] and "defence" in list(self.equipment[key].stats.keys()):
-				defence += diceroll(self.equipment[key]["defence"])
+				defence += diceroll(self.equipment[key].stats["defence"])
 
 		#todo defence from modifiers
 		#todo defence from level perks
@@ -156,11 +158,11 @@ class Creature(object):
 
 	@property
 	def evasion(self):
-		base_ev = diceroll("1d1")
+		base_ev = diceroll(str(self.characteristics["dexterity"])+"d6")
 		evasion = base_ev
 		for key in list(self.equipment.keys()):
 			if self.equipment[key] and "evasion" in list(self.equipment[key].stats.keys()):
-				evasion += diceroll(self.equipment[key]["evasion"])
+				evasion += diceroll(self.equipment[key].stats["evasion"])
 
 		#todo evasion from modifiers
 		#todo evasion from level perks
@@ -214,14 +216,31 @@ class Creature(object):
 				items.append(str(i+1)+"."+item.name)
 		return desc + ', '.join(items)
 
+	def refresh_tags(self):
+		self.tags = self.base_abilities.copy()
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				for tag in perk.tags_granted:
+					self.tags.append(tag)
+
+		for modifier in self.modifiers:
+			for tag in modifier.tags_granted:
+				self.tags.append(tag)
+
+		for key in self.equipment.keys():
+			if self.equipment[key]:
+				for tag in self.equipment[key].tags_granted:
+					self.tags.append(tag)
+
 	def refresh_modifiers(self):
 		pass
 
 	def refresh_abilities(self):
-		self.abilities = default_abilties
-		for perk in self.level_perks:
-			for ability in perk.abilities_granted:
-				self.abilities.append({"granted_by":perk, "ability_name": ability})
+		self.abilities = self.base_abilities.copy()
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				for ability in perk.abilities_granted:
+					self.abilities.append({"granted_by":perk, "ability_name": ability})
 
 		for modifier in self.modifiers:
 			for ability in modifier.abilities_granted:
@@ -233,21 +252,18 @@ class Creature(object):
 					self.abilities.append({"granted_by":self.equipment[key], "ability_name": ability})
 
 	def examine_self(self):
-		desc = ""
-		if self.name:
-			desc+="You see %s.\n"%(self.name)
-		desc+="It's a %s %s.\n"%(self.combat_class, self.race)
-		desc+="It has %d health and %d energy.\n"%(self.health, self.energy)
-		desc += "It has the following abilities:\n"
-		desc += ", ".join(["%s(%s)"%(ab["ability_name"], ab["granted_by"].name) for ab in self.abilities])
-		if len(self.modifiers) > 0:
-			desc += "It has the following modifiers:\n"
-			for modifier in self.modifiers:
-				desc += "  %s\n"%(modifier)
-		if self.description:
-			desc+="%s\n"%(self.description)
+		desc = "\n".join(
+		[
+			"%s. lvl %d"%(self.name.title(), self.level),
+			"%s"%(self.description or "----"),
+			"Race: %s, class: %s."%(self.race, self.combat_class),
+			"Characteristics:\n%s"%(pformat(self.characteristics, width=1)),
+			"Stats:\n%s"%(pformat(self.stats, width=1)),
+			"Tags:\n%s"%(", ".join(self.tags)),
+			"Modifiers:\n%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by) for modifier in self.modifiers])),
+			"Abilities:\n%s"%(", ".join(["%s(%s)"%(ab["ability_name"], ab["granted_by"].name) for ab in self.abilities]))
+		])
 		return desc
-
 
 	def to_json(self):
 		big_dict = self.__dict__.copy()
@@ -268,11 +284,12 @@ class Creature(object):
 
 class Player(Creature):
 	def __init__(self, username, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
-		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.max_experience = max_experience
 		self.username = username
+
+		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
 	@property
 	def experience(self):
@@ -298,7 +315,6 @@ class Player(Creature):
 
 	def examine_self(self):
 		desc = super(Player, self).examine_self()
-		desc += "It is of level %d.\n"%(self.level)
 		return desc
 
 	@staticmethod
@@ -328,7 +344,6 @@ class Player(Creature):
 
 	def to_json(self):
 		big_dict = super(Player, self).to_json()
-		#big_dict["level_perks"] = json.dumps(self.level_perks)
 		big_dict["username"] = self.username
 		big_dict["event"] = None
 		return big_dict
@@ -337,6 +352,13 @@ class Player(Creature):
 		return self.examine_self()
 
 class Enemy(Creature):
+
+	loot_coolity = 0
+
+	drop_table = {
+
+	}
+
 	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
 		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.exp_value = exp_value
@@ -361,7 +383,7 @@ class Enemy(Creature):
 						killer.inventory.append(item)
 						msg += "%s got loot: %s."%(killer.name.title(), item.name)
 			return msg
-		return "%s dies."%(self.name)
+		return "%s dies."%(self.name.title())
 
 	@staticmethod
 	def de_json(data):

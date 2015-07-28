@@ -52,10 +52,8 @@ def diceroll(string):
 
 	return total_sum
 
-def random_in_range_for_coolity(left, right, coolity, mode_divider=3, coolity_multiplier = 2):
-	coolity_effect = random.uniform(0, coolity) * coolity_multiplier * 3
-	mode_divider = clamp( mode_divider - coolity_effect, 1, 999)
-	mode = clamp( int( (right) / mode_divider), left, right )
+def random_in_range_for_coolity(left, right, mode_pos=0.5):
+	mode = clamp( mode_pos * right, left, right )
 	return random.triangular( left, right, mode )
 
 def get_dice_in_range(dice_range, coolity, inverse = False): #returns dice in range. Coolity is 0..1, more means values are more likely to be closer to right boundary

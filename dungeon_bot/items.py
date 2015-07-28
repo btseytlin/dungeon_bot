@@ -1,6 +1,7 @@
 from util import *
+from pprint import pformat
 class Item(object):
-	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None):
+	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None, tags_granted = []):
 		self.name = name
 		self.description = description
 		self.requirements = requirements.copy()
@@ -9,6 +10,7 @@ class Item(object):
 		self.abilities_granted = abilities_granted.copy()
 		self.stats = stats.copy()
 		self.modifiers_granted = modifiers_granted.copy()
+		self.tags_granted = tags_granted.copy()
 
 	def use(self, target):
 		return "Can't use %s."%(self.name)
@@ -17,29 +19,33 @@ class Item(object):
 		if self.item_type == "consumable":
 			return "Can't equip %s."%(self.name)
 
-		if target[self.item_type] == self:
+		if target.equipment[self.item_type] == self:
 			return "Already equipped %s."%(self.name)
 
-		if target[self.item_type]:
-			temp = target[self.item_type]
+		if target.equipment[self.item_type]:
+			temp = target.equipment[self.item_type]
 			temp.unequip(target)
 
-		target[self.item_type] = self
+		target.equipment[self.item_type] = self
 		for item in target.inventory:
 			if item == self:
 				target.inventory.remove(item)
 
 		target.refresh_abilities()
+		target.refresh_modifiers()
+		target.refresh_tags()
 		return "Succesfully equipped %s."%(self.name)
 		
 
 	def unequip(self, target):
 		if self.item_type == "consumable":
 			return "Can't unequip %s."%(self.name)
-		if target[self.item_type] == self:
-			target[self.item_type] = None
+		if target.equipment[self.item_type] == self:
+			target.equipment[self.item_type] = None
 			target.inventory.append(self)
 			target.refresh_abilities()
+			target.refresh_modifiers()
+			target.refresh_tags()
 			return "Succesfully unequipped %s."%(self.name)
 		return "Not equipped!"
 
@@ -52,12 +58,14 @@ class Item(object):
 		return "Succesfully destroyed."
 
 	def examine_self(self):
-		desc = "%s, a %s.\n"%(self.name.title(), self.item_type )
-		if self.requirements:
-			desc += "Requirements to use:\n"+str(self.requirements)+'\n'
-		desc += "Stats:\n"+str(self.stats) +'\n'
-		desc += "Abilities:\n"+str(self.abilities_granted)+'\n'
-		desc += "Modifiers granted:\n"+str(self.modifiers_granted)+'\n'
+		desc = "\n".join([
+				"%s, %s."%(self.name.title(), self.item_type),
+				"%s"%(self.description or ""),
+				"Stats:\n%s"%(pformat(self.stats, width=1)),
+				"Abilities granted:\n%s"%(", ".join(self.abilities_granted)),
+				"Modifiers granted:\n%s"%(", ".join(self.modifiers_granted)),
+				"Tags granted:\n%s"%(", ".join(self.tags_granted)),
+			])
 		return desc
 
 	def to_json(self):
@@ -91,56 +99,78 @@ default_weapon_requirements = {
 
 default_weapon_abilities = []
 class PrimaryWeapon(Item):
-	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements):
-		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements)
+	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted = []):
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
 	@staticmethod
 	def get_randomized_item(coolity, stats, item_args):
 		real_stats = stats.copy()
-		damage_range = stats["damage"]
-		accuracy_range = stats["accuracy"]
-		real_stats["damage"] = get_dice_in_range(damage_range, coolity) 
-		real_stats["accuracy"] = get_dice_in_range(accuracy_range, coolity)
-		if not "modifiers_granted" in list(item_args.keys()):
-			 item_args["modifiers_granted"] = []
-		if not "requirements" in list(item_args.keys()):
-			 item_args["requirements"] = []
-		if not "abilities_granted" in list(item_args.keys()):
-			 item_args["abilities_granted"] = []
-		return PrimaryWeapon(item_args["name"], item_args["description"], "primary_weapon", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"])
+
+		for key in list(stats.keys()):
+			real_stats[key] = get_dice_in_range(stats[key], coolity)
+
+		if not "modifiers_granted" in item_args.keys():
+				item_args["modifiers_granted"] = []
+		if not "requirements" in item_args.keys():
+				item_args["requirements"] = []
+		if not "abilities_granted" in item_args.keys():
+				item_args["abilities_granted"] = []
+		if not "tags_granted" in item_args.keys():
+				item_args["tags_granted"] = []
+		return PrimaryWeapon(item_args["name"], item_args["description"], "primary_weapon", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 	@staticmethod
 	def de_json(data):
 		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
 
 class SecondaryWeapon(Item):
-	def __init__(self, name, description, item_type="secondary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements):
-		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements)
+	def __init__(self, name, description, item_type="secondary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
 	@staticmethod
-	def get_randomized_item(stats, item_args, coolity):
+	def get_randomized_item(coolity, stats, item_args):
 		real_stats = stats.copy()
-		if "damage" in list(stats.keys()): #its a damaging weapon, like a dagger
-			damage_range = stats["damage"]
-			accuracy_range = stats["accuracy"]
-			real_stats["damage"] = get_dice_in_range(damage_range, coolity) 
-			real_stats["accuracy"] = get_dice_in_range(accuracy_range, coolity)
-		if "defence" in list(stats.keys()): #its a shield
-			defence_range = stats["defence"]
-			evasion_range = stats["evasion"]
-			real_stats["defence"] = get_dice_in_range(defence_range, coolity) 
-			real_stats["evasion"] = get_dice_in_range(evasion_range, coolity)
-		if not "modifiers_granted" in list(item_args.keys()):
-			 item_args["modifiers_granted"] = []
-		if not "requirements" in list(item_args.keys()):
-			 item_args["requirements"] = []
-		if not "abilities_granted" in list(item_args.keys()):
-			 item_args["abilities_granted"] = []
-		return SecondaryWeapon(item_args["name"], item_args["description"], "primary_weapon", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"])
+
+		for key in list(stats.keys()):
+			real_stats[key] = get_dice_in_range(stats[key], coolity)
+
+		if not "modifiers_granted" in item_args.keys():
+				item_args["modifiers_granted"] = []
+		if not "requirements" in item_args.keys():
+				item_args["requirements"] = []
+		if not "abilities_granted" in item_args.keys():
+				item_args["abilities_granted"] = []
+		if not "tags_granted" in item_args.keys():
+				item_args["tags_granted"] = []
+		return SecondaryWeapon(item_args["name"], item_args["description"], "secondary_weapon", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 	@staticmethod
 	def de_json(data):
-		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
+		return SecondaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
+
+class Armor(Item):
+	def __init__(self, name, description, item_type="armor", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
+		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+	@staticmethod
+	def get_randomized_item(coolity, stats, item_args):
+		real_stats = stats.copy()
+		for key in list(stats.keys()):
+			real_stats[key] = get_dice_in_range(stats[key], coolity)
+
+		if not "modifiers_granted" in item_args.keys():
+				item_args["modifiers_granted"] = []
+		if not "requirements" in item_args.keys():
+				item_args["requirements"] = []
+		if not "abilities_granted" in item_args.keys():
+				item_args["abilities_granted"] = []
+		if not "tags_granted" in item_args.keys():
+			 item_args["tags_granted"] = []
+		return Armor(item_args["name"], item_args["description"], "armor", real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
+
+	@staticmethod
+	def de_json(data):
+		return Armor(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"))
 
 def get_item_by_name(name, coolity=0):
 	item_args = None
@@ -154,9 +184,11 @@ def get_item_by_name(name, coolity=0):
 				item_type = key
 
 	if item_type == "primary_weapon":
-		return PrimaryWeapon.get_randomized_item(item_stats, item_args, coolity)
+		return PrimaryWeapon.get_randomized_item(coolity, item_stats, item_args)
 	elif item_type == "secondary_weapon":
-		return SecondaryWeapon.get_randomized_item(item_stats, item_args, coolity)
+		return SecondaryWeapon.get_randomized_item(coolity, item_stats, item_args)
+	elif item_type == "armor":
+		return Armor.get_randomized_item(coolity, item_stats, item_args)
 	return "Unknown item"
 
 item_listing = { 
@@ -166,6 +198,10 @@ item_listing = {
 	"secondary_weapon":{
 		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["stab", "cut", "quick stab", "quick cut"]}},
 		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up", "bash"]}},
+	},
+	"armor":{
+		"chainmail": {"stats": {"defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
+		"plate_armor": {"stats": {"defence" : ["3d6","7d6"], "evasion" : ["-7d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.", "tags_granted":["heavy armor"]}},
 	}
 
 }

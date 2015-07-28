@@ -564,7 +564,7 @@ class ShieldUp(Ability): #TODO test and adapt
 		#chance_to_hit = Cut.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
 
 		if random.randint(0, 100) > chance_to_hit:
-			#msg = "%s cuts %s at %s but misses.\n"%(user.name, weapon.name, target.name)
+			msg = "%s cuts %s at %s but misses.\n"%(user.name, weapon.name, target.name)
 		else:
 			weapon_dmg = diceroll(weapon.stats["damage"])
 			strength = user.characteristics["strength"]
