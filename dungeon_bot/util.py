@@ -58,18 +58,49 @@ def random_in_range_for_coolity(left, right, coolity, mode_divider=3, coolity_mu
 	mode = clamp( int( (right) / mode_divider), left, right )
 	return random.triangular( left, right, mode )
 
-def get_dice_in_range(dice_range, coolity): #returns dice in range. Coolity is 0..1, more means values are more likely to be closer to right boundary
-	dice_amount_range = range(int(dice_range[0][0]), int(dice_range[1][0])+1)
+def get_dice_in_range(dice_range, coolity, inverse = False): #returns dice in range. Coolity is 0..1, more means values are more likely to be closer to right boundary
+
+	#If inverse = true then smaller numbers will be at the right border. So the numbers to pick from will be sorted from max to min, "smaller is better"
+	#If inverse = false then numbers are sorted from min to max, "bigger is better"
+	negative = False
+	if dice_range[0][0] == "-" and dice_range[1][0] == "-":
+		negative = True
+		dice_range[0] = dice_range[0][1:]
+		dice_range[1] = dice_range[1][1:]
+
+	dice_one = [int(x) for x in dice_range[0].split("d")]
+	dice_two = [int(x) for x in dice_range[1].split("d")]
+	if dice_one[0] > dice_two[0] or dice_one[0] == dice_two[0] and dice_one[1] > dice_two[1]:
+		inverse = True
+
+	if not inverse:
+		left = min(dice_one[0], dice_two[0])
+		right = max(dice_one[0], dice_two[0])
+		dice_amount_range = range(left, right+1)
+
+		left = min(dice_one[1], dice_two[1])
+		right = max(dice_one[1], dice_two[1])
+		dice_nominal_range = range(left, right+1)
+	else:
+		left = max(dice_one[0], dice_two[0])
+		right = min(dice_one[0], dice_two[0])
+		dice_amount_range = range(left, right-1, -1)
+
+		left = max(dice_one[1], dice_two[1])
+		right = min(dice_one[1], dice_two[1])
+		dice_nominal_range = range(left, right-1, -1)
+
 	random_for_coolity = random_in_range_for_coolity(0, len(dice_amount_range)-1, coolity)
 	random_amount_index = int( math.ceil(random_for_coolity ))
 	dice_amount = dice_amount_range[random_amount_index]
 
-	dice_nominal_range = range(int(dice_range[0][2]), int(dice_range[1][2])+1)
+	
 	random_nominal_index = int( math.ceil(random_in_range_for_coolity(0, len(dice_nominal_range)-1, coolity)) )
 	dice_nominal = dice_nominal_range[random_nominal_index]
 
+	if negative:
+		return "-"+str(dice_amount) + "d" + str(dice_nominal)
 	return str(dice_amount) + "d" + str(dice_nominal)
 
 def clamp(value, range_min, range_max):
 	return max(range_min, min(value, range_max))
-

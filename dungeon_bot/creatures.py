@@ -50,6 +50,8 @@ class Creature(object):
 			self.stats = self.base_stats
 
 		self.dead = False
+		self.refresh_abilities()
+		self.refresh_modifiers()
 
 	def get_base_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
@@ -218,14 +220,17 @@ class Creature(object):
 	def refresh_abilities(self):
 		self.abilities = default_abilties
 		for perk in self.level_perks:
-			self.abilities = list(set(self.abilities + perk.abilities_granted))
+			for ability in perk.abilities_granted:
+				self.abilities.append({"granted_by":perk, "ability_name": ability})
 
 		for modifier in self.modifiers:
-			self.abilities = list(set(self.abilities + modifier.abilities_granted))
+			for ability in modifier.abilities_granted:
+				self.abilities.append({"granted_by":modifier, "ability_name": ability})
 
 		for key in self.equipment.keys():
 			if self.equipment[key]:
-				self.abilities = list(set(self.abilities + self.equipment[key].abilities_granted))
+				for ability in self.equipment[key].abilities_granted:
+					self.abilities.append({"granted_by":self.equipment[key], "ability_name": ability})
 
 	def examine_self(self):
 		desc = ""
@@ -234,8 +239,7 @@ class Creature(object):
 		desc+="It's a %s %s.\n"%(self.combat_class, self.race)
 		desc+="It has %d health and %d energy.\n"%(self.health, self.energy)
 		desc += "It has the following abilities:\n"
-		for ability in self.abilities:
-			desc += "  %s\n"%(ability)
+		desc += ", ".join(["%s(%s)"%(ab["ability_name"], ab["granted_by"].name) for ab in self.abilities])
 		if len(self.modifiers) > 0:
 			desc += "It has the following modifiers:\n"
 			for modifier in self.modifiers:
@@ -250,8 +254,8 @@ class Creature(object):
 		del big_dict["uid"]
 		big_dict["characteristics"] = json.dumps(self.characteristics)
 		# big_dict["tags"] = json.dumps(self.tags)
-		# big_dict["modifiers"] = json.dumps(self.modifiers)
-		# big_dict["abilities"] = json.dumps(self.abilities)
+		del big_dict["abilities"] #abilities are not serializable
+		del big_dict["modifiers"] #modifiers are derived so no point in serializing them
 		big_dict["inventory"] = []
 		for item in self.inventory:
 			big_dict["inventory"].append(item.to_json())
@@ -319,7 +323,8 @@ class Player(Creature):
 				equipment[key] = Item.de_json(eq[key])
 
 		data["equipment"] = equipment
-		return Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), data.get("abilities"), data.get("modifiers"), data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
+		ply = Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
+		return ply
 
 	def to_json(self):
 		big_dict = super(Player, self).to_json()
@@ -377,6 +382,6 @@ class Enemy(Creature):
 				equipment[key] = Item.de_json(eq[key])
 		data["equipment"] = equipment
 
-		return Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), data.get("abilities"), data.get("modifiers"))
+		en =  Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), [], [])
+		return en
 
-		return desc
