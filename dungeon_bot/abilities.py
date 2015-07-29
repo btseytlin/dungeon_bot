@@ -657,5 +657,6 @@ class RodentBite(Ability):
 abilities = {
 	"smash": Smash,
 	"rodent bite": RodentBite,
-	"shield up": ShieldUp
+	"shield up": ShieldUp,
+	"bash": Bash
 }
