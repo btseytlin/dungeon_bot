@@ -21,7 +21,7 @@ class Item(object):
 				"%s"%(self.description or ""),
 				"Stats:\n%s"%(pformat(self.stats, width=1)),
 				"Abilities granted:\n%s"%(", ".join(self.abilities_granted)),
-				"Modifiers granted:\n%s"%(", ".join(self.modifiers_granted)),
+				"Modifiers granted:\n%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
 				"Tags granted:\n%s"%(", ".join(self.tags_granted)),
 			])
 		return desc
@@ -144,7 +144,7 @@ item_listing = {
 
 		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : 1}} , "args":{"name":"ring of more vitality", "description":"Just gives you +1 vit."} },
 
-		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 str, but via a modifier.", "modifiers_granted": [ {"name":"bonus", "params":{"characteristics_change": {"strength": 1}}}] } },
+		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 vit, but via a modifier.", "modifiers_granted": [ {"name":"bonus", "params":{"characteristics_change": {"vitality": 1}}}] } },
 
 		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."}}  ,
 		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},

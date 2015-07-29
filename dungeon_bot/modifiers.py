@@ -14,7 +14,7 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 	def apply(self):
 		self.host.modifiers.append(self)
-		self.host.refresh_derived()
+		#self.host.refresh_derived()
 		return self.on_applied()
 
 	@property
@@ -74,7 +74,7 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 		self.evasion = "-1d6"
 
 class Bonus(Modifier): #simply adds defence, hinders evasion
-	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="shielded", description="grants defence"):
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="bonus", description="???"):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
 		self.defence = "3d6"
 		self.evasion = "-1d6"

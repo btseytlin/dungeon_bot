@@ -285,7 +285,7 @@ class Creature(object):
 		for key in self.equipment.keys():
 			if self.equipment[key]:
 				for modifier in self.equipment[key].modifiers_granted:
-					modifier_object = get_modifier_by_name( modifier["name"], perk, self, modifier["params"] )
+					modifier_object = get_modifier_by_name( modifier["name"], self.equipment[key], self, modifier["params"] )
 					modifier_object.apply()
 
 	def refresh_abilities(self):
