@@ -26,6 +26,10 @@ Tags:
 
 
 class Ability(object):
+	def __init__(self, name, granted_by):
+		self.name = name
+		self.granted_by = granted_by
+
 	@staticmethod
 	def use(user, target):
 		msg = "%s has %d energy left.\n"%(user.name.title(), user.energy)
@@ -574,12 +578,11 @@ class ShieldUp(Ability): #TODO test and adapt
 
 
 class RodentBite(Ability):
-	name = "rodent_bite"
+	name = "rodent bite"
 	description = "Rodents bite!"
 	energy_required = 2
 	requirements = None
-	base_accuracy = "4d6"
-	base_damage = "2d6"
+
 
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
@@ -608,23 +611,28 @@ class RodentBite(Ability):
 		return chance_to_hit
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required."
 		if not target.dead:
 			return Ability.can_use(user.energy, RodentBite.energy_required)
 		else:
 			return False, "Target is already dead"
 
 	@staticmethod
-	def use(user, target):
+	def use(user, target, weapon=None):
+		if not weapon:
+			weapon = user.primary_weapon
+
 		user.energy = user.energy - RodentBite.energy_required
 		msg = ""
 
+		accuracy = diceroll(weapon.stats["accuracy"])
 		is_small = int("small" in target.tags)
 		is_quick = int("quick" in target.tags)
 		is_big = int("big" in target.tags)
 		is_slow = int("slow" in target.tags)
 		evasion = target.evasion
-		accuracy = diceroll(RodentBite.base_accuracy)
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = RodentBite.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
@@ -633,7 +641,7 @@ class RodentBite(Ability):
 			msg = "%s tries to bite %s but misses.\n"%(user.name, target.name)
 		else:
 
-			rough_dmg = diceroll(RodentBite.base_damage)
+			rough_dmg = diceroll(weapon.stats["damage"])
 			strength = user.characteristics["strength"]
 			defence = target.defence
 			is_armored = int("armor" in target.tags) * 3
@@ -648,6 +656,6 @@ class RodentBite(Ability):
 
 abilities = {
 	"smash": Smash,
-	"rodent_bite": RodentBite,
+	"rodent bite": RodentBite,
 	"shield up": ShieldUp
 }

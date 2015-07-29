@@ -51,8 +51,10 @@ class Rat(Enemy):
 	}
 	loot_coolity = 0.5
 
-	def __init__(self, name="rat", race="rodent", combat_class="animal", level=1, characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[], exp_value=10):
+	def __init__(self, name="rat", race="rodent", combat_class="animal", level=1, characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=10):
 		Enemy.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		teeth = get_item_by_name("rodent_teeth", 0)
+		self.equip(teeth)
 
 	def act(self, turn_qeue):
 		attack_msgs = ""
@@ -62,7 +64,7 @@ class Rat(Enemy):
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_msgs += abilities["rodent_bite"].use(self, c)
+					attack_msgs += self.abilities[0].__class__.use(self, c)
 			if not targets:
 				break
 
@@ -95,9 +97,10 @@ class BigRat(Enemy):
 	
 	loot_coolity = 0.5
 
-	def __init__(self, name="big rat", race="rodent", combat_class="animal", level=1, characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=["rodent_bite"],modifiers=[], exp_value=20):
+	def __init__(self, name="big rat", race="rodent", combat_class="animal", level=1, characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=20):
 		Enemy.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		self.abilities = ["rodent_bite"]
+		teeth = get_item_by_name("rodent_teeth", 0)
+		self.equip(teeth)
 
 	def act(self, turn_qeue):
 		attack_msgs = ""
@@ -107,7 +110,7 @@ class BigRat(Enemy):
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_msgs += abilities["rodent_bite"].use(self, c)
+					attack_msgs += self.abilities[0].__class__.use(self, c)
 			if not targets:
 				break
 

@@ -3,6 +3,7 @@ from pprint import pformat
 from items import *
 from util import *
 from modifiers import *
+from abilities import *
 import random
 default_characteristics = {
 	"strength": 5, #how hard you hit
@@ -21,7 +22,6 @@ default_equipment = {
 	"headwear": None
 }
 
-default_abilties = []
 
 class Creature(object):
 	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
@@ -40,7 +40,7 @@ class Creature(object):
 		self.base_characteristics = characteristics.copy()
 		
 		self.base_tags = tags.copy()
-		self.base_abilities = abilities + default_abilties.copy()
+		self.base_abilities = abilities
 
 		self.inventory = inventory.copy()
 		self.equipment = equipment.copy()
@@ -258,7 +258,7 @@ class Creature(object):
 		return desc + ', '.join(items)
 
 	def refresh_tags(self):
-		self.tags = self.base_abilities.copy()
+		self.tags = self.base_tags.copy()
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for tag in perk.tags_granted:
@@ -293,16 +293,19 @@ class Creature(object):
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for ability in perk.abilities_granted:
-					self.abilities.append({"granted_by":perk, "ability_name": ability})
+					prototype = abilities[ability]
+					self.abilities.append(prototype(ability, perk))
 
 		for modifier in self.modifiers:
 			for ability in modifier.abilities_granted:
-				self.abilities.append({"granted_by":modifier, "ability_name": ability})
+				prototype = abilities[ability]
+				self.abilities.append(prototype(ability, modifier))
 
 		for key in self.equipment.keys():
 			if self.equipment[key]:
 				for ability in self.equipment[key].abilities_granted:
-					self.abilities.append({"granted_by":self.equipment[key], "ability_name": ability})
+					prototype = abilities[ability]
+					self.abilities.append(prototype(ability, self.equipment[key]))
 
 	def refresh_derived(self):
 		self.refresh_modifiers()
@@ -350,7 +353,7 @@ class Creature(object):
 			"Stats:\n%s"%(pformat(self.stats, width=1)),
 			"Tags:\n%s"%(", ".join(self.tags)),
 			"Modifiers:\n%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by) for modifier in self.modifiers])),
-			"Abilities:\n%s"%(", ".join(["%s(%s)"%(ab["ability_name"], ab["granted_by"].name) for ab in self.abilities]))
+			"Abilities:\n%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities]))
 		])
 		return desc
 

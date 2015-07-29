@@ -483,9 +483,7 @@ class CombatEvent(BotEvent):
 
 			ply = persistence_controller.get_ply(user)
 			for ability in ply.abilities:
-				ability_granted_by = ability["granted_by"]
-				ability = abilities[ability["ability_name"]]
-				self.user_abilities[user.username][ability.name] = {"granted_by":ability_granted_by, "ability": ability}
+				self.user_abilities[user.username][ability.name] = ability
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
 		self.greeting_message += "The combat qeue is:\n"+", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))]) + "\n"
@@ -560,8 +558,9 @@ class CombatEvent(BotEvent):
 	def handle_combat_command(self, user, command, *args):
 		if self.turn_qeue[self.turn].username == user.username: #current turn is of player who sent command
 			if command in list(self.user_abilities[user.username].keys()):
-				ability = self.user_abilities[user.username][command]["ability"]
-				granted_by = self.user_abilities[user.username][command]["granted_by"]
+				ability = self.user_abilities[user.username][command]_
+				ability_class = self.user_abilities[user.username][command].__class__
+				granted_by = ability.granted_by
 				argument = " ".join(args)
 				target = None
 				if len(argument) > 0:
@@ -570,9 +569,9 @@ class CombatEvent(BotEvent):
 						if t.name == argument or argument.isdigit() and int(argument) == i:
 							target = t
 
-					can_use, cant_use_msg = ability.can_use( persistence_controller.get_ply(user), target )
+					can_use, cant_use_msg = ability_class.can_use( persistence_controller.get_ply(user), target )
 					if can_use:
-						msg = ability.use( persistence_controller.get_ply(user), target, granted_by )
+						msg = ability_class.use( persistence_controller.get_ply(user), target, granted_by )
 						broadcast = []
 						for u in self.users:
 							broadcast.append([u, msg])
