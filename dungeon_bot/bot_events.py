@@ -562,21 +562,24 @@ class CombatEvent(BotEvent):
 			if command in list(self.user_abilities[user.username].keys()):
 				ability = self.user_abilities[user.username][command]["ability"]
 				granted_by = self.user_abilities[user.username][command]["granted_by"]
-				if len(args) > 0:
-					argument = " ".join(args)
+				argument = " ".join(args)
+				target = None
+				if len(argument) > 0:
 					for i in range(len(self.turn_qeue)):
-						target = self.turn_qeue[i]
-						if target.name == argument or argument.isdigit() and int(argument) == i:
-							can_use, cant_use_msg = ability.can_use( persistence_controller.get_ply(user), target )
-							if can_use:
-								msg = ability.use(persistence_controller.get_ply(user), target, granted_by)
-								broadcast = []
-								for u in self.users:
-									broadcast.append([u, msg])
-								return broadcast
+						t = self.turn_qeue[i]
+						if t.name == argument or argument.isdigit() and int(argument) == i:
+							target = t
 
-							else:
-								return cant_use_msg
+					can_use, cant_use_msg = ability.can_use( persistence_controller.get_ply(user), target )
+					if can_use:
+						msg = ability.use( persistence_controller.get_ply(user), target, granted_by )
+						broadcast = []
+						for u in self.users:
+							broadcast.append([u, msg])
+						return broadcast
+
+					else:
+						return cant_use_msg
 
 					return "No such target in turn qeue"
 				else:

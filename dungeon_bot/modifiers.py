@@ -14,7 +14,6 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 	def apply(self):
 		self.host.modifiers.append(self)
-		#self.host.refresh_derived()
 		return self.on_applied()
 
 	@property
@@ -68,16 +67,22 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		return self.on_lifted()
 
 class Shielded(Modifier): #simply adds defence, hinders evasion
-	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="shielded", description="grants defence"):
+	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {"defence":"3d6"}, abilities_granted = [], tags_granted = [], name="shielded", description="grants defence"):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
-		self.defence = "3d6"
-		self.evasion = "-1d6"
 
 class Bonus(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="bonus", description="???"):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
-		self.defence = "3d6"
-		self.evasion = "-1d6"
+
+
+class FireAttack(Modifier):
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="fire attack", description="Has a chance to cause fire additional damage every attack by host."):
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
+		self.fire_damage = ["1d3","2d6"]
+		self.fire_chance = ["1d2", "5d6"]
+
+	def on_hit(self, target, attack_info=None):
+		return "Fire damage!"
 
 def get_modifier_by_name(modifier_name, source, target, params={}):
 	if not "duration" in params.keys():
@@ -90,9 +95,12 @@ def get_modifier_by_name(modifier_name, source, target, params={}):
 		params["abilities_granted"] = []
 	if not "tags_granted" in params.keys():
 		params["tags_granted"] = []
-	return modifier_listing[modifier_name](source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"])
+
+	mod = modifier_listing[modifier_name](source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"])
+	return mod
 
 modifier_listing = {
 	"shielded" : Shielded,
 	"bonus" : Bonus,
+	"fire attack" : FireAttack
 }

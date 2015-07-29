@@ -1,5 +1,6 @@
 from util import clamp, diceroll
 import random
+from modifiers import *
 
 """
 Tags:
@@ -28,9 +29,10 @@ class Ability(object):
 	@staticmethod
 	def use(user, target):
 		msg = "%s has %d energy left.\n"%(user.name.title(), user.energy)
-		killed, kill_message = target.kill_if_nececary(user)
-		if killed == True:
-			return kill_message +"\n" + msg
+		if target:
+			killed, kill_message = target.kill_if_nececary(user)
+			if killed == True:
+				msg += kill_message
 		return msg
 
 	@staticmethod
@@ -68,11 +70,13 @@ class Smash(Ability):
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required." 
 		if not target.dead:
 			return Ability.can_use(user.energy, Smash.energy_required)
 		else:
-			return False, "Target is already dead"
+			return False, "Target is already dead."
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
@@ -147,11 +151,13 @@ class Stab(Ability):
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required." 
 		if not target.dead:
 			return Ability.can_use(user.energy, Stab.energy_required)
 		else:
-			return False, "Target is already dead"
+			return False, "Target is already dead."
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
@@ -230,11 +236,13 @@ class QuickStab(Ability):
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, Smash.energy_required)
+			return Ability.can_use(user.energy, QuickStab.energy_required)
 		else:
-			return False, "Target is already dead"
+			return False, "Target is already dead."
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
@@ -310,11 +318,13 @@ class Cut(Ability): #TODO test and adapt
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required." 
 		if not target.dead:
 			return Ability.can_use(user.energy, Cut.energy_required)
 		else:
-			return False, "Target is already dead"
+			return False, "Target is already dead."
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
@@ -393,11 +403,13 @@ class QucikCut(Ability): #TODO test and adapt
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required." 
 		if not target.dead:
 			return Ability.can_use(user.energy, QucikCut.energy_required)
 		else:
-			return False, "Target is already dead"
+			return False, "Target is already dead."
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
@@ -472,11 +484,13 @@ class Bash(Ability): #TODO test and adapt
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required." 
 		if not target.dead:
 			return Ability.can_use(user.energy, Bash.energy_required)
 		else:
-			return False, "Target is already dead"
+			return False, "Target is already dead."
 
 	@staticmethod
 	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
@@ -535,49 +549,25 @@ class ShieldUp(Ability): #TODO test and adapt
 
 	"""
 	name = "shield up"
-	description = "Hide behind you steel."
+	description = "Hide behind your steel."
 	energy_required = 3
 	requirements = None
 
 	@staticmethod
-	def can_use(user, target):
-		if not target.dead:
-			return Ability.can_use(user.energy, Cut.energy_required)
-		else:
-			return False, "Target is already dead"
+	def can_use(user, target=None):
+		return Ability.can_use(user.energy, ShieldUp.energy_required)
 
 	@staticmethod
-	def use(user, target, weapon=None):
+	def use(user, target=None, weapon=None):
 		if not weapon:
 			weapon = user.secondary_weapon
 
-		msg = ""
-		user.energy = user.energy - Cut.energy_required
-
-		is_small = int("small" in target.tags)*2
-		is_quick = int("quick" in target.tags)*2
-		is_big = int("big" in target.tags)*3
-		is_slow = int("slow" in target.tags)*3
-		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
-		dexterity = user.characteristics["dexterity"]
-
-		#chance_to_hit = Cut.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-
-		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s cuts %s at %s but misses.\n"%(user.name, weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence
-			is_armored = int("armor" in target.tags) * 3
-			is_heavy_armored = int("heavy armor" in target.tags) * 4
-			not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
-
-			#dmg = Cut.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
-
-			#target.health = target.health - dmg
-			#msg = "%s cuts %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
+		user.energy = user.energy - ShieldUp.energy_required
+		defence_bonus = weapon.stats["defence"]
+		modifier_params = {"stats_change": {"defence":defence_bonus}}
+		modifier = get_modifier_by_name("shielded", weapon, user, modifier_params)
+		modifier.apply()
+		msg = "%s raises his shield up and gains a %s defence for the next turn.\n"%(user.name, defence_bonus)
 
 		return msg + str(Ability.use(user, target))
 
@@ -658,5 +648,6 @@ class RodentBite(Ability):
 
 abilities = {
 	"smash": Smash,
-	"rodent_bite": RodentBite
+	"rodent_bite": RodentBite,
+	"shield up": ShieldUp
 }

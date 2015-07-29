@@ -147,8 +147,8 @@ class Creature(object):
 				defence += diceroll(self.equipment[key].stats["defence"])
 
 		for modifier in self.modifiers:
-			if hasattr(modifier, "defence"):
-				defence += diceroll(modifier.defence)
+			if "defence" in modifier.stats_change:
+				defence += diceroll(modifier.stats_change["defence"])
 
 		#todo defence from level perks
 
@@ -163,8 +163,8 @@ class Creature(object):
 				evasion += diceroll(self.equipment[key].stats["evasion"])
 
 		for modifier in self.modifiers:
-			if hasattr(modifier, "evasion"):
-				evasion += diceroll(modifier.evasion)
+			if "evasion" in modifier.stats_change:
+				evasion += diceroll(modifier.stats_change["evasion"])
 
 		#todo evasion from level perks
 		return evasion
