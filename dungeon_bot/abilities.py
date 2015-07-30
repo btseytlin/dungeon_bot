@@ -31,6 +31,27 @@ class AbilityUseInfo(object):
 		self.inhibitor = inhibitor
 		self.target = target
 
+	def execute(self):		
+		use_info.inhibitor.energy = use_info.inhibitor.energy + use_info.use_info["energy_change"]		
+		if use_info.use_info["energy_change"] > 0:
+			use_info.description += use_info.inhibitor.on_energy_gained(use_info.use_info["energy_change"])
+		else:
+			use_info.description += use_info.inhibitor.on_energy_lost(use_info.use_info["energy_change"])
+
+		for modifier in use_info.use_info["modifiers_applied"]:
+			use_info.description += modifier.apply() 
+		if self.ability_type == "attack":
+			if self.use_info["did_hit"]:	
+				self = self.inhibitor.on_attack(self)
+				self = self.target.on_attacked(self)
+			else:
+				self = self.inhibitor.on_miss(self)
+		if self.ability_type == "buff":
+			self = self.inhibitor.on_buff(self)
+			self = self.inhibitor.on_buffed(self)
+	
+		return self
+
 class AttackInfo(object):
 	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description = ""):
 		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
@@ -72,9 +93,9 @@ class Ability(object):
 
 	@staticmethod
 	def use(use_info):
-		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required 
-		use_info.inhibitor.energy = use_info.inhibitor.energy + use_info.use_info["energy_change"]		
+		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required
 		use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), use_info.inhibitor.energy)
+		use_info = use_info.execute()
 		return use_info
 
 	@staticmethod
@@ -155,8 +176,6 @@ class Smash(Ability):
 			dmg = Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
 			attack_info.use_info["did_hit"] = True
 			attack_info.use_info["damage_dealt"] = dmg
-			attack_info = target.damage(dmg, attack_info)
-
 			attack_info.description += "%s smashes %s and deals %d damage to %s.\n"%(user.name.title(), weapon.name, dmg, target.name)
 
 		return Ability.use(Smash, user, target, attack_info)
@@ -596,19 +615,16 @@ class ShieldUp(Ability): #TODO test and adapt
 
 	@staticmethod
 	def use(user, target=None, weapon=None):
-		buff_info = AttackInfo(user, "attack", Smash, target)
+		buff_info = AttackInfo(user, "buff", ShieldUp, target)
 		if not weapon:
 			weapon = user.secondary_weapon
 		buff_info.use_info["item_used"] = weapon
 		defence_bonus = weapon.stats["defence"]
 		modifier_params = {"stats_change": {"defence":defence_bonus}}
 		modifier = get_modifier_by_name("shielded", weapon, user, modifier_params)
-		buff_info.description += modifier.apply()
 		buff_info.use_info["modifiers_applied"].append(modifier)
 
 		return Ability.use(buff_info)
-
-
 
 class RodentBite(Ability):
 	name = "rodent bite"

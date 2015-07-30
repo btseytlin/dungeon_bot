@@ -468,7 +468,7 @@ class CombatEvent(BotEvent):
 		self.turn_qeue = self.create_turn_qeue()
 
 		for creature in self.turn_qeue:
-			creature.apply_combat_start_effects()
+			creature.on_combat_start()
 
 		self.turn = 0
 		self.round = 0
@@ -525,7 +525,7 @@ class CombatEvent(BotEvent):
 	def next_turn(self):
 		msg = ""
 		for creature in self.turn_qeue:
-			creature.apply_turn_effects()
+			msg += creature.on_turn()
 
 		fight_ended = self.check_winning_conditions()
 		if fight_ended:
@@ -644,7 +644,7 @@ class CombatEvent(BotEvent):
 	
 	def finish(self):
 		for creature in self.turn_qeue:
-			creature.apply_combat_over_effects()
+			creature.on_combat_over()
 
 		msg = super(CombatEvent, self).finish()
 

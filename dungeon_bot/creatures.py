@@ -178,9 +178,10 @@ class Creature(object):
 	def level(self, value):
 		self._level = value
 
-	def damage(self, value, attack_info):
+	def damage(self, attack_info):
 		if not self.dead:
-			self.health = self.health - value
+			self.health = self.health - attack_info.use_info["damage_dealt"]
+			attack_info.descirption += self.on_health_lost(attack_info.use_info["damage_dealt"])
 			attack_info = self.kill_if_nececary(attack_info) 
 		return attack_info
 
@@ -200,8 +201,10 @@ class Creature(object):
 			if item == target_item:
 				self.inventory.remove(item)
 
+		
 		self.refresh_derived()
-		return "Succesfully equipped %s."%(target_item.name)
+		msg = self.on_item_equipped(target_item)
+		return msg + "Succesfully equipped %s."%(target_item.name)
 
 	def unequip(self, target_item):
 		if target_item.item_type == "consumable":
@@ -210,7 +213,8 @@ class Creature(object):
 			self.equipment[target_item.item_type] = None
 			self.inventory.append(self)
 			self.refresh_derived()
-			return "Succesfully unequipped %s."%(target_item.name)
+			msg = self.on_item_unequipped(target_item)
+			return msg + "Succesfully unequipped %s."%(target_item.name)
 		return "Not equipped!"
 
 	def destroy(self, target_item):
@@ -222,19 +226,167 @@ class Creature(object):
 
 	def use(self, item, target):
 		if item in self.inventory:
-			return item.use(self, target)
+			use_effect = item.use(self, target)
+			msg = self.on_consumable_used(item)
+			return use_effect + msg
 
-	def apply_combat_start_effects(self):
-		pass
+	""" EVENTS """
+	def on_combat_start(self):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_combat_start()
+			if effect:
+				msg += effect
+		return msg
 
-	def apply_combat_over_effects(self):
+	def on_combat_over(self):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_combat_over()
+			if effect:
+				msg += effect
 		self.energy = self.stats["max_energy"]
+		return msg
 
-	def apply_turn_effects(self):
+	def on_turn(self):
 		#regenerate energy
-		self.energy += self.stats["energy_regen"]
-		#apply the effects of all modifiers
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_turn()
+			if effect:
+				msg += effect
+		return msg
 
+		self.energy += self.stats["energy_regen"]
+		msg += self.on_energy_gained(self.stats["energy_regen"])
+		return msg
+
+	def on_modifier_applied(self, modifier):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_modifier_applied(modifier)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_experience_gained(self, value):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_experience_gained(value)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_item_equipped(self, item):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_item_equipped(item)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_item_unequipped(self):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_item_unequipped(item)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_consumable_used(self):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_consumable_used(item)
+			if effect:
+				msg += effect
+		return msg
+
+
+	def on_health_lost(self, value):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_health_lost(value)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_health_gained(self, value):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_health_gained(value)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_energy_gained(self, value):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_energy_gained(value)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_energy_lost(self, value):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_energy_lost(value)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_attacked(self, attack_info):
+		msg = ""
+		if attack_info.use_info["damage_dealt"] > 0:
+			attack_info = self.damage(attack_info.use_info["damage_dealt"])
+
+		for modifier in self.modifiers:
+			at_info = modifier.on_attacked(attack_info)
+			if at_info:
+				attack_info = at_info
+		return attack_info
+
+	def on_attack(self, attack_info):
+		msg = ""
+		for modifier in self.modifiers:
+			at_info = modifier.on_attack(attack_info)
+			if at_info:
+				attack_info = at_info
+		return attack_info
+
+	def on_death(self, attack_info):
+		msg = ""
+		for modifier in self.modifiers:
+			at_info = modifier.on_death(attack_info)
+			if at_info:
+				attack_info = at_info
+		return attack_info
+
+	def on_miss(self, attack_info):
+		msg = ""
+		for modifier in self.modifiers:
+			at_info = modifier.on_miss(attack_info)
+			if at_info:
+				attack_info = at_info
+		return attack_info
+
+	def on_buffed(self, ability_info):
+		msg = ""
+		for modifier in self.modifiers:
+			at_info = modifier.on_buffed(ability_info)
+			if at_info:
+				ability_info = at_info
+		return ability_info
+
+	def on_buff(self, ability_info):
+		msg = ""
+		for modifier in self.modifiers:
+			at_info = modifier.on_buff(ability_info)
+			if at_info:
+				ability_info = at_info
+		return ability_info
+
+
+	""" /EVENTS """
 	def kill_if_nececary(self, attack_info):
 		if self.health <= 0:
 			attack_info = self.die(attack_info)
@@ -245,6 +397,7 @@ class Creature(object):
 		self.dead = True
 		attack_info.use_info["did_kill"] = True
 		attack_info.description += "%s is killed by %s."%(self.name.title(), attack_info.inhibitor.name)
+		attack_info = self.on_death(attack_info)
 		return attack_info
 
 	def examine_equipment(self):
@@ -469,6 +622,7 @@ class Enemy(Creature):
 		attack_info = super(Enemy, self).die(attack_info)
 		attack_info.use_info["experience_gained"] = self.exp_value
 		attack_info.description += "%s earns %d experience.\n"%(attack_info.inhibitor.name, self.exp_value)
+		attack_info.description += attack_info.inhibitor.on_experience_gained(self.exp_value)
 		drop_table = self.__class__.drop_table
 		for item in list(drop_table.keys()):
 			prob = int(drop_table[item])

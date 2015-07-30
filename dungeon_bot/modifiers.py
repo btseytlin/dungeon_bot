@@ -14,30 +14,51 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 	def apply(self):
 		self.host.modifiers.append(self)
-		return self.on_applied()
+		msg = self.on_applied() + self.host.on_modifier_applied(self)
+		return msg
 
 	@property
 	def permanent(self):
 		return self.duration == -1
 	
 	def on_applied(self):
-		return "%s modifier applied to %s.\n"%(self.name, self.host.name)
+		return msg + "%s modifier applied to %s.\n"%(self.name, self.host.name)
 
 	def on_lifted(self):
 		return "%s modifier lifted from %s.\n"%(self.name, self.host.name)
 
-
 	def on_combat_start(self):
 		pass
 
-	def after_turn(self):
+	def on_combat_over(self):
+		pass
+
+	def on_item_equipped(self):
+		pass
+
+	def on_item_unequipped(self):
+		pass
+
+	def on_consumable_used(self):
+		pass
+
+	def on_turn(self):
 		if not self.permanent:
 			if self.duration <= 0:
 				return self.lift()
 
 			self.duration != 1
 
-	def on_ability(self, target, ability_info=None):
+	def on_attack(self, ability_info=None):
+		pass
+
+	def on_attacked(self, ability_info=None):
+		pass
+
+	def on_buff(self, ability_info=None):
+		pass
+
+	def on_buffed(self, ability_info=None):
 		pass
 
 	def on_kill(self, target):
@@ -46,10 +67,10 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_death(self, killer=None):
 		pass
 
-	def on_exp_gain(self, exp_amount=None):
+	def on_experience_gained(self, exp_amount=None):
 		pass
 
-	def on_loot(self, loot):
+	def on_loot(self, item_gained):
 		pass
 
 	def on_modifier_applied(self, modifier):
