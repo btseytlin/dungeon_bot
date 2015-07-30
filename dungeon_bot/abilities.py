@@ -31,17 +31,18 @@ class AbilityUseInfo(object):
 		self.inhibitor = inhibitor
 		self.target = target
 
-	def execute(self):		
-		use_info.inhibitor.energy = use_info.inhibitor.energy + use_info.use_info["energy_change"]		
-		if use_info.use_info["energy_change"] > 0:
-			use_info.description += use_info.inhibitor.on_energy_gained(use_info.use_info["energy_change"])
+	def execute(self):	
+		use_info = self.use_info	
+		self.inhibitor.energy = self.inhibitor.energy + use_info["energy_change"]		
+		if use_info["energy_change"] > 0:
+			self.description += self.inhibitor.on_energy_gained(use_info["energy_change"])
 		else:
-			use_info.description += use_info.inhibitor.on_energy_lost(use_info.use_info["energy_change"])
+			self.description += self.inhibitor.on_energy_lost(use_info["energy_change"])
 
-		for modifier in use_info.use_info["modifiers_applied"]:
-			use_info.description += modifier.apply() 
+		for modifier in use_info["modifiers_applied"]:
+			self.description += modifier.apply() 
 		if self.ability_type == "attack":
-			if self.use_info["did_hit"]:	
+			if use_info["did_hit"]:	
 				self = self.inhibitor.on_attack(self)
 				self = self.target.on_attacked(self)
 			else:
@@ -52,7 +53,7 @@ class AbilityUseInfo(object):
 	
 		return self
 
-class AttackInfo(object):
+class AttackInfo(AbilityUseInfo):
 	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description = ""):
 		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
 		self.description = description
@@ -71,7 +72,7 @@ class AttackInfo(object):
 			}
 		self.use_info = use_info
 
-class BuffInfo(object):
+class BuffInfo(AbilityUseInfo):
 	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description=""):
 		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
 		self.description = description

@@ -285,7 +285,7 @@ class Creature(object):
 				msg += effect
 		return msg
 
-	def on_item_unequipped(self):
+	def on_item_unequipped(self, item):
 		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_item_unequipped(item)
@@ -293,7 +293,7 @@ class Creature(object):
 				msg += effect
 		return msg
 
-	def on_consumable_used(self):
+	def on_consumable_used(self, item):
 		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_consumable_used(item)

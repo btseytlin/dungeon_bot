@@ -22,10 +22,10 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		return self.duration == -1
 	
 	def on_applied(self):
-		return msg + "%s modifier applied to %s.\n"%(self.name, self.host.name)
+		return "%s modifier applied to %s.\n"%(self.name.title(), self.host.name.title())
 
 	def on_lifted(self):
-		return "%s modifier lifted from %s.\n"%(self.name, self.host.name)
+		return "%s modifier lifted from %s.\n"%(self.name.title(), self.host.name.title())
 
 	def on_combat_start(self):
 		pass
@@ -33,13 +33,13 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_combat_over(self):
 		pass
 
-	def on_item_equipped(self):
+	def on_item_equipped(self, item):
 		pass
 
-	def on_item_unequipped(self):
+	def on_item_unequipped(self, item):
 		pass
 
-	def on_consumable_used(self):
+	def on_consumable_used(self, item):
 		pass
 
 	def on_turn(self):
