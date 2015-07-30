@@ -178,6 +178,13 @@ class Creature(object):
 	def level(self, value):
 		self._level = value
 
+	def damage(self, value, attack_info):
+		if not self.dead:
+			self.health = self.health - value
+			attack_info = self.kill_if_nececary(user, attack_info) 
+			attack_info.description += kill_message
+		return attack_info
+
 	def equip(self, target_item):
 		if target_item.item_type == "consumable":
 			return "Can't equip %s."%(target_item.name)
@@ -229,16 +236,17 @@ class Creature(object):
 		self.energy += self.stats["energy_regen"]
 		#apply the effects of all modifiers
 
-	def kill_if_nececary(self, killer=None):
+	def kill_if_nececary(self, attack_info):
 		if self.health <= 0:
-			return True, self.die(killer)
-		return False, None
+			attack_info = self.die(attack_info)
+			return attack_info
+		return attack_info
 
-	def die(self, killer=None):
+	def die(self, attack_info):
 		self.dead = True
-		if killer:
-			return "%s is killed by %s."%(self.name, killer.name)
-		return "%s dies."%(self.name)
+		attack_info.use_info["did_kill"] = True
+		attack_info.description += "%s is killed by %s."%(self.name.title(), attack_info.inhibitor.name)
+		return attack_info
 
 	def examine_equipment(self):
 		desc = "%s's equipment:\n"%(self.name)
@@ -458,24 +466,22 @@ class Enemy(Creature):
 	def act(self):
 		return "Base enemy has no AI"
 
-	def die(self, killer=None):
-		self.dead = True
-		if killer:
-			msg = "%s is killed by %s.\n"%(self.name, killer.name)
-			if isinstance(killer, Player):
-				killer.experience += self.exp_value
-				msg += "%s earns %d experience.\n"%(killer.name, self.exp_value)
-
-				drop_table = self.__class__.drop_table
-				for item in list(drop_table.keys()):
-					prob = int(drop_table[item])
-					got_item = random.randint(0, 100) <= prob 
-					if got_item:
-						item = get_item_by_name(item, self.__class__.loot_coolity)
-						killer.inventory.append(item)
-						msg += "%s got loot: %s."%(killer.name.title(), item.name)
-			return msg
-		return "%s dies."%(self.name.title())
+	def die(self, attack_info):
+		attack_info = super(Enemy, self).die(attack_info)
+		attack_info.use_info["experience_gained"] = self.exp_value
+		attack_info.description += "%s earns %d experience.\n"%(attack_info.inhibitor.name, self.exp_value)
+		drop_table = self.__class__.drop_table
+		for item in list(drop_table.keys()):
+			prob = int(drop_table[item])
+			got_item = random.randint(0, 100) <= prob 
+			if got_item:
+				item = get_item_by_name(item, self.__class__.loot_coolity)
+				attack_info.use_info["loot_dropped"].append(item)
+				if isinstance(attack_info.inhibitor, Player):
+					attack_info.inhibitor.inventory.append(item)
+				attack_info.use_info["loot_dropped"].append(item)
+				attack_info.description += "%s got loot: %s.\n"%(attack_info.inhibitor.name.title(), item.name)
+		return attack_info
 
 	@staticmethod
 	def de_json(data):

@@ -24,6 +24,46 @@ Tags:
 
 """
 
+class AbilityUseInfo(object):
+	def __init__(self, inhibitor, ability_type, prototype_class, target):
+		self.ability_type = ability_type
+		self.prototype_class = prototype_class
+		self.inhibitor = inhibitor
+		self.target = target
+
+class AttackInfo(object):
+	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description = ""):
+		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
+		self.description = description
+
+		if not use_info:
+			use_info = {
+				"hit_chance" : 0,
+				"damage_dealt" : 0,
+				"experience_gained" : 0,
+				"did_hit" : False,
+				"did_kill" : False,
+				"item_used": None,
+				"energy_consumed": 0,
+				"modifiers_applied": [],
+				"loot_dropped": []
+			}
+		self.use_info = use_info
+
+class BuffInfo(object):
+	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description=""):
+		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
+		self.description = description
+
+		if not use_info:
+			use_info = {
+				"hp_change" : 0,
+				"energy_change" : 0,
+				"experience_gained" : 0,
+				"item_used": None,
+				"modifiers_applied": []
+			}
+		self.use_info = use_info
 
 class Ability(object):
 	def __init__(self, name, granted_by):
@@ -31,26 +71,17 @@ class Ability(object):
 		self.granted_by = granted_by
 
 	@staticmethod
-	def use(user, target):
-		msg = "%s has %d energy left.\n"%(user.name.title(), user.energy)
-		if target:
-			killed, kill_message = target.kill_if_nececary(user)
-			if killed == True:
-				msg += kill_message
-		return msg
+	def use(prototype, user, target, use_info):
+		use_info.use_info["energy_change"] = -prototype.energy_required 
+		user.energy = user.energy + use_info.use_info["energy_change"]		
+		use_info.description += "%s has %d energy left.\n"%(user.name.title(), user.energy)
+		return use_info
 
 	@staticmethod
 	def can_use(energy, energy_required):
 		if not energy >= energy_required:
 			return False, "Not enough energy"
 		return True, ""
-
-	def examine_self(ability):
-		help_text = "%s\n"%(ability.name)
-		help_text += "%s\n"%(ability.description)
-		help_text += "Requires %s energy\n"%(ability.energy_required)
-		help_text += "Requirements to use:\n %s\n"%( str(ability.requirements) )
-		return help_text
 
 class Smash(Ability):
 
@@ -96,11 +127,11 @@ class Smash(Ability):
 
 	@staticmethod
 	def use(user, target, weapon=None):
+		attack_info = AttackInfo(user, "attack", Smash, target)
 		if not weapon:
 			weapon = user.primary_weapon
 
-		msg = ""
-		user.energy = user.energy - Smash.energy_required
+		attack_info.use_info["item_used"] = weapon
 
 		is_small = int("small" in target.tags)*2
 		is_quick = int("quick" in target.tags)*2
@@ -111,9 +142,9 @@ class Smash(Ability):
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = Smash.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-
+		attack_info.use_info["hit_chance"] = chance_to_hit
 		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s smashes %s at %s but misses.\n"%(user.name, weapon.name, target.name)
+			attack_info.description += "%s smashes %s at %s but misses.\n"%(user.name.title(), weapon.name, target.name)
 		else:
 			weapon_dmg = diceroll(weapon.stats["damage"])
 			strength = user.characteristics["strength"]
@@ -122,11 +153,13 @@ class Smash(Ability):
 			is_heavy_armored = int("heavy armor" in target.tags) * 3
 
 			dmg = Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
+			attack_info.use_info["did_hit"] = True
+			attack_info.use_info["damage_dealt"] = dmg
+			attack_info = target.damage(dmg, attack_info)
 
-			target.health = target.health - dmg
-			msg = "%s smashes %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
+			attack_info.description += = "%s smashes %s and deals %d damage to %s.\n"%(user.name.title(), weapon.name, dmg, target.name)
 
-		return msg + str(Ability.use(user, target))
+		return Ability.use(Smash, user, target, attack_info)
 
 class Stab(Ability):
 

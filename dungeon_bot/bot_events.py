@@ -473,15 +473,24 @@ class CombatEvent(BotEvent):
 		self.turn = 0
 		self.round = 0
 
+		
+
 		self.user_abilities = { #  {user.username:  {ability.name: ability}}
 
 		}
 
+		self.users_to_players {
+
+		}
 		for user in self.users:
+			for ply in self.players:
+				if ply.username == user.username:
+					self.users_to_players[user.username] = ply
+
 			if not user.username in list(self.user_abilities.keys()):
 				self.user_abilities[user.username] = {}
 
-			ply = persistence_controller.get_ply(user)
+			ply = users_to_players[user.name]
 			for ability in ply.abilities:
 				self.user_abilities[user.username][ability.name] = ability
 
@@ -569,9 +578,10 @@ class CombatEvent(BotEvent):
 						if t.name == argument or argument.isdigit() and int(argument) == i:
 							target = t
 
-					can_use, cant_use_msg = ability_class.can_use( persistence_controller.get_ply(user), target )
+					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[user.username], target )
 					if can_use:
-						msg = ability_class.use( persistence_controller.get_ply(user), target, granted_by )
+						use_info = ability_class.use( self.users_to_players[user.username], target, granted_by )
+						msg += use_info.description 
 						broadcast = []
 						for u in self.users:
 							broadcast.append([u, msg])
@@ -596,11 +606,11 @@ class CombatEvent(BotEvent):
 			return help_text
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:
-				return  (persistence_controller.get_ply(user)).examine_self()
+				return  (self.users_to_players[user.username]).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args)
-				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
-					return (persistence_controller.get_ply(user).examine_self())
+				if argument=="self" or argument == user.username or argument == self.users_to_players[user.username].name:
+					return (self.users_to_players[user.username].examine_self())
 				elif argument.isdigit():
 					if int(argument) < len(self.turn_qeue):
 						return self.turn_qeue[int(argument)].examine_self()
