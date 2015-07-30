@@ -71,15 +71,15 @@ class Ability(object):
 		self.granted_by = granted_by
 
 	@staticmethod
-	def use(prototype, user, target, use_info):
-		use_info.use_info["energy_change"] = -prototype.energy_required 
-		user.energy = user.energy + use_info.use_info["energy_change"]		
-		use_info.description += "%s has %d energy left.\n"%(user.name.title(), user.energy)
+	def use(use_info):
+		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required 
+		use_info.inhibitor.energy = use_info.inhibitor.energy + use_info.use_info["energy_change"]		
+		use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), use_info.inhibitor.energy)
 		return use_info
 
 	@staticmethod
-	def can_use(energy, energy_required):
-		if not energy >= energy_required:
+	def can_use(user, ability_class):
+		if not user.energy >= ability_class.energy_required:
 			return False, "Not enough energy"
 		return True, ""
 
@@ -109,7 +109,7 @@ class Smash(Ability):
 		if not target:
 			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, Smash.energy_required)
+			return Ability.can_use(user, Smash)
 		else:
 			return False, "Target is already dead."
 
@@ -157,7 +157,7 @@ class Smash(Ability):
 			attack_info.use_info["damage_dealt"] = dmg
 			attack_info = target.damage(dmg, attack_info)
 
-			attack_info.description += = "%s smashes %s and deals %d damage to %s.\n"%(user.name.title(), weapon.name, dmg, target.name)
+			attack_info.description += "%s smashes %s and deals %d damage to %s.\n"%(user.name.title(), weapon.name, dmg, target.name)
 
 		return Ability.use(Smash, user, target, attack_info)
 
@@ -592,21 +592,21 @@ class ShieldUp(Ability): #TODO test and adapt
 
 	@staticmethod
 	def can_use(user, target=None):
-		return Ability.can_use(user.energy, ShieldUp.energy_required)
+		return Ability.can_use(user, ShieldUp)
 
 	@staticmethod
 	def use(user, target=None, weapon=None):
+		buff_info = AttackInfo(user, "attack", Smash, target)
 		if not weapon:
 			weapon = user.secondary_weapon
-
-		user.energy = user.energy - ShieldUp.energy_required
+		buff_info.use_info["item_used"] = weapon
 		defence_bonus = weapon.stats["defence"]
 		modifier_params = {"stats_change": {"defence":defence_bonus}}
 		modifier = get_modifier_by_name("shielded", weapon, user, modifier_params)
-		modifier.apply()
-		msg = "%s raises his shield up and gains a %s defence for the next turn.\n"%(user.name, defence_bonus)
+		buff_info.description += modifier.apply()
+		buff_info.use_info["modifiers_applied"].append(modifier)
 
-		return msg + str(Ability.use(user, target))
+		return Ability.use(buff_info)
 
 
 

@@ -1,5 +1,6 @@
 from util import *
 from creatures import *
+from abilities import *
 from items import *
 from enemies import *
 import logging
@@ -62,13 +63,13 @@ def test_loot_drop():
 		i+=1
 		ply = Player("testman", "tester", "testinator", "test")
 		enemy = retrieve_enemy_for_difficulty(1)
-		death_msg = enemy.die(ply)
-		if "loot" in death_msg:
+		death = enemy.die(AttackInfo(ply, None, None, enemy))
+		if len(death.use_info["loot_dropped"])>0:
 			loot_dropped = True
 			assert ply.inventory[0] != None
 		else:
 			continue
-		logger.info("Loot dropped, death msg:\n%s"%(death_msg))
+		logger.info("Loot dropped, death msg:\n%s"%(death.description))
 		logger.info("Ply inventory:\n%s"%(ply.examine_inventory()))
 		logger.info("Item:\n%s"%(ply.inventory[0].examine_self()))
 

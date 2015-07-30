@@ -42,7 +42,8 @@ def test_shielded_modifier():
 	defences = [ply.defence for x in range(10000)]
 	logger.info("Average defence with shield:\n%f"%(sum(defences)/len(defences)))
 
-	msg = ability.use( ply, None, item )
+	ability_info = ability.use( ply, None, item )
+	msg = ability_info.description
 	logger.info("Used ability, msg: \n%s\n"%(msg))
 	logger.info("Ply status now:\n%s\n"%(ply.examine_self()))
 

@@ -181,8 +181,7 @@ class Creature(object):
 	def damage(self, value, attack_info):
 		if not self.dead:
 			self.health = self.health - value
-			attack_info = self.kill_if_nececary(user, attack_info) 
-			attack_info.description += kill_message
+			attack_info = self.kill_if_nececary(attack_info) 
 		return attack_info
 
 	def equip(self, target_item):

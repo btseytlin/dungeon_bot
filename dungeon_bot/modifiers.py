@@ -37,12 +37,6 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 			self.duration != 1
 
-	def on_hit(self, target, attack_info=None):
-		pass
-
-	def on_miss(self, target, attack_info=None):
-		pass
-
 	def on_ability(self, target, ability_info=None):
 		pass
 
@@ -70,6 +64,11 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {"defence":"3d6"}, abilities_granted = [], tags_granted = [], name="shielded", description="grants defence"):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
 
+	def on_applied(self):
+		msg = super(Shielded, self).on_applied()
+		msg += "%s raises his shield up and gains a %s defence for the next turn.\n"%(self.host.name, self.stats_change["defence"])
+		return msg
+
 class Bonus(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="bonus", description="???"):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description)
@@ -81,7 +80,7 @@ class FireAttack(Modifier):
 		self.fire_damage = ["1d3","2d6"]
 		self.fire_chance = ["1d2", "5d6"]
 
-	def on_hit(self, target, attack_info=None):
+	def on_attack(self, target, attack_info=None):
 		return "Fire damage!"
 
 def get_modifier_by_name(modifier_name, source, target, params={}):
