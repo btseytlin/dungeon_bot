@@ -6,6 +6,7 @@ import logging
 import datetime
 from dungeon import *
 import random
+import gc
 persistence_controller = PersistenceController.get_instance()
 
 logger = logging.getLogger('dungeon_bot')
@@ -17,6 +18,16 @@ def event_over_callback(event):
 	logger.debug("Removing event %s"%(event.uid))
 	del DungeonBot.events[event.uid] #delete event
 	logger.debug("Event %s removed"%(event.uid))
+	gc.collect()
+
+def crawl_event_over_callback(event):
+	for user in event.users:
+		ply = persistence_controller.get_ply(user)
+		ply.health = ply.stats["max_health"]
+		ply.energy = ply.stats["max_energy"]
+		ply.refresh_derived()
+	event_over_callback(event)
+	return DungeonBot.instance.status()
 
 def lobby_event_lover_callback(lobby):
 	logger.debug("Removing lobby %s"%(lobby.uid))
@@ -25,7 +36,7 @@ def lobby_event_lover_callback(lobby):
 	if len(lobby.users) > 0:
 		dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in lobby.users])
 		
-		dungeon_crawl = DungeonCrawlEvent(event_over_callback, lobby.users, dungeon)
+		dungeon_crawl = DungeonCrawlEvent(crawl_event_over_callback, lobby.users, dungeon)
 		DungeonBot.events[dungeon_crawl.uid] = dungeon_crawl
 
 		broadcast = []
@@ -62,7 +73,7 @@ class DungeonBot(object):
 	api = None
 	#set webhook
 
-	into_message = "Welcome! DungeonBot is a text RPG. Make a character, raid a dungeon, kill monsters, loot them for shiny things! And do it with your friends too!\nThe bot is very much WIP, so beware of bugs. Please send feedback to @btseytlin.\nHappy dungeon crawling!\n"
+	intro_message = "Welcome! DungeonBot is a text RPG. Make a character, raid a dungeon, kill monsters, loot them for shiny things! And do it with your friends too!\nThe bot is very much WIP, so beware of bugs. Please send feedback to @btseytlin.\nHappy dungeon crawling!\n"
 	def __init__(self):
 		logger.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
@@ -80,7 +91,7 @@ class DungeonBot(object):
 		args = words[1:]
 		return command,args
 
-	def status(self, user):
+	def status(self, user=None):
 		msg = 'You are in the main screen of DungeonBot.\nFrom here you can inspect your inventory, your stats and characteristics, create and join lobbies.\nCreate a lobby by typing "create 1" (means "create lobby for one player") and jump straight into action!\n'
 		return msg
 
@@ -125,15 +136,19 @@ class DungeonBot(object):
 				updates = self.api.getUpdates()
 
 			for update in updates:
-				logger.debug("Got update with id %d"%(update.update_id))
-				self.last_update_id = update.update_id+1
-				logger.debug("Last update id is %d"%(self.last_update_id))
+				try:
+					#logger.debug("Got update with id %d"%(update.update_id))
+					self.last_update_id = update.update_id+1
+					#logger.debug("Last update id is %d"%(self.last_update_id))
 
-				message = update.message
-				close_enough = self.time_started - datetime.timedelta(minutes=15)
-				if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-					logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
-					self.on_message(message)
+					message = update.message
+					close_enough = self.time_started - datetime.timedelta(minutes=15)
+					if datetime.datetime.fromtimestamp(message.date) >= close_enough :
+						logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
+						self.on_message(message)
+				except:
+					logger.exception("E:")
+			
 
 
 	def on_message(self, message):
@@ -145,7 +160,7 @@ class DungeonBot(object):
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
 			print("User %s is not registered"%(user.username))
-			self.api.sendMessage(user.id, into_message)
+			self.api.sendMessage(user.id, DungeonBot.intro_message)
 			self.register_player(user)
 		else:
 			ply = persistence_controller.get_ply(user)
@@ -155,16 +170,20 @@ class DungeonBot(object):
 
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
+						logger.info(("[RESPONSE] to user %s: %s")%(message[0].username, message[1]))
 						self.api.sendMessage(message[0].id, message[1])
 				else:
+					logger.info(("[RESPONSE] to user %s: %s")%(user.username, response))
 					self.api.sendMessage(user.id, response) #If he is, let the event handle the message
 			else:
 				#parse command on your own
 				response = self.handle_command(user, command, *args)
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
+						logger.info(("[RESPONSE] to user %s: %s")%(message[0].username, message[1]))
 						self.api.sendMessage(message[0].id, message[1])
 				else:
+					logger.info(("[RESPONSE] to user %s: %s")%(user.username, response))
 					self.api.sendMessage(user.id, response)
 
 	def register_player(self, user):

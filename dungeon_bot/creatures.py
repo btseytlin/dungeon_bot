@@ -221,9 +221,9 @@ class Creature(object):
 		self.inventory.remove(target_item)
 		return "Succesfully destroyed %s."%(target_item.name)
 
-	def use(self, item, target):
+	def use(self, item):
 		if item in self.inventory:
-			use_effect = item.use(self, target)
+			use_effect = item.use(self)
 			msg = self.on_consumable_used(item)
 			return use_effect + msg
 
@@ -414,7 +414,8 @@ class Creature(object):
 		return attack_info
 
 	def examine_equipment(self):
-		desc = "%s's equipment:\n"%(self.name)
+		#desc = "%s's equipment:\n"%(self.name)
+		desc = ""
 		for key in self.equipment.keys():
 			item = self.equipment[key]
 			if item:
@@ -422,7 +423,8 @@ class Creature(object):
 		return desc
 
 	def examine_inventory(self):
-		desc = "%s's inventory:\n"%(self.name)
+		#desc = "%s's inventory:\n"%(self.name)
+		desc = ""
 		items = []
 		for i in range(len(self.inventory)):
 			item = self.inventory[i]
@@ -520,11 +522,13 @@ class Creature(object):
 		[
 			"%s. lvl %d"%(self.name.title(), self.level),
 			"%s"%(self.description or "----"),
-			"Characteristics:\n%s"%(pformat(self.characteristics, width=1)),
-			"Stats:\n%s"%(pformat(self.stats, width=1)),
-			"Tags:\n%s"%(", ".join(self.tags)),
-			"Modifiers:\n%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
-			"Abilities:\n%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities]))
+			"Characteristics:\n%s\n"%("\n".join(["|\t"+x+":" +str(self.characteristics[x]) for x in list(self.characteristics.keys())])),
+			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
+			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]),
+			"Exp:\n|\t%d/%d"%(self.experience, self.max_experience),
+			"Tags:\n|\t%s"%(", ".join(self.tags)),
+			"Modifiers:\n|\t%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
+			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities]))
 		])
 		return desc
 

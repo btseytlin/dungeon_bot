@@ -35,8 +35,5 @@ tg = telegram.Bot(token=apitoken)
 dungeon_bot = DungeonBot()
 dungeon_bot.api = tg
 
-try:
-	logger.info("Telegram DungeonBot started")
-	dungeon_bot.start_main_loop()
-except:
-	logger.exception("E:")
+dungeon_bot.start_main_loop()
+	

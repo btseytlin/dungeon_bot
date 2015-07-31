@@ -51,9 +51,7 @@ class BotEvent(object):
 class RegistrationEvent(BotEvent):
 
 	steps = [
-		"name",
-		"race", 
-		"combat_class"
+		"name"
 	]
 
 	def __init__(self, finished_callback, user):
@@ -71,19 +69,10 @@ class RegistrationEvent(BotEvent):
 		if self.current_step == 0:
 			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip().title()
 			self.current_step+=1
-			return("What is your race?")
-
-		elif self.current_step == 1:
-			self.new_player.race = command
-			self.current_step+=1
-			return("What is your class?")
-
-		elif self.current_step == 2:
-			self.new_player.combat_class = command
 			club = get_item_by_name("club")
 			self.new_player.inventory = [club]
 			self.finish()
-			return('Registration complete! Try "examine" to see your stats, "inventory" to see your items.')
+			return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\n')
 			
 			
 
@@ -111,8 +100,9 @@ class InventoryEvent(BotEvent):
 
 	def status(self, user):
 		msg = "You are in the inventory screen.\n"
-		msg += "Your inventory:\n%s\n."%(self.player.examine_inventory())
-		msg += "Your equipment:\n%s\n."%(self.player.examine_equipment())
+		msg += 'You can use item numbers as arguemnts for commands, for example "equip 1".\n'
+		msg += "Your inventory:\n%s\n"%(self.player.examine_inventory())
+		msg += "Your equipment:\n%s\n"%(self.player.examine_equipment())
 		return msg
 
 	def find_item(self, arg, player, inventory_only = False):
@@ -177,8 +167,8 @@ class InventoryEvent(BotEvent):
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
 				desc = self.player.examine_self()
-				desc += "\n"+self.player.examine_equipment()
-				desc += self.player.examine_inventory()
+				desc += "Equipment:\n"+self.player.examine_equipment()
+				desc += "Inventory:\n"+self.player.examine_inventory()
 				return desc
 			elif len(args) > 0:
 				found, item = self.find_item(" ".join(args), self.player)
@@ -356,7 +346,7 @@ class DungeonCrawlEvent(BotEvent):
 		"status": "shows where you are and what you are doing",
 	}
 
-	def status(self, user):
+	def status(self, user=None):
 		msg = 'You are in room number %d of %s.'%(self.dungeon.current_room, self.dungeon.name)
 		return msg
 
@@ -382,23 +372,14 @@ class DungeonCrawlEvent(BotEvent):
 
 	def start_combat(self, players, enemies):
 		def combat_over_callback(event):
-			print("Combat over callback")
-			msg = "No one won, apparently"
+			alive_player = False
 			for player in players:
 				player.event = self # Free all players from event
-
-			if self.combat_event.winner == "enemies":
-				print("Enemies won over callback")
-				self.finish()
-				msg = "Enemies defeated the players!"
-				return msg
-
-			elif self.combat_event.winner == "players":
-				print("Players won")
-				msg = "Players win the battle!"
-				self.combat_event = None
-				msg += self.greeting_message
-				return msg
+				if not player.dead:
+					alive_player = True
+			if not alive_player:
+				return "\nThe players perished in the dungeon.\n" + self.finish()
+			return "\nThe players have defeated the pesky enemies and are ready to advance further.\n"
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
@@ -420,7 +401,10 @@ class DungeonCrawlEvent(BotEvent):
 
 		if self.dungeon.current_room > len(self.dungeon.rooms)-1:
 			self.finish()
-			return "Dungeon completed"
+			broadcast = []
+			for u in self.users:
+				broadcast.append([u, "Dungeon completed"])
+			return broadcast
 
 		room = self.dungeon.rooms[self.dungeon.current_room]
 		if room.room_type == "combat":
@@ -542,6 +526,7 @@ class CombatEvent(BotEvent):
 	def status(self, user):
 		msg = 'You are fighting %s.\n'%(", ".join([enemy.name for enemy in self.enemies]))
 		msg += 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
+		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'
 		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[user.username].energy, self.users_to_players[user.username].health)
 		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.title())
 		return msg
@@ -572,11 +557,17 @@ class CombatEvent(BotEvent):
 
 		if alive_enemy and not alive_player:
 			self.winner = "enemies"
-			return True
+			desc = "Players have been defeated!\n"
+			return True, desc
 		elif alive_player and not alive_enemy:
 			self.winner = "players"
-			return True
-		return False
+			desc = "Players won the battle!\n"
+			return True, desc
+		elif not alive_player and not alive_enemy:
+			self.winner = "the zone" #whatever the hell happened that everyone died
+			desc = "Everyone died, thus the players lost. How did you manage it anyway?"
+			return True, desc
+		return False, ""
 
 	def this_turn(self):
 		msg = ""
@@ -596,9 +587,10 @@ class CombatEvent(BotEvent):
 		if self.turn > len(self.turn_qeue)-1:
 			return msg + self.next_round()
 
-		fight_ended = self.check_winning_conditions()
+		fight_ended, desc = self.check_winning_conditions()
 		if fight_ended:
-			return self.finish()
+			msg += desc
+			return msg + self.finish()
 
 		if (self.turn_qeue[self.turn].dead):
 			return self.next_turn()
