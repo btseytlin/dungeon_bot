@@ -24,12 +24,10 @@ default_equipment = {
 
 
 class Creature(object):
-	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
+	def __init__(self, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[], modifiers = []):
 
 		self.uid = get_uid()
 		self.name = name
-		self.race = race
-		self.combat_class = combat_class
 		self.description = description
 		self.event = None
 		self._level = level
@@ -523,7 +521,6 @@ class Creature(object):
 		[
 			"%s. lvl %d"%(self.name.title(), self.level),
 			"%s"%(self.description or "----"),
-			"Race: %s, class: %s."%(self.race, self.combat_class),
 			"Characteristics:\n%s"%(pformat(self.characteristics, width=1)),
 			"Stats:\n%s"%(pformat(self.stats, width=1)),
 			"Tags:\n%s"%(", ".join(self.tags)),
@@ -552,13 +549,13 @@ class Creature(object):
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, username, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
+	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.max_experience = max_experience
 		self.username = username
 
-		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
 	@property
 	def experience(self):
@@ -608,7 +605,7 @@ class Player(Creature):
 				equipment[key] = Item.de_json(eq[key])
 
 		data["equipment"] = equipment
-		ply = Player(data.get("username"), data.get("name"), data.get("race"), data.get("combat_class"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
+		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
 		return ply
 
 	def to_json(self):
@@ -628,8 +625,8 @@ class Enemy(Creature):
 
 	}
 
-	def __init__(self, name, race, combat_class, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
-		Creature.__init__(self, name, race, combat_class, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+	def __init__(self, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
+		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.exp_value = exp_value
 
 	def act(self):
@@ -672,6 +669,6 @@ class Enemy(Creature):
 				equipment[key] = Item.de_json(eq[key])
 		data["equipment"] = equipment
 
-		en =  Enemy(data.get("name"), data.get("race"), data.get("combat_class"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), [], [])
+		en =  Enemy(data.get("name"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), [], [])
 		return en
 
