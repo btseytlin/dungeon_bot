@@ -172,8 +172,8 @@ item_listing = {
 
 	},
 	"secondary_weapon":{
-		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["stab", "cut", "quick stab", "quick cut"]}},
-		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up", "bash"]}},
+		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["stab", "cut", "quickstab", "quickcut"]}},
+		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shieldup"]}},
 	},
 	"armor":{
 		"chainmail": {"stats": {"defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
@@ -189,6 +189,8 @@ item_listing = {
 		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."} },
 
 		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : 1}} , "args":{"name":"ring of more vitality", "description":"Just gives you +1 vit."} },
+
+		"ring of much more dexterity": {"stats": {"characteristics_change": {"dexterity" : 5}} , "args":{"name":"ring of much more dexterity", "description":"Just gives you +5 dex."} },
 
 		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 vit, but via a modifier.", "modifiers_granted": [ 
 

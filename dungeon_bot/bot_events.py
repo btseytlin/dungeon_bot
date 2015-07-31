@@ -465,7 +465,7 @@ class CombatEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, users)
 		self.players = players
 		self.enemies = enemies
-		self.turn_qeue = self.create_turn_qeue()
+		self.turn_qeue = self.update_turn_qeue()
 
 		for creature in self.turn_qeue:
 			creature.on_combat_start()
@@ -496,11 +496,9 @@ class CombatEvent(BotEvent):
 
 
 		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.username+")" for p in players]), ", ".join([e.name for e in enemies])))
-		combat_logger.info("Combat qeue:\n"+", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))]))
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
-		self.greeting_message += "The combat qeue is:\n"+", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))]) + "\n"
-		self.greeting_message += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+		self.greeting_message += self.next_round()
 
 		
 
@@ -509,11 +507,18 @@ class CombatEvent(BotEvent):
 
 	def next_round(self):
 		self.round += 1
+		self.turn = 0
 		msg = "".join([c.on_round() for c in self.turn_qeue])
 		msg += "Round %d.\n"%(self.round+1)
+		self.update_turn_qeue()
+		msg += self.get_printable_turn_qeue()
 		combat_logger.info("%s"%(msg))
+		msg += "It's %s's turn"%(self.turn_qeue[self.turn].name)
 		return msg
 
+	def get_printable_turn_qeue(self):
+		return ", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))])+"\n"
+	
 	def check_winning_conditions(self):
 		alive_enemy = False
 		alive_player = False
@@ -533,7 +538,6 @@ class CombatEvent(BotEvent):
 		return False
 
 	def next_turn(self):
-		msg = ""
 		for creature in self.turn_qeue:
 			msg += creature.on_turn()
 
@@ -543,7 +547,6 @@ class CombatEvent(BotEvent):
 
 		self.turn += 1
 		if self.turn > len(self.turn_qeue)-1:
-			self.turn = 0
 			msg += self.next_round()
 
 
@@ -556,10 +559,14 @@ class CombatEvent(BotEvent):
 
 		return msg
 
-	def create_turn_qeue(self):
+	def update_turn_qeue(self):
 		all_creatures = self.players + self.enemies
+		for c in all_creatures:
+			if c.dead:
+				all_creatures.remove(c)
 		random.shuffle(all_creatures)
 		qeue = sorted(all_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
+		combat_logger.info("Combat qeue:\n"+", ".join(["["+str(i)+"]"+qeue[i].name for i in range(len(qeue))]))
 		return qeue
 
 	def ai_turn(self):

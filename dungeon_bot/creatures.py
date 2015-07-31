@@ -230,6 +230,11 @@ class Creature(object):
 			msg = self.on_consumable_used(item)
 			return use_effect + msg
 
+
+	def add_modifier(self, modifier):
+		self.modifiers.append(modifier)
+		self.modifiers = sorted(self.modifiers, key=lambda x: x.priority, reverse=False)
+
 	""" EVENTS """
 	def on_combat_start(self):
 		msg = ""
@@ -255,12 +260,12 @@ class Creature(object):
 			if effect:
 				msg += effect
 
-		self.energy += self.stats["energy_regen"]
-		msg += self.on_energy_gained(self.stats["energy_regen"])
+		if not self.dead:
+			self.energy += self.stats["energy_regen"]
+			msg += self.on_energy_gained(self.stats["energy_regen"])
 		return msg
 
 	def on_turn(self):
-		#regenerate energy
 		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_turn()
@@ -327,7 +332,7 @@ class Creature(object):
 		return msg
 
 	def on_energy_gained(self, value):
-		msg = "%s gains %d energy.\n"%(self.name.title(), value)
+		#msg = "%s gains %d energy.\n"%(self.name.title(), value)
 		for modifier in self.modifiers:
 			effect = modifier.on_energy_gained(value)
 			if effect:
@@ -447,7 +452,6 @@ class Creature(object):
 			for perk in self.level_perks:
 				for modifier in perk.modifiers_granted:
 					modifier_object = get_modifier_by_name( modifier["name"], perk, self, modifier["params"] )
-					self.modifiers.append(modifier_object)
 					modifier_object.apply()
 
 		for key in self.equipment.keys():

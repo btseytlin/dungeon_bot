@@ -49,6 +49,8 @@ class Rat(Enemy):
 		"ring of fire" : 10,
 		"shield" : 10,
 		"ring of not dying" : 1,
+		"ring of much more dexterity" : 30,
+		"ring of more vitality" : 30,
 	}
 	loot_coolity = 0.5
 
@@ -66,7 +68,7 @@ class Rat(Enemy):
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c))
+					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
 			if not targets:
 				break
 
@@ -112,7 +114,7 @@ class BigRat(Enemy):
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c))
+					attack_infos.append(self.abilities[0].__class__.use(self, c,  self.primary_weapon))
 			if not targets:
 				break
 

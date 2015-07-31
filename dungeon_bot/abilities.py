@@ -120,6 +120,20 @@ class Ability(object):
 
 	@staticmethod
 	def use(use_info):
+		if use_info.ability_type == "attack":
+			use_info.use_info["hit_chance"] = use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
+
+			if random.randint(0, 100) > use_info.use_info["hit_chance"]:
+				use_info.description += use_info.prototype_class.get_miss_description(use_info) 
+			else:
+				use_info.use_info["did_hit"] = True
+				use_info.use_info["damage_dealt"] = use_info.prototype_class.get_damage(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
+				use_info.description += use_info.prototype_class.get_hit_description(use_info)
+		else:
+			modifiers = use_info.prototype_class.get_buff_modifiers(use_info)
+			use_info.use_info["modifiers_applied"] += modifiers
+			use_info.description += use_info.prototype_class.get_buff_description(use_info)
+
 		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required
 		use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), clamp( use_info.inhibitor.energy + use_info.use_info["energy_change"], 0, use_info.inhibitor.stats["max_energy"]))
 		use_info = use_info.execute()
@@ -130,6 +144,15 @@ class Ability(object):
 		if not user.energy >= ability_class.energy_required:
 			return False, "Not enough energy"
 		return True, ""
+
+
+	@staticmethod
+	def get_miss_description(attack_info):
+		return "%s uses ability %s with %s at %s but misses.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.target.name)
+
+	@staticmethod
+	def get_hit_description(attack_info):
+		return "%s attacks ability %s with %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
 
 class Smash(Ability):
 
@@ -162,24 +185,27 @@ class Smash(Ability):
 			return False, "Target is already dead."
 
 	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+	def get_miss_description(attack_info):
+		return "%s smashes %s at %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.target.name)
+
+	@staticmethod
+	def get_hit_description(attack_info):
+		return "%s smashes %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
+
+	@staticmethod
+	def get_damage(user, target, weapon):
+
+		weapon_dmg = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence
+		is_armored = int("armor" in target.tags) * 2
+		is_heavy_armored = int("heavy armor" in target.tags) * 3
 
 		dmg = clamp( weapon_dmg * strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
-
-		return chance_to_hit
-
-	@staticmethod
-	def use(user, target, weapon=None):
-		attack_info = AttackInfo(user, "attack", Smash, target)
-		if not weapon:
-			weapon = user.primary_weapon
-
-		attack_info.use_info["item_used"] = weapon
+	def get_chance_to_hit(user, target, weapon):
 
 		is_small = int("small" in target.tags)*2
 		is_quick = int("quick" in target.tags)*2
@@ -189,22 +215,14 @@ class Smash(Ability):
 		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = Smash.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-		attack_info.use_info["hit_chance"] = chance_to_hit
-		if random.randint(0, 100) > chance_to_hit:
-			attack_info.description += "%s smashes %s at %s but misses.\n"%(user.name.title(), weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence
-			is_armored = int("armor" in target.tags) * 2
-			is_heavy_armored = int("heavy armor" in target.tags) * 3
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
-			dmg = Smash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
-			attack_info.use_info["did_hit"] = True
-			attack_info.use_info["damage_dealt"] = dmg
-			attack_info.description += "%s smashes %s and deals %d damage to %s.\n"%(user.name.title(), weapon.name, dmg, target.name)
+		return chance_to_hit
 
+	@staticmethod
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", Smash, target)
+		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
 class Stab(Ability):
@@ -243,24 +261,19 @@ class Stab(Ability):
 			return False, "Target is already dead."
 
 	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+	def get_damage(user, target, weapon):
+		weapon_dmg = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence * 1.5
+		is_armored = int("armor" in target.tags) * 3
+		is_heavy_armored = int("heavy armor" in target.tags) * 4
+		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
-
-		return chance_to_hit
-
-	@staticmethod
-	def use(user, target, weapon=None):
-		if not weapon:
-			weapon = user.primary_weapon
-
-		msg = ""
-		user.energy = user.energy - Stab.energy_required
+	def get_chance_to_hit(user, target, weapon):
 
 		is_small = int("small" in target.tags)*2
 		is_quick = int("quick" in target.tags)*2
@@ -270,24 +283,15 @@ class Stab(Ability):
 		accuracy = diceroll(weapon.stats["accuracy"]) * 1.5
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = Stab.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
-		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s stabs %s at %s but misses.\n"%(user.name, weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence * 1.5
-			is_armored = int("armor" in target.tags) * 3
-			is_heavy_armored = int("heavy armor" in target.tags) * 4
-			not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
+		return chance_to_hit
 
-			dmg = Stab.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
-
-			target.health = target.health - dmg
-			msg = "%s stabs %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
-
-		return msg + str(Ability.use(user, target))
+	@staticmethod
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", Stab, target)
+		attack_info.use_info["item_used"] = weapon
+		return Ability.use(attack_info)
 
 class QuickStab(Ability):
 
@@ -313,7 +317,7 @@ class QuickStab(Ability):
 	above average dex required to use 
 
 	"""
-	name = "quick stab"
+	name = "quickstab"
 	description = "Quick stab in the gut!"
 	energy_required = 2
 	requirements = None
@@ -328,24 +332,19 @@ class QuickStab(Ability):
 			return False, "Target is already dead."
 
 	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+	def get_damage(user, target, weapon):
+		weapon_dmg = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence * 1.5
+		is_armored = int("armor" in target.tags) * 4
+		is_heavy_armored = int("heavy armor" in target.tags) * 5
+		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.2 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
-
-		return chance_to_hit
-
-	@staticmethod
-	def use(user, target, weapon=None):
-		if not weapon:
-			weapon = user.primary_weapon
-
-		msg = ""
-		user.energy = user.energy - QuickStab.energy_required
+	def get_chance_to_hit(user, target, weapon):
 
 		is_small = int("small" in target.tags)*2
 		is_quick = int("quick" in target.tags)*2
@@ -355,24 +354,15 @@ class QuickStab(Ability):
 		accuracy = diceroll(weapon.stats["accuracy"]) * 1.5
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = QuickStab.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
-		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s stabs %s at %s but misses.\n"%(user.name, weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence * 1.5
-			is_armored = int("armor" in target.tags) * 4
-			is_heavy_armored = int("heavy armor" in target.tags) * 5
-			not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
+		return chance_to_hit
 
-			dmg = QuickStab.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
-
-			target.health = target.health - dmg
-			msg = "%s stabs %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
-
-		return msg + str(Ability.use(user, target))
+	@staticmethod
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", QuickStab, target)
+		attack_info.use_info["item_used"] = weapon
+		return Ability.use(attack_info)
 
 class Cut(Ability): #TODO test and adapt
 
@@ -410,25 +400,19 @@ class Cut(Ability): #TODO test and adapt
 			return False, "Target is already dead."
 
 	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+	def get_damage(user, target, weapon):
+		weapon_dmg = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence
+		is_armored = int("armor" in target.tags) * 2
+		is_heavy_armored = int("heavy armor" in target.tags) * 3
+		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
-
-		return chance_to_hit
-
-	@staticmethod
-	def use(user, target, weapon=None):
-		if not weapon:
-			weapon = user.primary_weapon
-
-		msg = ""
-		user.energy = user.energy - Cut.energy_required
-
+	def get_chance_to_hit(user, target, weapon):
 		is_small = int("small" in target.tags)*2
 		is_quick = int("quick" in target.tags)*2
 		is_big = int("big" in target.tags)*3
@@ -437,26 +421,17 @@ class Cut(Ability): #TODO test and adapt
 		accuracy = diceroll(weapon.stats["accuracy"]) * 1.5
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = Cut.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
-		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s cuts %s at %s but misses.\n"%(user.name, weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence
-			is_armored = int("armor" in target.tags) * 2
-			is_heavy_armored = int("heavy armor" in target.tags) * 3
-			not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
+		return chance_to_hit
 
-			dmg = Cut.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
+	@staticmethod
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", Cut, target)
+		attack_info.use_info["item_used"] = weapon
+		return Ability.use(attack_info)
 
-			target.health = target.health - dmg
-			msg = "%s cuts %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
-
-		return msg + str(Ability.use(user, target))
-
-class QucikCut(Ability): #TODO test and adapt
+class QuickCut(Ability): #TODO test and adapt
 
 	"""
 	Exactly like cut, except takes less energy and suffers more penalties for armored opoentns.
@@ -480,7 +455,7 @@ class QucikCut(Ability): #TODO test and adapt
 	above average dex required to use 
 
 	"""
-	name = "quick cut"
+	name = "quickcut"
 	description = "Cut em up!"
 	energy_required = 2
 	requirements = None
@@ -490,30 +465,24 @@ class QucikCut(Ability): #TODO test and adapt
 		if not target:
 			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, QucikCut.energy_required)
+			return Ability.can_use(user.energy, QuickCut.energy_required)
 		else:
 			return False, "Target is already dead."
 
 	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
+	def get_damage(user, target, weapon):
+		weapon_dmg = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence
+		is_armored = int("armor" in target.tags) * 3
+		is_heavy_armored = int("heavy armor" in target.tags) * 4
+		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored * defence - is_heavy_armored * defence, 0, 99999999 )
+		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small * evasion - is_quick * evasion + is_big * evasion + is_slow * evasion , 0, 100 )
-
-		return chance_to_hit
-
-	@staticmethod
-	def use(user, target, weapon=None):
-		if not weapon:
-			weapon = user.primary_weapon
-
-		msg = ""
-		user.energy = user.energy - QucikCut.energy_required
-
+	def get_chance_to_hit(user, target, weapon):
 		is_small = int("small" in target.tags)*2
 		is_quick = int("quick" in target.tags)*2
 		is_big = int("big" in target.tags)*3
@@ -522,105 +491,15 @@ class QucikCut(Ability): #TODO test and adapt
 		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = QucikCut.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-
-		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s cuts %s at %s but misses.\n"%(user.name, weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence
-			is_armored = int("armor" in target.tags) * 3
-			is_heavy_armored = int("heavy armor" in target.tags) * 4
-			not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
-
-			dmg = QucikCut.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
-
-			target.health = target.health - dmg
-			msg = "%s cuts %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
-
-		return msg + str(Ability.use(user, target))
-
-class Bash(Ability): #TODO test and adapt
-
-	"""
-	A shield bash, does low damage, but has a chance to knockdown or stagger the enemy, causing them to have less energy next turn.
-	High chance to hit.
-	Higher chance to hit big and slow oponents.
-
-	chance to hit = ?
-
-	dmg = ?
-
-	avg chance to hit = 55
-
-	avg dmg = ?
-
-	chance to cause "knockdown" = ?
-
-	chance to cause "stagger" = ?
-
-	"""
-	name = "bash"
-	description = "Bash em."
-	energy_required = 2
-	requirements = None
-
-	@staticmethod
-	def can_use(user, target=None):
-		if not target:
-			return False, "Target required." 
-		if not target.dead:
-			return Ability.can_use(user.energy, Bash.energy_required)
-		else:
-			return False, "Target is already dead."
-
-	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
-
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored * defence - is_heavy_armored * defence, 0, 99999999 )
-		return dmg
-
-	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small * evasion - is_quick * evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
 
 	@staticmethod
-	def use(user, target, weapon=None):
-		if not weapon:
-			weapon = user.primary_weapon
-
-		msg = ""
-		user.energy = user.energy - Bash.energy_required
-
-		is_small = int("small" in target.tags)*2
-		is_quick = int("quick" in target.tags)*2
-		is_big = int("big" in target.tags)*3
-		is_slow = int("slow" in target.tags)*3
-		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
-		dexterity = user.characteristics["dexterity"]
-
-		chance_to_hit = Bash.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-
-		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s cuts %s at %s but misses.\n"%(user.name, weapon.name, target.name)
-		else:
-			weapon_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence
-			is_armored = int("armor" in target.tags) * 3
-			is_heavy_armored = int("heavy armor" in target.tags) * 4
-			not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
-
-			dmg = Bash.get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored)
-
-			target.health = target.health - dmg
-			msg = "%s cuts %s and deals %d damage to %s.\n"%(user.name, weapon.name, dmg, target.name)
-
-		return msg + str(Ability.use(user, target))
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", QuickCut, target)
+		attack_info.use_info["item_used"] = weapon
+		return Ability.use(attack_info)
 
 class ShieldUp(Ability): #TODO test and adapt
 
@@ -631,7 +510,7 @@ class ShieldUp(Ability): #TODO test and adapt
 	evasion_lost = ?
 
 	"""
-	name = "shield up"
+	name = "shieldup"
 	description = "Hide behind your steel."
 	energy_required = 3
 	requirements = None
@@ -641,16 +520,20 @@ class ShieldUp(Ability): #TODO test and adapt
 		return Ability.can_use(user, ShieldUp)
 
 	@staticmethod
+	def get_buff_modifiers(use_info):
+		defence_bonus = use_info.use_info["item_used"].stats["defence"]
+		modifier_params = {"stats_change": {"defence":defence_bonus}}
+		modifier = get_modifier_by_name("shielded", use_info.use_info["item_used"], use_info.target, modifier_params)
+		return [modifier]
+
+	@staticmethod
+	def get_buff_description(use_info):
+		return "%s put his shieldup and gained a defence bonus.\n"%(use_info.inhibitor.name.title())
+
+	@staticmethod
 	def use(user, target=None, weapon=None):
 		buff_info = AttackInfo(user, "buff", ShieldUp, target)
-		if not weapon:
-			weapon = user.secondary_weapon
 		buff_info.use_info["item_used"] = weapon
-		defence_bonus = weapon.stats["defence"]
-		modifier_params = {"stats_change": {"defence":defence_bonus}}
-		modifier = get_modifier_by_name("shielded", weapon, user, modifier_params)
-		buff_info.use_info["modifiers_applied"].append(modifier)
-
 		return Ability.use(buff_info)
 
 class RodentBite(Ability):
@@ -676,12 +559,27 @@ class RodentBite(Ability):
 	"""
 
 	@staticmethod
-	def get_damage(weapon_dmg, strength, defence, is_armored, is_heavy_armored):
-		dmg = clamp( weapon_dmg* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
+	def get_damage(user, target, weapon):
+		weapon_damage = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence
+		is_armored = int("armor" in target.tags) * 3
+		is_heavy_armored = int("heavy armor" in target.tags) * 5
+
+		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
-	def get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow):
+	def get_chance_to_hit(user, target, weapon):
+
+		accuracy = diceroll(weapon.stats["accuracy"])
+		is_small = int("small" in target.tags)
+		is_quick = int("quick" in target.tags)
+		is_big = int("big" in target.tags)
+		is_slow = int("slow" in target.tags)
+		evasion = target.evasion
+		dexterity = user.characteristics["dexterity"]
+
 		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
@@ -696,41 +594,25 @@ class RodentBite(Ability):
 			return False, "Target is already dead"
 
 	@staticmethod
-	def use(user, target, weapon=None):
+	def get_miss_description(attack_info):
+		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title())
+
+	@staticmethod
+	def get_hit_description(attack_info):
+		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
+
+	@staticmethod
+	def use(user, target, weapon):
 		attack_info = AttackInfo(user, "attack", RodentBite, target)
-		if not weapon:
-			weapon = user.primary_weapon
 		attack_info.use_info["item_used"] = weapon
-		accuracy = diceroll(weapon.stats["accuracy"])
-		is_small = int("small" in target.tags)
-		is_quick = int("quick" in target.tags)
-		is_big = int("big" in target.tags)
-		is_slow = int("slow" in target.tags)
-		evasion = target.evasion
-		dexterity = user.characteristics["dexterity"]
-
-		chance_to_hit = RodentBite.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-		attack_info.use_info["hit_chance"] = chance_to_hit
-		if random.randint(0, 100) > chance_to_hit:
-			attack_info.description += "%s tries to bite %s but misses.\n"%(user.name, target.name)
-		else:
-			attack_info.use_info["did_hit"] = True
-			rough_dmg = diceroll(weapon.stats["damage"])
-			strength = user.characteristics["strength"]
-			defence = target.defence
-			is_armored = int("armor" in target.tags) * 3
-			is_heavy_armored = int("heavy armor" in target.tags) * 5
-
-			dmg = RodentBite.get_damage(rough_dmg, strength, defence, is_armored, is_heavy_armored)
-
-			attack_info.use_info["damage_dealt"] = dmg
-			attack_info.description += "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
-
 		return Ability.use(attack_info)
 
 abilities = {
 	"smash": Smash,
 	"rodent bite": RodentBite,
-	"shield up": ShieldUp,
-	"bash": Bash
+	"shieldup": ShieldUp,
+	"cut": Cut,
+	"stab": Stab,
+	"quickcut": QuickCut,
+	"quickstab": QuickStab,
 }
