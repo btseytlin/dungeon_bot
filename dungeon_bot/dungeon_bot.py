@@ -25,6 +25,7 @@ def crawl_event_over_callback(event):
 		ply = persistence_controller.get_ply(user)
 		ply.health = ply.stats["max_health"]
 		ply.energy = ply.stats["max_energy"]
+		ply.dead = False
 		ply.refresh_derived()
 	event_over_callback(event)
 	return DungeonBot.instance.status()

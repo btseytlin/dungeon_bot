@@ -58,6 +58,7 @@ class RegistrationEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, [user])
 		self.user = user
 		self.current_step = 0
+		self.char_points = 3
 		self.new_player = persistence_controller.get_ply(user)
 		self.greeting_message = 'You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?'
 
@@ -69,10 +70,59 @@ class RegistrationEvent(BotEvent):
 		if self.current_step == 0:
 			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip().title()
 			self.current_step+=1
-			club = get_item_by_name("club")
-			self.new_player.inventory = [club]
-			self.finish()
-			return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\n')
+			msg = "Great. Now let's input your characteristics. Currently they are:\n"
+			msg += "".join(["|\t"+str(x)+":" +str(self.new_player.characteristics[x])+"\n" for x in list(self.new_player.characteristics.keys())])
+			msg += "Strength affects how much damage you do, how resistant you are to damage.\n"
+			msg += "Dexterity affects how fast you act and how accurate you hit.\n"
+			msg += "Vitality affects how much health you have.\n"
+			msg += "Intelligence affects how likely you are to strike a critial effect, how quickly you level up.\n"
+			msg += "Use commands like \"dexterity +\" or \"dex +\" to increase or lower characteristics.\n"
+			msg += "Type \"done\" once finished.\n"
+			return msg
+
+		elif self.current_step == 1:
+			if command in ["dex", "dexterity", "strength", "str", "vitality", "vit", "intelligence", "int"]:
+				argument = " ".join(args)
+				shortened_to_full = {
+					"dex": "dexterity",
+					"str": "strength",
+					"vit": "vitality",
+					"int": "intelligence",
+				}
+				if not command in ["dexterity", "strength", "vitality", "intelligence"]:
+					characteristic = shortened_to_full[command]
+				else:
+					characteristic = command
+
+				if argument == "+":
+					if self.char_points > 0:
+						self.new_player.characteristics[characteristic] += 1
+						self.char_points -= 1 
+						msg = "You have %d points left.\n"%(self.char_points)
+						msg += "".join(["|\t"+str(x)+":" +str(self.new_player.characteristics[x])+"\n" for x in list(self.new_player.characteristics.keys())])
+						return msg
+					else:
+						return "You don't have any points left, lower some characteristic to raise %s."%(characteristic)
+				elif argument == "-":
+					if self.new_player.characteristics[characteristic] > 1:
+						self.new_player.characteristics[characteristic] -= 1
+						self.char_points += 1 
+						msg = "You have %d points left.\n"%(self.char_points)
+						msg += "".join(["|\t"+str(x)+":" +str(self.new_player.characteristics[x])+"\n" for x in list(self.new_player.characteristics.keys())])
+						return msg
+					else:
+						return "You can't lower %s any further."%(characteristic)
+				else:
+					return "Wrong argument, try \"+\" or \"-\"."
+			elif command == "done":
+				if self.char_points > 0:
+					return "You still have unspent points!\nDon't make that mistake, go invest them into something."
+				club = get_item_by_name("club")
+				self.new_player.inventory = [club]
+				self.finish()
+				return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\nAlso remember to use "status" and "help" whenever you don\'t know where you are or what to do.')
+			else:
+				return "Unknown command."
 			
 			
 
@@ -166,7 +216,7 @@ class InventoryEvent(BotEvent):
 
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
-				desc = self.player.examine_self()
+				desc = self.player.examine_self()+'\n'
 				desc += "Equipment:\n"+self.player.examine_equipment()
 				desc += "Inventory:\n"+self.player.examine_inventory()
 				return desc
@@ -536,7 +586,7 @@ class CombatEvent(BotEvent):
 		self.turn = 0
 		msg = "".join([c.on_round() for c in self.turn_qeue])
 		msg += "Round %d.\n"%(self.round)
-		self.update_turn_qeue()
+		self.turn_qeue = self.update_turn_qeue()
 		msg += self.get_printable_turn_qeue()
 		combat_logger.info("%s"%(msg))
 		msg += self.this_turn()

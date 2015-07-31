@@ -19,10 +19,10 @@ class Item(object):
 		desc = "\n".join([
 				"%s, %s."%(self.name.title(), self.item_type),
 				"%s"%(self.description or ""),
-				"Stats:\n%s"%(pformat(self.stats, width=1)),
-				"Abilities granted:\n%s"%(", ".join(self.abilities_granted)),
-				"Modifiers granted:\n%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
-				"Tags granted:\n%s"%(", ".join(self.tags_granted)),
+				"Stats:\n%s"%("".join(["|\t"+str(x)+":" +self.stats[x]+"\n" for x in list(self.stats.keys())])),
+				"Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted)),
+				"Modifiers granted:\n|\t%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
+				"Tags granted:\n|\t%s"%(", ".join(self.tags_granted)),
 			])
 		return desc
 
@@ -62,7 +62,6 @@ default_weapon_requirements = {
 	"vitality": 0, 
 	"dexterity": 0,
 	"intelligence": 0, 
-	"faith": 0, 
 }	
 
 default_weapon_abilities = []
@@ -172,7 +171,7 @@ item_listing = {
 
 	},
 	"secondary_weapon":{
-		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["stab", "cut", "quickstab", "quickcut"]}},
+		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quickstab", "quickcut"]}},
 		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shieldup"]}},
 	},
 	"armor":{

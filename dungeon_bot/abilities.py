@@ -50,7 +50,8 @@ class AbilityUseInfo(object):
 		if self.ability_type == "buff":
 			self = self.inhibitor.on_buff(self)
 			self = self.inhibitor.on_buffed(self)
-	
+		if self.use_info["experience_gained"] > 0:
+			self.inhibitor.experience += self.use_info["experience_gained"]
 		return self
 
 	def __str__(self):

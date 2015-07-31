@@ -10,7 +10,6 @@ default_characteristics = {
 	"vitality": 5, #how much hp you have
 	"dexterity": 5, #how much energy you have, your position in turn qeue
 	"intelligence": 5, #how likely you are to cause critical effects when attacking
-	"faith": 5, #how much energy you have
 }
 
 default_equipment = {
@@ -56,7 +55,7 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]* 10
+		stats["max_health"] = characteristics["vitality"]*10
 		stats["max_energy"] = characteristics["dexterity"]
 		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3), 2, 10)
 		stats["health"] = stats["max_health"]
@@ -366,6 +365,15 @@ class Creature(object):
 				attack_info = at_info
 		return attack_info
 
+	def on_kill(self, attack_info):
+		msg = ""
+		for modifier in self.modifiers:
+			at_info = modifier.on_kill(attack_info)
+			if at_info:
+				attack_info = at_info
+		
+		return attack_info
+
 	def on_death(self, attack_info):
 		msg = ""
 		for modifier in self.modifiers:
@@ -410,6 +418,7 @@ class Creature(object):
 		self.dead = True
 		attack_info.use_info["did_kill"] = True
 		attack_info.description += "%s is killed by %s.\n"%(self.name.title(), attack_info.inhibitor.name)
+		attack_info = attack_info.inhibitor.on_kill(attack_info)
 		attack_info = self.on_death(attack_info)
 		return attack_info
 
@@ -610,6 +619,25 @@ class Player(Creature):
 		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
 		return ply
 
+	def on_kill(self, attack_info):
+		target = attack_info.target
+		if isinstance(target, Enemy):
+			attack_info.use_info["experience_gained"] = target.exp_value
+			attack_info.description += "%s earns %d experience.\n"%(attack_info.inhibitor.name, target.exp_value)
+			attack_info.description += attack_info.inhibitor.on_experience_gained(target.exp_value)
+			drop_table = target.__class__.drop_table
+			for item in list(drop_table.keys()):
+				prob = int(drop_table[item])
+				got_item = random.randint(0, 100) <= prob 
+				if got_item:
+					item = get_item_by_name(item, target.__class__.loot_coolity)
+					attack_info.use_info["loot_dropped"].append(item)
+					if isinstance(attack_info.inhibitor, Player):
+						attack_info.inhibitor.inventory.append(item)
+					attack_info.use_info["loot_dropped"].append(item)
+					attack_info.description += "%s got loot: %s.\n"%(attack_info.inhibitor.name.title(), item.name)
+		return super(Player, self).on_kill(attack_info)
+			
 	def to_json(self):
 		big_dict = super(Player, self).to_json()
 		big_dict["username"] = self.username
@@ -636,20 +664,7 @@ class Enemy(Creature):
 
 	def die(self, attack_info):
 		attack_info = super(Enemy, self).die(attack_info)
-		attack_info.use_info["experience_gained"] = self.exp_value
-		attack_info.description += "%s earns %d experience.\n"%(attack_info.inhibitor.name, self.exp_value)
-		attack_info.description += attack_info.inhibitor.on_experience_gained(self.exp_value)
-		drop_table = self.__class__.drop_table
-		for item in list(drop_table.keys()):
-			prob = int(drop_table[item])
-			got_item = random.randint(0, 100) <= prob 
-			if got_item:
-				item = get_item_by_name(item, self.__class__.loot_coolity)
-				attack_info.use_info["loot_dropped"].append(item)
-				if isinstance(attack_info.inhibitor, Player):
-					attack_info.inhibitor.inventory.append(item)
-				attack_info.use_info["loot_dropped"].append(item)
-				attack_info.description += "%s got loot: %s.\n"%(attack_info.inhibitor.name.title(), item.name)
+
 		return attack_info
 
 	@staticmethod

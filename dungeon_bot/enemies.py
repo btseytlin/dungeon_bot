@@ -37,7 +37,6 @@ rat_characteristics = {
 			"vitality": 2, #how much hp you have
 			"dexterity": 3, #how fast you act, your position in turn qeue
 			"intelligence": 1, #how likely you are to strike a critical
-			"faith": 1, #how much energy you have
 		}
 
 
