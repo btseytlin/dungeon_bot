@@ -10,16 +10,16 @@ logger.debug("Test creatures loaded")
 
 def test_get_enemies_for_difficulty():
 	enemies = retrieve_enemies_for_difficulty("animal", 1)
-	logger.info("Enemies for diff 1:%s"%(enemies))
+	logger.info("Enemies for diff 1:%s"%(str(enemies)))
 
 	enemies = retrieve_enemies_for_difficulty("animal", 10)
-	logger.info("Enemies for diff 10:%s"%(enemies))
+	logger.info("Enemies for diff 10:%s"%(str(enemies)))
 
 	enemies = retrieve_enemies_for_difficulty("animal", 20)
-	logger.info("Enemies for diff 20:%s"%(enemies))
+	logger.info("Enemies for diff 20:%s"%(str(enemies)))
 
 	enemies = retrieve_enemies_for_difficulty("animal", 40)
-	logger.info("Enemies for diff 40:%s"%(enemies))
+	logger.info("Enemies for diff 40:%s"%(str(enemies)))
 
 def run_tests():
 	logger.info("Testing getting random enemies.\n")

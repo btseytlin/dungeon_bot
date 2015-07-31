@@ -98,7 +98,7 @@ class InventoryEvent(BotEvent):
 		"use [item]": "uses an item (such as a potion)", "u [item]": "uses an item (such as a potion)",
 		"destroy [item]": "destroys an item","drop [item]": "destroys an item",
 		"give [item] [username/playername]": "gives an item to another player",
-
+		"status": "shows where you are and what you are doing",
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "closes inventory","abort": "closes inventory","ab": "closes inventory","b": "closes inventory",
 	}
@@ -107,7 +107,13 @@ class InventoryEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, [user])
 		self.user = user
 		self.player = persistence_controller.get_ply(user)
-		self.greeting_message = 'You can close inventory at any time by sending "back" or "abort".'
+		self.greeting_message = self.status(user)
+
+	def status(self, user):
+		msg = "You are in the inventory screen.\n"
+		msg += "Your inventory:\n%s\n."%(self.player.examine_inventory())
+		msg += "Your equipment:\n%s\n."%(self.player.examine_equipment())
+		return msg
 
 	def find_item(self, arg, player, inventory_only = False):
 		if not inventory_only:
@@ -229,6 +235,9 @@ class InventoryEvent(BotEvent):
 					return(msg)
 				else:
 					return item
+		elif (command in ["status"]):
+			msg = self.status(user)
+			return msg
 
 		elif (command == "give"):
 			return "WIP FEATURE"
@@ -243,22 +252,36 @@ class DungeonLobbyEvent(BotEvent):
 	allowed_commands = {
 		"start": "starts the dungeon crawl", "st": "starts the dungeon crawl",
 		"info": "shows help","help": "shows help","h": "shows help",
-		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby"
+		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby",
+		"status": "shows where you are and what you are doing",
 	}
 
 	def __init__(self, finished_callback, total_users):
 		BotEvent.__init__(self, finished_callback, [])
 		self.greeting_message = 'A dungeon crawl will start once there are enough players (%d). Use "abort" to leave, "start" to begin.'%(total_users)
+		self.status_message = 'There are %d out of %d players.'
 		self.total_users = total_users
 
+	def status(self, user):
+		msg = 'You are in lobby %s.\nThere are %d out of %d players in the lobby.\n'%(self.uid, len(self.users), self.total_users)
+		msg += 'Players in lobby:%s.\n'%(", ".join([persistence_controller.get_ply(user).name+"(@"+persistence_controller.get_ply(user).username+")" for user in self.users]))
+		if self.is_enough_players():
+			msg += 'Ready to start the dungeon crawl! Input "start" to begin.\n'
+		else:
+			msg += 'Not enough players to start the dungeon crawl yet.\n'
+		return msg
+	
 	def handle_command(self, user, command, *args):
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
-		if (command in ["back","abort","b", "leave", "ab"]):
+		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
-		if (command in ["start"]):
+		elif (command in ["status"]):
+			msg = self.status(user)
+			return msg
+		elif (command in ["start"]):
 			return(self.start_crawl())
-		return 'Unknown command, try "help"'
+		return 'Unknown command, try "help".'
 
 	def is_enough_players(self):
 		if len(self.users) < self.total_users:
@@ -270,10 +293,10 @@ class DungeonLobbyEvent(BotEvent):
 		broadcast = []
 		msg = "User %s joined the lobby"%(user.username)
 
-		msg_enough = 'The lobby has enough players to start, use "start" command to proceed'
-		msg_not_enough = 'The lobby needs %d more players to start'%( self.total_users - len(self.users) )
+		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
+		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
 
-		broadcast.append([user, "You were added to lobby %s"%(self.uid)])
+		broadcast.append([user, "You were added to lobby %s.\n"%(self.uid)])
 		broadcast.append([user, self.greeting_message])
 		for u in self.users:
 			if u != user:
@@ -288,10 +311,10 @@ class DungeonLobbyEvent(BotEvent):
 	def remove_user(self, user):
 		super(DungeonLobbyEvent, self).remove_user(user)
 		broadcast = []
-		msg_enough = 'The lobby has enough players to start, use "start" command to proceed'
-		msg_not_enough = 'The lobby needs %d more players to start'%( self.total_users - len(self.users) )
-		msg = "User %s left the lobby"%(user.username)
-		broadcast.append([user, "You were removed from lobby %s"%(self.uid)])
+		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
+		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
+		msg = "User %s left the lobby.\n"%(user.username)
+		broadcast.append([user, "You were removed from lobby %s.\n"%(self.uid)])
 		for u in self.users:
 			if u != user:
 				broadcast.append([u, msg])
@@ -316,7 +339,7 @@ class DungeonLobbyEvent(BotEvent):
 class DungeonCrawlEvent(BotEvent):
 	def __init__(self, finished_callback, users, dungeon):
 		BotEvent.__init__(self, finished_callback, users)
-		self.greeting_message = 'You are entering %s.%s\n'%(dungeon.name, dungeon.description)
+		self.greeting_message = 'You are entering %s.\n%s\n'%(dungeon.name, dungeon.description)
 		self.dungeon = dungeon
 		self.non_combat_events = {} # key: user.username, value: event.uid
 		self.combat_event = None
@@ -330,7 +353,12 @@ class DungeonCrawlEvent(BotEvent):
 		"back": "leaves dungeon crawl","abort": "leaves dungeon crawl","ab": "leaves dungeon crawl","b": "leaves dungeon crawl", "leave": "leaves dungeon crawl",
 		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 		"levelup": "opens the level up dialogue", "lvl": "opens the level up dialogue", 
+		"status": "shows where you are and what you are doing",
 	}
+
+	def status(self, user):
+		msg = 'You are in room number %d of %s.'%(self.dungeon.current_room, self.dungeon.name)
+		return msg
 
 	def check_if_can_advance(self):
 		if len(list(self.non_combat_events.keys())) > 0:
@@ -397,8 +425,13 @@ class DungeonCrawlEvent(BotEvent):
 		room = self.dungeon.rooms[self.dungeon.current_room]
 		if room.room_type == "combat":
 			enemies = room.combat_enemies
-			return self.start_combat(self.dungeon.players, enemies)
-		return "Room type not done yet"
+			description = room.description
+
+			broadcast = []
+			for u in self.users:
+				broadcast.append([u, description])
+			return broadcast + self.start_combat(self.dungeon.players, enemies)
+		return "Room type not done yet."
 
 
 	def open_levelup(self, user):
@@ -443,6 +476,9 @@ class DungeonCrawlEvent(BotEvent):
 			return(self.open_inventory(user))
 		elif (command in ["levelup","lvl"]):
 			return(self.open_levelup(user))
+		elif (command in ["status"]):
+			msg = self.status(user)
+			return msg
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:
 				return  (persistence_controller.get_ply(user)).examine_self()
@@ -503,6 +539,13 @@ class CombatEvent(BotEvent):
 		#if isinstance(self.turn_qeue[self.turn], Enemy):
 		#	self.greeting_message += self.ai_turn()
 
+	def status(self, user):
+		msg = 'You are fighting %s.\n'%(", ".join([enemy.name for enemy in self.enemies]))
+		msg += 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
+		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[user.username].energy, self.users_to_players[user.username].health)
+		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.title())
+		return msg
+
 	def next_round(self):
 		self.round += 1
 		self.turn = 0
@@ -511,7 +554,6 @@ class CombatEvent(BotEvent):
 		self.update_turn_qeue()
 		msg += self.get_printable_turn_qeue()
 		combat_logger.info("%s"%(msg))
-		#msg += "It's %s's turn"%(self.turn_qeue[self.turn].name)
 		msg += self.this_turn()
 		return msg
 
@@ -590,6 +632,7 @@ class CombatEvent(BotEvent):
 		"examine": "shows your stats","ex": "shows your stats","stats": "shows your stats",
 		"examine [creature]": "shows a creature's stats", "ex [creature]": "shows a creature's stats", 
 		"info": "shows help","help": "shows help","h": "shows help",
+		"status": "shows where you are and what you are doing",
 		"turn": "ends turn", "t": "ends turn",
 	}
 
@@ -668,6 +711,11 @@ class CombatEvent(BotEvent):
 			for u in self.users:
 				broadcast.append([u, msg])
 			return broadcast
+
+		elif (command in ["status"]):
+			msg = self.status(user)
+			return msg
+
 		else:
 			if command in list(self.user_abilities[user.username].keys()): #is it a combat ability?
 				return self.handle_combat_command(user, command, *args)

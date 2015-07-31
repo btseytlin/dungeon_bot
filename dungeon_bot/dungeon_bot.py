@@ -46,7 +46,7 @@ class DungeonBot(object):
 		"h": "shows help",
 		"inventory": "shows your inventory",
 		"inv": "shows your inventory",
-
+		"status": "shows where you are and what you are doing",
 		"lobbies": "shows active lobbies with free slots",
 		"lob": "shows active lobbies with free slots",
 		"join [lobby]": "joins the specified lobby",
@@ -62,6 +62,7 @@ class DungeonBot(object):
 	api = None
 	#set webhook
 
+	into_message = "Welcome! DungeonBot is a text RPG. Make a character, raid a dungeon, kill monsters, loot them for shiny things! And do it with your friends too!\nThe bot is very much WIP, so beware of bugs. Please send feedback to @btseytlin.\nHappy dungeon crawling!\n"
 	def __init__(self):
 		logger.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
@@ -79,6 +80,10 @@ class DungeonBot(object):
 		args = words[1:]
 		return command,args
 
+	def status(self, user):
+		msg = 'You are in the main screen of DungeonBot.\nFrom here you can inspect your inventory, your stats and characteristics, create and join lobbies.\nCreate a lobby by typing "create 1" (means "create lobby for one player") and jump straight into action!\n'
+		return msg
+
 	def handle_command(self, user, command, *args):
 		if (command in ["examine","ex","stats","st"]):
 			if len(args) > 1:
@@ -91,6 +96,9 @@ class DungeonBot(object):
 			return(print_available_commands(self.allowed_commands))
 		elif (command in ["lob","lobbies"]):
 			return(self.list_lobbies())
+		elif (command in ["status"]):
+			msg = self.status(user)
+			return msg
 		elif (command in ["join"]):
 			lobby_uid = None
 			if len(args) != 0:
@@ -137,7 +145,7 @@ class DungeonBot(object):
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
 			print("User %s is not registered"%(user.username))
-			self.api.sendMessage(user.id, "This bot lets you crawl dungeons! Lets register your info so you can play!")
+			self.api.sendMessage(user.id, into_message)
 			self.register_player(user)
 		else:
 			ply = persistence_controller.get_ply(user)

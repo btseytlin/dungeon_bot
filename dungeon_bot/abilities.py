@@ -135,7 +135,7 @@ class Ability(object):
 			use_info.description += use_info.prototype_class.get_buff_description(use_info)
 
 		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required
-		use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), clamp( use_info.inhibitor.energy + use_info.use_info["energy_change"], 0, use_info.inhibitor.stats["max_energy"]))
+		#use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), clamp( use_info.inhibitor.energy + use_info.use_info["energy_change"], 0, use_info.inhibitor.stats["max_energy"]))
 		use_info = use_info.execute()
 		return use_info
 
@@ -148,11 +148,11 @@ class Ability(object):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s uses ability %s with %s at %s but misses.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.target.name)
+		return "%s uses ability %s with %s on %s, but misses.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.target.name)
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s attacks ability %s with %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
+		return "%s uses ability %s with %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
 
 class Smash(Ability):
 

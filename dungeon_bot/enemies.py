@@ -148,16 +148,16 @@ def rat_pack(size):
 	description = "A rat"
 	amount = 1
 	if size == "small":
-		description = "A small pack of rats."
+		description = "A small pack of rats.\n"
 		amount = random.randint(1, 3)
 	elif size == "medium":
-		description = "A pack of rats."
+		description = "A pack of rats.\n"
 		amount = random.randint(3, 6)
 	elif size == "big":
-		description = "A hoard of rats."
+		description = "A hoard of rats.\n"
 		amount = random.randint(6, 10)
 	elif size == "huge":
-		description = "RATS ARE EVERYWHERE."
+		description = "RATS ARE EVERYWHERE.\n"
 		amount = random.randint(10, 20)
 	rats = [ Rat() if random.randint(0, 10) < 7 else BigRat() for x in range(amount)]
 	return rats, description
