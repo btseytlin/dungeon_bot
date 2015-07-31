@@ -34,6 +34,24 @@ class Item(object):
 		big_dict["modifiers_granted"] = self.modifiers_granted
 		return big_dict
 
+	@staticmethod
+	def de_json(data):
+		if data.get("item_type") == "primary_weapon":
+			return PrimaryWeapon.de_json(data)
+		if data.get("item_type") == "secondary_weapon":
+			return SecondaryWeapon.de_json(data)
+		if data.get("item_type") == "armor":
+			return Armor.de_json(data)
+		if data.get("item_type") == "talisman":
+			return Talisman.de_json(data)
+		if data.get("item_type") == "ring":
+			return Ring.de_json(data)
+		if data.get("item_type") == "headwear":
+			return Headwear.de_json(data)
+		if data.get("item_type") == "consumable":
+			return None#Headwear.de_json(data)
+		print('wrong item type')
+
 default_weapon_stats= {
 	"damage" : "1d1",
 	"accuracy" : "1d1",
@@ -52,27 +70,52 @@ class PrimaryWeapon(Item):
 	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted = []):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
+	@staticmethod
+	def de_json(data):
+		return PrimaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
+
+
 class SecondaryWeapon(Item):
 	def __init__(self, name, description, item_type="secondary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+	@staticmethod
+	def de_json(data):
+		return SecondaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
 
 
 class Armor(Item):
 	def __init__(self, name, description, item_type="armor", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
+	@staticmethod
+	def de_json(data):
+		return Armor(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
+
 class Talisman(Item):
 	def __init__(self, name, description, item_type="talisman", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+	@staticmethod
+	def de_json(data):
+		return Talisman(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
 
 class Ring(Item):
 	def __init__(self, name, description, item_type="ring", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
+	@staticmethod
+	def de_json(data):
+		return Ring(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
+
 
 class Headwear(Item):
 	def __init__(self, name, description, item_type="ring", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+	@staticmethod
+	def de_json(data):
+		return Headwear(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
 
 
 def get_randomized_item(prototype, coolity, stats, item_args):

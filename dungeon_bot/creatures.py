@@ -181,7 +181,7 @@ class Creature(object):
 	def damage(self, attack_info):
 		if not self.dead:
 			self.health = self.health - attack_info.use_info["damage_dealt"]
-			attack_info.descirption += self.on_health_lost(attack_info.use_info["damage_dealt"])
+			attack_info.description += self.on_health_lost(attack_info.use_info["damage_dealt"])
 			attack_info = self.kill_if_nececary(attack_info) 
 		return attack_info
 
@@ -211,7 +211,7 @@ class Creature(object):
 			return "Can't unequip %s."%(target_item.name)
 		if self.equipment[target_item.item_type] == target_item:
 			self.equipment[target_item.item_type] = None
-			self.inventory.append(self)
+			self.inventory.append(target_item)
 			self.refresh_derived()
 			msg = self.on_item_unequipped(target_item)
 			return msg + "Succesfully unequipped %s."%(target_item.name)
@@ -219,9 +219,9 @@ class Creature(object):
 
 	def destroy(self, target_item):
 		self.unequip(target_item)
-		for item in self.inventory:
-			if item == self:
-				self.inventory.remove(item)
+		#for item in self.inventory:
+		#	if item == target_item:
+		self.inventory.remove(target_item)
 		return "Succesfully destroyed %s."%(target_item.name)
 
 	def use(self, item, target):
@@ -248,6 +248,17 @@ class Creature(object):
 		self.energy = self.stats["max_energy"]
 		return msg
 
+	def on_round(self):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_round()
+			if effect:
+				msg += effect
+
+		self.energy += self.stats["energy_regen"]
+		msg += self.on_energy_gained(self.stats["energy_regen"])
+		return msg
+
 	def on_turn(self):
 		#regenerate energy
 		msg = ""
@@ -255,10 +266,7 @@ class Creature(object):
 			effect = modifier.on_turn()
 			if effect:
 				msg += effect
-		return msg
 
-		self.energy += self.stats["energy_regen"]
-		msg += self.on_energy_gained(self.stats["energy_regen"])
 		return msg
 
 	def on_modifier_applied(self, modifier):
@@ -319,7 +327,7 @@ class Creature(object):
 		return msg
 
 	def on_energy_gained(self, value):
-		msg = ""
+		msg = "%s gains %d energy.\n"%(self.name.title(), value)
 		for modifier in self.modifiers:
 			effect = modifier.on_energy_gained(value)
 			if effect:
@@ -337,7 +345,7 @@ class Creature(object):
 	def on_attacked(self, attack_info):
 		msg = ""
 		if attack_info.use_info["damage_dealt"] > 0:
-			attack_info = self.damage(attack_info.use_info["damage_dealt"])
+			attack_info = self.damage(attack_info)
 
 		for modifier in self.modifiers:
 			at_info = modifier.on_attacked(attack_info)
@@ -396,7 +404,7 @@ class Creature(object):
 	def die(self, attack_info):
 		self.dead = True
 		attack_info.use_info["did_kill"] = True
-		attack_info.description += "%s is killed by %s."%(self.name.title(), attack_info.inhibitor.name)
+		attack_info.description += "%s is killed by %s.\n"%(self.name.title(), attack_info.inhibitor.name)
 		attack_info = self.on_death(attack_info)
 		return attack_info
 
@@ -428,7 +436,7 @@ class Creature(object):
 			for tag in modifier.tags_granted:
 				self.tags.append(tag)
 
-		for key in self.equipment.keys():
+		for key in list(self.equipment.keys()):
 			if self.equipment[key]:
 				for tag in self.equipment[key].tags_granted:
 					self.tags.append(tag)
@@ -522,6 +530,8 @@ class Creature(object):
 		del big_dict["uid"]
 		big_dict["characteristics"] = json.dumps(self.characteristics)
 		# big_dict["tags"] = json.dumps(self.tags)
+		big_dict["tags"] = self.base_tags
+		del big_dict["base_tags"]
 		del big_dict["abilities"] #abilities are not serializable
 		del big_dict["modifiers"] #modifiers are derived so no point in serializing them
 		big_dict["inventory"] = []

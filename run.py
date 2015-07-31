@@ -6,8 +6,11 @@ api_token_path = 'data/api.token'
 
 
 log_path = './logs/botlog.log'
+
 logger = logging.getLogger('dungeon_bot')
+
 logger.setLevel(logging.DEBUG)
+
 fh = logging.FileHandler(log_path)
 fh.setLevel(logging.DEBUG)
 console = logging.StreamHandler()
@@ -18,6 +21,12 @@ fh.setFormatter(formatter)
 logger.addHandler(console)
 logger.addHandler(fh)
 
+combat_log_path = './logs/combat.log'
+combat_logger = logging.getLogger('dungeon_bot_combat')
+combat_logger.setLevel(logging.INFO)
+fh = logging.FileHandler(combat_log_path)
+fh.setLevel(logging.INFO)
+combat_logger.addHandler(fh)
 
 with open(api_token_path) as f:
 	apitoken = f.read()

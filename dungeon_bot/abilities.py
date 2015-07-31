@@ -53,6 +53,32 @@ class AbilityUseInfo(object):
 	
 		return self
 
+	def __str__(self):
+		inhibitor = self.inhibitor.name
+		if hasattr(self.inhibitor, "username"):
+			inhibitor = inhibitor + "(%s)"%(self.inhibitor.username)
+		else:
+			inhibitor = inhibitor + "(%s)"%(self.inhibitor.uid)
+
+		target = self.target.name
+		if hasattr(self.target, "username"):
+			target = target + "(%s)"%(self.target.username)
+		else:
+			target = target + "(%s)"%(self.target.uid)
+
+		msg_lines = []
+		msg_lines.append("Inhibitor %s uses %s(%s) of item %s on target %s."%(inhibitor, self.ability_type, self.prototype_class, self.use_info["item_used"].name, target))
+		msg_lines.append("Energy change: %d"%(self.use_info["energy_change"]))
+		if self.ability_type == "attack":
+			msg_lines.append("Hit chance: %d"%(self.use_info["hit_chance"]))
+			msg_lines.append("Damage: %d"%(self.use_info["damage_dealt"]))
+			msg_lines.append("Did hit, did kill: %s, %s."%(self.use_info['did_hit'], self.use_info['did_kill']))
+			msg_lines.append("Loot loot_dropped: %s"%( ", ".join([item.name for item in self.use_info["loot_dropped"] ]) ) )
+			msg_lines.append("Exp gained: %d"%( self.use_info["experience_gained"] ) )
+
+		msg_lines.append("Modifiers applied: %s"%( ", ".join([modifier.name for modifier in self.use_info["modifiers_applied"] ]) ) )
+		return "  \n".join(msg_lines)
+
 class AttackInfo(AbilityUseInfo):
 	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description = ""):
 		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
@@ -66,7 +92,7 @@ class AttackInfo(AbilityUseInfo):
 				"did_hit" : False,
 				"did_kill" : False,
 				"item_used": None,
-				"energy_consumed": 0,
+				"energy_change": 0,
 				"modifiers_applied": [],
 				"loot_dropped": []
 			}
@@ -95,7 +121,7 @@ class Ability(object):
 	@staticmethod
 	def use(use_info):
 		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required
-		use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), use_info.inhibitor.energy)
+		use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), clamp( use_info.inhibitor.energy + use_info.use_info["energy_change"], 0, use_info.inhibitor.stats["max_energy"]))
 		use_info = use_info.execute()
 		return use_info
 
@@ -123,7 +149,7 @@ class Smash(Ability):
 	"""
 	name = "smash"
 	description = "Smash your weapon and hope you hit something!"
-	energy_required = 3
+	energy_required = 2
 	requirements = None
 
 	@staticmethod
@@ -179,7 +205,7 @@ class Smash(Ability):
 			attack_info.use_info["damage_dealt"] = dmg
 			attack_info.description += "%s smashes %s and deals %d damage to %s.\n"%(user.name.title(), weapon.name, dmg, target.name)
 
-		return Ability.use(Smash, user, target, attack_info)
+		return Ability.use(attack_info)
 
 class Stab(Ability):
 
@@ -204,7 +230,7 @@ class Stab(Ability):
 	"""
 	name = "stab"
 	description = "Stab in the gut!"
-	energy_required = 3
+	energy_required = 2
 	requirements = None
 
 	@staticmethod
@@ -289,7 +315,7 @@ class QuickStab(Ability):
 	"""
 	name = "quick stab"
 	description = "Quick stab in the gut!"
-	energy_required = 3
+	energy_required = 2
 	requirements = None
 
 	@staticmethod
@@ -371,7 +397,7 @@ class Cut(Ability): #TODO test and adapt
 	"""
 	name = "cut"
 	description = "Cut em up!"
-	energy_required = 3
+	energy_required = 2
 	requirements = None
 
 	@staticmethod
@@ -537,7 +563,7 @@ class Bash(Ability): #TODO test and adapt
 	"""
 	name = "bash"
 	description = "Bash em."
-	energy_required = 3
+	energy_required = 2
 	requirements = None
 
 	@staticmethod
@@ -630,7 +656,7 @@ class ShieldUp(Ability): #TODO test and adapt
 class RodentBite(Ability):
 	name = "rodent bite"
 	description = "Rodents bite!"
-	energy_required = 2
+	energy_required = 1
 	requirements = None
 
 
@@ -671,12 +697,10 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def use(user, target, weapon=None):
+		attack_info = AttackInfo(user, "attack", RodentBite, target)
 		if not weapon:
 			weapon = user.primary_weapon
-
-		user.energy = user.energy - RodentBite.energy_required
-		msg = ""
-
+		attack_info.use_info["item_used"] = weapon
 		accuracy = diceroll(weapon.stats["accuracy"])
 		is_small = int("small" in target.tags)
 		is_quick = int("quick" in target.tags)
@@ -686,11 +710,11 @@ class RodentBite(Ability):
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = RodentBite.get_chance_to_hit(dexterity, accuracy, evasion, is_small, is_quick, is_big, is_slow)
-
+		attack_info.use_info["hit_chance"] = chance_to_hit
 		if random.randint(0, 100) > chance_to_hit:
-			msg = "%s tries to bite %s but misses.\n"%(user.name, target.name)
+			attack_info.description += "%s tries to bite %s but misses.\n"%(user.name, target.name)
 		else:
-
+			attack_info.use_info["did_hit"] = True
 			rough_dmg = diceroll(weapon.stats["damage"])
 			strength = user.characteristics["strength"]
 			defence = target.defence
@@ -699,10 +723,10 @@ class RodentBite(Ability):
 
 			dmg = RodentBite.get_damage(rough_dmg, strength, defence, is_armored, is_heavy_armored)
 
-			target.health = target.health - dmg
-			msg = "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
+			attack_info.use_info["damage_dealt"] = dmg
+			attack_info.description += "%s bites %s and deals %d damage.\n"%(user.name, target.name, dmg)
 
-		return msg + Ability.use(user, target)
+		return Ability.use(attack_info)
 
 abilities = {
 	"smash": Smash,

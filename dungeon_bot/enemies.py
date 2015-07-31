@@ -59,19 +59,18 @@ class Rat(Enemy):
 		self.equip(teeth)
 
 	def act(self, turn_qeue):
-		attack_msgs = ""
+		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_msgs += self.abilities[0].__class__.use(self, c)
+					attack_infos.append(self.abilities[0].__class__.use(self, c))
 			if not targets:
 				break
 
-		return attack_msgs
-
+		return attack_infos
 
 
 big_rat_characteristics = {
@@ -106,18 +105,18 @@ class BigRat(Enemy):
 		self.equip(teeth)
 
 	def act(self, turn_qeue):
-		attack_msgs = ""
+		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
 			for c in turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_msgs += self.abilities[0].__class__.use(self, c)
+					attack_infos.append(self.abilities[0].__class__.use(self, c))
 			if not targets:
 				break
 
-		return attack_msgs
+		return attack_infos
 
 
 enemy_list = [

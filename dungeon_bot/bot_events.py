@@ -7,7 +7,7 @@ from creatures import *
 from items import *
 import logging
 
-combat_logger = logging.getLogger('combat')
+combat_logger = logging.getLogger('dungeon_bot_combat')
 persistence_controller = PersistenceController.get_instance()
 class BotEvent(object):
 	def __init__(self, finished_callback, users):
@@ -154,7 +154,7 @@ class InventoryEvent(BotEvent):
 
 		for i in range(len(all_items)):
 			item = all_items[i]
-			if item and item.name == arg or i == int(arg):
+			if item and item.name == arg or arg.isdigit() and i == int(arg):
 				return True, item
 
 		error_text = "No such item in your inventory"
@@ -479,7 +479,7 @@ class CombatEvent(BotEvent):
 
 		}
 
-		self.users_to_players {
+		self.users_to_players =  {
 
 		}
 		for user in self.users:
@@ -490,19 +490,29 @@ class CombatEvent(BotEvent):
 			if not user.username in list(self.user_abilities.keys()):
 				self.user_abilities[user.username] = {}
 
-			ply = users_to_players[user.name]
+			ply = self.users_to_players[user.username]
 			for ability in ply.abilities:
 				self.user_abilities[user.username][ability.name] = ability
+
+
+		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.username+")" for p in players]), ", ".join([e.name for e in enemies])))
+		combat_logger.info("Combat qeue:\n"+", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))]))
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
 		self.greeting_message += "The combat qeue is:\n"+", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))]) + "\n"
 		self.greeting_message += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+
+		
+
 		if isinstance(self.turn_qeue[self.turn], Enemy):
 			self.greeting_message += self.ai_turn()
 
 	def next_round(self):
 		self.round += 1
-		return "Round %d.\n"%(self.round+1)
+		msg = "".join([c.on_round() for c in self.turn_qeue])
+		msg += "Round %d.\n"%(self.round+1)
+		combat_logger.info("%s"%(msg))
+		return msg
 
 	def check_winning_conditions(self):
 		alive_enemy = False
@@ -553,7 +563,12 @@ class CombatEvent(BotEvent):
 		return qeue
 
 	def ai_turn(self):
-		msg = self.turn_qeue[self.turn].act(self.turn_qeue)
+		use_infos = self.turn_qeue[self.turn].act(self.turn_qeue)
+		combat_logger.info("   AI(%s) actions:"%(self.turn_qeue[self.turn].name))
+		msg = ""
+		for use_info in use_infos:
+			combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
+			msg += use_info.description
 		msg += self.next_turn()
 		return msg
 
@@ -565,9 +580,10 @@ class CombatEvent(BotEvent):
 	}
 
 	def handle_combat_command(self, user, command, *args):
+		combat_logger.info("Command from user %s: %s %s"%(user.username, command, " ".join(args)))
 		if self.turn_qeue[self.turn].username == user.username: #current turn is of player who sent command
 			if command in list(self.user_abilities[user.username].keys()):
-				ability = self.user_abilities[user.username][command]_
+				ability = self.user_abilities[user.username][command]
 				ability_class = self.user_abilities[user.username][command].__class__
 				granted_by = ability.granted_by
 				argument = " ".join(args)
@@ -581,7 +597,8 @@ class CombatEvent(BotEvent):
 					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[user.username], target )
 					if can_use:
 						use_info = ability_class.use( self.users_to_players[user.username], target, granted_by )
-						msg += use_info.description 
+						combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
+						msg = use_info.description 
 						broadcast = []
 						for u in self.users:
 							broadcast.append([u, msg])
@@ -643,10 +660,11 @@ class CombatEvent(BotEvent):
 			return "Unknown command, try help."
 	
 	def finish(self):
+		msg = ""
 		for creature in self.turn_qeue:
-			creature.on_combat_over()
+			msg += creature.on_combat_over()
 
-		msg = super(CombatEvent, self).finish()
+		msg += super(CombatEvent, self).finish()
 
 		return msg
 
