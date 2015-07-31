@@ -256,7 +256,7 @@ class Stab(Ability):
 		if not target:
 			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, Stab.energy_required)
+			return Ability.can_use(user, Stab)
 		else:
 			return False, "Target is already dead."
 
@@ -327,7 +327,7 @@ class QuickStab(Ability):
 		if not target:
 			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, QuickStab.energy_required)
+			return Ability.can_use(user, QuickStab)
 		else:
 			return False, "Target is already dead."
 
@@ -395,7 +395,7 @@ class Cut(Ability): #TODO test and adapt
 		if not target:
 			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, Cut.energy_required)
+			return Ability.can_use(user, Cut)
 		else:
 			return False, "Target is already dead."
 
@@ -465,7 +465,7 @@ class QuickCut(Ability): #TODO test and adapt
 		if not target:
 			return False, "Target required." 
 		if not target.dead:
-			return Ability.can_use(user.energy, QuickCut.energy_required)
+			return Ability.can_use(user, QuickCut)
 		else:
 			return False, "Target is already dead."
 
@@ -591,7 +591,7 @@ class RodentBite(Ability):
 		if not target:
 			return False, "Target required."
 		if not target.dead:
-			return Ability.can_use(user.energy, RodentBite.energy_required)
+			return Ability.can_use(user, RodentBite)
 		else:
 			return False, "Target is already dead"
 

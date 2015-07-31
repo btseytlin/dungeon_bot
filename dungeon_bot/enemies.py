@@ -46,7 +46,7 @@ class Rat(Enemy):
 		"chainmail" : 10,
 		"amulet of defence" : 10,
 		"amulet of healing" : 10,
-		"ring of fire" : 10,
+		"ring of fire" : 50,
 		"shield" : 10,
 		"ring of not dying" : 1,
 		"ring of much more dexterity" : 30,
@@ -93,7 +93,7 @@ class BigRat(Enemy):
 		"chainmail" : 10,
 		"amulet of defence" : 10,
 		"amulet of healing" : 10,
-		"ring of fire" : 10,
+		"ring of fire" : 50,
 		"shield" : 10,
 		"ring of not dying" : 1,
 	}

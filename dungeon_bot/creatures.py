@@ -178,12 +178,12 @@ class Creature(object):
 	def level(self, value):
 		self._level = value
 
-	def damage(self, attack_info):
+	def damage(self, value):
+		msg = ""
 		if not self.dead:
-			self.health = self.health - attack_info.use_info["damage_dealt"]
-			attack_info.description += self.on_health_lost(attack_info.use_info["damage_dealt"])
-			attack_info = self.kill_if_nececary(attack_info) 
-		return attack_info
+			self.health = self.health - value
+			msg += self.on_health_lost(value)
+		return msg
 
 	def equip(self, target_item):
 		if target_item.item_type == "consumable":
@@ -333,6 +333,7 @@ class Creature(object):
 
 	def on_energy_gained(self, value):
 		#msg = "%s gains %d energy.\n"%(self.name.title(), value)
+		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_energy_gained(value)
 			if effect:
@@ -350,12 +351,14 @@ class Creature(object):
 	def on_attacked(self, attack_info):
 		msg = ""
 		if attack_info.use_info["damage_dealt"] > 0:
-			attack_info = self.damage(attack_info)
+			attack_info.description += self.damage(attack_info.use_info["damage_dealt"])
 
 		for modifier in self.modifiers:
 			at_info = modifier.on_attacked(attack_info)
 			if at_info:
 				attack_info = at_info
+
+		attack_info = self.kill_if_nececary(attack_info) 
 		return attack_info
 
 	def on_attack(self, attack_info):
@@ -524,7 +527,7 @@ class Creature(object):
 			"Characteristics:\n%s"%(pformat(self.characteristics, width=1)),
 			"Stats:\n%s"%(pformat(self.stats, width=1)),
 			"Tags:\n%s"%(", ".join(self.tags)),
-			"Modifiers:\n%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by) for modifier in self.modifiers])),
+			"Modifiers:\n%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
 			"Abilities:\n%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities]))
 		])
 		return desc
@@ -532,7 +535,7 @@ class Creature(object):
 	def to_json(self):
 		big_dict = self.__dict__.copy()
 		del big_dict["uid"]
-		big_dict["characteristics"] = json.dumps(self.characteristics)
+		big_dict["characteristics"] = self.base_characteristics.copy()
 		# big_dict["tags"] = json.dumps(self.tags)
 		big_dict["tags"] = self.base_tags
 		del big_dict["base_tags"]
@@ -587,7 +590,7 @@ class Player(Creature):
 	def de_json(data):
 		if isinstance(data, str):
 			data = json.loads(data)
-		data["characteristics"] = json.loads(data["characteristics"])
+		data["characteristics"] = data["characteristics"]
 		stats = None
 		if "stats" in list(data.keys()):
 			stats = data["stats"]

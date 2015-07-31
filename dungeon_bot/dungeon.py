@@ -19,11 +19,11 @@ class Dungeon(object):
 
 	@staticmethod
 	def new_dungeon(players): #TODO add biomes, randomize dungeon creation
-		dungeon_name = "Dungeon of rats"
+		dungeon_name = "Dungeon of rats #" + str(random.randint(0, 100)) 
 		dungeon_description = "A dungeon that only rats inhabit. It's actually a peasant's basement.\nA big basement. With rats."
 		dungeon_players = players 
 		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players)
-		dungeon.generate_rooms(5)
+		dungeon.generate_rooms(1)
 		return dungeon
 
 	def get_enemy(self, difficulty=None):
@@ -33,7 +33,7 @@ class Dungeon(object):
 		return retrieve_enemy_for_difficulty(difficulty)
 
 	def generate_rooms(self, amount):
-		for i in range(amount):
+		for i in range(amount+1):
 			room_type = random.choice(["combat"])
 			room = Room(room_type)
 			if room_type == "loot":

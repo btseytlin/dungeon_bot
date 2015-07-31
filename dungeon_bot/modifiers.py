@@ -1,4 +1,5 @@
 from util import *
+import random
 class Modifier(object): #Modifiers always affect only the host that carries them
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [],  priority=0, name="", description=""):
 		self.uid = get_uid()
@@ -50,10 +51,16 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 			self.duration != 1
 
+	def on_round(self):
+		pass
+
 	def on_attack(self, ability_info=None):
 		pass
 
 	def on_attacked(self, ability_info=None):
+		pass
+
+	def on_miss(self, ability_info=None):
 		pass
 
 	def on_buff(self, ability_info=None):
@@ -69,6 +76,18 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		pass
 
 	def on_experience_gained(self, exp_amount=None):
+		pass
+
+	def on_energy_gained(self, amount=None):
+		pass
+
+	def on_energy_lost(self, amount=None):
+		pass
+
+	def on_health_gained(self, amount=None):
+		pass
+
+	def on_health_lost(self, amount=None):
 		pass
 
 	def on_loot(self, item_gained):
@@ -99,11 +118,19 @@ class Bonus(Modifier): #simply adds defence, hinders evasion
 class FireAttack(Modifier):
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="fire attack",  description="Has a chance to cause fire additional damage every attack by host.",):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description)
-		self.fire_damage = ["1d3","2d6"]
-		self.fire_chance = ["1d2", "5d6"]
 
-	def on_attack(self, target, attack_info=None):
-		return "Fire damage!"
+	def on_attack(self, attack_info):
+		fire_chance = self.granted_by.stats["fire_chance"]
+		fire_damage = self.granted_by.stats["fire_damage"]
+		if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:
+			chance = diceroll( fire_chance )
+			if random.randint(0, 100) < chance:
+				dmg = diceroll( fire_damage )
+				attack_info.target.damage( dmg )
+				attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.name.title())
+				attack_info.use_info["damage_dealt"] += dmg
+
+		return attack_info
 
 def get_modifier_by_name(modifier_name, source, target, params={}):
 	if not "duration" in params.keys():
@@ -125,5 +152,5 @@ def get_modifier_by_name(modifier_name, source, target, params={}):
 modifier_listing = {
 	"shielded" : Shielded,
 	"bonus" : Bonus,
-	"fire attack" : FireAttack
+	"fire_attack" : FireAttack
 }

@@ -500,20 +500,19 @@ class CombatEvent(BotEvent):
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
 		self.greeting_message += self.next_round()
 
-		
-
-		if isinstance(self.turn_qeue[self.turn], Enemy):
-			self.greeting_message += self.ai_turn()
+		#if isinstance(self.turn_qeue[self.turn], Enemy):
+		#	self.greeting_message += self.ai_turn()
 
 	def next_round(self):
 		self.round += 1
 		self.turn = 0
 		msg = "".join([c.on_round() for c in self.turn_qeue])
-		msg += "Round %d.\n"%(self.round+1)
+		msg += "Round %d.\n"%(self.round)
 		self.update_turn_qeue()
 		msg += self.get_printable_turn_qeue()
 		combat_logger.info("%s"%(msg))
-		msg += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+		#msg += "It's %s's turn"%(self.turn_qeue[self.turn].name)
+		msg += self.this_turn()
 		return msg
 
 	def get_printable_turn_qeue(self):
@@ -537,27 +536,35 @@ class CombatEvent(BotEvent):
 			return True
 		return False
 
+	def this_turn(self):
+		msg = ""
+		if (self.turn_qeue[self.turn].dead):
+			return self.next_turn()
+
+		if isinstance(self.turn_qeue[self.turn], Enemy):
+			msg += self.ai_turn()
+			return msg + self.next_turn()
+		else:
+			return "It's %s's turn.\n"%(self.turn_qeue[self.turn].name)
+
 	def next_turn(self):
-		for creature in self.turn_qeue:
-			msg += creature.on_turn()
+		msg = ""
+
+		self.turn += 1
+		if self.turn > len(self.turn_qeue)-1:
+			return msg + self.next_round()
 
 		fight_ended = self.check_winning_conditions()
 		if fight_ended:
 			return self.finish()
 
-		self.turn += 1
-		if self.turn > len(self.turn_qeue)-1:
-			msg += self.next_round()
-
-
 		if (self.turn_qeue[self.turn].dead):
 			return self.next_turn()
-		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name)
 
-		if isinstance(self.turn_qeue[self.turn], Enemy):
-			msg += self.ai_turn()
+		for creature in self.turn_qeue:
+			msg += creature.on_turn()
 
-		return msg
+		return msg + self.this_turn()
 
 	def update_turn_qeue(self):
 		all_creatures = self.players + self.enemies
@@ -576,7 +583,7 @@ class CombatEvent(BotEvent):
 		for use_info in use_infos:
 			combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
 			msg += use_info.description
-		msg += self.next_turn()
+		#msg += self.next_turn()
 		return msg
 
 	allowed_commands = {

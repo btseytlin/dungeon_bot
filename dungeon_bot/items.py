@@ -184,7 +184,14 @@ item_listing = {
 		"amulet of healing": {"stats": {"healing" : ["1d6", "2d6"], "healing_chance": ["1d3", "2d6"]} , "args":{"name":"amulet of healing", "description":"Periodically heals you for random amounts of health.", "modifiers_granted": []}},
 	},
 	"ring":{
-		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d2", "5d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.","modifiers_granted": []}},
+		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d4", "6d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",
+			"modifiers_granted": [
+				{
+				"name":"fire_attack", 
+				"params":{}
+				} 
+			]
+		}},
 
 		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."} },
 
@@ -192,13 +199,15 @@ item_listing = {
 
 		"ring of much more dexterity": {"stats": {"characteristics_change": {"dexterity" : 5}} , "args":{"name":"ring of much more dexterity", "description":"Just gives you +5 dex."} },
 
-		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 vit, but via a modifier.", "modifiers_granted": [ 
-
-		{"name":"bonus", 
-		"params":{"characteristics_change": {"vitality": 1}}
-		} 
-
-		] } },
+		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 vit, but via a modifier.",
+			 "modifiers_granted": [ 
+					{
+						"name":"bonus", 
+						"params":{"characteristics_change": {"vitality": 1}}
+					} 
+				] 
+			} 
+		},
 
 		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."}}  ,
 		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
