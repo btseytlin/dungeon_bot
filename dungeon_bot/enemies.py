@@ -1,19 +1,35 @@
 from creatures import Enemy, Player
 from abilities import *
 from items import *
+from util import * 
 import random
-def retrieve_enemy_for_difficulty(difficulty):
+def retrieve_enemies_for_difficulty(enemy_table, difficulty):
+	total_len = 100
+	right = clamp( difficulty + 0.3 * difficulty, 0, 100)
+	left = clamp ( difficulty - 0.3 * total_len, 0, 100)
+	#random_int = int(math.ceil(random_in_range_for_coolity(left, right, 0.5)))
+	#print(random_int)
 	candidates = []
-	difficulty_margin = 0.25
-	for i in range(0, len(enemy_list)):
-		if abs(enemy_list[i][0] - difficulty <= difficulty_margin * difficulty):
-			candidates.append(enemy_list[i][1])
+	temp_list = sorted([int(x) for x in list(enemy_tables[enemy_table].keys()) if right >= int(x) > left] )
 
-	if len(candidates) == 0:
-		candidates.append(random.choice(enemy_list))
+	if len(temp_list) == 0:
+		left = 0
+		temp_list = sorted([int(x) for x in list(enemy_tables[enemy_table].keys()) if right >= int(x) > left] )
 
-	prototype = random.choice(candidates)
-	return prototype()
+	
+	random_float = random_in_range_for_coolity(0, len(temp_list), 0.8)
+	random_enemy = temp_list[int(math.floor(random_float))]
+	# prev_num = temp_list[0]
+	# for x in temp_list:
+	# 	if x <= random_enemy:
+	# 		prev_num = x
+	# 	if x > random_enemy:
+	# 		random_enemy = prev_num
+	# 		break
+
+	enemies = enemy_tables[enemy_table][str(random_enemy)]	
+	#enemies = enemy_tables[enemy_table][random.choice(candidates)]
+	return enemies[0](*enemies[1])
 
 
 rat_characteristics = {
@@ -38,7 +54,7 @@ default_equipment = {
 rat_abilities = ["rodent_bite"]
 class Rat(Enemy):
 	drop_table = {
-		"club" : 20,
+		"club" : 10,
 		"sword" : 10,
 		"plate armor" : 10,
 		"helmet" : 10,
@@ -46,11 +62,11 @@ class Rat(Enemy):
 		"chainmail" : 10,
 		"amulet of defence" : 10,
 		"amulet of healing" : 10,
-		"ring of fire" : 50,
+		"ring of fire" : 10,
 		"shield" : 10,
 		"ring of not dying" : 1,
-		"ring of much more dexterity" : 30,
-		"ring of more vitality" : 30,
+		"ring of much more dexterity" : 5,
+		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.5
 
@@ -85,7 +101,7 @@ big_rat_characteristics = {
 
 class BigRat(Enemy):
 	drop_table = {
-		"club" : 20,
+		"club" : 10,
 		"sword" : 10,
 		"plate armor" : 10,
 		"helmet" : 10,
@@ -93,9 +109,11 @@ class BigRat(Enemy):
 		"chainmail" : 10,
 		"amulet of defence" : 10,
 		"amulet of healing" : 10,
-		"ring of fire" : 50,
+		"ring of fire" : 10,
 		"shield" : 10,
 		"ring of not dying" : 1,
+		"ring of much more dexterity" : 5,
+		"ring of more vitality" : 10,
 	}
 	
 	loot_coolity = 0.5
@@ -121,7 +139,34 @@ class BigRat(Enemy):
 		return attack_infos
 
 
-enemy_list = [
-	(1, Rat),
-	(1, BigRat)
-]
+enemy_list = { #name to enemy
+	"rat": Rat,
+	"big rat": BigRat
+}
+
+def rat_pack(size):
+	description = "A rat"
+	amount = 1
+	if size == "small":
+		description = "A small pack of rats."
+		amount = random.randint(1, 3)
+	elif size == "medium":
+		description = "A pack of rats."
+		amount = random.randint(3, 6)
+	elif size == "big":
+		description = "A hoard of rats."
+		amount = random.randint(6, 10)
+	elif size == "huge":
+		description = "RATS ARE EVERYWHERE."
+		amount = random.randint(10, 20)
+	rats = [ Rat() if random.randint(0, 10) < 7 else BigRat() for x in range(amount)]
+	return rats, description
+
+enemy_tables = {
+	"animal": { # coolity rating: (function to get enemy or enemy group, params)
+		"1": (rat_pack,["small"] ),
+		"10": (rat_pack, ["medium"] ),
+		"20": (rat_pack, ["big"] ),
+		"30": (rat_pack, ["huge"] )
+	}
+}

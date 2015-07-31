@@ -61,8 +61,8 @@ def test_loot_drop():
 	i = 0
 	while not loot_dropped and i < max_attempts:
 		i+=1
-		ply = Player("testman", "tester", "testinator", "test")
-		enemy = retrieve_enemy_for_difficulty(1)
+		ply = Player("testman", "tester")
+		enemy = Rat()
 		death = enemy.die(AttackInfo(ply, None, None, enemy))
 		if len(death.use_info["loot_dropped"])>0:
 			loot_dropped = True
@@ -79,7 +79,7 @@ def test_armor_equip():
 	armor = get_item_by_name(item, 1)
 	assert armor
 	logger.info("Retrieved item:\n%s"%(armor.examine_self()))
-	ply = Player("testman", "test", "test", "test")
+	ply = Player("testman", "test")
 	logger.info("Retrieved player:\n%s\n%s"%(ply.examine_self(), ply.examine_inventory()))
 	defences = [ply.defence for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
@@ -106,7 +106,7 @@ def test_char_and_stat_changes():
 	logger.info("Testing char changes.\n\n")
 	item = get_item_by_name("ring of more vitality", 1)
 	logger.info("Retrieved item:\n%s"%(item.examine_self()))
-	ply = Player("testman", "test", "test", "test")
+	ply = Player("testman", "test")
 	logger.info("Retrieved player:\n%s\n"%(ply.examine_self()))
 	ply.inventory.append(item)
 	ply.equip(item)

@@ -7,7 +7,7 @@ logger = logging.getLogger("dungeon_bot_test_log")
 logger.debug("Test jsonify loaded")
 
 def test_jsonify_player():
-	ply = Player("testman", "test", "test", "test")
+	ply = Player("testman", "test")
 	logger.info("Player:\n %s\n"%(ply.examine_self()) )
 	jsonified = json.dumps(ply.to_json())
 	logger.info("Jsonified player:\n %s\n"%(jsonified))

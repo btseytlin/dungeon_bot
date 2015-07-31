@@ -160,7 +160,7 @@ class DungeonBot(object):
 					self.api.sendMessage(user.id, response)
 
 	def register_player(self, user):
-		new_player = Player(user.username, None, None, None) #Create an empty player object
+		new_player = Player(user.username, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
 		registration = RegistrationEvent(event_over_callback, user) #Create a registration event
 		self.events[registration.uid] = registration #add event to collection of events

@@ -26,12 +26,6 @@ class Dungeon(object):
 		dungeon.generate_rooms(1)
 		return dungeon
 
-	def get_enemy(self, difficulty=None):
-		if not difficulty:
-			difficulty = self.difficulty
-
-		return retrieve_enemy_for_difficulty(difficulty)
-
 	def generate_rooms(self, amount):
 		for i in range(amount+1):
 			room_type = random.choice(["combat"])
@@ -43,12 +37,8 @@ class Dungeon(object):
 				#todo add riddle rooms
 				pass
 			elif room_type == "combat":
-				amount_of_enemies = random.randint(1, 3)
-				combat_enemies = []
-				for n in range(amount_of_enemies):
-					combat_enemies.append(self.get_enemy())
+				combat_enemies = retrieve_enemies_for_difficulty("animal", self.difficulty)
 				room.combat_enemies = combat_enemies
-
 			self.rooms.append(room)
 
 class Room(object):
@@ -59,13 +49,3 @@ class Room(object):
 
 	def enter(self):
 		pass
-
-def test_dungeon_creation():
-	from creatures import Player
-	dung = Dungeon("01", "Dungeon of testing", "A creepy dungeon of bugs", [Player("uname","Orc", "The orc", "orc")])
-	dung.generate_rooms(2)
-	for room in dung.rooms:
-		print("\nRoom #%s of type %s:"%(room.uid, room.room_type))
-		for enemy in room.combat_enemies:
-			print(enemy.examine_self())
-#test_dungeon_creation()

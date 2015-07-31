@@ -34,7 +34,6 @@ class Creature(object):
 
 
 		self.modifiers = modifiers.copy()
-		#self.characteristics = characteristics.copy()
 		self.base_characteristics = characteristics.copy()
 		
 		self.base_tags = tags.copy()
@@ -549,7 +548,7 @@ class Creature(object):
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
+	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.max_experience = max_experience
@@ -587,7 +586,6 @@ class Player(Creature):
 	def de_json(data):
 		if isinstance(data, str):
 			data = json.loads(data)
-		data["characteristics"] = data["characteristics"]
 		stats = None
 		if "stats" in list(data.keys()):
 			stats = data["stats"]

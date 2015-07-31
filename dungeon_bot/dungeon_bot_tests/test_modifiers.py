@@ -13,7 +13,7 @@ def test_bonus_modifier():
 	logger.info("Testing char changes.\n\n")
 	item = get_item_by_name("ring of modifier test", 1)
 	logger.info("Retrieved item:\n%s"%(item.examine_self()))
-	ply = Player("testman", "test", "test", "test")
+	ply = Player("testman", "test")
 	logger.info("Retrieved player:\n%s\n"%(ply.examine_self()))
 	ply.inventory.append(item)
 	ply.equip(item)
@@ -26,7 +26,7 @@ def test_bonus_modifier():
 
 def test_shielded_modifier():
 	logger.info("Testing shielded modifier.\n\n")
-	ply = Player("testman", "test", "test", "test")
+	ply = Player("testman", "test")
 
 	defences = [ply.defence for x in range(10000)]
 	logger.info("Average defence:\n%f"%(sum(defences)/len(defences)))
