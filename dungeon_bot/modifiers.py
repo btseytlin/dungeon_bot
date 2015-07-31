@@ -1,6 +1,6 @@
 from util import *
 class Modifier(object): #Modifiers always affect only the host that carries them
-	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="", description="", priority=0):
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [],  priority=0, name="", description=""):
 		self.uid = get_uid()
 		self.name = name
 		self.description = description
@@ -14,7 +14,7 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		self.priority = priority
 
 	def apply(self):
-		self.host.add_modifier(add_modifier)
+		self.host.add_modifier(self)
 		msg = self.on_applied() + self.host.on_modifier_applied(self)
 		return msg
 
@@ -83,8 +83,8 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		return self.on_lifted()
 
 class Shielded(Modifier): #simply adds defence, hinders evasion
-	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {"defence":"3d6"}, abilities_granted = [], tags_granted = [], name="shielded", description="grants defence", priority=0):
-		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description, priority)
+	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {"defence":"3d6"}, abilities_granted = [], tags_granted = [], priority=0, name="shielded", description="grants defence") :
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description, )
 
 	def on_applied(self):
 		msg = super(Shielded, self).on_applied()
@@ -92,13 +92,13 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 		return msg
 
 class Bonus(Modifier): #simply adds defence, hinders evasion
-	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="bonus", description="???", priority=0):
-		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description, priority)
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="bonus", description="???"):
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, priority, name, description, )
 
 
 class FireAttack(Modifier):
-	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], name="fire attack", description="Has a chance to cause fire additional damage every attack by host.", priority=0):
-		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, name, description, priority)
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="fire attack",  description="Has a chance to cause fire additional damage every attack by host.",):
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description)
 		self.fire_damage = ["1d3","2d6"]
 		self.fire_chance = ["1d2", "5d6"]
 
@@ -119,7 +119,7 @@ def get_modifier_by_name(modifier_name, source, target, params={}):
 	if not "priority" in params.keys():
 		params["priority"] = 0
 
-	mod = modifier_listing[modifier_name](source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"], params["pri"])
+	mod = modifier_listing[modifier_name](source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"], params["priority"])
 	return mod
 
 modifier_listing = {

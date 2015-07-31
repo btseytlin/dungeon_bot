@@ -532,6 +532,8 @@ class ShieldUp(Ability): #TODO test and adapt
 
 	@staticmethod
 	def use(user, target=None, weapon=None):
+		if not target:
+			target = user
 		buff_info = AttackInfo(user, "buff", ShieldUp, target)
 		buff_info.use_info["item_used"] = weapon
 		return Ability.use(buff_info)

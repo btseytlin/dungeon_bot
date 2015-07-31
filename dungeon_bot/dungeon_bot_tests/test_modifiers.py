@@ -37,7 +37,7 @@ def test_shielded_modifier():
 	logger.info("Retrieved player:\n%s\n"%(ply.examine_self()))
 	ply.inventory.append(item)
 	ply.equip(item)
-	ability = abilities["shield up"]
+	ability = abilities["shieldup"]
 	logger.info("Player equipped the item:\n%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
 	defences = [ply.defence for x in range(10000)]
 	logger.info("Average defence with shield:\n%f"%(sum(defences)/len(defences)))
