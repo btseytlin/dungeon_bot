@@ -111,12 +111,13 @@ level_table = {
 }
 
 def max_exp_for_level(x):
+	prev_lvl_exp = level_table["1"]
 	if str(x) in level_table.keys():
 		return level_table[str(x)]
 
 	if str(x-1) in level_table.keys():
 		prev_lvl_exp = level_table[str(x-1)]
 		
-	cur_level_exp = round_to(prev_lvl_exp+prev_lvl_exp*0.05+math.pow(2, (x/5)))
+	cur_level_exp = round_to_base(prev_lvl_exp+prev_lvl_exp*0.05+math.pow(2, (x/5)))
 	level_table[str(x)] = cur_level_exp
 	return cur_level_exp

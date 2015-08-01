@@ -3,6 +3,7 @@ from items import *
 from util import *
 from modifiers import *
 from abilities import *
+from level_perks import *
 import random
 default_characteristics = {
 	"strength": 5, #how hard you hit
@@ -246,6 +247,13 @@ class Creature(object):
 			effect = modifier.on_combat_start()
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_combat_start()
+				if at_info:
+					attack_info = at_info
+
 		return msg
 
 	def on_combat_over(self):
@@ -254,6 +262,13 @@ class Creature(object):
 			effect = modifier.on_combat_over()
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_combat_over()
+				if at_info:
+					attack_info = at_info
+
 		self.energy = self.stats["max_energy"]
 		return msg
 
@@ -263,6 +278,13 @@ class Creature(object):
 			effect = modifier.on_round()
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_round()
+				if at_info:
+					attack_info = at_info
+
 
 		if not self.dead:
 			self.energy += self.stats["energy_regen"]
@@ -276,6 +298,12 @@ class Creature(object):
 			if effect:
 				msg += effect
 
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_turn()
+				if at_info:
+					attack_info = at_info
+
 		return msg
 
 	def on_modifier_applied(self, modifier):
@@ -284,6 +312,13 @@ class Creature(object):
 			effect = modifier.on_modifier_applied(modifier)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_modifier_applied(modifier)
+				if at_info:
+					attack_info = at_info
+
 		return msg
 
 	def on_experience_gained(self, ability_info): #Immediately after gaining experience
@@ -292,6 +327,13 @@ class Creature(object):
 			ab_info = modifier.on_experience_gained(ability_info)
 			if ab_info:
 				ability_info = ab_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				ab_info = perk.on_experience_gained(ability_info)
+				if ab_info:
+					ability_info = ab_info
+
 		return ability_info
 
 	def on_item_equipped(self, item):
@@ -300,6 +342,13 @@ class Creature(object):
 			effect = modifier.on_item_equipped(item)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				ab_info = perk.on_item_equipped(item)
+				if ab_info:
+					ability_info = ab_info
+
 		return msg
 
 	def on_item_unequipped(self, item):
@@ -308,6 +357,13 @@ class Creature(object):
 			effect = modifier.on_item_unequipped(item)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				ab_info = perk.on_item_unequipped(item)
+				if ab_info:
+					ability_info = ab_info
+
 		return msg
 
 	def on_consumable_used(self, item):
@@ -316,6 +372,13 @@ class Creature(object):
 			effect = modifier.on_consumable_used(item)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				ab_info = perk.on_consumable_used(item)
+				if ab_info:
+					ability_info = ab_info
+				
 		return msg
 
 
@@ -325,6 +388,13 @@ class Creature(object):
 			effect = modifier.on_health_lost(value)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_health_lost(value)
+				if effect:
+					msg += effect
+
 		return msg
 
 	def on_health_gained(self, value):
@@ -333,6 +403,13 @@ class Creature(object):
 			effect = modifier.on_health_gained(value)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_health_gained(value)
+				if effect:
+					msg += effect
+
 		return msg
 
 	def on_energy_gained(self, value):
@@ -342,6 +419,13 @@ class Creature(object):
 			effect = modifier.on_energy_gained(value)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_energy_gained(value)
+				if effect:
+					msg += effect
+
 		return msg
 
 	def on_level_up(self):
@@ -351,6 +435,13 @@ class Creature(object):
 			effect = modifier.on_level_up()
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_level_up()
+				if effect:
+					msg += effect
+
 		return msg
 
 	def on_energy_lost(self, value):
@@ -359,6 +450,13 @@ class Creature(object):
 			effect = modifier.on_energy_lost(value)
 			if effect:
 				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_energy_lost(value)
+				if effect:
+					msg += effect
+
 		return msg
 
 	def on_attacked(self, attack_info): #immediately before attack is launched at self
@@ -368,6 +466,11 @@ class Creature(object):
 			if at_info:
 				attack_info = at_info
 
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_attacked(attack_info)
+				if at_info:
+					attack_info = at_info
 		return attack_info
 
 	def on_got_hit(self, attack_info): #attack in process of landing at self
@@ -380,6 +483,12 @@ class Creature(object):
 			if at_info:
 				attack_info = at_info
 
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_got_hit(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		attack_info = self.kill_if_nececary(attack_info)
 		return attack_info
 
@@ -388,6 +497,13 @@ class Creature(object):
 			at_info = modifier.on_hit(attack_info)
 			if at_info:
 				attack_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_hit(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		return attack_info
 
 	def on_attack(self, attack_info): #immediately before attack is launched at target
@@ -396,6 +512,13 @@ class Creature(object):
 			at_info = modifier.on_attack(attack_info)
 			if at_info:
 				attack_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_attack(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		return attack_info
 
 	def on_kill(self, attack_info):
@@ -404,6 +527,12 @@ class Creature(object):
 			at_info = modifier.on_kill(attack_info)
 			if at_info:
 				attack_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_kill(attack_info)
+				if at_info:
+					attack_info = at_info
 		
 		return attack_info
 
@@ -413,6 +542,13 @@ class Creature(object):
 			at_info = modifier.on_death(attack_info)
 			if at_info:
 				attack_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_death(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		return attack_info
 
 	def on_miss(self, attack_info):
@@ -421,6 +557,13 @@ class Creature(object):
 			at_info = modifier.on_miss(attack_info)
 			if at_info:
 				attack_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_miss(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		return attack_info
 
 	def on_buffed(self, ability_info):
@@ -429,6 +572,13 @@ class Creature(object):
 			at_info = modifier.on_buffed(ability_info)
 			if at_info:
 				ability_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_buffed(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		return ability_info
 
 	def on_buff(self, ability_info):
@@ -437,6 +587,13 @@ class Creature(object):
 			at_info = modifier.on_buff(ability_info)
 			if at_info:
 				ability_info = at_info
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_buff(attack_info)
+				if at_info:
+					attack_info = at_info
+
 		return ability_info
 
 
@@ -507,7 +664,7 @@ class Creature(object):
 		self.tags = self.base_tags.copy()
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				for tag in perk.tags_granted:
+				for tag in perk.__class__.tags_granted:
 					self.tags.append(tag)
 
 		for modifier in self.modifiers:
@@ -523,7 +680,7 @@ class Creature(object):
 		self.modifiers = []
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				for modifier in perk.modifiers_granted:
+				for modifier in perk.__class__.modifiers_granted:
 					modifier_object = get_modifier_by_name( modifier["name"], perk, self, modifier["params"] )
 					modifier_object.apply()
 
@@ -537,7 +694,7 @@ class Creature(object):
 		self.abilities = self.base_abilities.copy()
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				for ability in perk.abilities_granted:
+				for ability in perk.__class__.abilities_granted:
 					prototype = abilities[ability]
 					self.abilities.append(prototype(ability, perk))
 
@@ -560,8 +717,8 @@ class Creature(object):
 		#refresh characteristics
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				for characteristic in list(perk.characteristics_change.keys()):
-					self.characteristics[characteristic] += perk.characteristics_change[characteristic]
+				for characteristic in list(perk.__class__.characteristics_change.keys()):
+					self.characteristics[characteristic] += perk.__class__.characteristics_change[characteristic]
 
 		for modifier in self.modifiers:
 			for characteristic in list(modifier.characteristics_change.keys()):
@@ -576,8 +733,8 @@ class Creature(object):
 		#refresh stats
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				for stat in list(perk.stats_change.keys()):
-					self.stats[stat] += perk.stats_change[stat]
+				for stat in list(perk.__class__.stats_change.keys()):
+					self.stats[stat] += perk.__class__.stats_change[stat]
 
 		for modifier in self.modifiers:
 			for stat in list(modifier.stats_change.keys()):
@@ -595,6 +752,10 @@ class Creature(object):
 		characteristics.append("|\t"+"Dexterity"+":" +str(self.characteristics["dexterity"]) +"\n")
 		characteristics.append("|\t"+"Vitality"+":" +str(self.characteristics["vitality"]) +"\n")
 		characteristics.append("|\t"+"Intelligence"+":" +str(self.characteristics["intelligence"]) +"\n")
+		
+		avg_defence = sum([self.defence for x in range(101)])/100
+		avg_evasion = sum([self.evasion for x in range(101)])/100
+
 		desc = "\n".join(
 		[
 			"%s. lvl %d"%(self.name.title(), self.level),
@@ -602,10 +763,11 @@ class Creature(object):
 			"Characteristics:\n%s"%("".join(characteristics)),
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
 			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]) + "\nExp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
+			"Average defence, evasion:\n|\t%d, %d"%(avg_defence, avg_evasion),
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
 			"Modifiers:\n|\t%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
 			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities])),
-			"Equipment:\n"+self.examine_equipment()
+			"Equipment:\n%s"%(self.examine_equipment()),
 		])
 		return desc
 
@@ -625,14 +787,20 @@ class Creature(object):
 		for key in self.equipment:
 			if self.equipment[key]:
 				big_dict["equipment"][key] = self.equipment[key].to_json()
+
+		big_dict["level_perks"] = []
+		for perk in self.level_perks:
+			big_dict["level_perks"].append(perk.__class__.name)
+
 		#big_dict["equipment"] = json.dumps(big_dict["equipment"])
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0):
+	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.level_up_points = level_up_points
+		self.perk_points = perk_points
 		self.username = username
 
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
@@ -643,17 +811,16 @@ class Player(Creature):
 
 	@experience.setter
 	def experience(self, value):
-		if value > self.max_experience:
+		if value >= self.max_experience:
 			over_cur_level = value - (self.max_experience - self.experience)
 			self.level_up()
 			self.experience = over_cur_level
 		else:
 			self._experience = value
 
-
 	@property
 	def max_experience(self):
-	    return max_exp_for_level(value)
+	    return max_exp_for_level(self.level)
 	
 	@property
 	def level(self):
@@ -667,16 +834,32 @@ class Player(Creature):
 		cur_level = self.level
 		self.experience += value
 		if self.level > cur_level:
-			return "%s has leveled up to level %d!"%(self.name.title(), self.level)
+			return "%s has leveled up to level %d!\n"%(self.name.title(), self.level)
+		return ""
+
+	def fits_perk_requirements(self, perk_requirements):
+		own_perk_names= [perk.__class__.name for perk in self.level_perks]
+
+		if perk_requirements["level"] > self.level:
+			return False
+		for perk in perk_requirements["has_perks"]:
+			if not perk.__class__.name in own_perk_names:
+				return False
+		for characteristic in list(perk_requirements["characteristics"].keys()):
+			if self.characteristics[characteristic] < perk_requirements["characteristics"][characteristic]:
+				return False
+		return True
 
 	def examine_self(self):
 		desc = super(Player, self).examine_self()
+		desc += "Level perks:\n|\t%s"%(", ".join([perk.__class__.name for perk in self.level_perks]))
 		return desc
 
 	def level_up(self):
 		self.level = self.level + 1
 		self.level_up_points += ( int(self.level % 5) == 0 ) * 1 
-		msg += self.on_level_up()
+		self.perk_points += ( int(self.level % 3) == 0 ) * 1 
+		msg = self.on_level_up()
 		return msg
 
 	@staticmethod
@@ -698,9 +881,12 @@ class Player(Creature):
 		for key in list(eq.keys()):
 			if eq[key]:
 				equipment[key] = Item.de_json(eq[key])
-
 		data["equipment"] = equipment
-		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("level_up_points"))
+
+		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], [], data.get("_experience"), data.get("level_up_points"), data.get("perk_points"))
+		level_perks = [level_perks_listing[name](ply) for name in data["level_perks"]]
+		ply.level_perks = level_perks
+		ply.refresh_derived()
 		return ply
 
 	def on_kill(self, attack_info):

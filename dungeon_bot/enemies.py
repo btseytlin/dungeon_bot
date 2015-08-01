@@ -124,7 +124,7 @@ class BigRat(Enemy):
 			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c,  self.primary_weapon))
+					attack_infos.append(self.abilities[0].__class__.use(self, c,  self.primary_weapon, combat_event))
 			if not targets:
 				break
 

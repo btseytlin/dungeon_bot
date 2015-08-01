@@ -5,6 +5,7 @@ from abilities import *
 import random
 from creatures import *
 from items import *
+from level_perks import *
 import logging
 
 combat_logger = logging.getLogger('dungeon_bot_combat')
@@ -133,7 +134,100 @@ class RegistrationEvent(BotEvent):
 			else:
 				return "Unknown command."
 			
-			
+class LevelUpEvent(BotEvent):
+	def __init__(self, finished_callback, user):
+		BotEvent.__init__(self, finished_callback, [user])
+		self.user = user
+		self.player = persistence_controller.get_ply(user)
+		self.current_step = 0
+		self.perk_step_msg = ""
+		if self.player.perk_points > 0:
+			self.perk_step_msg = "Choose a perk by typing it's number:\n"
+			self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key].requirements)]
+			self.perk_step_msg += "\n".join([str(i+1) + ". " +self.available_perks[i].name + "-" + self.available_perks[i].description for i in range(len(self.available_perks)) ])
+
+		if self.player.level_up_points <= 0:
+			if self.player.perk_points > 0:
+				self.current_step = 1
+				self.greeting_message = 'You can choose %d new perks.\n'%(self.player.perk_points)
+				self.greeting_message += self.perk_step_msg
+			else:
+				self.greeting_message = "You don't have any perk points or characteristic points to spend."
+				return self.finish() 
+		else:
+			self.greeting_message = 'You have %d characteristics points.\nLet\'s begin.\n'%(self.player.level_up_points)
+			self.greeting_message += "Currently your characteristics are:\n"
+			self.greeting_message += "You can save points for later by using 'done'.\n"
+			self.greeting_message += self.format_characteristics(self.player.base_characteristics)
+			self.greeting_message += "You can raise your characteristics with commands like \"dex +\", but you can't lower them.\n.\n"
+
+
+
+	def format_characteristics(self, chars):
+		characteristics = []
+		characteristics.append("|\t"+"Strength"+":" +str(chars["strength"]) +"\n")
+		characteristics.append("|\t"+"Dexterity"+":" +str(chars["dexterity"]) +"\n")
+		characteristics.append("|\t"+"Vitality"+":" +str(chars["vitality"]) +"\n")
+		characteristics.append("|\t"+"Intelligence"+":" +str(chars["intelligence"]) +"\n")
+		return ''.join(characteristics)
+
+	def handle_command(self, user, command, *args):
+		if command == "done":
+			return "Done leveling up." + self.finish() or ""
+
+		if self.current_step == 0:
+			if command in ["dex", "dexterity", "strength", "str", "vitality", "vit", "intelligence", "int"]:
+				argument = " ".join(args)
+				shortened_to_full = {
+					"dex": "dexterity",
+					"str": "strength",
+					"vit": "vitality",
+					"int": "intelligence",
+				}
+				if not command in ["dexterity", "strength", "vitality", "intelligence"]:
+					characteristic = shortened_to_full[command]
+				else:
+					characteristic = command
+				if argument == "+":
+					if self.player.level_up_points > 0:
+						self.player.base_characteristics[characteristic] += 1
+						self.player.level_up_points -= 1 
+						
+						msg = self.format_characteristics(self.player.base_characteristics)
+
+						if self.player.level_up_points <= 0:
+							msg += "You have no points left to spend.\n"
+							self.current_step += 1
+							if self.player.perk_points < 0:
+								msg += "Done leveling up.\n"
+								return msg + self.finish()
+							else:
+								if len(self.available_perks) <= 0:
+									msg += "No perks available."
+									msg += "Done leveling up.\n"
+									return msg + self.finish()
+								else:
+									msg += self.perk_step_msg
+							return msg
+						msg = "You have %d points left.\n"%(self.player.level_up_points)
+						return msg
+				else:
+					return "Wrong argument, try only \"+\" is allowed."
+		elif self.current_step == 1:
+			if command.isdigit():
+				if int(command) > 0 and int(command) <= len(self.available_perks):
+					perk = self.available_perks[int(command)-1]
+					self.player.level_perks.append(perk(self.player))
+					msg = "Added perk %s.\n"%(perk.name)
+					self.player.perk_points -= 1
+					if self.player.perk_points <= 0 or len(self.available_perks) <= 0:
+						msg += "Done leveling up.\n"
+						return msg + self.finish()
+					msg = "You still have %d perk points to spend.\n"%(self.player.perk_points)
+				else:
+					return "No perk under such number."
+			else:
+				return "Input a number!"
 
 class InventoryEvent(BotEvent):
 
@@ -401,7 +495,7 @@ class DungeonCrawlEvent(BotEvent):
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "leaves dungeon crawl","abort": "leaves dungeon crawl","ab": "leaves dungeon crawl","b": "leaves dungeon crawl", "leave": "leaves dungeon crawl",
 		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
-		"levelup": "opens the level up dialogue", "lvl": "opens the level up dialogue", 
+		"level up": "opens the level up dialogue", "lvl": "opens the level up dialogue", 
 		"status": "shows where you are and what you are doing",
 	}
 
@@ -477,8 +571,32 @@ class DungeonCrawlEvent(BotEvent):
 		return "Room type not done yet."
 
 
-	def open_levelup(self, user):
-		pass
+	def open_level_up(self, user):
+		if persistence_controller.get_ply(user).level_up_points > 0 or persistence_controller.get_ply(user).perk_points >0 :
+
+			def lvl_over_callback(event):
+				player = persistence_controller.get_ply(user)
+				player.event = self # Free all players from event
+				for uname in list(self.non_combat_events.keys()):
+					if self.non_combat_events[uname] == event:
+						del sel
+
+			level_up = LevelUpEvent(lvl_over_callback, user)
+			self.non_combat_events[user.username] = level_up
+			persistence_controller.get_ply(user).event = level_up
+			logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
+
+			broadcast = []
+			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).username.title())
+
+			broadcast.append([user, level_up.greeting_message])
+			for u in self.users:
+				if u.username != user.username:
+					broadcast.append([u, msg])
+			return(broadcast)
+		return "You don't have any perk points or characteristic points to spend."
+
+
 
 	def open_inventory(self, user):
 		def inv_over_callback(event):
@@ -518,7 +636,7 @@ class DungeonCrawlEvent(BotEvent):
 		elif (command in ["inventory","inv"]):
 			return(self.open_inventory(user))
 		elif (command in ["levelup","lvl"]):
-			return(self.open_levelup(user))
+			return(self.open_level_up(user))
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
@@ -687,7 +805,7 @@ class CombatEvent(BotEvent):
 
 	def handle_combat_command(self, user, command, *args):
 		combat_logger.info("Command from user %s: %s %s"%(user.username, command, " ".join(args)))
-		if self.turn_qeue[self.turn].username == user.username: #current turn is of player who sent command
+		if hasattr(self.turn_qeue[self.turn],"username") and self.turn_qeue[self.turn].username == user.username: #current turn is of player who sent command
 			if command in list(self.user_abilities[user.username].keys()):
 				ability = self.user_abilities[user.username][command]
 				ability_class = self.user_abilities[user.username][command].__class__

@@ -3,16 +3,20 @@ from util import *
 import random
 
 class LevelPerk(object): #LevelPerks always affect only the host that carries them
-	def __init__(self, host, requirements, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [],  priority=0, name="", description=""):
+	name = "Unfinished perk"
+	description = "Report this bug"
+	requirements = {
+
+	}
+	characteristics_change = {}
+	stats_change = {}
+	abilities_granted = []
+	modifiers_granted = []
+	tags_granted = []
+	priority = 0
+	def __init__(self, host):
 		self.uid = get_uid()
-		self.name = name
-		self.description = description
 		self.host = host
-		self.characteristics_change = characteristics_change.copy()
-		self.stats_change = stats_change.copy()
-		self.abilities_granted = abilities_granted.copy()
-		self.tags_granted = tags_granted.copy()
-		self.priority = priority
 
 	def on_combat_start(self):
 		pass
@@ -33,6 +37,9 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 		pass
 
 	def on_round(self):
+		pass
+
+	def on_level_up(self):
 		pass
 
 	def on_attack(self, ability_info=None):
@@ -61,7 +68,7 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 
 	def on_death(self, ability_info=None):
 		pass
-		
+
 	def on_experience_gained(self, ability_info=None):
 		pass
 
@@ -84,22 +91,26 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 		pass
 
 class Educated(LevelPerk):
+	name = "Educated"
+	description = "Get 10 percent additional experience."
+	priority = 0
 	requirements = {
+		"level": 1,
 		"has_perks": [],
 		"characteristics": {
 			"intelligence": 5
 		}
 	}
 
-	def __init__(self, host, requirements, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [],  priority=1, name="edcated", description="Get 10 percent additional experience."):
-		LevelPerk.__init__(self, host, characteristics_change, stats_change, abilities_granted, tags_granted,  priority, name, description)
+	def __init__(self, host):
+		LevelPerk.__init__(self, host)
 
 	def on_experience_gained(self, ability_info):
 		additional_gain = ability_info.use_info["experience_gained"] * 0.10
-		ability_info["experience_gained"] += additional_gain
-		ability_info.description +=  "%s gains %d additional experience due to being educated"%(self.host.name.title(), additional_gain)
+		ability_info.use_info["experience_gained"] += additional_gain
+		ability_info.description +=  "%s gains %d additional experience due to being educated.\n"%(self.host.name.title(), additional_gain)
 		return ability_info
 
-level_perks = {
-	"educated":Educated, 
+level_perks_listing = {
+	"Educated":Educated, 
 }

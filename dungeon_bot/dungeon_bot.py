@@ -19,6 +19,7 @@ def event_over_callback(event):
 	del DungeonBot.events[event.uid] #delete event
 	logger.debug("Event %s removed"%(event.uid))
 	gc.collect()
+	return ""
 
 def crawl_event_over_callback(event):
 	for user in event.users:
@@ -58,6 +59,8 @@ class DungeonBot(object):
 		"h": "shows help",
 		"inventory": "shows your inventory",
 		"inv": "shows your inventory",
+		"levelup": "opens the level up dialogue",
+		"lvl": "opens the level up dialogue",
 		"status": "shows where you are and what you are doing",
 		"lobbies": "shows active lobbies with free slots",
 		"lob": "shows active lobbies with free slots",
@@ -104,6 +107,8 @@ class DungeonBot(object):
 				return (persistence_controller.get_ply(user).examine_self())
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
+		elif (command in ["levelup","lvl"]):
+			return(self.open_level_up(user))
 		elif (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
 		elif (command in ["lob","lobbies"]):
@@ -200,7 +205,15 @@ class DungeonBot(object):
 		self.events[inv.uid] = inv #add event to collection of events
 		logger.debug("Inventory event %s created"%(inv.uid))
 		return(inv.greeting_message)
-		
+
+	def open_level_up(self, user):
+		if persistence_controller.get_ply(user).level_up_points > 0 or persistence_controller.get_ply(user).perk_points >0 :
+			level_up = LevelUpEvent(event_over_callback, user)
+			self.events[level_up.uid] = level_up
+			logger.debug("Levelup event %s created"%(level_up.uid))
+			return(level_up.greeting_message)
+		return "You don't have any perk points or characteristic points to spend."
+
 	def new_crawl_lobby(self, total_users):
 		lobby = DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
 		self.events[lobby.uid] = lobby #add event to collection of events
