@@ -195,9 +195,8 @@ class Creature(object):
 		for item in self.inventory:
 			if item == target_item:
 				self.inventory.remove(item)
-
-		
 		self.refresh_derived()
+		self.sort_inventory()
 		msg = self.on_item_equipped(target_item)
 		return msg + "Succesfully equipped %s."%(target_item.name)
 
@@ -207,24 +206,28 @@ class Creature(object):
 		if self.equipment[target_item.item_type] == target_item:
 			self.equipment[target_item.item_type] = None
 			self.inventory.append(target_item)
+			self.sort_inventory()
 			self.refresh_derived()
 			msg = self.on_item_unequipped(target_item)
 			return msg + "Succesfully unequipped %s."%(target_item.name)
 		return "Not equipped!"
 
 	def destroy(self, target_item):
-		self.unequip(target_item)
-		#for item in self.inventory:
-		#	if item == target_item:
-		self.inventory.remove(target_item)
-		return "Succesfully destroyed %s."%(target_item.name)
+		if target_item in self.inventory:
+			self.unequip(target_item)
+			#for item in self.inventory:
+			#	if item == target_item:
+			self.inventory.remove(target_item)
+			self.sort_inventory()
+			return "Succesfully destroyed %s."%(target_item.name)
+		return "No such item."
 
 	def use(self, item):
 		if item in self.inventory:
 			use_effect = item.use(self)
 			msg = self.on_consumable_used(item)
+			self.sort_inventory()
 			return use_effect + msg
-
 
 	def add_modifier(self, modifier):
 		self.modifiers.append(modifier)
@@ -424,20 +427,49 @@ class Creature(object):
 	def examine_equipment(self):
 		#desc = "%s's equipment:\n"%(self.name)
 		desc = ""
-		for key in self.equipment.keys():
-			item = self.equipment[key]
-			if item:
-				desc+="%s: %s.\n"%(key, item.name)
+
+		if self.primary_weapon:
+			desc+="|\t%s: %s.\n"%("Primary weapon", self.primary_weapon.short_desc)
+		if self.secondary_weapon:
+			desc+="|\t%s: %s.\n"%("Secondary weapon", self.secondary_weapon.short_desc)
+		if self.armor:
+			desc+="|\t%s: %s.\n"%("Armor", self.armor.short_desc)
+		if self.headwear:
+			desc+="|\t%s: %s.\n"%("Headwear", self.armor.short_desc)
+		if self.ring:
+			desc+="|\t%s: %s.\n"%("Ring", self.ring.short_desc)
+		if self.talisman:
+			desc+="|\t%s: %s.\n"%("Talisman", self.talisman.short_desc)
+
 		return desc
+
+	def sort_inventory(self):
+		inv = {
+			"primary_weapon" :[],
+			"secondary_weapon" :[],
+			"armor" :[],
+			"headwear" :[],
+			"talisman" :[],
+			"ring" :[],
+			"consumable" :[],
+		}
+		for item in self.inventory:
+			inv[item.item_type].append(item)
+
+		for key in list(inv.keys()):
+			inv[key] = sorted(inv[key], key=lambda item: item.name)
+
+		self.inventory = inv["primary_weapon"] + inv["secondary_weapon"] + inv["armor"] + inv["headwear"] + inv["talisman"] + inv["ring"] + inv["consumable"]
 
 	def examine_inventory(self):
 		#desc = "%s's inventory:\n"%(self.name)
+		self.sort_inventory()
 		desc = ""
 		items = []
 		for i in range(len(self.inventory)):
 			item = self.inventory[i]
 			if item:
-				items.append(str(i+1)+"."+item.name)
+				items.append(str(i+1)+"."+item.short_desc)
 		return desc + ', '.join(items)
 
 	def refresh_tags(self):
@@ -533,10 +565,10 @@ class Creature(object):
 			"Characteristics:\n%s\n"%("\n".join(["|\t"+x+":" +str(self.characteristics[x]) for x in list(self.characteristics.keys())])),
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
 			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]) + "\nExp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
-			
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
 			"Modifiers:\n|\t%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
-			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities]))
+			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities])),
+			"Equipment:\n"+self.examine_equipment()
 		])
 		return desc
 

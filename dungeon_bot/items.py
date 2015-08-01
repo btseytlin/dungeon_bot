@@ -12,14 +12,29 @@ class Item(object):
 		self.modifiers_granted = modifiers_granted.copy()
 		self.tags_granted = tags_granted.copy()
 
+	@property
+	def short_desc(self):
+	    return self.name
+	
+
 	def use(self, user, target ):
 		return "Can't use %s."%(self.name)
 
 	def examine_self(self):
+		stats = []
+
+		for x in list(self.stats.keys()):
+			if isinstance(self.stats[x], dict):
+				for stat in list(self.stats[x].keys()):
+					stats.append("|\t"+str(stat)+":" +str(self.stats[x][stat])) 
+			else:
+				stats.append("|\t"+x+":" +str(self.stats[x])) 
+
+
 		desc = "\n".join([
 				"%s, %s."%(self.name.title(), self.item_type),
 				"%s"%(self.description or ""),
-				"Stats:\n%s"%("".join(["|\t"+str(x)+":" +self.stats[x]+"\n" for x in list(self.stats.keys())])),
+				"Stats:\n%s"%("".join(stats)),
 				"Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted)),
 				"Modifiers granted:\n|\t%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
 				"Tags granted:\n|\t%s"%(", ".join(self.tags_granted)),
@@ -68,6 +83,10 @@ default_weapon_abilities = []
 class PrimaryWeapon(Item):
 	def __init__(self, name, description, item_type="primary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted = []):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+	@property
+	def short_desc(self):
+		return self.name+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"]) + ("!" if len(self.modifiers_granted)>0 else "")
+
 
 	@staticmethod
 	def de_json(data):
@@ -78,6 +97,14 @@ class SecondaryWeapon(Item):
 	def __init__(self, name, description, item_type="secondary_weapon", stats=default_weapon_stats, abilities_granted = default_weapon_abilities, modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
+	@property
+	def short_desc(self):
+		if "accuracy" in list(self.stats.keys()):
+			return self.name+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"]) + ("!" if len(self.modifiers_granted)>0 else "")
+		else:
+			return self.name+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"]) + ("!" if len(self.modifiers_granted)>0 else "")
+		
+
 	@staticmethod
 	def de_json(data):
 		return SecondaryWeapon(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
@@ -87,6 +114,10 @@ class Armor(Item):
 	def __init__(self, name, description, item_type="armor", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
+	@property
+	def short_desc(self):
+		return self.name+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"]) + ("!" if len(self.modifiers_granted)>0 else "")
+
 	@staticmethod
 	def de_json(data):
 		return Armor(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
@@ -94,6 +125,10 @@ class Armor(Item):
 class Talisman(Item):
 	def __init__(self, name, description, item_type="talisman", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+	@property
+	def short_desc(self):
+		return self.name+("!" if len(self.modifiers_granted)>0 else "")
 
 	@staticmethod
 	def de_json(data):
@@ -103,6 +138,10 @@ class Ring(Item):
 	def __init__(self, name, description, item_type="ring", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 
+	@property
+	def short_desc(self):
+		return self.name+("!" if len(self.modifiers_granted)>0 else "")
+
 	@staticmethod
 	def de_json(data):
 		return Ring(data.get('name'), data.get('description'), data.get("item_type"), data.get('stats'), data.get("abilities_granted"), data.get("modifiers_granted"), data.get("requirements"), data.get("tags_granted"))
@@ -111,6 +150,10 @@ class Ring(Item):
 class Headwear(Item):
 	def __init__(self, name, description, item_type="ring", stats={}, abilities_granted = [], modifiers_granted = [], requirements = default_weapon_requirements, tags_granted=[]):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
+
+	@property
+	def short_desc(self):
+		return self.name+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"]) + ("!" if len(self.modifiers_granted)>0 else "")
 
 	@staticmethod
 	def de_json(data):
