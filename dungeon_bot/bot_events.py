@@ -62,6 +62,14 @@ class RegistrationEvent(BotEvent):
 		self.new_player = persistence_controller.get_ply(user)
 		self.greeting_message = 'You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?'
 
+	def format_characteristics(self, chars):
+		characteristics = []
+		characteristics.append("|\t"+"Strength"+":" +str(chars["strength"]) +"\n")
+		characteristics.append("|\t"+"Dexterity"+":" +str(chars["dexterity"]) +"\n")
+		characteristics.append("|\t"+"Vitality"+":" +str(chars["vitality"]) +"\n")
+		characteristics.append("|\t"+"Intelligence"+":" +str(chars["intelligence"]) +"\n")
+		return ''.join(characteristics)
+
 	def handle_command(self, user, command, *args):
 		if command == "restart":
 			self.current_step = 0
@@ -71,7 +79,7 @@ class RegistrationEvent(BotEvent):
 			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip().title()
 			self.current_step+=1
 			msg = "Great. Now let's input your characteristics. Currently they are:\n"
-			msg += "".join(["|\t"+str(x)+":" +str(self.new_player.characteristics[x])+"\n" for x in list(self.new_player.characteristics.keys())])
+			msg += self.format_characteristics(self.new_player.base_characteristics)
 			msg += "Strength affects how much damage you do, how resistant you are to damage.\n"
 			msg += "Dexterity affects how fast you act and how accurate you hit.\n"
 			msg += "Vitality affects how much health you have.\n"
@@ -96,19 +104,19 @@ class RegistrationEvent(BotEvent):
 
 				if argument == "+":
 					if self.char_points > 0:
-						self.new_player.characteristics[characteristic] += 1
+						self.new_player.base_characteristics[characteristic] += 1
 						self.char_points -= 1 
 						msg = "You have %d points left.\n"%(self.char_points)
-						msg += "".join(["|\t"+str(x)+":" +str(self.new_player.characteristics[x])+"\n" for x in list(self.new_player.characteristics.keys())])
+						msg += self.format_characteristics(self.new_player.base_characteristics)
 						return msg
 					else:
 						return "You don't have any points left, lower some characteristic to raise %s."%(characteristic)
 				elif argument == "-":
-					if self.new_player.characteristics[characteristic] > 1:
-						self.new_player.characteristics[characteristic] -= 1
+					if self.new_player.base_characteristics[characteristic] > 1:
+						self.new_player.base_characteristics[characteristic] -= 1
 						self.char_points += 1 
 						msg = "You have %d points left.\n"%(self.char_points)
-						msg += "".join(["|\t"+str(x)+":" +str(self.new_player.characteristics[x])+"\n" for x in list(self.new_player.characteristics.keys())])
+						msg += self.format_characteristics(self.new_player.base_characteristics)
 						return msg
 					else:
 						return "You can't lower %s any further."%(characteristic)
@@ -119,6 +127,7 @@ class RegistrationEvent(BotEvent):
 					return "You still have unspent points!\nDon't make that mistake, go invest them into something."
 				club = get_item_by_name("club")
 				self.new_player.inventory = [club]
+				self.new_player.refresh_derived()
 				self.finish()
 				return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\nAlso remember to use "status" and "help" whenever you don\'t know where you are or what to do.')
 			else:

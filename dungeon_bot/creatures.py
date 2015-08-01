@@ -435,7 +435,7 @@ class Creature(object):
 		if self.armor:
 			desc+="|\t%s: %s.\n"%("Armor", self.armor.short_desc)
 		if self.headwear:
-			desc+="|\t%s: %s.\n"%("Headwear", self.armor.short_desc)
+			desc+="|\t%s: %s.\n"%("Headwear", self.headwear.short_desc)
 		if self.ring:
 			desc+="|\t%s: %s.\n"%("Ring", self.ring.short_desc)
 		if self.talisman:
@@ -558,11 +558,17 @@ class Creature(object):
 					self.stats[stat] += self.equipment[item].stats["stats_change"][stat]
 
 	def examine_self(self):
+
+		characteristics = []
+		characteristics.append("|\t"+"Strength"+":" +str(self.characteristics["strength"]) +"\n")
+		characteristics.append("|\t"+"Dexterity"+":" +str(self.characteristics["dexterity"]) +"\n")
+		characteristics.append("|\t"+"Vitality"+":" +str(self.characteristics["vitality"]) +"\n")
+		characteristics.append("|\t"+"Intelligence"+":" +str(self.characteristics["intelligence"]) +"\n")
 		desc = "\n".join(
 		[
 			"%s. lvl %d"%(self.name.title(), self.level),
 			"%s"%(self.description or "----"),
-			"Characteristics:\n%s\n"%("\n".join(["|\t"+x+":" +str(self.characteristics[x]) for x in list(self.characteristics.keys())])),
+			"Characteristics:\n%s"%("".join(characteristics)),
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
 			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]) + "\nExp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
