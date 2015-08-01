@@ -68,15 +68,15 @@ class Rat(Enemy):
 		self.inventory.append(teeth)
 		self.equip(teeth)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -116,12 +116,12 @@ class BigRat(Enemy):
 		self.inventory.append(teeth)
 		self.equip(teeth)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					attack_infos.append(self.abilities[0].__class__.use(self, c,  self.primary_weapon))
@@ -175,18 +175,18 @@ class Wolf(Enemy):
 		self.equip(teeth)
 		self.equip(claws)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if random.randint(1, 2) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -226,18 +226,18 @@ class WolfLeader(Enemy):
 		self.equip(teeth)
 		self.equip(claws)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if random.randint(1, 2) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -277,18 +277,18 @@ class Bear(Enemy):
 		self.equip(teeth)
 		self.equip(claws)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if random.randint(1, 2) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -329,18 +329,18 @@ class UndeadSoldier(Enemy):
 			self.inventory.append(item)
 			self.equip(item)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if self.primary_weapon:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -381,15 +381,15 @@ class UndeadKnight(Enemy):
 			self.inventory.append(item)
 			self.equip(item)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -430,17 +430,17 @@ class LesserDemon(Enemy):
 			self.inventory.append(item)
 			self.equip(item)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if random.randint(0, 1) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 		return attack_infos
@@ -477,17 +477,17 @@ class BetaDemon(Enemy):
 			self.inventory.append(item)
 			self.equip(item)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if random.randint(0, 1) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 		return attack_infos
@@ -528,17 +528,17 @@ class Peasant(Enemy):
 			self.inventory.append(item)
 			self.equip(item)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if self.primary_weapon:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 
@@ -577,17 +577,17 @@ class Thief(Enemy):
 			self.inventory.append(item)
 			self.equip(item)
 
-	def act(self, turn_qeue):
+	def act(self, combat_event):
 		attack_infos = []
 		while self.energy >= 2:
 			targets = False
-			for c in turn_qeue:
+			for c in combat_event.turn_qeue:
 				if not c.dead and isinstance(c, Player):
 					targets = True
 					if self.primary_weapon:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
 					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon))
+						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
 			if not targets:
 				break
 

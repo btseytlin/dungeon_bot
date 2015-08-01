@@ -226,7 +226,7 @@ class InventoryEvent(BotEvent):
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
 				desc = self.player.examine_self()+'\n'
-				desc += "Equipment:\n"+self.player.examine_equipment()
+				#desc += "Equipment:\n"+self.player.examine_equipment()
 				desc += "Inventory:\n"+self.player.examine_inventory()
 				return desc
 			elif len(args) > 0:
@@ -669,7 +669,7 @@ class CombatEvent(BotEvent):
 		return qeue
 
 	def ai_turn(self):
-		use_infos = self.turn_qeue[self.turn].act(self.turn_qeue)
+		use_infos = self.turn_qeue[self.turn].act(self)
 		combat_logger.info("   AI(%s) actions:"%(self.turn_qeue[self.turn].name))
 		msg = ""
 		for use_info in use_infos:
@@ -703,7 +703,7 @@ class CombatEvent(BotEvent):
 
 					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[user.username], target )
 					if can_use:
-						use_info = ability_class.use( self.users_to_players[user.username], target, granted_by )
+						use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
 						combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
 						msg = use_info.description 
 						broadcast = []

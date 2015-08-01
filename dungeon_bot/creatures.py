@@ -184,12 +184,18 @@ class Creature(object):
 		if target_item.item_type == "consumable":
 			return "Can't equip %s."%(target_item.name)
 
+		if target_item.requirements:
+			for key in list(target_item.requirements.keys()):
+				if self.characteristics[key] < target_item.requirements[key]:
+					return "%d %s required to use this item."%(target_item.requirements[key], key)
+
 		if self.equipment[target_item.item_type] == target_item:
 			return "Already equipped %s."%(target_item.name)
 
 		if self.equipment[target_item.item_type]:
 			temp = self.equipment[target_item.item_type]
 			self.unequip(temp)
+
 
 		self.equipment[target_item.item_type] = target_item
 		for item in self.inventory:
@@ -346,20 +352,36 @@ class Creature(object):
 				msg += effect
 		return msg
 
-	def on_attacked(self, attack_info):
+	def on_attacked(self, attack_info): #immediately before attack is launched at self
 		msg = ""
-		if attack_info.use_info["damage_dealt"] > 0:
-			attack_info.description += self.damage(attack_info.use_info["damage_dealt"])
-
 		for modifier in self.modifiers:
 			at_info = modifier.on_attacked(attack_info)
 			if at_info:
 				attack_info = at_info
 
-		attack_info = self.kill_if_nececary(attack_info) 
 		return attack_info
 
-	def on_attack(self, attack_info):
+	def on_got_hit(self, attack_info): #attack in process of landing at self
+		msg = ""
+		if attack_info.use_info["damage_dealt"] > 0:
+			attack_info.description += self.damage(attack_info.use_info["damage_dealt"])
+
+		for modifier in self.modifiers:
+			at_info = modifier.on_hit(attack_info)
+			if at_info:
+				attack_info = at_info
+
+		attack_info = self.kill_if_nececary(attack_info)
+		return attack_info
+
+	def on_hit(self, attack_info): #immediately after succesfully hitting target
+		for modifier in self.modifiers:
+			at_info = modifier.on_hit(attack_info)
+			if at_info:
+				attack_info = at_info
+		return attack_info
+
+	def on_attack(self, attack_info): #immediately before attack is launched at target
 		msg = ""
 		for modifier in self.modifiers:
 			at_info = modifier.on_attack(attack_info)

@@ -119,7 +119,7 @@ class FireAttack(Modifier):
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="fire attack",  description="Has a chance to cause fire additional damage every attack by host.",):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description)
 
-	def on_attack(self, attack_info):
+	def on_hit(self, attack_info):
 		fire_chance = self.granted_by.stats["fire_chance"]
 		fire_damage = self.granted_by.stats["fire_damage"]
 		if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:

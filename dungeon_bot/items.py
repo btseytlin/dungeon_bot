@@ -21,6 +21,10 @@ class Item(object):
 		return "Can't use %s."%(self.name)
 
 	def examine_self(self):
+		requirements = []
+		for x in list(self.requirements.keys()):
+				requirements.append("|\t"+x+":" +str(self.requirements[x])) 
+
 		stats = []
 
 		for x in list(self.stats.keys()):
@@ -34,7 +38,8 @@ class Item(object):
 		desc = "\n".join([
 				"%s, %s."%(self.name.title(), self.item_type),
 				"%s"%(self.description or ""),
-				"Stats:\n%s"%("".join(stats)),
+				"Requirements:\n%s"%(", ".join(requirements)),
+				"Stats:\n%s"%(", ".join(stats)),
 				"Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted)),
 				"Modifiers granted:\n|\t%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
 				"Tags granted:\n|\t%s"%(", ".join(self.tags_granted)),
@@ -169,7 +174,7 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 		if not "modifiers_granted" in item_args.keys():
 				item_args["modifiers_granted"] = []
 		if not "requirements" in item_args.keys():
-				item_args["requirements"] = []
+				item_args["requirements"] = {}
 		if not "abilities_granted" in item_args.keys():
 				item_args["abilities_granted"] = []
 		if not "tags_granted" in item_args.keys():

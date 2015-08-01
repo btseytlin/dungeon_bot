@@ -26,11 +26,12 @@ Tags:
 """
 
 class AbilityUseInfo(object):
-	def __init__(self, inhibitor, ability_type, prototype_class, target):
+	def __init__(self, inhibitor, ability_type, prototype_class, target, combat_event=None):
 		self.ability_type = ability_type
 		self.prototype_class = prototype_class
 		self.inhibitor = inhibitor
 		self.target = target
+		self.combat_event = combat_event
 
 	def execute(self):	
 		use_info = self.use_info	
@@ -43,16 +44,23 @@ class AbilityUseInfo(object):
 		for modifier in use_info["modifiers_applied"]:
 			self.description += modifier.apply() 
 		if self.ability_type == "attack":
-			if use_info["did_hit"]:	
-				self = self.inhibitor.on_attack(self)
-				self = self.target.on_attacked(self)
-			else:
+			self = self.inhibitor.on_attack(self)
+			self = self.target.on_attacked(self)
+			if random.randint(0, 100) > use_info["hit_chance"]:
+				self.description += self.prototype_class.get_miss_description(self) 
 				self = self.inhibitor.on_miss(self)
+			else:
+				use_info["did_hit"] = True
+				use_info["damage_dealt"] = self.prototype_class.get_damage(self.inhibitor, self.target, use_info["item_used"])
+				self.description += self.prototype_class.get_hit_description(self)
+				self = self.inhibitor.on_hit(self)
+				self = self.target.on_got_hit(self)
+
 		if self.ability_type == "buff":
 			self = self.inhibitor.on_buff(self)
 			self = self.inhibitor.on_buffed(self)
 		if self.use_info["experience_gained"] > 0:
-			self.inhibitor.experience += self.use_info["experience_gained"]
+			self.inhibitor.experience += use_info["experience_gained"]
 		return self
 
 	def __str__(self):
@@ -82,8 +90,8 @@ class AbilityUseInfo(object):
 		return "  \n".join(msg_lines)
 
 class AttackInfo(AbilityUseInfo):
-	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description = ""):
-		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
+	def __init__(self, inhibitor, ability_type, prototype_class, target, combat_event=None, use_info=None, description = "", ):
+		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target, combat_event)
 		self.description = description
 
 		if not use_info:
@@ -101,8 +109,8 @@ class AttackInfo(AbilityUseInfo):
 		self.use_info = use_info
 
 class BuffInfo(AbilityUseInfo):
-	def __init__(self, inhibitor, ability_type, prototype_class, target, use_info=None, description=""):
-		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target)
+	def __init__(self, inhibitor, ability_type, prototype_class, target, combat_event=None, use_info=None, description="" ):
+		AbilityUseInfo.__init__(self, inhibitor, ability_type, prototype_class, target, combat_event)
 		self.description = description
 
 		if not use_info:
@@ -124,27 +132,30 @@ class Ability(object):
 	def use(use_info):
 		if use_info.ability_type == "attack":
 			use_info.use_info["hit_chance"] = use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
-
-			if random.randint(0, 100) > use_info.use_info["hit_chance"]:
-				use_info.description += use_info.prototype_class.get_miss_description(use_info) 
-			else:
-				use_info.use_info["did_hit"] = True
-				use_info.use_info["damage_dealt"] = use_info.prototype_class.get_damage(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
-				use_info.description += use_info.prototype_class.get_hit_description(use_info)
+		#	if random.randint(0, 100) > use_info.use_info["hit_chance"]:
+				#use_info.description += use_info.prototype_class.get_miss_description(use_info) 
+			#else:
+			#	use_info.use_info["did_hit"] = True
+			#use_info.use_info["damage_dealt"] = use_info.prototype_class.get_damage(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
+				#use_info.description += use_info.prototype_class.get_hit_description(use_info)
 		else:
 			modifiers = use_info.prototype_class.get_buff_modifiers(use_info)
 			use_info.use_info["modifiers_applied"] += modifiers
 			use_info.description += use_info.prototype_class.get_buff_description(use_info)
 
 		use_info.use_info["energy_change"] = -use_info.prototype_class.energy_required
-		#use_info.description += "%s has %d energy left.\n"%(use_info.inhibitor.name.title(), clamp( use_info.inhibitor.energy + use_info.use_info["energy_change"], 0, use_info.inhibitor.stats["max_energy"]))
 		use_info = use_info.execute()
 		return use_info
 
 	@staticmethod
 	def can_use(user, ability_class):
-		if not user.energy >= ability_class.energy_required:
-			return False, "Not enough energy"
+		if ability_class.requirements:
+			for key in list(ability_class.requirements.keys()):
+				if user.characteristics[key] < ability_class.requirements[key]:
+					return False, "%d %s required to use this ability."%(ability_class.requirements[key], key)
+
+		if user.energy < ability_class.energy_required:
+			return False, "Not enough energy. Need %d energy to use."%(ability_class.energy_required - user.energy)
 		return True, ""
 
 
@@ -222,8 +233,8 @@ class Smash(Ability):
 		return chance_to_hit
 
 	@staticmethod
-	def use(user, target, weapon):
-		attack_info = AttackInfo(user, "attack", Smash, target)
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, "attack", Smash, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -235,7 +246,7 @@ class Stab(Ability):
 	High chance to hit.
 	Higher chance to hit big and slow oponents.
 
-	chance to hit = accuracy * dexterity * 1.5 - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
+	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
 	dmg = weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength) - defence * 1.5 - is_armored * defence * 3 - is_heavy_armored * defence * 4
 
@@ -282,7 +293,7 @@ class Stab(Ability):
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"]) * 1.5
+		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
@@ -290,8 +301,8 @@ class Stab(Ability):
 		return chance_to_hit
 
 	@staticmethod
-	def use(user, target, weapon):
-		attack_info = AttackInfo(user, "attack", Stab, target)
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, "attack", Stab, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -353,7 +364,7 @@ class QuickStab(Ability):
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"]) * 1.5
+		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
 		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
@@ -361,8 +372,8 @@ class QuickStab(Ability):
 		return chance_to_hit
 
 	@staticmethod
-	def use(user, target, weapon):
-		attack_info = AttackInfo(user, "attack", QuickStab, target)
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, "attack", QuickStab, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -428,8 +439,8 @@ class Cut(Ability): #TODO test and adapt
 		return chance_to_hit
 
 	@staticmethod
-	def use(user, target, weapon):
-		attack_info = AttackInfo(user, "attack", Cut, target)
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, "attack", Cut, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -498,8 +509,8 @@ class QuickCut(Ability): #TODO test and adapt
 		return chance_to_hit
 
 	@staticmethod
-	def use(user, target, weapon):
-		attack_info = AttackInfo(user, "attack", QuickCut, target)
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, "attack", QuickCut, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -535,7 +546,7 @@ class ShieldUp(Ability): #TODO test and adapt
 	@staticmethod
 	def use(user, target=None, weapon=None):
 		target = user
-		buff_info = AttackInfo(user, "buff", ShieldUp, target)
+		buff_info = AttackInfo(user, "buff", ShieldUp, target, combat_event)
 		buff_info.use_info["item_used"] = weapon
 		return Ability.use(buff_info)
 
@@ -606,8 +617,8 @@ class RodentBite(Ability):
 		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
-	def use(user, target, weapon):
-		attack_info = AttackInfo(user, "attack", RodentBite, target)
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, "attack", RodentBite, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -668,7 +679,7 @@ class AnimalBite(Ability):
 		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
-	def use(user, target, weapon):
+	def use(user, target, weapon, combat_event):
 		attack_info = AttackInfo(user, "attack", AnimalBite, target)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
@@ -729,7 +740,7 @@ class AnimalClaw(Ability):
 		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
-	def use(user, target, weapon):
+	def use(user, target, weapon, combat_event):
 		attack_info = AttackInfo(user, "attack", AnimalClaw, target)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
