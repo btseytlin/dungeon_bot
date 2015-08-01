@@ -495,14 +495,14 @@ class BetaDemon(Enemy):
 """ human enemies below """
 
 
-pesant_characteristics = {
+peasant_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 2, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 
-class Pesant(Enemy):
+class Peasant(Enemy):
 	drop_table = {
 		"club" : 10,
 		"sword" : 10,
@@ -519,7 +519,7 @@ class Pesant(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.3
-	def __init__(self, name="pesant", level=1, characteristics = pesant_characteristics, stats=None, description="A pesant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, name="peasant", level=1, characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "dagger"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -547,7 +547,7 @@ class Pesant(Enemy):
 thief_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 8, #how fast you act, your position in turn qeue
 	"intelligence": 8, #how likely you are to strike a critical
 }
 
@@ -604,7 +604,7 @@ enemy_list = { #name to enemy
 	"undead knight": UndeadKnight,
 	"lesser demon": LesserDemon,
 	"beta demon": BetaDemon,
-	"pesant": Pesant,
+	"peasant": Peasant,
 	"thief": Thief,
 }
 
@@ -624,7 +624,7 @@ def rat_pack(size):
 	elif size == "huge":
 		description = "RATS ARE EVERYWHERE.\n"
 		amount = random.randint(10, 20)
-	rats = [ Rat() if random.randint(0, 10) < 7 else BigRat() for x in range(amount)]
+	rats = [ Rat() if random.randint(0, 10) < 7 else BigRat() for x in range(amount+1)]
 	return rats, description
 
 def wolf_pack(size):
@@ -648,8 +648,9 @@ def wolf_pack(size):
 		amount = random.randint(10, 20)
 		wolf_leader = WolfLeader() if random.randint(0, 10) > 3 else None
 	
-	wolves = [ Wolf() for x in range(amount)]
-	wolves.append(wolf_leader)
+	wolves = [ Wolf() for x in range(amount+1)]
+	if wolf_leader:
+		wolves.append(wolf_leader)
 	return wolves, description
 
 def bear():
@@ -672,7 +673,7 @@ def undead_soldier_pack(size):
 	elif size == "huge":
 		description = "An army of undead soldiers.\n"
 		amount = random.randint(10, 20)
-	soldiers = [ UndeadSoldier() if random.randint(0, 10) < 7 else UndeadKnight() for x in range(amount)]
+	soldiers = [ UndeadSoldier() if random.randint(0, 10) < 7 else UndeadKnight() for x in range(amount+1)]
 	return soldiers, description
 
 def lesser_demon_pack(size):
@@ -704,7 +705,7 @@ def lesser_demon_pack(size):
 		if random.randint(0, 10) > 3:
 			beta_demon = BetaDemon()
 
-	demons = [ LesserDemon() for x in range(amount)]
+	demons = [ LesserDemon() for x in range(amount+1)]
 	if beta_demon:
 		demons.append(beta_demon)
 		description+= "A beta demon.\n"
@@ -739,7 +740,7 @@ def peasant_pack(size):
 		amount = random.randint(10, 20)
 		if random.randint(0, 10) > 3:
 			thief = Thief()
-	peasants = [ Peasant() for x in range(amount)]
+	peasants = [ Peasant() for x in range(amount+1)]
 	if thief:
 		peasants.append(thief)
 		description+= "A beta demon.\n"

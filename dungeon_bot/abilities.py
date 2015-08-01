@@ -200,8 +200,8 @@ class Smash(Ability):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 2
-		is_heavy_armored = int("heavy armor" in target.tags) * 3
+		is_armored = int("armor" in target.tags) * 0.2
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
 
 		dmg = clamp( weapon_dmg * strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
@@ -267,8 +267,8 @@ class Stab(Ability):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence * 1.5
-		is_armored = int("armor" in target.tags) * 3
-		is_heavy_armored = int("heavy armor" in target.tags) * 4
+		is_armored = int("armor" in target.tags) * 0.5
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
@@ -338,8 +338,8 @@ class QuickStab(Ability):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence * 1.5
-		is_armored = int("armor" in target.tags) * 4
-		is_heavy_armored = int("heavy armor" in target.tags) * 5
+		is_armored = int("armor" in target.tags) * 0.6
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.2 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
@@ -406,8 +406,8 @@ class Cut(Ability): #TODO test and adapt
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 2
-		is_heavy_armored = int("heavy armor" in target.tags) * 3
+		is_armored = int("armor" in target.tags) * 0.4
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.7
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
@@ -476,8 +476,8 @@ class QuickCut(Ability): #TODO test and adapt
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 3
-		is_heavy_armored = int("heavy armor" in target.tags) * 4
+		is_armored = int("armor" in target.tags) * 0.6
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
@@ -534,8 +534,7 @@ class ShieldUp(Ability): #TODO test and adapt
 
 	@staticmethod
 	def use(user, target=None, weapon=None):
-		if not target:
-			target = user
+		target = user
 		buff_info = AttackInfo(user, "buff", ShieldUp, target)
 		buff_info.use_info["item_used"] = weapon
 		return Ability.use(buff_info)
@@ -568,8 +567,8 @@ class RodentBite(Ability):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 3
-		is_heavy_armored = int("heavy armor" in target.tags) * 5
+		is_armored = int("armor" in target.tags) * 0.5
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 
 		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
@@ -631,8 +630,8 @@ class AnimalBite(Ability):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 2
-		is_heavy_armored = int("heavy armor" in target.tags) * 3
+		is_armored = int("armor" in target.tags) * 0.4
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 
 		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
@@ -692,8 +691,8 @@ class AnimalClaw(Ability):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 4
-		is_heavy_armored = int("heavy armor" in target.tags) * 5
+		is_armored = int("armor" in target.tags) * 0.2
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.5
 
 		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg

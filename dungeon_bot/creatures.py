@@ -1,5 +1,4 @@
 import json
-from pprint import pformat
 from items import *
 from util import *
 from modifiers import *
@@ -533,8 +532,8 @@ class Creature(object):
 			"%s"%(self.description or "----"),
 			"Characteristics:\n%s\n"%("\n".join(["|\t"+x+":" +str(self.characteristics[x]) for x in list(self.characteristics.keys())])),
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
-			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]),
-			"Exp:\n|\t%d/%d"%(self.experience, self.max_experience),
+			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]) + "\nExp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
+			
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
 			"Modifiers:\n|\t%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
 			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities]))

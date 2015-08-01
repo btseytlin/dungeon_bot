@@ -429,7 +429,7 @@ class DungeonCrawlEvent(BotEvent):
 					alive_player = True
 			if not alive_player:
 				return "\nThe players perished in the dungeon.\n" + self.finish()
-			return "\nThe players have defeated the pesky enemies and are ready to advance further.\n"
+			return "\nThe players have defeated the enemies and are ready to advance further.\n"
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
@@ -535,8 +535,7 @@ class CombatEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, users)
 		self.players = players
 		self.enemies = enemies
-		self.turn_qeue = self.update_turn_qeue()
-
+		self.turn_qeue = []
 		for creature in self.turn_qeue:
 			creature.on_combat_start()
 
@@ -564,7 +563,7 @@ class CombatEvent(BotEvent):
 			for ability in ply.abilities:
 				self.user_abilities[user.username][ability.name] = ability
 
-
+		print(players, enemies)
 		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.username+")" for p in players]), ", ".join([e.name for e in enemies])))
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
@@ -598,8 +597,10 @@ class CombatEvent(BotEvent):
 	def check_winning_conditions(self):
 		alive_enemy = False
 		alive_player = False
-		for c in self.turn_qeue:
+		all_creatures = self.players + self.enemies
+		for c in all_creatures:
 			if not c.dead:
+				print("%s not dead yet"%(c.name) )
 				if isinstance(c,Player):
 					alive_player = True
 				elif isinstance(c, Enemy):
@@ -614,7 +615,7 @@ class CombatEvent(BotEvent):
 			desc = "Players won the battle!\n"
 			return True, desc
 		elif not alive_player and not alive_enemy:
-			self.winner = "the zone" #whatever the hell happened that everyone died
+			self.winner = "enemies" #whatever the hell happened that everyone died
 			desc = "Everyone died, thus the players lost. How did you manage it anyway?"
 			return True, desc
 		return False, ""
@@ -625,6 +626,7 @@ class CombatEvent(BotEvent):
 			return self.next_turn()
 
 		if isinstance(self.turn_qeue[self.turn], Enemy):
+			print( "%s's turn"%(self.turn_qeue[self.turn]) ) 
 			msg += self.ai_turn()
 			return msg + self.next_turn()
 		else:
@@ -633,30 +635,27 @@ class CombatEvent(BotEvent):
 	def next_turn(self):
 		msg = ""
 
-		self.turn += 1
-		if self.turn > len(self.turn_qeue)-1:
-			return msg + self.next_round()
-
 		fight_ended, desc = self.check_winning_conditions()
 		if fight_ended:
 			msg += desc
 			return msg + self.finish()
+
+		self.turn += 1
+		if self.turn > len(self.turn_qeue)-1:
+			return msg + self.next_round()
 
 		if (self.turn_qeue[self.turn].dead):
 			return self.next_turn()
 
 		for creature in self.turn_qeue:
 			msg += creature.on_turn()
-
 		return msg + self.this_turn()
 
 	def update_turn_qeue(self):
-		all_creatures = self.players + self.enemies
-		for c in all_creatures:
-			if c.dead:
-				all_creatures.remove(c)
-		random.shuffle(all_creatures)
-		qeue = sorted(all_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
+		alive_enemies =  list(filter(lambda c: not c.dead, self.enemies.copy()))
+		alive_players =  list(filter(lambda c: not c.dead, self.players.copy()))
+		alive_creatures = alive_enemies + alive_players
+		qeue = sorted(alive_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
 		combat_logger.info("Combat qeue:\n"+", ".join(["["+str(i)+"]"+qeue[i].name for i in range(len(qeue))]))
 		return qeue
 

@@ -19,16 +19,17 @@ class Dungeon(object):
 		print("Dungeon difficulty = %d"%(self.difficulty))
 
 	@staticmethod
-	def new_dungeon(players): #TODO add biomes, randomize dungeon creation
+	def new_dungeon(players):
 		dungeon_name = random.choice(list(dungeons.keys()))
 		dungeon_description = dungeons[dungeon_name]["description"]
 		dungeon_enemy_types = dungeons[dungeon_name]["enemy_types"]
 		dungeon_players = players 
 		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players, dungeon_enemy_types)
-		dungeon.generate_rooms(random.randint(3, 10))
+		dungeon.generate_rooms(random.randint(1, 1))
 		return dungeon
 
 	def generate_rooms(self, amount):
+		self.rooms = []
 		for i in range(amount+1):
 			room_type = random.choice(["combat"])
 			room = Room(room_type)
@@ -64,7 +65,7 @@ dungeons = {
 		"enemy_types":["common", "undead", "demon"]
 	},
 	"Bandit den" : {
-		"description": "A horrifyingly easy crypt with pussy enemies.", 
+		"description": "All kinds of scum find shelter in these caves.", 
 		"enemy_types":["common", "human"]
 	},
 }
