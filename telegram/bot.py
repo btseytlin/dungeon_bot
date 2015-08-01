@@ -9,8 +9,7 @@ import urllib.error
 import urllib.request
 import urllib.parse
 
-from telegram import (User, Message, Update, UserProfilePhotos, TelegramError,
-                      ReplyMarkup, InputFile)
+from . import User, Message, Update, UserProfilePhotos, TelegramError, ReplyMarkup, InputFile
 
 
 class Bot(object):

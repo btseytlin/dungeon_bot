@@ -1,6 +1,7 @@
 import dungeon_bot
 from dungeon_bot.dungeon_bot import DungeonBot
 import telegram
+#from telegram import Bot
 import logging
 
 from logging.handlers import TimedRotatingFileHandler
