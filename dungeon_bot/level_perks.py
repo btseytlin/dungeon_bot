@@ -1,6 +1,7 @@
 import json
-from util import *
 import random
+from .util import *
+
 
 class LevelPerk(object): #LevelPerks always affect only the host that carries them
 	name = "Unfinished perk"

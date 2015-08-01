@@ -1,5 +1,5 @@
 import json
-from creatures import Player
+from .creatures import Player
 players_file_path = "./data/players.json"
 class PersistenceController(object):
 	players = {}

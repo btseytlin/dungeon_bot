@@ -1,3 +1,4 @@
+import dungeon_bot
 from dungeon_bot.dungeon_bot import DungeonBot
 import telegram
 import logging

@@ -1,6 +1,7 @@
-from util import *
-from enemies import *
 import random
+from .util import *
+from .enemies import *
+
 class Dungeon(object):
 	def __init__(self, name, description, players, enemy_types, rooms = [], current_room = 0, difficulty=None):
 		self.uid = get_uid()

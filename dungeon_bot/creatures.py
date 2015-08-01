@@ -1,9 +1,12 @@
 import json
-from items import *
-from util import *
-from modifiers import *
-from abilities import *
-from level_perks import *
+from .items import *
+from .util import *
+from .modifiers import *
+from .abilities import *
+from .level_perks import *
+
+
+
 import random
 default_characteristics = {
 	"strength": 5, #how hard you hit

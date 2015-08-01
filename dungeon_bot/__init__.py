@@ -10,14 +10,16 @@ import math
 import sys
 
 
-sys.path.append("dungeon_bot/")
-# from util import *
-# from modifiers import *
-# from items import *
-# from abilities import *
-# from creatures import *
-# from persistence import *
-# from enemies import *
-# from dungeon import *
-# from bot_events import *
-# from dungeon_bot import *
+#sys.path.append("dungeon_bot/")
+# from . import util
+# from . import modifiers
+# from . import items
+# from . import abilities
+# from . import level_perks
+# from . import modifiers
+# from . import creatures
+# from . import persistence
+# from . import enemies
+# from . import dungeon
+# from . import bot_events
+# from . import dungeon_bot

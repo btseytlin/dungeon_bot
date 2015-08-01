@@ -1,10 +1,10 @@
-from persistence import PersistenceController
-from creatures import Player
-from bot_events import *
-from util import *
+from .persistence import PersistenceController
+from .creatures import Player
+from .bot_events import *
+from .util import *
+from .dungeon import *
 import logging
 import datetime
-from dungeon import *
 import random
 import gc
 persistence_controller = PersistenceController.get_instance()

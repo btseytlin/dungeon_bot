@@ -1,7 +1,7 @@
-from creatures import Enemy, Player
-from abilities import *
-from items import *
-from util import * 
+from .creatures import Enemy, Player
+from .abilities import *
+from .items import *
+from .util import * 
 import random
 def retrieve_enemies_for_difficulty(enemy_table, difficulty):
 	total_len = 100

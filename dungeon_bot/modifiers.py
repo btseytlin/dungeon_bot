@@ -1,4 +1,4 @@
-from util import *
+from .util import *
 import random
 class Modifier(object): #Modifiers always affect only the host that carries them
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [],  priority=0, name="", description=""):

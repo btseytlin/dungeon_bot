@@ -1,12 +1,20 @@
 import json
-from persistence import PersistenceController
-from util import *
-from abilities import *
-import random
-from creatures import *
-from items import *
-from level_perks import *
 import logging
+import random
+from . import persistence
+from . import util
+from . import items
+from . import creatures
+from . import abilities
+from . import level_perks
+
+from .persistence import PersistenceController
+from .util import *
+from .abilities import *
+from .creatures import *
+from .items import *
+from .level_perks import *
+
 
 combat_logger = logging.getLogger('dungeon_bot_combat')
 persistence_controller = PersistenceController.get_instance()

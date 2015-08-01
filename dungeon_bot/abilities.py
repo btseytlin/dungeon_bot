@@ -1,6 +1,6 @@
-from util import clamp, diceroll
+from .util import clamp, diceroll
 import random
-from modifiers import *
+from .modifiers import *
 
 """
 Tags:

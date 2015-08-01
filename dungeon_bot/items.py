@@ -1,5 +1,4 @@
-from util import *
-from pprint import pformat
+from .util import *
 class Item(object):
 	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None, tags_granted = []):
 		self.name = name
