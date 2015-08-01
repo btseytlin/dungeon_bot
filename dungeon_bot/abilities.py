@@ -9,8 +9,7 @@ Tags:
 	humanoid - Marks objects that have humanoid traits. Most sentinent creatures are humanoid.
 	small - Small targets, harder to hit
 	big - Big targets, easier to hit
-	living - Living creatures
-	undead - Undead creatures
+	
 	armor - Armored, takes less damage
 	heavy armor - Heavy armored, takes little damage
 	quick - Harder to hit and dodge
@@ -18,8 +17,10 @@ Tags:
 	physical ressitant - Resistant to physical damage
 	magic ressitant - Resistant to magic damage
 
+	undead - Undead creatures
 	animal - Animal creatures
 	rodent - Rat creatures and similar
+	demon - Demon creatures 
 
 
 """
@@ -539,6 +540,7 @@ class ShieldUp(Ability): #TODO test and adapt
 		buff_info.use_info["item_used"] = weapon
 		return Ability.use(buff_info)
 
+""" Enemy abilities below """
 class RodentBite(Ability):
 	name = "rodent bite"
 	description = "Rodents bite!"
@@ -610,12 +612,139 @@ class RodentBite(Ability):
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
+
+class AnimalBite(Ability):
+	name = "animal bite"
+	description = "Animals bite, bad!"
+	energy_required = 2
+	requirements = None
+	"""
+	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
+	dmg = base_damage * strength - defence - is_armored * defence * 2 - is_heavy_armored * defence * 3
+	avg chance to hit = 55
+	avg damage = 5
+	chance to cause "injured" = ?
+	chance to cause "bleeding" = ?
+	"""
+	@staticmethod
+	def get_damage(user, target, weapon):
+		weapon_damage = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence
+		is_armored = int("armor" in target.tags) * 2
+		is_heavy_armored = int("heavy armor" in target.tags) * 3
+
+		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
+		return dmg
+
+	@staticmethod
+	def get_chance_to_hit(user, target, weapon):
+		accuracy = diceroll(weapon.stats["accuracy"])
+		is_small = int("small" in target.tags)
+		is_quick = int("quick" in target.tags)
+		is_big = int("big" in target.tags)
+		is_slow = int("slow" in target.tags)
+		evasion = target.evasion
+		dexterity = user.characteristics["dexterity"]
+
+		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+
+		return chance_to_hit
+
+	@staticmethod
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, AnimalBite)
+		else:
+			return False, "Target is already dead"
+
+	@staticmethod
+	def get_miss_description(attack_info):
+		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title())
+
+	@staticmethod
+	def get_hit_description(attack_info):
+		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
+
+	@staticmethod
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", AnimalBite, target)
+		attack_info.use_info["item_used"] = weapon
+		return Ability.use(attack_info)
+
+class AnimalClaw(Ability):
+	name = "animal claw"
+	description = "Animals claw, bad!"
+	energy_required = 2
+	requirements = None
+	"""
+	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
+	dmg = base_damage * strength - defence - is_armored * defence * 4 - is_heavy_armored * defence * 5
+	avg chance to hit = 55
+	avg damage = 5
+	chance to cause "injured" = ?
+	chance to cause "bleeding" = ?
+	"""
+	@staticmethod
+	def get_damage(user, target, weapon):
+		weapon_damage = diceroll(weapon.stats["damage"])
+		strength = user.characteristics["strength"]
+		defence = target.defence
+		is_armored = int("armor" in target.tags) * 4
+		is_heavy_armored = int("heavy armor" in target.tags) * 5
+
+		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
+		return dmg
+
+	@staticmethod
+	def get_chance_to_hit(user, target, weapon):
+		accuracy = diceroll(weapon.stats["accuracy"])
+		is_small = int("small" in target.tags)
+		is_quick = int("quick" in target.tags)
+		is_big = int("big" in target.tags)
+		is_slow = int("slow" in target.tags)
+		evasion = target.evasion
+		dexterity = user.characteristics["dexterity"]
+
+		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+
+		return chance_to_hit
+
+	@staticmethod
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, AnimalClaw)
+		else:
+			return False, "Target is already dead"
+
+	@staticmethod
+	def get_miss_description(attack_info):
+		return "%s tries to claw %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title())
+
+	@staticmethod
+	def get_hit_description(attack_info):
+		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
+
+	@staticmethod
+	def use(user, target, weapon):
+		attack_info = AttackInfo(user, "attack", AnimalClaw, target)
+		attack_info.use_info["item_used"] = weapon
+		return Ability.use(attack_info)
+
 abilities = {
 	"smash": Smash,
-	"rodent bite": RodentBite,
 	"shieldup": ShieldUp,
 	"cut": Cut,
 	"stab": Stab,
 	"quickcut": QuickCut,
 	"quickstab": QuickStab,
+
+	# animal abilities below
+	"rodent bite": RodentBite,
+	"animal bite": AnimalBite,
+	"animal claw": AnimalClaw,
 }

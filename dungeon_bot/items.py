@@ -167,12 +167,20 @@ item_listing = {
 		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
 		"sword": {"stats": {"damage" : ["1d6","4d6"], "accuracy" : ["3d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
 
-		"rodent_teeth": {"stats": {"damage" : ["2d6","2d6"], "accuracy" : ["4d6","4d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
+
+
+
+		# enemy equipment below
+		"rodent_teeth": {"stats": {"damage" : ["1d6","1d6"], "accuracy" : ["4d6","4d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
+		"animal_teeth": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","4d6"]} , "args":{"name":"animal teeth", "description":"Sharp teeth.", "abilities_granted":["animal bite"]}},
 
 	},
 	"secondary_weapon":{
 		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quickstab", "quickcut"]}},
 		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shieldup"]}},
+
+		# enemy equipment below
+		"animal_claws": {"stats": {"damage" : ["1d6","1d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
 		"chainmail": {"stats": {"defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
