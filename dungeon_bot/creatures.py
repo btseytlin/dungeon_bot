@@ -54,9 +54,9 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]*10
-		stats["max_energy"] = characteristics["dexterity"]
-		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3), 2, 10)
+		stats["max_health"] = characteristics["vitality"]*10 + characteristics["vitality"]*self.level*2
+		stats["max_energy"] = characteristics["dexterity"] + int(self.level / 10)
+		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3) + int(self.level / 20), 2, 10)
 		stats["health"] = stats["max_health"]
 		stats["energy"] = stats["max_energy"]
 		return stats
@@ -286,13 +286,13 @@ class Creature(object):
 				msg += effect
 		return msg
 
-	def on_experience_gained(self, value):
+	def on_experience_gained(self, ability_info): #Immediately after gaining experience
 		msg = ""
 		for modifier in self.modifiers:
-			effect = modifier.on_experience_gained(value)
-			if effect:
-				msg += effect
-		return msg
+			ab_info = modifier.on_experience_gained(ability_info)
+			if ab_info:
+				ability_info = ab_info
+		return ability_info
 
 	def on_item_equipped(self, item):
 		msg = ""
@@ -340,6 +340,15 @@ class Creature(object):
 		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_energy_gained(value)
+			if effect:
+				msg += effect
+		return msg
+
+	def on_level_up(self):
+		#msg = "%s gains %d energy.\n"%(self.name.title(), value)
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_level_up()
 			if effect:
 				msg += effect
 		return msg
@@ -620,10 +629,10 @@ class Creature(object):
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, max_experience=1000):
+	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
-		self.max_experience = max_experience
+		self.level_up_points = level_up_points
 		self.username = username
 
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
@@ -636,11 +645,16 @@ class Player(Creature):
 	def experience(self, value):
 		if value > self.max_experience:
 			over_cur_level = value - (self.max_experience - self.experience)
-			self.level = self.level +  1
+			self.level_up()
 			self.experience = over_cur_level
 		else:
 			self._experience = value
 
+
+	@property
+	def max_experience(self):
+	    return max_exp_for_level(value)
+	
 	@property
 	def level(self):
 		return self._level
@@ -648,11 +662,22 @@ class Player(Creature):
 	@level.setter
 	def level(self, value):
 		self._level = value
-		self.max_experience = value * 1000
+
+	def add_experience(self, value):
+		cur_level = self.level
+		self.experience += value
+		if self.level > cur_level:
+			return "%s has leveled up to level %d!"%(self.name.title(), self.level)
 
 	def examine_self(self):
 		desc = super(Player, self).examine_self()
 		return desc
+
+	def level_up(self):
+		self.level = self.level + 1
+		self.level_up_points += ( int(self.level % 5) == 0 ) * 1 
+		msg += self.on_level_up()
+		return msg
 
 	@staticmethod
 	def de_json(data):
@@ -675,7 +700,7 @@ class Player(Creature):
 				equipment[key] = Item.de_json(eq[key])
 
 		data["equipment"] = equipment
-		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("max_experience"))
+		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], data.get("level_perks"), data.get("_experience"), data.get("level_up_points"))
 		return ply
 
 	def on_kill(self, attack_info):
@@ -683,7 +708,7 @@ class Player(Creature):
 		if isinstance(target, Enemy):
 			attack_info.use_info["experience_gained"] = target.exp_value
 			attack_info.description += "%s earns %d experience.\n"%(attack_info.inhibitor.name, target.exp_value)
-			attack_info.description += attack_info.inhibitor.on_experience_gained(target.exp_value)
+			attack_info = attack_info.inhibitor.on_experience_gained(attack_info)
 			drop_table = target.__class__.drop_table
 			for item in list(drop_table.keys()):
 				prob = int(drop_table[item])

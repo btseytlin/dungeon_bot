@@ -60,7 +60,7 @@ class AbilityUseInfo(object):
 			self = self.inhibitor.on_buff(self)
 			self = self.inhibitor.on_buffed(self)
 		if self.use_info["experience_gained"] > 0:
-			self.inhibitor.experience += use_info["experience_gained"]
+			self.inhibitor.add_experience(use_info["experience_gained"])
 		return self
 
 	def __str__(self):

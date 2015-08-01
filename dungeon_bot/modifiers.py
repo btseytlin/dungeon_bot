@@ -57,6 +57,12 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_attack(self, ability_info=None):
 		pass
 
+	def on_hit(self, ability_info=None):
+		pass
+
+	def on_got_hit(self, ability_info=None):
+		pass
+
 	def on_attacked(self, ability_info=None):
 		pass
 
@@ -69,13 +75,13 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_buffed(self, ability_info=None):
 		pass
 
-	def on_kill(self, target):
+	def on_kill(self, ability_info=None):
 		pass
 
-	def on_death(self, killer=None):
+	def on_death(self, ability_info=None):
 		pass
 
-	def on_experience_gained(self, exp_amount=None):
+	def on_experience_gained(self, ability_info=None):
 		pass
 
 	def on_energy_gained(self, amount=None):

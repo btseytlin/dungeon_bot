@@ -675,7 +675,6 @@ class CombatEvent(BotEvent):
 		for use_info in use_infos:
 			combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
 			msg += use_info.description
-		#msg += self.next_turn()
 		return msg
 
 	allowed_commands = {
