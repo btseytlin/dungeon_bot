@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import random
 from .util import *
 from .enemies import *
@@ -62,7 +63,7 @@ dungeons = {
 		"enemy_types":["common", "animal"]
 	},
 	"Tunnel of dimensions" : {
-		"description": "A series of wormholes between worlds. The horrors that don't belong to any world infest it..", 
+		"description": "A series of wormholes between worlds. The horrors that don't belong to any world infest it.", 
 		"enemy_types":["common", "undead", "demon"]
 	},
 	"Bandit den" : {

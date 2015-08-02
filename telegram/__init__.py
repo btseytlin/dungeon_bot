@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # flake8: noqa
 
 """A library that provides a Python interface to the Telegram Bots API"""

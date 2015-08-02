@@ -1,6 +1,8 @@
+#!/usr/bin/env python3
 import json
 import logging
 import random
+import datetime
 from . import persistence
 from . import util
 from . import items
@@ -17,6 +19,7 @@ from .level_perks import *
 
 
 combat_logger = logging.getLogger('dungeon_bot_combat')
+logger = logging.getLogger('dungeon_bot')
 persistence_controller = PersistenceController.get_instance()
 class BotEvent(object):
 	def __init__(self, finished_callback, users):
@@ -25,12 +28,14 @@ class BotEvent(object):
 		self.users = users
 		self.uid = get_uid()
 
+		self.last_activity = datetime.datetime.now()
 		for user in users:
 			player = persistence_controller.get_ply(user)
 			player.event = self
 
 	def handle_command(self, user, command, *args):
-		print("Base bot event shouldnt handle any messages!")
+		self.last_activity = datetime.datetime.now()
+		return ""
 
 	def add_user(self, user):
 		self.users.append(user)
@@ -80,6 +85,7 @@ class RegistrationEvent(BotEvent):
 		return ''.join(characteristics)
 
 	def handle_command(self, user, command, *args):
+		super(RegistrationEvent, self).handle_command(user, command, *args)
 		if command == "restart":
 			self.current_step = 0
 			return("Let's begin. What is your name?")
@@ -180,6 +186,7 @@ class LevelUpEvent(BotEvent):
 		return ''.join(characteristics)
 
 	def handle_command(self, user, command, *args):
+		super(LevelUpEvent, self).handle_command(user, command, *args)
 		if command == "done":
 			return "Done leveling up." + self.finish() or ""
 
@@ -322,6 +329,7 @@ class InventoryEvent(BotEvent):
 		return False, error_text
 
 	def handle_command(self, user, command, *args):
+		super(InventoryEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
 
@@ -423,6 +431,7 @@ class DungeonLobbyEvent(BotEvent):
 		return msg
 	
 	def handle_command(self, user, command, *args):
+		super(DungeonLobbyEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
 		elif (command in ["back","abort","b", "leave", "ab"]):
@@ -587,7 +596,7 @@ class DungeonCrawlEvent(BotEvent):
 				player.event = self # Free all players from event
 				for uname in list(self.non_combat_events.keys()):
 					if self.non_combat_events[uname] == event:
-						del sel
+						del self.non_combat_events[uname]
 
 			level_up = LevelUpEvent(lvl_over_callback, user)
 			self.non_combat_events[user.username] = level_up
@@ -631,6 +640,7 @@ class DungeonCrawlEvent(BotEvent):
 		return(broadcast)
 
 	def handle_command(self, user, command, *args):
+		super(DungeonCrawlEvent, self).handle_command(user, command, *args)
 		#if user.username in list(self.non_combat_events.keys()):
 		#	return self.non_combat_events[user.username].handle_command(user, command, *args)
 		#elif self.combat_event:
@@ -664,6 +674,13 @@ class DungeonCrawlEvent(BotEvent):
 							return (target_ply.examine_self())
 					return "No such player or user in that dungeon"
 		return 'Unknown command, try "help"'
+
+	def finish(self):
+		if key in list(self.non_combat_events.keys()):
+			self.non_combat_events[key].finish()
+		if self.combat_event:
+			self.combat_event.finish()
+		return super(DungeonCrawlEvent, self).finish()
 
 class CombatEvent(BotEvent):
 	def __init__(self, finished_callback, players, users, enemies):
@@ -849,6 +866,7 @@ class CombatEvent(BotEvent):
 
 
 	def handle_command(self, user, command, *args):
+		super(CombatEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			help_text = print_available_commands(self.allowed_commands)
 			help_text += "\n" + print_combat_abilities(self.user_abilities[user.username])

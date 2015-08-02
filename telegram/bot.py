@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # encoding: utf-8
 
 """A library that provides a Python interface to the Telegram Bot API"""
@@ -35,7 +35,7 @@ class Bot(object):
 
             self.__auth = True
         except TelegramError:
-            raise TelegramError({'message': 'Bad token'})
+            raise TelegramError({'message': 'Bad token "%s"'%(self.token)})
 
     @property
     def id(self):

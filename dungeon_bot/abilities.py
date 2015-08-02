@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from .util import clamp, diceroll
 import random
 from .modifiers import *
@@ -41,8 +42,7 @@ class AbilityUseInfo(object):
 		else:
 			self.description += self.inhibitor.on_energy_lost(use_info["energy_change"])
 
-		for modifier in use_info["modifiers_applied"]:
-			self.description += modifier.apply() 
+		
 		if self.ability_type == "attack":
 			self = self.inhibitor.on_attack(self)
 			self = self.target.on_attacked(self)
@@ -56,9 +56,18 @@ class AbilityUseInfo(object):
 				self = self.inhibitor.on_hit(self)
 				self = self.target.on_got_hit(self)
 
+				for modifier in self.prototype_class.get_modifiers_applied(self):
+					if not modifier.name in [mod.name for mod in self.target.modifiers]:
+						use_info["modifiers_applied"].append(modifier)
+
 		if self.ability_type == "buff":
 			self = self.inhibitor.on_buff(self)
 			self = self.inhibitor.on_buffed(self)
+
+		if "did_kill" in use_info.keys() and not use_info["did_kill"]:
+			for modifier in use_info["modifiers_applied"]:
+				self.description += modifier.apply() 
+
 		if self.use_info["experience_gained"] > 0:
 			self.description += self.inhibitor.add_experience(use_info["experience_gained"])
 		return self
@@ -129,9 +138,14 @@ class Ability(object):
 		self.granted_by = granted_by
 
 	@staticmethod
+	def get_modifiers_applied(use_info):
+		return []
+
+	@staticmethod
 	def use(use_info):
 		if use_info.ability_type == "attack":
-			use_info.use_info["hit_chance"] = use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
+			use_info.use_info["hit_chance"] = clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"]) 5, 95)
+
 		#	if random.randint(0, 100) > use_info.use_info["hit_chance"]:
 				#use_info.description += use_info.prototype_class.get_miss_description(use_info) 
 			#else:
@@ -176,11 +190,9 @@ class Smash(Ability):
 
 	avg chance to hit = 45
 
-	avg dmg = 15
+	avg dmg = 30
 
-	chance to cause "knockdown" = ?
-
-	chance to cause "concussion" = ?
+	chance to cause "knockdown" = intelligence*strength*dexterity - target_strength*target_dexterity-target_intelligence/2
 
 	"""
 	name = "smash"
@@ -204,6 +216,18 @@ class Smash(Ability):
 	@staticmethod
 	def get_hit_description(attack_info):
 		return "%s smashes %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
+
+	@staticmethod
+	def get_knockdown_chance(use_info):		
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < Smash.get_knockdown_chance(use_info):
+			modifier = get_modifier_by_name("knockdown", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
 
 	@staticmethod
 	def get_damage(user, target, weapon):
@@ -254,8 +278,6 @@ class Stab(Ability):
 
 	avg dmg = ?
 
-	chance to cause "bleeding" = ?
-
 	chance to cause "pain" = ?
 
 	"""
@@ -299,6 +321,19 @@ class Stab(Ability):
 		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
+
+	@staticmethod
+	def get_pain_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("Pain chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < Stab.get_pain_chance(use_info):
+			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
@@ -372,6 +407,20 @@ class QuickStab(Ability):
 		return chance_to_hit
 
 	@staticmethod
+	def get_pain_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("Pain chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < QuickStab.get_pain_chance(use_info):
+			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
+
+
+	@staticmethod
 	def use(user, target, weapon, combat_event):
 		attack_info = AttackInfo(user, "attack", QuickStab, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
@@ -394,8 +443,6 @@ class Cut(Ability): #TODO test and adapt
 	avg dmg = ?
 
 	chance to cause "bleeding" = ?
-
-	chance to cause "pain" = ?
 
 	"""
 	name = "cut"
@@ -439,6 +486,20 @@ class Cut(Ability): #TODO test and adapt
 		return chance_to_hit
 
 	@staticmethod
+	def get_bleeding_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("Bleeding chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < Cut.get_bleeding_chance(use_info):
+			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
+
+
+	@staticmethod
 	def use(user, target, weapon, combat_event):
 		attack_info = AttackInfo(user, "attack", Cut, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
@@ -462,8 +523,6 @@ class QuickCut(Ability): #TODO test and adapt
 	avg dmg = ?
 
 	chance to cause "bleeding" = ?
-
-	chance to cause "pain" = ?
 
 	above average dex required to use 
 
@@ -509,6 +568,19 @@ class QuickCut(Ability): #TODO test and adapt
 		return chance_to_hit
 
 	@staticmethod
+	def get_bleeding_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("Bleeding chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < QuickCut.get_bleeding_chance(use_info):
+			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
+
+	@staticmethod
 	def use(user, target, weapon, combat_event):
 		attack_info = AttackInfo(user, "attack", QuickCut, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
@@ -544,7 +616,7 @@ class ShieldUp(Ability): #TODO test and adapt
 		return "%s put his shieldup and gained a defence bonus.\n"%(use_info.inhibitor.name.title())
 
 	@staticmethod
-	def use(user, target=None, weapon=None):
+	def use(user, target, weapon, combat_event):
 		target = user
 		buff_info = AttackInfo(user, "buff", ShieldUp, target, combat_event)
 		buff_info.use_info["item_used"] = weapon
@@ -567,9 +639,7 @@ class RodentBite(Ability):
 
 	avg damage = 5
 
-	chance to cause "poisoned" = ?
-
-	chance to cause "bleeding" = ?
+	chance to cause "pain" = ?
 
 	"""
 
@@ -609,6 +679,20 @@ class RodentBite(Ability):
 			return False, "Target is already dead"
 
 	@staticmethod
+	def get_pain_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("pain chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < RodentBite.get_pain_chance(use_info):
+			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
+
+
+	@staticmethod
 	def get_miss_description(attack_info):
 		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title())
 
@@ -633,8 +717,7 @@ class AnimalBite(Ability):
 	dmg = base_damage * strength - defence - is_armored * defence * 2 - is_heavy_armored * defence * 3
 	avg chance to hit = 55
 	avg damage = 5
-	chance to cause "injured" = ?
-	chance to cause "bleeding" = ?
+	chance to cause "pain" = ?
 	"""
 	@staticmethod
 	def get_damage(user, target, weapon):
@@ -679,6 +762,20 @@ class AnimalBite(Ability):
 		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
+	def get_pain_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("pain chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < AnimalBite.get_pain_chance(use_info):
+			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
+
+
+	@staticmethod
 	def use(user, target, weapon, combat_event):
 		attack_info = AttackInfo(user, "attack", AnimalBite, target)
 		attack_info.use_info["item_used"] = weapon
@@ -694,7 +791,6 @@ class AnimalClaw(Ability):
 	dmg = base_damage * strength - defence - is_armored * defence * 4 - is_heavy_armored * defence * 5
 	avg chance to hit = 55
 	avg damage = 5
-	chance to cause "injured" = ?
 	chance to cause "bleeding" = ?
 	"""
 	@staticmethod
@@ -738,6 +834,19 @@ class AnimalClaw(Ability):
 	@staticmethod
 	def get_hit_description(attack_info):
 		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.name.title(), attack_info.target.name.title(), attack_info.use_info["damage_dealt"])
+
+	@staticmethod
+	def get_bleeding_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		print("bleeding chance", chance)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(0, 100) < AnimalClaw.get_bleeding_chance(use_info):
+			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
+			return [modifier]
+		return []
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):

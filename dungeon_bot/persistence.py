@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 from .creatures import Player
 players_file_path = "./data/players.json"

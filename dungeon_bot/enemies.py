@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from .creatures import Enemy, Player
 from .abilities import *
 from .items import *
@@ -613,7 +614,7 @@ def rat_pack(size):
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
-		if amount != 1:
+		if amount > 1:
 			description = "A small pack of rats.\n"
 	elif size == "medium":
 		description = "A pack of rats.\n"
@@ -633,7 +634,7 @@ def wolf_pack(size):
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
-		if amount != 1:
+		if amount > 1:
 			description = "A small pack of wolves.\n"
 	elif size == "medium":
 		description = "A pack of wolves.\n"

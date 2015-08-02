@@ -1,9 +1,13 @@
+#!/usr/bin/env python3
 import uuid
 import json
 import random
 import math
 def get_uid():
 	return str(uuid.uuid4())[:8]
+
+def clamp(value, range_min, range_max):
+	return max(range_min, min(value, range_max))
 
 def print_combat_abilities(combat_abilities):
 	help_text = "Available combat commands:\n"
@@ -52,9 +56,25 @@ def diceroll(string):
 
 	return total_sum
 
+def triangular(low=0.0, high=1.0, mode=None): #dont ask
+	u = random.random()
+	if mode is None:
+		c = 0.5
+	elif mode == high:
+		c = 1
+	else:
+		c = (mode - low) / (high - low)
+	if u > c:
+			u = 1.0 - u
+			c = 1.0 - c
+			low, high = high, low
+	return low + (high - low) * (u * c) ** 0.5
+
 def random_in_range_for_coolity(left, right, mode_pos=0.5):
+	if left == right:
+		return left
 	mode = clamp( mode_pos * right, left, right )
-	return random.triangular( left, right, mode )
+	return triangular( left, right, mode )
 
 def get_dice_in_range(dice_range, coolity, inverse = False): #returns dice in range. Coolity is 0..1, more means values are more likely to be closer to right boundary
 
@@ -88,20 +108,22 @@ def get_dice_in_range(dice_range, coolity, inverse = False): #returns dice in ra
 		right = min(dice_one[1], dice_two[1])
 		dice_nominal_range = range(left, right-1, -1)
 
-	random_for_coolity = random_in_range_for_coolity(0, len(dice_amount_range)-1, coolity)
+	if len(dice_amount_range) <= 1:
+		random_for_coolity = 0
+	else:
+		random_for_coolity = random_in_range_for_coolity(0, len(dice_amount_range)-1, coolity)
 	random_amount_index = int( math.ceil(random_for_coolity ))
 	dice_amount = dice_amount_range[random_amount_index]
 
-	
-	random_nominal_index = int( math.ceil(random_in_range_for_coolity(0, len(dice_nominal_range)-1, coolity)) )
+	if len(dice_nominal_range) <= 1:
+		random_nominal_index = 0
+	else:
+		random_nominal_index = int( math.ceil(random_in_range_for_coolity(0, len(dice_nominal_range)-1, coolity)) )
 	dice_nominal = dice_nominal_range[random_nominal_index]
 
 	if negative:
 		return "-"+str(dice_amount) + "d" + str(dice_nominal)
 	return str(dice_amount) + "d" + str(dice_nominal)
-
-def clamp(value, range_min, range_max):
-	return max(range_min, min(value, range_max))
 
 def round_to_base(x, base=10):
 	return int(base * round(float(x)/base))

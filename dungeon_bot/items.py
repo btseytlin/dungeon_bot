@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from .util import *
 class Item(object):
 	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None, tags_granted = []):
@@ -165,6 +166,8 @@ class Headwear(Item):
 
 
 def get_randomized_item(prototype, coolity, stats, item_args):
+		if coolity == 0:
+			coolity = 0.01
 		real_stats = stats.copy()
 		for key in list(stats.keys()):
 			if isinstance(stats[key], list): #is a dice range
@@ -235,7 +238,13 @@ item_listing = {
 	},
 	"talisman":{
 		"amulet of defence": {"stats": {"defence" : ["1d6","2d6"]} , "args":{"name":"amulet of defence", "description":"The most boring talisman, it just protects you."}},
-		"amulet of healing": {"stats": {"healing" : ["1d6", "2d6"], "healing_chance": ["1d3", "2d6"]} , "args":{"name":"amulet of healing", "description":"Periodically heals you for random amounts of health.", "modifiers_granted": []}},
+		"amulet of healing": {"stats": {"healing_amount" : ["1d6", "2d6"], "healing_chance": ["1d3", "2d6"]} , "args":{"name":"amulet of healing", "description":"Periodically heals you for random amounts of health.", "modifiers_granted": [ 
+
+				{
+				"name":"regeneration", 
+				"params":{}
+				} 
+			]}},
 	},
 	"ring":{
 		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d4", "6d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",

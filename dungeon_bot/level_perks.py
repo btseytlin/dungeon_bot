@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import json
 import random
 from .util import *
@@ -91,6 +92,9 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 	def on_modifier_applied(self, modifier):
 		pass
 
+	def on_modifier_lifted(self, modifier):
+		pass
+
 class Educated(LevelPerk):
 	name = "Educated"
 	description = "Get 10 percent additional experience."
@@ -112,6 +116,25 @@ class Educated(LevelPerk):
 		ability_info.description +=  "%s gains %d additional experience due to being educated.\n"%(self.host.name.title(), additional_gain)
 		return ability_info
 
+class Flow(LevelPerk):
+	name = "Flow"
+	description = "Get 2 energy on kill."
+	priority = 0
+	requirements = {
+		"level": 1,
+		"has_perks": [],
+		"characteristics": {
+			"dexterity": 6
+		}
+	}
+
+	def on_kill(self, ability_info):
+		ability_info.inhibitor.energy += 2
+		ability_info.description += ""
+		return ability_info
+
+
 level_perks_listing = {
-	"Educated":Educated, 
+	"Educated":Educated,
+	"Flow": Flow,
 }

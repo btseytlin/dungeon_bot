@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from .persistence import PersistenceController
 from .creatures import Player
 from .bot_events import *
@@ -6,6 +7,7 @@ from .dungeon import *
 import logging
 import datetime
 import random
+import threading
 import gc
 persistence_controller = PersistenceController.get_instance()
 
@@ -46,6 +48,8 @@ def lobby_event_lover_callback(lobby):
 		for u in lobby.users:
 			broadcast.append([u, msg])
 		return broadcast
+
+
 
 class DungeonBot(object):
 
@@ -95,6 +99,14 @@ class DungeonBot(object):
 		args = words[1:]
 		return command,args
 
+	def cleanse_dead_events(self):
+		for key in list(DungeonBot.events.keys()):
+			event = DungeonBot.events[key]
+			minutes_since_activity = divmod((datetime.datetime.now() - event.last_activity).total_seconds(), 60)[0]
+			if minutes_since_activity > 10:
+				event.finish()
+				logger.info("Finished %s %s for having %d minutes since last activity."%(event.__class__.__name__, event.uid, minutes_since_activity) )
+
 	def status(self, user=None):
 		msg = 'You are in the main screen of DungeonBot.\nFrom here you can inspect your inventory, your stats and characteristics, create and join lobbies.\nCreate a lobby by typing "create 1" (means "create lobby for one player") and jump straight into action!\n'
 		return msg
@@ -135,6 +147,9 @@ class DungeonBot(object):
 		self.api.sendMessage(user.id, "Unknown command, try 'help'.")
 
 	def start_main_loop(self):
+		#start dead event collection timer
+		timer = threading.Timer(600, self.cleanse_dead_events)
+		timer.start() #run every 10 minutes
 		while True:
 			if self.last_update_id:
 				updates = self.api.getUpdates(self.last_update_id)
@@ -154,6 +169,8 @@ class DungeonBot(object):
 						self.on_message(message)
 				except:
 					logger.exception("E:")
+					timer.cancel()
+		timer.cancel()
 			
 
 

@@ -1,11 +1,10 @@
+#!/usr/bin/env python3
 import json
 from .items import *
 from .util import *
 from .modifiers import *
 from .abilities import *
 from .level_perks import *
-
-
 
 import random
 default_characteristics = {
@@ -151,7 +150,7 @@ class Creature(object):
 
 		#todo defence from level perks
 
-		return defence
+		return clamp(defence, 0, 9999)
 
 	@property
 	def evasion(self):
@@ -166,7 +165,7 @@ class Creature(object):
 				evasion += diceroll(modifier.stats_change["evasion"])
 
 		#todo evasion from level perks
-		return evasion
+		return clamp(evasion, 0, 9999)
 
 
 	@property
@@ -182,7 +181,9 @@ class Creature(object):
 		if not self.dead:
 			self.health = self.health - value
 			msg += self.on_health_lost(value)
-		return msg
+
+		killed = self.kill_if_nececary()
+		return msg 
 
 	def equip(self, target_item):
 		if target_item.item_type == "consumable":
@@ -321,6 +322,29 @@ class Creature(object):
 				at_info = perk.on_modifier_applied(modifier)
 				if at_info:
 					attack_info = at_info
+
+		self.refresh_characteristics()
+		self.refresh_abilities()
+		self.refresh_tags()
+
+		return msg
+
+	def on_modifier_lifted(self, modifier):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_modifier_lifted(modifier)
+			if effect:
+				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				at_info = perk.on_modifier_lifted(modifier)
+				if at_info:
+					attack_info = at_info
+
+		self.refresh_characteristics()
+		self.refresh_abilities()
+		self.refresh_tags()
 
 		return msg
 
@@ -492,7 +516,12 @@ class Creature(object):
 				if at_info:
 					attack_info = at_info
 
-		attack_info = self.kill_if_nececary(attack_info)
+		if self.dead:
+			attack_info.use_info["did_kill"] = True
+			attack_info.description += "%s is killed by %s.\n"%(attack_info.target.name.title(), attack_info.inhibitor.name.title())
+			attack_info = attack_info.inhibitor.on_kill(attack_info)
+			attack_info = attack_info.target.on_death(attack_info)
+
 		return attack_info
 
 	def on_hit(self, attack_info): #immediately after succesfully hitting target
@@ -601,19 +630,14 @@ class Creature(object):
 
 
 	""" /EVENTS """
-	def kill_if_nececary(self, attack_info):
+	def kill_if_nececary(self):
 		if self.health <= 0:
-			attack_info = self.die(attack_info)
-			return attack_info
-		return attack_info
+			self.die()
+			return True
+		return False
 
-	def die(self, attack_info):
+	def die(self):
 		self.dead = True
-		attack_info.use_info["did_kill"] = True
-		attack_info.description += "%s is killed by %s.\n"%(self.name.title(), attack_info.inhibitor.name)
-		attack_info = attack_info.inhibitor.on_kill(attack_info)
-		attack_info = self.on_death(attack_info)
-		return attack_info
 
 	def examine_equipment(self):
 		#desc = "%s's equipment:\n"%(self.name)
@@ -712,41 +736,49 @@ class Creature(object):
 					prototype = abilities[ability]
 					self.abilities.append(prototype(ability, self.equipment[key]))
 
-	def refresh_derived(self):
-		self.refresh_modifiers()
-		self.refresh_abilities()
-		self.refresh_tags()
+	def refresh_characteristics(self):
 		self.characteristics = self.base_characteristics.copy()
 		#refresh characteristics
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for characteristic in list(perk.__class__.characteristics_change.keys()):
-					self.characteristics[characteristic] += perk.__class__.characteristics_change[characteristic]
+					self.characteristics[characteristic] = clamp( self.characteristics[characteristic] + perk.__class__.characteristics_change[characteristic], 0, 20)
 
 		for modifier in self.modifiers:
 			for characteristic in list(modifier.characteristics_change.keys()):
-					self.characteristics[characteristic] += modifier.characteristics_change[characteristic]
+					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] +modifier.characteristics_change[characteristic], 0, 20)
 		
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "characteristics_change" in list(self.equipment[item].stats.keys()):
 				for characteristic in list(self.equipment[item].stats["characteristics_change"].keys()):
-					self.characteristics[characteristic] += self.equipment[item].stats["characteristics_change"][characteristic]
+					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] + self.equipment[item].stats["characteristics_change"][characteristic], 0, 20)
 
+		
+	def refresh_stats(self):
 		self.stats = self.get_stats_from_characteristics(self.characteristics)
 		#refresh stats
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for stat in list(perk.__class__.stats_change.keys()):
-					self.stats[stat] += perk.__class__.stats_change[stat]
+					self.stats[stat] = clamp( self.stats[stat]+ perk.__class__.stats_change[stat], 0, 9999)
 
 		for modifier in self.modifiers:
 			for stat in list(modifier.stats_change.keys()):
-					self.stats[stat] += modifier.stats_change[stat]
+				if stat != "defence" and stat != "evasion":
+					self.stats[stat] = clamp( self.stats[stat] + modifier.stats_change[stat], 0, 9999)
 		
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "stats_change" in list(self.equipment[item].stats.keys()):
 				for stat in list(self.equipment[item].stats["stats_change"].keys()):
-					self.stats[stat] += self.equipment[item].stats["stats_change"][stat]
+					if stat != "defence" and stat != "evasion":
+						self.stats[stat] = clamp( self.stats[stat] +self.equipment[item].stats["stats_change"][stat], 0, 9999)
+
+	def refresh_derived(self):
+		self.refresh_modifiers()
+		self.refresh_abilities()
+		self.refresh_tags()
+		self.refresh_characteristics()
+		self.refresh_stats()
 
 	def examine_self(self):
 
@@ -815,7 +847,7 @@ class Player(Creature):
 	@experience.setter
 	def experience(self, value):
 		if value >= self.max_experience:
-			over_cur_level = value - (self.max_experience - self.experience)
+			over_cur_level = value - self.max_experience
 			self.level_up()
 			self.experience = over_cur_level
 		else:
@@ -934,11 +966,6 @@ class Enemy(Creature):
 
 	def act(self):
 		return "Base enemy has no AI"
-
-	def die(self, attack_info):
-		attack_info = super(Enemy, self).die(attack_info)
-
-		return attack_info
 
 	@staticmethod
 	def de_json(data):

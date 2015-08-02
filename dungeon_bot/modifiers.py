@@ -1,6 +1,13 @@
+#!/usr/bin/env python3
 from .util import *
 import random
 class Modifier(object): #Modifiers always affect only the host that carries them
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change = {}
+	abilities_granted = []
+	tags_granted = []
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [],  priority=0, name="", description=""):
 		self.uid = get_uid()
 		self.name = name
@@ -45,14 +52,15 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		pass
 
 	def on_turn(self):
-		if not self.permanent:
-			if self.duration <= 0:
-				return self.lift()
-
-			self.duration != 1
+		return ""
 
 	def on_round(self):
-		pass
+		if not self.permanent:
+			print(self.duration)
+			if self.duration <= 0:
+				return self.lift()
+			self.duration -= 1
+		return ""
 
 	def on_attack(self, ability_info=None):
 		pass
@@ -84,6 +92,9 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_experience_gained(self, ability_info=None):
 		pass
 
+	def on_level_up(self):
+		pass
+
 	def on_energy_gained(self, amount=None):
 		pass
 
@@ -102,14 +113,105 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_modifier_applied(self, modifier):
 		pass
 
+	def on_modifier_lifted(self, modifier):
+		pass
+
 	def lift(self):
 		self.host.modifiers.remove(self)
-		self.host.refresh_derived()
-		return self.on_lifted()
+		return self.on_lifted() + self.host.on_modifier_lifted(self)
+
+class KnockedDown(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = 0
+	characteristics_change = {"dexterity": 2}
+	stats_change = {"evasion": "-5d6", "defence": "-2d6"}
+	abilities_granted = []
+	tags_granted = []
+
+	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="knockdown", description="Loose 5d6 evasion, 2d6 your defence, and half your dexterity.") :
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+		self.characteristics_change = {"dexterity": -host.characteristics["dexterity"]}
+		self.duration = clamp( 10 - host.characteristics["dexterity"], 1, 3)
+		self.stats_change = {"evasion": "-5d6", "defence": "-2d6"}
+		
+	def on_round(self):
+		msg = "%s struggles to get up from the ground.\n"%(self.host.name.title())
+		msg += super(KnockedDown, self).on_round()
+		return msg
+
+	def on_applied(self):
+		msg = super(KnockedDown, self).on_applied()
+		msg += "%s is knocked down!\n"%(self.host.name.title())
+		return msg
+
+class Vunerable(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = 1
+	characteristics_change = {}
+	stats_change =  {"defence": "-3d6"}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="vunerable", description="Loose 3d6 defence for a turn."):
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+
+	def on_applied(self):
+		msg = super(Vunerable, self).on_applied()
+		msg += "%s is exposed and vunerable!\n"%(self.host.name.title())
+		return msg
+
+class Pain(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = 1
+	characteristics_change = {"dexterity":-3, "strength":-3, "intelligence":-3}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="pain", description="Loose 3 dexterity, strength and intelligence for a turn.") :
+		characteristics_change = {"dexterity":-3, "strength":-3, "intelligence":-3}
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+
+	def on_applied(self):
+		msg = super(Pain, self).on_applied()
+		msg += "%s is wrecked with pain!\n"%(self.host.name.title())
+		return msg
+
+
+
+class Bleeding(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = 1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=6, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="bleeding", description="loose 1d3 hp every turn for 6 rounds"):
+		duration = clamp( 10 - host.characteristics["vitality"], 3, 8)
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+
+	def on_round(self):
+		msg = ""
+		if not self.host.dead:
+			dmg = diceroll("1d3")
+			self.host.damage(dmg)
+			msg += "%s looses %d hp due to bleeding.\n"%(self.host.name.title(), dmg)
+		msg += super(Bleeding, self).on_round()
+		return msg
+
+	def on_applied(self):
+		msg = super(Bleeding, self).on_applied()
+		msg += "%s has a major bleeding!.\n"%(self.host.name.title())
+		return msg
+
 
 class Shielded(Modifier): #simply adds defence, hinders evasion
-	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {"defence":"3d6"}, abilities_granted = [], tags_granted = [], priority=0, name="shielded", description="grants defence") :
-		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description, )
+	priority = 0
+	duration = 1
+	characteristics_change = {}
+	stats_change =  {"defence":"3d6"}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="shielded", description="grants defence") :
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description)
 
 	def on_applied(self):
 		msg = super(Shielded, self).on_applied()
@@ -118,45 +220,79 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 
 class Bonus(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="bonus", description="???"):
-		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, priority, name, description, )
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted, priority, name, description)
 
+class Regeneration(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="regeneration", description="Regenerate health.") :
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+		self.healing_amount = self.granted_by.stats["healing_amount"]
+		self.healing_chance = self.granted_by.stats["healing_chance"]
+
+	def on_round(self):
+		chance = diceroll(self.healing_chance)
+		msg = ""
+		if random.randint(0, 100) < chance:
+			heal = diceroll(healing_amount)
+			if self.host.health < self.host.stats["max_health"]: 
+				self.host.health += heal
+				msg += "%s regenerates %d hp due to %s.\n"%(self.host.name.title(), heal, self.granted_by.name)
+		msg += super(Regeneration, self).on_round()
+		return msg
 
 class FireAttack(Modifier):
-	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="fire attack",  description="Has a chance to cause fire additional damage every attack by host.",):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="fire attack",  description="Has a chance to cause fire additional damage every attack by host."):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description)
 
 	def on_hit(self, attack_info):
-		fire_chance = self.granted_by.stats["fire_chance"]
-		fire_damage = self.granted_by.stats["fire_damage"]
-		if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:
-			chance = diceroll( fire_chance )
-			if random.randint(0, 100) < chance:
-				dmg = diceroll( fire_damage )
-				attack_info.target.damage( dmg )
-				attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.name.title())
-				attack_info.use_info["damage_dealt"] += dmg
-
+		if attack_info.inhibitor == self.host:
+			fire_chance = self.granted_by.stats["fire_chance"]
+			fire_damage = self.granted_by.stats["fire_damage"]
+			if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:
+				chance = diceroll( fire_chance )
+				if random.randint(0, 100) < chance:
+					dmg = diceroll( fire_damage )
+					attack_info.target.damage( dmg )
+					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.name.title())
+					attack_info.use_info["damage_dealt"] += dmg
 		return attack_info
 
 def get_modifier_by_name(modifier_name, source, target, params={}):
+	prototype = modifier_listing[modifier_name]
 	if not "duration" in params.keys():
-		params["duration"] = -1
+		params["duration"] = prototype.duration
 	if not "characteristics_change" in params.keys():
-		params["characteristics_change"] = {}
+		params["characteristics_change"] = prototype.characteristics_change
 	if not "stats_change" in params.keys():
-		params["stats_change"] = {}
+		params["stats_change"] = prototype.stats_change
 	if not "abilities_granted" in params.keys():
-		params["abilities_granted"] = []
+		params["abilities_granted"] = prototype.abilities_granted
 	if not "tags_granted" in params.keys():
-		params["tags_granted"] = []
+		params["tags_granted"] = prototype.tags_granted
 	if not "priority" in params.keys():
-		params["priority"] = 0
+		params["priority"] = prototype.priority
 
-	mod = modifier_listing[modifier_name](source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"], params["priority"])
+	mod = prototype(source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"], params["priority"])
 	return mod
 
 modifier_listing = {
 	"shielded" : Shielded,
 	"bonus" : Bonus,
-	"fire_attack" : FireAttack
+	"regeneration": Regeneration,
+	"fire_attack" : FireAttack,
+	"vunerable": Vunerable,
+	"knockdown": KnockedDown,
+	"bleeding": Bleeding,
+	"pain": Pain, 
 }
