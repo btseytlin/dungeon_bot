@@ -85,6 +85,7 @@ class DungeonBot(object):
 
 	intro_message = "Welcome! DungeonBot is a text RPG. Make a character, raid a dungeon, kill monsters, loot them for shiny things! And do it with your friends too!\nThe bot is very much WIP, so beware of bugs. Please send feedback to @btseytlin.\nHappy dungeon crawling!\n"
 	def __init__(self):
+		print('DungeonBot initialized')
 		logger.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
 		DungeonBot.instance = self
@@ -94,6 +95,14 @@ class DungeonBot(object):
 		if not DungeonBot.instance:
 			DungeonBot.instance = DungeonBot()
 		return DungeonBot.instance
+
+	def resart():
+		global persistence_controller
+		persistence_controller.clear_events()
+		PersistenceController.instance = None
+		persistence_controller = PersistenceController.get_instance()
+		DungeonBot.events = {}
+		DungeonBot.open_lobbies = {}
 
 	def cleanse_dead_events(self):
 		for key in list(DungeonBot.events.keys()):
@@ -146,28 +155,23 @@ class DungeonBot(object):
 		#start dead event collection timer
 		self.timer = threading.Timer(600, self.cleanse_dead_events)
 		self.timer.start() #run every 10 minutes
-		try: 
-			while True:
-				if self.last_update_id:
-					updates = self.api.getUpdates(self.last_update_id)
-				else:
-					updates = self.api.getUpdates()
 
-				for update in updates:
-					#logger.debug("Got update with id %d"%(update.update_id))
-					self.last_update_id = update.update_id+1
-					#logger.debug("Last update id is %d"%(self.last_update_id))
+		while True:
+			if self.last_update_id:
+				updates = self.api.getUpdates(self.last_update_id)
+			else:
+				updates = self.api.getUpdates()
 
-					message = update.message
-					close_enough = self.time_started - datetime.timedelta(minutes=15)
-					if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-						logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
-						self.on_message(message)
-		except:
-			logger.exception("E:")
-			self.timer.cancel()
-		self.timer.cancel()
-			
+			for update in updates:
+				#logger.debug("Got update with id %d"%(update.update_id))
+				self.last_update_id = update.update_id+1
+				#logger.debug("Last update id is %d"%(self.last_update_id))
+
+				message = update.message
+				close_enough = self.time_started - datetime.timedelta(minutes=15)
+				if datetime.datetime.fromtimestamp(message.date) >= close_enough :
+					logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
+					self.on_message(message)
 
 
 	def on_message(self, message):

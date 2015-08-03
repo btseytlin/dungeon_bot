@@ -2,6 +2,7 @@
 import json
 import random
 from .util import *
+from .modifiers import *
 
 
 class LevelPerk(object): #LevelPerks always affect only the host that carries them
@@ -133,8 +134,52 @@ class Flow(LevelPerk):
 		ability_info.description += ""
 		return ability_info
 
+class Deft(LevelPerk):
+	name = "Deft"
+	description = "Get a 30 percent chance to recover 1 energy after a miss."
+	priority = 0
+	requirements = {
+		"level": 1,
+		"has_perks": [],
+		"characteristics": {
+			"intelligence": 6,
+		}
+	}
+
+	def on_miss(self, ability_info):
+		if ability_info.use_info["energy_change"] < -1:
+			if random.randint(0, 100) < 30:
+				ability_info.inhibitor.energy += 1
+				ability_info.description += "%s recovers 1 energy!"%(ability_info.inhibitor.name.title())
+				return ability_info
+		return ability_info
+
+class Sweeper(LevelPerk):
+	name = "Sweeper"
+	description = "Get an accuracy bonus when surrounded by 4 or more enemies"
+	priority = 0
+	requirements = {
+		"level": 1,
+		"has_perks": [],
+		"characteristics": {
+			"strength": 6,
+		}
+	}
+
+	def on_turn(self):
+		msg = ""
+		if self.host.event:
+			combat_event = self.host.event
+			if len([c for c in combat_event.turn_qeue if c.__class__.__name__ != "Enemy"])>=4:
+				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":1, "stats_change":{"accuracy": "4d4"}})
+				msg = "%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.title())
+				self.host.add_modifier(modifier)
+				modifier.apply()
+		return msg
 
 level_perks_listing = {
 	"Educated":Educated,
 	"Flow": Flow,
+	"Deft": Deft,
+	"Sweeper": Sweeper,
 }

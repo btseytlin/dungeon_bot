@@ -7,11 +7,37 @@ import atexit
 import logging
 
 from logging.handlers import TimedRotatingFileHandler
+
 api_token_path = 'data/api.token'
 
+dungeon_bot_instance = None
 def clean_up():
-	if dungeon_bot and dungeon_bot.timer:
-		dungeon_bot.timer.cancel()
+	if dungeon_bot_instance.timer:
+		dungeon_bot_instance.timer.cancel()
+	else:
+		DungeonBot.get_instance().timer.cancel()
+	#DungeonBot.resart()
+
+def start():
+	try:
+		global dungeon_bot_instance
+		with open(api_token_path) as f:
+			apitoken = f.read()
+		tg = telegram.Bot(token=apitoken) 
+
+		dungeon_bot_instance = DungeonBot()
+		dungeon_bot_instance.api = tg
+
+		dungeon_bot_instance.start_main_loop()
+	except KeyboardInterrupt:
+		logger.exception("Finished program.")
+		clean_up()
+	except:
+		clean_up()
+		logger.exception("E:")
+		start()
+		DungeonBot.resart()
+
 
 log_path = './logs/botlog.log'
 
@@ -38,13 +64,7 @@ fh = TimedRotatingFileHandler(combat_log_path, when="d", interval = 1, backupCou
 fh.setLevel(logging.INFO)
 combat_logger.addHandler(fh)
 
-with open(api_token_path) as f:
-	apitoken = f.read()
-tg = telegram.Bot(token=apitoken) 
-
-dungeon_bot = DungeonBot()
-dungeon_bot.api = tg
-
-dungeon_bot.start_main_loop()
-	
 atexit.register(clean_up)
+
+start()
+

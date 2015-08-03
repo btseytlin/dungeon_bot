@@ -65,6 +65,10 @@ class Creature(object):
 		return stats
 
 	@property
+	def short_desc(self):
+	    return self.name+"(%d)"%(self.health)
+	
+	@property
 	def health(self):
 		return self.stats["health"]
 
@@ -137,12 +141,40 @@ class Creature(object):
 		self.equipment["headwear"] = value
 
 	@property
+	def accuracy(self, weapon = None):
+		base_accuracy = diceroll( str(int(2*self.characteristics["intelligence"])) + "d" + str(2*self.characteristics["dexterity"] ))
+		accuracy = base_accuracy
+		for key in list(self.equipment.keys()):
+			if key != "primary_weapon" and key != "secondary_weapon" and self.equipment[key] and "accuracy" in list(self.equipment[key].stats.keys()):
+				accuracy += diceroll(self.equipment[key].stats["accuracy"])
+
+		if weapon and "accuracy" in weapon.stats.keys():
+			accuracy += diceroll(weapon.stats["accuracy"])
+
+		for modifier in self.modifiers:
+			if "accuracy" in modifier.stats_change.keys():
+				accuracy += diceroll(modifier.stats_change["accuracy"])
+
+		if hasattr(self, "level_perks"):
+			for level_perk in self.level_perks:
+				if "accuracy" in level_perk.stats_change.keys():
+					accuracy += diceroll(level_perk.stats_change["accuracy"])
+
+		#todo accuracy from level perks
+		return clamp(accuracy, 0, 9999)
+
+	@property
 	def defence(self):
 		base_def = diceroll("1d1")
 		defence = base_def
 		for key in list(self.equipment.keys()):
 			if self.equipment[key] and "defence" in list(self.equipment[key].stats.keys()):
 				defence += diceroll(self.equipment[key].stats["defence"])
+
+		if hasattr(self, "level_perks"):
+			for level_perk in self.level_perks:
+				if "defence" in level_perk.stats_change.keys():
+					defence += diceroll(level_perk.stats_change["defence"])
 
 		for modifier in self.modifiers:
 			if "defence" in modifier.stats_change:
@@ -154,11 +186,17 @@ class Creature(object):
 
 	@property
 	def evasion(self):
-		base_ev = diceroll(str(self.characteristics["dexterity"])+"d6")
+		base_ev = diceroll(str(2*self.characteristics["dexterity"])+"d6")
 		evasion = base_ev
 		for key in list(self.equipment.keys()):
 			if self.equipment[key] and "evasion" in list(self.equipment[key].stats.keys()):
 				evasion += diceroll(self.equipment[key].stats["evasion"])
+
+		if hasattr(self, "level_perks"):
+			for level_perk in self.level_perks:
+				if "defence" in level_perk.stats_change.keys():
+					defence += diceroll(level_perk.stats_change["defence"])
+
 
 		for modifier in self.modifiers:
 			if "evasion" in modifier.stats_change:
@@ -248,6 +286,9 @@ class Creature(object):
 			return use_effect + msg
 
 	def add_modifier(self, modifier):
+		for mod in self.modifiers:
+			if mod.name == modifier.name and mod.granted_by == modifier.granted_by:
+				return False
 		self.modifiers.append(modifier)
 		self.modifiers = sorted(self.modifiers, key=lambda x: x.priority, reverse=False)
 
@@ -749,16 +790,16 @@ class Creature(object):
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for characteristic in list(perk.__class__.characteristics_change.keys()):
-					self.characteristics[characteristic] = clamp( self.characteristics[characteristic] + perk.__class__.characteristics_change[characteristic], 0, 20)
+					self.characteristics[characteristic] = clamp( self.characteristics[characteristic] + perk.__class__.characteristics_change[characteristic], 1, 20)
 
 		for modifier in self.modifiers:
 			for characteristic in list(modifier.characteristics_change.keys()):
-					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] +modifier.characteristics_change[characteristic], 0, 20)
+					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] +modifier.characteristics_change[characteristic], 1, 20)
 		
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "characteristics_change" in list(self.equipment[item].stats.keys()):
 				for characteristic in list(self.equipment[item].stats["characteristics_change"].keys()):
-					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] + self.equipment[item].stats["characteristics_change"][characteristic], 0, 20)
+					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] + self.equipment[item].stats["characteristics_change"][characteristic], 1, 20)
 
 		
 	def refresh_stats(self):
@@ -790,13 +831,14 @@ class Creature(object):
 	def examine_self(self):
 
 		characteristics = []
-		characteristics.append("|\t"+"Strength"+":" +str(self.characteristics["strength"]) +"\n")
-		characteristics.append("|\t"+"Dexterity"+":" +str(self.characteristics["dexterity"]) +"\n")
-		characteristics.append("|\t"+"Vitality"+":" +str(self.characteristics["vitality"]) +"\n")
-		characteristics.append("|\t"+"Intelligence"+":" +str(self.characteristics["intelligence"]) +"\n")
+		characteristics.append("|\t"+"Strength"+":" +str(self.characteristics["strength"]) +" ("+str(self.base_characteristics["strength"])+")" +"\n")
+		characteristics.append("|\t"+"Dexterity"+":" +str(self.characteristics["dexterity"]) +" ("+str(self.base_characteristics["dexterity"])+")" +"\n")
+		characteristics.append("|\t"+"Vitality"+":" +str(self.characteristics["vitality"]) +" ("+str(self.base_characteristics["vitality"])+")" +"\n")
+		characteristics.append("|\t"+"Intelligence"+":" +str(self.characteristics["intelligence"]) +" ("+str(self.base_characteristics["intelligence"])+")" +"\n")
 		
-		avg_defence = sum([self.defence for x in range(101)])/100
-		avg_evasion = sum([self.evasion for x in range(101)])/100
+		avg_defence = sum([self.defence for x in range(501)])/500
+		avg_evasion = sum([self.evasion for x in range(501)])/500
+		avg_accuracy = sum([self.accuracy for x in range(501)])/500
 
 		desc = "\n".join(
 		[
@@ -806,6 +848,7 @@ class Creature(object):
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
 			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]) + "\nExp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
 			"Average defence, evasion:\n|\t%d, %d"%(avg_defence, avg_evasion),
+			"Average accuracy:\n|\t%d"%(avg_accuracy),
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
 			"Modifiers:\n|\t%s"%(", ".join(["%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
 			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities])),

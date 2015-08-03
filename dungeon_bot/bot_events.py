@@ -24,7 +24,7 @@ persistence_controller = PersistenceController.get_instance()
 class BotEvent(object):
 	def __init__(self, finished_callback, users, players = None):
 		self.finished_callback = finished_callback
-		
+		self.finished = False
 		self.users = users
 		self.uid = get_uid()
 
@@ -65,6 +65,7 @@ class BotEvent(object):
 				self.on_player_leave(user)
 
 	def finish(self):
+		self.finished = False
 		self.free_users()
 		return self.finished_callback(self)
 
@@ -161,6 +162,9 @@ class LevelUpEvent(BotEvent):
 		self.player = persistence_controller.get_ply(user)
 		self.current_step = 0
 		self.perk_step_msg = ""
+
+		self.greeting_message = "In this dialogue you can level up your character.\nYou get a perk every 3 turns and a characteristic point every 5 turns.\nYou can save points for later by typing 'done'.\n"
+
 		if self.player.perk_points > 0:
 			self.perk_step_msg = "Choose a perk by typing it's number:\n"
 			self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key].requirements)]
@@ -194,7 +198,7 @@ class LevelUpEvent(BotEvent):
 	def handle_command(self, user, command, *args):
 		super(LevelUpEvent, self).handle_command(user, command, *args)
 		if command == "done":
-			return "Done leveling up." + self.finish() or ""
+			return "Done leveling up." + (self.finish() or "")
 
 		if self.current_step == 0:
 			if command in ["dex", "dexterity", "strength", "str", "vitality", "vit", "intelligence", "int"]:
@@ -555,7 +559,7 @@ class DungeonCrawlEvent(BotEvent):
 				if not player.dead:
 					alive_player = True
 			if not alive_player:
-				return "\nThe players perished in the dungeon.\n" + self.finish()
+				return "\nThe players perished in the dungeon.\n" 
 			return "\nThe players have defeated the enemies and are ready to advance further.\n"
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
@@ -685,10 +689,11 @@ class DungeonCrawlEvent(BotEvent):
 		return 'Unknown command, try "help"'
 
 	def finish(self):
-		if key in list(self.non_combat_events.keys()):
+		for key in list(self.non_combat_events.keys()):
 			self.non_combat_events[key].finish()
 		if self.combat_event:
-			self.combat_event.finish()
+			if not self.combat_event.finished:
+				self.combat_event.finish()
 		return super(DungeonCrawlEvent, self).finish()
 
 class CombatEvent(BotEvent):
@@ -752,7 +757,7 @@ class CombatEvent(BotEvent):
 		return msg
 
 	def get_printable_turn_qeue(self):
-		return ", ".join(["["+str(i)+"]"+self.turn_qeue[i].name for i in range(len(self.turn_qeue))])+"\n"
+		return ", ".join([str(i)+"."+self.turn_qeue[i].short_desc for i in range(len(self.turn_qeue))])+"\n"
 	
 	def check_winning_conditions(self):
 		alive_enemy = False

@@ -175,11 +175,11 @@ class Ability(object):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s uses ability %s with %s on %s, but misses.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.target.name)
+		return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.target.name.title(), attack_info.use_info['item_used'].name)
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s uses ability %s with %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
+		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.name.title(),attack_info.prototype_class.__name__, attack_info.target.name.title(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
 
 class Smash(Ability):
 
@@ -211,11 +211,11 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s smashes %s at %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.target.name)
+		return "%s swings %s at %s but misses.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.target.name)
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s smashes %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
+		return "%s swings %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.title(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.name.title())
 
 	@staticmethod
 	def get_knockdown_chance(use_info):		
@@ -249,10 +249,10 @@ class Smash(Ability):
 		is_big = int("big" in target.tags)*2
 		is_slow = int("slow" in target.tags)*2
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
@@ -315,10 +315,10 @@ class Stab(Ability):
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
@@ -366,7 +366,7 @@ class QuickStab(Ability):
 	"""
 	name = "quickstab"
 	description = "Quick stab in the gut!"
-	energy_required = 2
+	energy_required = 1
 	requirements = None
 
 	@staticmethod
@@ -398,10 +398,10 @@ class QuickStab(Ability):
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
@@ -475,10 +475,10 @@ class Cut(Ability): #TODO test and adapt
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 
 		return chance_to_hit
@@ -525,7 +525,7 @@ class QuickCut(Ability): #TODO test and adapt
 	"""
 	name = "quickcut"
 	description = "Cut em up!"
-	energy_required = 2
+	energy_required = 1
 	requirements = None
 
 	@staticmethod
@@ -556,10 +556,10 @@ class QuickCut(Ability): #TODO test and adapt
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
@@ -652,7 +652,7 @@ class RodentBite(Ability):
 	@staticmethod
 	def get_chance_to_hit(user, target, weapon):
 
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		is_small = int("small" in target.tags)
 		is_quick = int("quick" in target.tags)
 		is_big = int("big" in target.tags)
@@ -660,7 +660,7 @@ class RodentBite(Ability):
 		evasion = target.evasion
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp( accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
 
@@ -726,7 +726,7 @@ class AnimalBite(Ability):
 
 	@staticmethod
 	def get_chance_to_hit(user, target, weapon):
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		is_small = int("small" in target.tags)
 		is_quick = int("quick" in target.tags)
 		is_big = int("big" in target.tags)
@@ -734,7 +734,7 @@ class AnimalBite(Ability):
 		evasion = target.evasion
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp( accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
 
@@ -799,7 +799,7 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_chance_to_hit(user, target, weapon):
-		accuracy = diceroll(weapon.stats["accuracy"])
+		accuracy = user.accuracy
 		is_small = int("small" in target.tags)
 		is_quick = int("quick" in target.tags)
 		is_big = int("big" in target.tags)
@@ -807,7 +807,7 @@ class AnimalClaw(Ability):
 		evasion = target.evasion
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp( accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp( accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
 
 		return chance_to_hit
 

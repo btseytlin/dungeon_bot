@@ -31,10 +31,12 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		return self.duration == -1
 	
 	def on_applied(self):
-		return "%s modifier applied to %s.\n"%(self.name.title(), self.host.name.title())
+		return ""
+		#return "%s modifier applied to %s.\n"%(self.name.title(), self.host.name.title())
 
 	def on_lifted(self):
-		return "%s modifier lifted from %s.\n"%(self.name.title(), self.host.name.title())
+		return ""
+		#return "%s modifier lifted from %s.\n"%(self.name.title(), self.host.name.title())
 
 	def on_combat_start(self):
 		pass
@@ -56,7 +58,6 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 	def on_round(self):
 		if not self.permanent:
-			print(self.duration)
 			if self.duration <= 0:
 				return self.lift()
 			self.duration -= 1
@@ -139,6 +140,9 @@ class KnockedDown(Modifier): #simply adds defence, hinders evasion
 		msg += super(KnockedDown, self).on_round()
 		return msg
 
+	def on_lifted(self):
+		return "%s gets up from the ground!\n"%(self.host.name.title())
+
 	def on_applied(self):
 		msg = super(KnockedDown, self).on_applied()
 		msg += "%s is knocked down!\n"%(self.host.name.title())
@@ -159,6 +163,9 @@ class Vunerable(Modifier): #simply adds defence, hinders evasion
 		msg += "%s is exposed and vunerable!\n"%(self.host.name.title())
 		return msg
 
+	def on_lifted(self):
+		return "%s is no longer vunerable!\n"%(self.host.name.title())
+
 class Pain(Modifier): #simply adds defence, hinders evasion
 	priority = 0
 	duration = 1
@@ -175,6 +182,8 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 		msg += "%s is wrecked with pain!\n"%(self.host.name.title())
 		return msg
 
+	def on_lifted(self):
+		return "%s is no longer in pain!\n"%(self.host.name.title())
 
 
 class Bleeding(Modifier): #simply adds defence, hinders evasion
@@ -202,6 +211,9 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 		msg += "%s has a major bleeding!.\n"%(self.host.name.title())
 		return msg
 
+	def on_lifted(self):
+		return "%s is no longer bleeding!\n"%(self.host.name.title())
+
 
 class Shielded(Modifier): #simply adds defence, hinders evasion
 	priority = 0
@@ -217,6 +229,9 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 		msg = super(Shielded, self).on_applied()
 		msg += "%s raises his shieldup and gains a %s defence for the next turn.\n"%(self.host.name, self.stats_change["defence"])
 		return msg
+
+	def on_lifted(self):
+		return "%s is no longer protected by his shield!\n"%(self.host.name.title())
 
 class Bonus(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="bonus", description="???"):

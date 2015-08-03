@@ -63,11 +63,11 @@ class Dummy(Enemy):
 
 
 rat_characteristics = {
-			"strength": 1, #how hard you hit
-			"vitality": 1, #how much hp you have
-			"dexterity": 6, #how fast you act, your position in turn qeue
-			"intelligence": 1, #how likely you are to strike a critical
-		}
+		"strength": 1, #how hard you hit
+		"vitality": 1, #how much hp you have
+		"dexterity": 3, #how fast you act, your position in turn qeue
+		"intelligence": 5, #how likely you are to strike a critical
+	}
 
 class Rat(Enemy):
 	drop_table = {
@@ -100,9 +100,8 @@ class Rat(Enemy):
 big_rat_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 2, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
-	"intelligence": 1, #how likely you are to strike a critical
-	"faith": 1, #how much energy you have
+	"dexterity": 3, #how fast you act, your position in turn qeue
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class BigRat(Enemy):
@@ -150,7 +149,7 @@ wolf_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
-	"intelligence": 1, #how likely you are to strike a critical
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class Wolf(Enemy):
@@ -195,7 +194,7 @@ wolf_leader_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 4, #how much hp you have
 	"dexterity": 6, #how fast you act, your position in turn qeue
-	"intelligence": 1, #how likely you are to strike a critical
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class WolfLeader(Enemy):
@@ -225,13 +224,13 @@ class WolfLeader(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if random.randint(0, 1) == 1:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 		return attack_infos
 
@@ -239,7 +238,7 @@ bear_characteristics = {
 	"strength": 7, #how hard you hit
 	"vitality": 7, #how much hp you have
 	"dexterity": 3, #how fast you act, your position in turn qeue
-	"intelligence": 1, #how likely you are to strike a critical
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class Bear(Enemy):
@@ -274,13 +273,13 @@ class Bear(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if random.randint(0, 1) == 1:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 		return attack_infos
 
@@ -290,7 +289,7 @@ undead_soldier_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 3, #how fast you act, your position in turn qeue
-	"intelligence": 1, #how likely you are to strike a critical
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class UndeadSoldier(Enemy):
@@ -324,15 +323,15 @@ class UndeadSoldier(Enemy):
 
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
+		print(self.target, self.energy, self.abilities[0].energy_required)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if self.primary_weapon:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
-
+						break
 		return attack_infos
 
 
@@ -340,7 +339,7 @@ undead_knight_characteristics = {
 	"strength": 4, #how hard you hit
 	"vitality": 4, #how much hp you have
 	"dexterity": 3, #how fast you act, your position in turn qeue
-	"intelligence": 2, #how likely you are to strike a critical
+	"intelligence": 6, #how likely you are to strike a critical
 }
 
 class UndeadKnight(Enemy):
@@ -377,13 +376,13 @@ class UndeadKnight(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if self.primary_weapon:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 		return attack_infos
 
@@ -393,7 +392,7 @@ lesser_demon_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 2, #how much hp you have
 	"dexterity": 3, #how fast you act, your position in turn qeue
-	"intelligence": 4, #how likely you are to strike a critical
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class LesserDemon(Enemy):
@@ -422,13 +421,13 @@ class LesserDemon(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if random.randint(0, 1) == 1:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 		return attack_infos
 
@@ -467,13 +466,13 @@ class BetaDemon(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if random.randint(0, 1) == 1:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 """ human enemies below """
 
@@ -515,13 +514,13 @@ class Peasant(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if self.primary_weapon:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 		return attack_infos
 
@@ -552,13 +551,13 @@ class Thief(Enemy):
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			while self.energy >= self.abilities[0].energy_required:
-				if self.primary_weapon:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
-				else:
-					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
 				if not self.target or self.target.dead:
-					break
+						break
 
 		return attack_infos
 
@@ -579,6 +578,7 @@ enemy_list = { #name to enemy
 
 def rat_pack(size):
 	description = "A rat.\n"
+	rat_levels = list(range(1, 3))
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
@@ -593,11 +593,13 @@ def rat_pack(size):
 	elif size == "huge":
 		description = "RATS ARE EVERYWHERE.\n"
 		amount = random.randint(10, 20)
-	rats = [ Rat() if random.randint(0, 10) < 7 else BigRat() for x in range(amount+1)]
+	rats = [ Rat(random.choice(rat_levels)) if random.randint(0, 10) < 7 else BigRat(random.choice(rat_levels)) for x in range(amount+1)]
 	return rats, description
 
 def wolf_pack(size):
 	wolf_leader = None
+	wolf_levels = list(range(1, 4))
+	wolf_leader_levels = list(range(1, 4))
 	description = "A wolf.\n"
 	amount = 1
 	if size == "small":
@@ -607,27 +609,29 @@ def wolf_pack(size):
 	elif size == "medium":
 		description = "A pack of wolves.\n"
 		amount = random.randint(3, 5)
-		wolf_leader = WolfLeader() if random.randint(0, 10) > 9 else None
+		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 9 else None
 	elif size == "big":
 		description = "A big pack of wolves!\n"
 		amount = random.randint(5, 10)
-		wolf_leader = WolfLeader() if random.randint(0, 10) > 6 else None
+		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 6 else None
 	elif size == "huge":
 		description = "Wolves circle around you in a hoarde.\n"
 		amount = random.randint(10, 20)
-		wolf_leader = WolfLeader() if random.randint(0, 10) > 3 else None
+		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 3 else None
 	
-	wolves = [ Wolf() for x in range(amount+1)]
+	wolves = [ Wolf(random.choice(wolf_levels)) for x in range(amount+1)]
 	if wolf_leader:
 		wolves.append(wolf_leader)
 	return wolves, description
 
 def bear():
 	description = "A bear.\n"
-	return [Bear()], description
+	levels = list(range(1, 3))
+	return [Bear(random.choice(levels))], description
 
 def undead_soldier_pack(size):
 	description = "An undead soldier.\n"
+	levels = list(range(1,3))
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
@@ -642,12 +646,14 @@ def undead_soldier_pack(size):
 	elif size == "huge":
 		description = "An army of undead soldiers.\n"
 		amount = random.randint(10, 20)
-	soldiers = [ UndeadSoldier() if random.randint(0, 10) < 7 else UndeadKnight() for x in range(amount+1)]
+	soldiers = [ UndeadSoldier(random.choice(levels)) if random.randint(0, 10) < 7 else UndeadKnight(random.choice(levels)) for x in range(amount+1)]
 	return soldiers, description
 
 def lesser_demon_pack(size):
 	description = "A lesser demon.\n"
 	beta_demon = None
+	levels = list(range(1,3))
+	beta_levels = list(range(1,3))
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
@@ -658,23 +664,23 @@ def lesser_demon_pack(size):
 		amount = random.randint(3, 6)
 
 		if random.randint(0, 10) > 9:
-			beta_demon = BetaDemon()
+			beta_demon = BetaDemon(random.choice(beta_levels))
 
 	elif size == "big":
 		description = "A hoard of lesser demons.\n"
 		amount = random.randint(6, 10)
 
 		if random.randint(0, 10) > 6:
-			beta_demon = BetaDemon()
+			beta_demon = BetaDemon(random.choice(beta_levels))
 
 	elif size == "huge":
 		description = "Lesser demons are everywhere.\n"
 		amount = random.randint(10, 20)
 
 		if random.randint(0, 10) > 3:
-			beta_demon = BetaDemon()
+			beta_demon = BetaDemon(random.choice(beta_levels))
 
-	demons = [ LesserDemon() for x in range(amount+1)]
+	demons = [ LesserDemon(random.choice(levels)) for x in range(amount+1)]
 	if beta_demon:
 		demons.append(beta_demon)
 		description+= "A beta demon.\n"
@@ -682,11 +688,13 @@ def lesser_demon_pack(size):
 
 def beta_demon():
 	description = "A beta demon.\n"
-	beta_demon = BetaDemon()
+	levels = list(range(1,3))
+	beta_demon = BetaDemon(levels)
 	return [beta_demon], description
 
 def peasant_pack(size):
 	description = "A peasant.\n"
+	levels = list(range(1,3))
 	thief = None
 	amount = 1
 	if size == "small":
@@ -698,18 +706,18 @@ def peasant_pack(size):
 		amount = random.randint(3, 6)
 
 		if random.randint(0, 10) > 9:
-			thief = Thief()
+			thief = Thief(random.choice(levels))
 	elif size == "big":
 		description = "A hoard of Peasants.\n"
 		amount = random.randint(6, 10)
 		if random.randint(0, 10) > 6:
-			thief = Thief()
+			thief = Thief(random.choice(levels))
 	elif size == "huge":
 		description = "Peasants are everywhere.\n"
 		amount = random.randint(10, 20)
 		if random.randint(0, 10) > 3:
-			thief = Thief()
-	peasants = [ Peasant() for x in range(amount+1)]
+			thief = Thief(random.choice(levels))
+	peasants = [ Peasant(random.choice(levels)) for x in range(amount+1)]
 	if thief:
 		peasants.append(thief)
 		description+= "A beta demon.\n"

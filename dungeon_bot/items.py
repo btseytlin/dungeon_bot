@@ -175,6 +175,13 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 					real_stats[key] = get_dice_in_range(stats[key], coolity)
 				if isinstance( stats[key][0], int):
 					real_stats[key] = get_number_in_range(stats[key], coolity)
+			if isinstance(stats[key], dict):
+				for stat in stats[key]:
+					if isinstance(stats[key][stat], list):
+						if isinstance( stats[key][stat][0], str):
+							real_stats[key][stat] = get_dice_in_range(stats[key][stat], coolity)
+						if isinstance( stats[key][stat][0], int):
+							real_stats[key][stat] = get_number_in_range(stats[key][stat], coolity)
 
 		if not "modifiers_granted" in item_args.keys():
 				item_args["modifiers_granted"] = []
@@ -187,16 +194,16 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 		return prototype(item_args["name"], item_args["description"], item_args["item_type"], real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 def get_item_by_name(name, coolity=0):
+	banned_tiems = ["animal_teeth", "animal_claws", "rodent_teeth"]
 	if name == "random":
-		name = random.choice([name for name in item_listing[item_type] for item_type in list( item_listing.keys() )])
-
+		name = random.choice([name for name in item_listing[item_type] for item_type in list( item_listing.keys() )] - banned_tiems)
 
 	item_args = None
 	item_stats = None
 	item_type = None
 	for key in list(item_listing.keys()):
 		if name == key:
-			name = random.choice(list(item_listing[key].keys()))
+			name = random.choice(list(item_listing[key].keys()) - banned_tiems)
 		for item in list(item_listing[key].keys()):
 			if item == name:
 				item_args = item_listing[key][item]["args"]
@@ -225,24 +232,24 @@ def get_item_by_name(name, coolity=0):
 
 item_listing = { 
 	"primary_weapon":{
-		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
+		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["-1d6","1d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
 		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["3d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
 
 		# enemy equipment below
-		"rodent_teeth": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["4d6","4d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
-		"animal_teeth": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","4d6"]} , "args":{"name":"animal teeth", "description":"Sharp teeth.", "abilities_granted":["animal bite"]}},
+		"rodent_teeth": {"stats": {"damage" : ["1d3","1d5"], "accuracy" : ["4d6", "6d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
+		"animal_teeth": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"animal teeth", "description":"Sharp teeth.", "abilities_granted":["animal bite"]}},
 
 	},
 	"secondary_weapon":{
-		"dagger": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quickstab", "quickcut"]}},
+		"dagger": {"stats": { "damage" : ["1d3","1d6"], "accuracy" : ["-1d6","2d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quickstab", "quickcut"]}},
 		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shieldup"]}},
 
 		# enemy equipment below
 		"animal_claws": {"stats": {"damage" : ["1d6","1d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
-		"chainmail": {"stats": {"defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate armor": {"stats": {"defence" : ["3d6","7d6"], "evasion" : ["-7d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.", "tags_granted":["heavy armor"]}},
+		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
+		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defence" : ["3d6","7d6"], "evasion" : ["-7d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.", "tags_granted":["heavy armor"]}},
 	},
 	"talisman":{
 		"amulet of defence": {"stats": {"defence" : ["1d6","2d6"]} , "args":{"name":"amulet of defence", "description":"The most boring talisman, it just protects you."}},

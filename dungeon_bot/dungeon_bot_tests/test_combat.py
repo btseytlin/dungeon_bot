@@ -77,10 +77,10 @@ def controlled_combat_event(players, enemies):
 
 
 def test_abilities():
-
 	ply = Player("testman", "testply")
 	items = [x for x in list(item_listing["primary_weapon"].keys())] + [x for x in list(item_listing["secondary_weapon"].keys())]
-	dummy = Rat(100)
+	dummy = Dummy(100000)
+	ply.characteristics["dexterity"] = 10
 	#armor = get_item_by_name("plate armor")
 	#dummy.inventory.append(armor)
 	#dummy.equip(armor)
