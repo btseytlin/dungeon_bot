@@ -144,7 +144,7 @@ class Ability(object):
 	@staticmethod
 	def use(use_info):
 		if use_info.ability_type == "attack":
-			use_info.use_info["hit_chance"] = clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"]) 5, 95)
+			use_info.use_info["hit_chance"] = clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"]), 5, 95)
 
 		#	if random.randint(0, 100) > use_info.use_info["hit_chance"]:
 				#use_info.description += use_info.prototype_class.get_miss_description(use_info) 
@@ -219,7 +219,7 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_knockdown_chance(use_info):		
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"] - use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2 + 5 * int("armor" in use_info.target.tags) + 10*("heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -252,7 +252,7 @@ class Smash(Ability):
 		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
@@ -304,7 +304,7 @@ class Stab(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
+		dmg = clamp( weapon_dmg * strength + not_armored * 0.15 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -318,14 +318,13 @@ class Stab(Ability):
 		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
 	@staticmethod
 	def get_pain_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("Pain chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"]-use_info.target.characteristics["intelligence"]/2 - 10 * int("armor" in use_info.target.tags or "heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -402,16 +401,14 @@ class QuickStab(Ability):
 		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
 	@staticmethod
 	def get_pain_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("Pain chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"]-use_info.target.characteristics["intelligence"]/2 - 10 * int("armor" in use_info.target.tags or "heavy armor" in use_info.target.tags), 5, 95)
 		return chance
-
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < QuickStab.get_pain_chance(use_info):
@@ -430,7 +427,7 @@ class Cut(Ability): #TODO test and adapt
 
 	"""
 	Cutting attack for swords, daggers, anything bladed.
-	Effective against unarmoed oponents, mediocore against armored oponents. 
+	Effective against unarmored oponents, mediocore against armored oponents. 
 	High chance to hit.
 	Higher chance to hit big and slow oponents.
 
@@ -468,7 +465,7 @@ class Cut(Ability): #TODO test and adapt
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.7
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
+		dmg = clamp( weapon_dmg * strength + not_armored * 0.05 *(weapon_dmg * strength) - defence *1.15 - is_armored * defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -478,17 +475,17 @@ class Cut(Ability): #TODO test and adapt
 		is_big = int("big" in target.tags)*3
 		is_slow = int("slow" in target.tags)*3
 		evasion = target.evasion
-		accuracy = diceroll(weapon.stats["accuracy"]) * 1.5
+		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+
 
 		return chance_to_hit
 
 	@staticmethod
 	def get_bleeding_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("Bleeding chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"] - 15 * int("armor" in use_info.target.tags) - 20*("heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -497,7 +494,6 @@ class Cut(Ability): #TODO test and adapt
 			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
 			return [modifier]
 		return []
-
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
@@ -563,14 +559,13 @@ class QuickCut(Ability): #TODO test and adapt
 		accuracy = diceroll(weapon.stats["accuracy"])
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy*dexterity - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
 
 		return chance_to_hit
 
 	@staticmethod
 	def get_bleeding_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("Bleeding chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"] - 15 * int("armor" in use_info.target.tags) - 20*("heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -680,8 +675,7 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def get_pain_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("pain chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"]-use_info.target.characteristics["intelligence"]/2 - 10 * int("armor" in use_info.target.tags or "heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -710,7 +704,7 @@ class RodentBite(Ability):
 class AnimalBite(Ability):
 	name = "animal bite"
 	description = "Animals bite, bad!"
-	energy_required = 2
+	energy_required = 3
 	requirements = None
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
@@ -724,8 +718,8 @@ class AnimalBite(Ability):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
 		defence = target.defence
-		is_armored = int("armor" in target.tags) * 0.4
-		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
+		is_armored = int("armor" in target.tags) * 0.2
+		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
 
 		dmg = clamp( weapon_damage* strength - defence - is_armored*defence - is_heavy_armored * defence, 0, 99999999 )
 		return dmg
@@ -763,8 +757,7 @@ class AnimalBite(Ability):
 
 	@staticmethod
 	def get_pain_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("pain chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"]-use_info.target.characteristics["intelligence"]/2 - 10 * int("armor" in use_info.target.tags or "heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -837,8 +830,7 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_bleeding_chance(use_info):
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["strength"]*use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2, 5, 95)
-		print("bleeding chance", chance)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"] - 15 * int("armor" in use_info.target.tags) - 20*("heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod

@@ -18,6 +18,12 @@ def print_combat_abilities(combat_abilities):
 
 	return help_text
 
+def parse_command(user, message):
+	words = message.text.strip().lower().split(' ')
+	command = words[0]
+	args = words[1:]
+	return command,args
+
 def print_available_commands(available_commands):
 	help_text = "Available commands:\n"
 	allowed_comms_descs = {}

@@ -3,11 +3,15 @@ import dungeon_bot
 from dungeon_bot.dungeon_bot import DungeonBot
 import telegram
 #from telegram import Bot
+import atexit
 import logging
 
 from logging.handlers import TimedRotatingFileHandler
 api_token_path = 'data/api.token'
 
+def clean_up():
+	if dungeon_bot and dungeon_bot.timer:
+		dungeon_bot.timer.cancel()
 
 log_path = './logs/botlog.log'
 
@@ -43,3 +47,4 @@ dungeon_bot.api = tg
 
 dungeon_bot.start_main_loop()
 	
+atexit.register(clean_up)

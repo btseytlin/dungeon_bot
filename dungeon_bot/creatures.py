@@ -223,15 +223,22 @@ class Creature(object):
 			return msg + "Succesfully unequipped %s."%(target_item.name)
 		return "Not equipped!"
 
+	def strip(self):
+		for key in list(self.equipment.keys()):
+			if self.equipment[key]:
+				self.unequip(self.equipment[key])
+
 	def destroy(self, target_item):
 		if target_item in self.inventory:
 			self.unequip(target_item)
-			#for item in self.inventory:
-			#	if item == target_item:
 			self.inventory.remove(target_item)
 			self.sort_inventory()
 			return "Succesfully destroyed %s."%(target_item.name)
 		return "No such item."
+
+	def clear_inventory(self):
+		for item in self.inventory:
+			self.destroy(item)
 
 	def use(self, item):
 		if item in self.inventory:
@@ -962,7 +969,11 @@ class Enemy(Creature):
 
 	def __init__(self, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
+		self.target = None
 		self.exp_value = exp_value
+
+	def select_target(self, combat_event):
+		self.target = random.choice([x for x in combat_event.turn_qeue if isinstance(x, Player)])
 
 	def act(self):
 		return "Base enemy has no AI"

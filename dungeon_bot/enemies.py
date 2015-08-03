@@ -24,11 +24,6 @@ def retrieve_enemies_for_difficulty(enemy_table, difficulty):
 
 	return enemies[0](*enemies[1])
 
-
-
-
-""" common enemeies """
-
 default_equipment = {
 	"armor": None,
 	"primary_weapon": None,
@@ -37,6 +32,35 @@ default_equipment = {
 	"talisman": None,
 	"headwear": None
 }
+
+""" test enemies """
+
+
+dummy_characteristics = {
+			"strength": 5, #how hard you hit
+			"vitality": 5, #how much hp you have
+			"dexterity": 5, #how fast you act, your position in turn qeue
+			"intelligence": 5, #how likely you are to strike a critical
+		}
+
+class Dummy(Enemy):
+	drop_table = {
+
+	}
+	loot_coolity = 0
+
+	def __init__(self, level=1000000, name="dummy", characteristics = dummy_characteristics, stats=None, description="Testing dummy, it has so much hp you can hit in endlessly. Also skips every turn.", inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=0):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+
+	def act(self, combat_event):
+		attack_infos = []
+		return attack_infos
+
+
+
+""" common enemeies """
+
+
 
 rat_characteristics = {
 			"strength": 1, #how hard you hit
@@ -63,7 +87,7 @@ class Rat(Enemy):
 	}
 	loot_coolity = 0.5
 
-	def __init__(self, name="rat", level=1, characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=50):
+	def __init__(self, level=1, name="rat",  characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=50):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("rodent_teeth", 0)
 		self.inventory.append(teeth)
@@ -71,15 +95,13 @@ class Rat(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -111,7 +133,7 @@ class BigRat(Enemy):
 	
 	loot_coolity = 0.5
 
-	def __init__(self, name="big rat", level=1, characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=80):
+	def __init__(self, level=1, name="big rat", characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=80):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("rodent_teeth", 0)
 		self.inventory.append(teeth)
@@ -119,15 +141,13 @@ class BigRat(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c,  self.primary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -167,7 +187,7 @@ class Wolf(Enemy):
 	}
 	loot_coolity = 0.5
 
-	def __init__(self, name="wolf", level=1, characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="wolf", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -179,17 +199,16 @@ class Wolf(Enemy):
 	def act(self, combat_event):
 		attack_infos = []
 
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if random.randint(1, 2) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if random.randint(0, 1) == 1:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -218,7 +237,7 @@ class WolfLeader(Enemy):
 	}
 	loot_coolity = 0.5
 
-	def __init__(self, name="wolf pack leader", level=1, characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="wolf pack leader", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -230,17 +249,16 @@ class WolfLeader(Enemy):
 	def act(self, combat_event):
 		attack_infos = []
 
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if random.randint(1, 2) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if random.randint(0, 1) == 1:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -269,7 +287,7 @@ class Bear(Enemy):
 	}
 	loot_coolity = 1
 
-	def __init__(self, name="bear", level=1, characteristics = bear_characteristics, stats=None, description="An angry big bear. Very dangerous!", inventory=[], equipment=default_equipment, tags=["animate", "animal", "big"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="bear", characteristics = bear_characteristics, stats=None, description="An angry big bear. Very dangerous!", inventory=[], equipment=default_equipment, tags=["animate", "animal", "big"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -281,17 +299,16 @@ class Bear(Enemy):
 	def act(self, combat_event):
 		attack_infos = []
 
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if random.randint(1, 2) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[1].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if random.randint(0, 1) == 1:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -321,7 +338,7 @@ class UndeadSoldier(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.3
-	def __init__(self, name="undead soldier", level=1, characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "sword", "dagger"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -333,17 +350,16 @@ class UndeadSoldier(Enemy):
 	def act(self, combat_event):
 		attack_infos = []
 
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if self.primary_weapon:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if self.primary_weapon:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -372,7 +388,7 @@ class UndeadKnight(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.3
-	def __init__(self, name="undead knight", level=1, characteristics = undead_knight_characteristics, stats=None, description="An undead knight.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="undead knight", characteristics = undead_knight_characteristics, stats=None, description="An undead knight.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["sword"]), 0 )]
 		items.append( get_item_by_name( "shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -385,14 +401,16 @@ class UndeadKnight(Enemy):
 	def act(self, combat_event):
 		attack_infos = []
 
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-			if not targets:
-				break
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if self.primary_weapon:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -422,7 +440,7 @@ class LesserDemon(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.2
-	def __init__(self, name="lesser demon", level=1, characteristics = lesser_demon_characteristics, stats=None, description="A lesser demon.", inventory=[], equipment=default_equipment, tags=["animate", "demon" ],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="lesser demon", characteristics = lesser_demon_characteristics, stats=None, description="A lesser demon.", inventory=[], equipment=default_equipment, tags=["animate", "demon" ],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = []
 		items.append( get_item_by_name("animal_teeth", 0 ) )
@@ -433,17 +451,18 @@ class LesserDemon(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if random.randint(0, 1) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if random.randint(0, 1) == 1:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
+
 		return attack_infos
 
 beta_demon_characteristics = {
@@ -469,7 +488,7 @@ class BetaDemon(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.2
-	def __init__(self, name="beta demon", level=1, characteristics = beta_demon_characteristics, stats=None, description="An beta demon. It's huge and wields a club from a huge bone.", inventory=[], equipment=default_equipment, tags=["animate", "demon", "slow", "big"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="beta demon", characteristics = beta_demon_characteristics, stats=None, description="An beta demon. It's huge and wields a club from a huge bone.", inventory=[], equipment=default_equipment, tags=["animate", "demon", "slow", "big"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = []
 		items.append( get_item_by_name("club", 0 ) )
@@ -480,18 +499,17 @@ class BetaDemon(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if random.randint(0, 1) == 1:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
-		return attack_infos
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if random.randint(0, 1) == 1:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[1].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 """ human enemies below """
 
@@ -520,7 +538,7 @@ class Peasant(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.3
-	def __init__(self, name="peasant", level=1, characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "dagger"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -531,17 +549,17 @@ class Peasant(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if self.primary_weapon:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if self.primary_weapon:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 
@@ -569,7 +587,7 @@ class Thief(Enemy):
 		"ring of more vitality" : 10,
 	}
 	loot_coolity = 0.7
-	def __init__(self, name="thief", level=1, characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):
+	def __init__(self, level=1, name="thief", characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( "dagger", 1 )]
 		items.append( get_item_by_name( random.choice(["ring of fire", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
@@ -580,17 +598,17 @@ class Thief(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-		while self.energy >= 2:
-			targets = False
-			for c in combat_event.turn_qeue:
-				if not c.dead and isinstance(c, Player):
-					targets = True
-					if self.primary_weapon:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
-					else:
-						attack_infos.append(self.abilities[0].__class__.use(self, c, self.secondary_weapon, combat_event))
-			if not targets:
-				break
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			while self.energy >= self.abilities[0].energy_required:
+				if self.primary_weapon:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.primary_weapon, combat_event))
+				else:
+					attack_infos.append(self.abilities[0].__class__.use(self, self.target, self.secondary_weapon, combat_event))
+				if not self.target or self.target.dead:
+					break
 
 		return attack_infos
 

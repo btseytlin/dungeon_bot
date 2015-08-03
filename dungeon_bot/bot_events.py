@@ -22,16 +22,23 @@ combat_logger = logging.getLogger('dungeon_bot_combat')
 logger = logging.getLogger('dungeon_bot')
 persistence_controller = PersistenceController.get_instance()
 class BotEvent(object):
-	def __init__(self, finished_callback, users):
+	def __init__(self, finished_callback, users, players = None):
 		self.finished_callback = finished_callback
 		
 		self.users = users
 		self.uid = get_uid()
 
 		self.last_activity = datetime.datetime.now()
-		for user in users:
-			player = persistence_controller.get_ply(user)
-			player.event = self
+		if not players:
+			self.players = []
+			for user in users:
+				player = persistence_controller.get_ply(user)
+				player.event = self
+				self.players.append(player)
+		else:
+			self.players = players
+			for player in players:
+				player.event = self
 
 	def handle_command(self, user, command, *args):
 		self.last_activity = datetime.datetime.now()
@@ -59,7 +66,6 @@ class BotEvent(object):
 
 	def finish(self):
 		self.free_users()
-		persistence_controller.save_players()
 		return self.finished_callback(self)
 
 class RegistrationEvent(BotEvent):
@@ -542,6 +548,7 @@ class DungeonCrawlEvent(BotEvent):
 
 	def start_combat(self, players, enemies):
 		def combat_over_callback(event):
+			persistence_controller.save_players()
 			alive_player = False
 			for player in players:
 				player.event = self # Free all players from event
@@ -592,6 +599,7 @@ class DungeonCrawlEvent(BotEvent):
 		if persistence_controller.get_ply(user).level_up_points > 0 or persistence_controller.get_ply(user).perk_points >0 :
 
 			def lvl_over_callback(event):
+				persistence_controller.save_players()
 				player = persistence_controller.get_ply(user)
 				player.event = self # Free all players from event
 				for uname in list(self.non_combat_events.keys()):
@@ -617,6 +625,7 @@ class DungeonCrawlEvent(BotEvent):
 
 	def open_inventory(self, user):
 		def inv_over_callback(event):
+			persistence_controller.save_players()
 			player = persistence_controller.get_ply(user)
 			player.event = self # Free all players from event
 
@@ -684,7 +693,7 @@ class DungeonCrawlEvent(BotEvent):
 
 class CombatEvent(BotEvent):
 	def __init__(self, finished_callback, players, users, enemies):
-		BotEvent.__init__(self, finished_callback, users)
+		BotEvent.__init__(self, finished_callback, users, players)
 		self.players = players
 		self.enemies = enemies
 		self.turn_qeue = []
@@ -694,7 +703,7 @@ class CombatEvent(BotEvent):
 		self.turn = 0
 		self.round = 0
 
-		
+		self.abilities_used = []
 
 		self.user_abilities = { #  {user.username:  {ability.name: ability}}
 
@@ -715,7 +724,6 @@ class CombatEvent(BotEvent):
 			for ability in ply.abilities:
 				self.user_abilities[user.username][ability.name] = ability
 
-		print(players, enemies)
 		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.username+")" for p in players]), ", ".join([e.name for e in enemies])))
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
@@ -752,7 +760,7 @@ class CombatEvent(BotEvent):
 		all_creatures = self.players + self.enemies
 		for c in all_creatures:
 			if not c.dead:
-				print("%s not dead yet"%(c.name) )
+				#print("%s not dead yet"%(c.name) )
 				if isinstance(c,Player):
 					alive_player = True
 				elif isinstance(c, Enemy):
@@ -778,7 +786,7 @@ class CombatEvent(BotEvent):
 			return self.next_turn()
 
 		if isinstance(self.turn_qeue[self.turn], Enemy):
-			print( "%s's turn"%(self.turn_qeue[self.turn]) ) 
+			#print( "%s's turn"%(self.turn_qeue[self.turn]) ) 
 			msg += self.ai_turn()
 			return msg + self.next_turn()
 		else:
@@ -847,6 +855,7 @@ class CombatEvent(BotEvent):
 					if can_use:
 						use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
 						combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
+						self.abilities_used.append(use_info)
 						msg = use_info.description 
 						broadcast = []
 						for u in self.users:
@@ -883,7 +892,7 @@ class CombatEvent(BotEvent):
 						return self.turn_qeue[int(argument)].examine_self()
 				else:
 					for u in self.users:
-						target_ply = persistence_controller.get_ply(u)
+						target_ply = self.users_to_players[u.username]
 						if u.username == argument or target_ply.name == argument:
 							return target_ply.examine_self()
 
@@ -893,7 +902,7 @@ class CombatEvent(BotEvent):
 
 					for key in list(self.user_abilities[user.username].keys()):
 						if key == argument:
-							return self.user_abilities[user.username][key].examine_self(self.user_abilities[user.username][key])
+							return self.user_abilities[user.username][key].description
 
 				return "No such player, user, enemy or ability."
 

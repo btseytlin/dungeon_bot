@@ -17,6 +17,7 @@ def get_dungeon_bot_instance():
 		return DungeonBot.instance
 
 def event_over_callback(event):
+	persistence_controller.save_players()
 	logger.debug("Removing event %s"%(event.uid))
 	del DungeonBot.events[event.uid] #delete event
 	logger.debug("Event %s removed"%(event.uid))
@@ -24,6 +25,7 @@ def event_over_callback(event):
 	return ""
 
 def crawl_event_over_callback(event):
+	persistence_controller.save_players()
 	for user in event.users:
 		ply = persistence_controller.get_ply(user)
 		ply.health = ply.stats["max_health"]
@@ -93,12 +95,6 @@ class DungeonBot(object):
 			DungeonBot.instance = DungeonBot()
 		return DungeonBot.instance
 
-	def parse_command(self, user, message):
-		words = message.text.strip().lower().split(' ')
-		command = words[0]
-		args = words[1:]
-		return command,args
-
 	def cleanse_dead_events(self):
 		for key in list(DungeonBot.events.keys()):
 			event = DungeonBot.events[key]
@@ -148,29 +144,30 @@ class DungeonBot(object):
 
 	def start_main_loop(self):
 		#start dead event collection timer
-		timer = threading.Timer(600, self.cleanse_dead_events)
-		timer.start() #run every 10 minutes
-		while True:
-			if self.last_update_id:
-				updates = self.api.getUpdates(self.last_update_id)
-			else:
-				updates = self.api.getUpdates()
+		self.timer = threading.Timer(600, self.cleanse_dead_events)
+		self.timer.start() #run every 10 minutes
+		try: 
+			while True:
+				if self.last_update_id:
+					updates = self.api.getUpdates(self.last_update_id)
+				else:
+					updates = self.api.getUpdates()
 
-			for update in updates:
-				try:
-					#logger.debug("Got update with id %d"%(update.update_id))
-					self.last_update_id = update.update_id+1
-					#logger.debug("Last update id is %d"%(self.last_update_id))
+				for update in updates:
+					try:
+						#logger.debug("Got update with id %d"%(update.update_id))
+						self.last_update_id = update.update_id+1
+						#logger.debug("Last update id is %d"%(self.last_update_id))
 
-					message = update.message
-					close_enough = self.time_started - datetime.timedelta(minutes=15)
-					if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-						logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
-						self.on_message(message)
-				except:
-					logger.exception("E:")
-					timer.cancel()
-		timer.cancel()
+						message = update.message
+						close_enough = self.time_started - datetime.timedelta(minutes=15)
+						if datetime.datetime.fromtimestamp(message.date) >= close_enough :
+							logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
+							self.on_message(message)
+		except:
+			logger.exception("E:")
+			self.timer.cancel()
+		self.timer.cancel()
 			
 
 
@@ -187,7 +184,7 @@ class DungeonBot(object):
 			self.register_player(user)
 		else:
 			ply = persistence_controller.get_ply(user)
-			command, args = self.parse_command(user, message)
+			command, args = parse_command(user, message)
 			if ply.event: #Check if player is in event
 				response = ply.event.handle_command(user, command, *args)
 

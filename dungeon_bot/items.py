@@ -215,13 +215,10 @@ def get_item_by_name(name, coolity=0):
 item_listing = { 
 	"primary_weapon":{
 		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
-		"sword": {"stats": {"damage" : ["1d6","4d6"], "accuracy" : ["3d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
-
-
-
+		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["3d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
 
 		# enemy equipment below
-		"rodent_teeth": {"stats": {"damage" : ["1d6","1d6"], "accuracy" : ["4d6","4d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
+		"rodent_teeth": {"stats": {"damage" : ["1d3","1d6"], "accuracy" : ["4d6","4d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
 		"animal_teeth": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","4d6"]} , "args":{"name":"animal teeth", "description":"Sharp teeth.", "abilities_granted":["animal bite"]}},
 
 	},
@@ -277,6 +274,5 @@ item_listing = {
 	},
 	"headwear":{
 		"helmet": {"stats": {"defence" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet."}},
-		"top hat of wisdom": {"stats": {"exp_bonus" : ["1d1","6d6"]} , "args":{"name":"top hat of wisdom", "description":"This top hat adds bonus exp every time you gain exp.","modifiers_granted": []}},
 	}
 }
