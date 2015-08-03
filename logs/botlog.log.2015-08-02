@@ -1,0 +1,3809 @@
+2015-08-02 19:20:43,201|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 19:20:50,341|dungeon_bot|INFO|[MESSAGE] btseytlin: hey bot
+2015-08-02 19:20:50,884|dungeon_bot|DEBUG|Registration event bc7a5540 created
+2015-08-02 19:20:54,126|dungeon_bot|INFO|[MESSAGE] btseytlin: Boris
+2015-08-02 19:20:54,126|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Great. Now let's input your characteristics. Currently they are:
+|	Strength:5
+|	Dexterity:5
+|	Vitality:5
+|	Intelligence:5
+Strength affects how much damage you do, how resistant you are to damage.
+Dexterity affects how fast you act and how accurate you hit.
+Vitality affects how much health you have.
+Intelligence affects how likely you are to strike a critial effect, how quickly you level up.
+Use commands like "dexterity +" or "dex +" to increase or lower characteristics.
+Type "done" once finished.
+
+2015-08-02 19:20:55,137|dungeon_bot|INFO|[MESSAGE] btseytlin: dex +
+2015-08-02 19:20:55,138|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 2 points left.
+|	Strength:5
+|	Dexterity:6
+|	Vitality:5
+|	Intelligence:5
+
+2015-08-02 19:20:58,847|dungeon_bot|INFO|[MESSAGE] btseytlin: dex +
+2015-08-02 19:20:58,847|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 1 points left.
+|	Strength:5
+|	Dexterity:7
+|	Vitality:5
+|	Intelligence:5
+
+2015-08-02 19:20:59,105|dungeon_bot|INFO|[MESSAGE] btseytlin: dex +
+2015-08-02 19:20:59,105|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 0 points left.
+|	Strength:5
+|	Dexterity:8
+|	Vitality:5
+|	Intelligence:5
+
+2015-08-02 19:21:02,294|dungeon_bot|INFO|[MESSAGE] btseytlin: done
+2015-08-02 19:21:02,296|dungeon_bot|DEBUG|Removing event bc7a5540
+2015-08-02 19:21:02,296|dungeon_bot|DEBUG|Event bc7a5540 removed
+2015-08-02 19:21:02,301|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Registration complete!
+A club has been added to your inventory, don't forget to equip it.
+Try "examine" to see your stats, "inventory" to see your items.
+Also remember to use "status" and "help" whenever you don't know where you are or what to do.
+2015-08-02 19:21:07,176|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 19:21:07,176|dungeon_bot|DEBUG|Lobby event ed6b1091 created
+2015-08-02 19:21:07,176|dungeon_bot|DEBUG|User btseytlin joined lobby ed6b1091
+2015-08-02 19:21:07,176|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby ed6b1091.
+
+2015-08-02 19:21:07,447|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 19:21:07,704|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 19:21:08,701|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 19:21:08,701|dungeon_bot|DEBUG|Removing lobby ed6b1091
+2015-08-02 19:21:08,702|dungeon_bot|DEBUG|Removing event ed6b1091
+2015-08-02 19:21:08,702|dungeon_bot|DEBUG|Event ed6b1091 removed
+2015-08-02 19:21:08,732|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 19:54:18,880|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 19:54:59,450|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:18:37,630|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:18:46,694|dungeon_bot|INFO|[MESSAGE] btseytlin: hey
+2015-08-02 20:18:46,694|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help"
+2015-08-02 20:18:50,539|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 20:18:50,544|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 1
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:8
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	60/60
+Energy:
+|	8/8, regen per turn: 2
+Exp:
+|	0/400
+Average defence, evasion:
+|	0, 25
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	
+Abilities:
+|	
+Equipment:
+Level perks:
+|	
+2015-08-02 20:18:57,308|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 20:18:57,309|dungeon_bot|DEBUG|Inventory event 3c7d8c07 created
+2015-08-02 20:18:57,309|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:5d6/dmg:2d5|
+Your equipment:
+
+
+2015-08-02 20:18:59,879|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 1
+2015-08-02 20:18:59,879|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped club.
+2015-08-02 20:19:01,616|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 20:19:01,617|dungeon_bot|DEBUG|Removing event 3c7d8c07
+2015-08-02 20:19:01,617|dungeon_bot|DEBUG|Event 3c7d8c07 removed
+2015-08-02 20:19:01,622|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 20:19:06,838|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:19:06,839|dungeon_bot|DEBUG|Lobby event 7ea21107 created
+2015-08-02 20:19:06,839|dungeon_bot|DEBUG|User btseytlin joined lobby 7ea21107
+2015-08-02 20:19:06,839|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 7ea21107.
+
+2015-08-02 20:19:07,407|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:19:07,671|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:19:07,945|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:19:07,945|dungeon_bot|DEBUG|Removing lobby 7ea21107
+2015-08-02 20:19:07,945|dungeon_bot|DEBUG|Removing event 7ea21107
+2015-08-02 20:19:07,946|dungeon_bot|DEBUG|Event 7ea21107 removed
+2015-08-02 20:19:07,955|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Crypt of undead lords.
+It's said the crypt was built to contain a royal family turned undead.
+
+2015-08-02 20:19:10,727|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:19:10,728|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A rat.
+
+2015-08-02 20:19:10,993|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, big rat.
+Round 1.
+[0]Boris, [1]rat, [2]big rat
+It's Boris's turn.
+
+2015-08-02 20:19:15,181|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:19:15,182|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 191, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 260, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 158, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 59, in execute
+    use_info["modifiers_applied"] += self.prototype_class.get_modifiers_applied(use_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 224, in get_modifiers_applied
+    if random.randint(0, 100) < Smash.get_knockdown_chance(use_info):
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 219, in get_knockdown_chance
+    print("Knockdown chance", use_info.inhibitor.intelligence*use_info.inhibitor.strength*use_info.inhibitor.dexterity - use_info.target.strength*use_info.target.dexterity-use_info.target.intelligence/2)
+AttributeError: 'dict' object has no attribute 'inhibitor'
+2015-08-02 20:19:44,179|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:19:46,152|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:19:46,152|dungeon_bot|DEBUG|Lobby event 7e72a094 created
+2015-08-02 20:19:46,153|dungeon_bot|DEBUG|User btseytlin joined lobby 7e72a094
+2015-08-02 20:19:46,153|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 7e72a094.
+
+2015-08-02 20:19:46,422|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:19:46,683|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:19:47,435|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:19:47,435|dungeon_bot|DEBUG|Removing lobby 7e72a094
+2015-08-02 20:19:47,436|dungeon_bot|DEBUG|Removing event 7e72a094
+2015-08-02 20:19:47,436|dungeon_bot|DEBUG|Event 7e72a094 removed
+2015-08-02 20:19:47,446|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 20:19:47,958|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:19:47,959|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:19:48,220|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, rat, rat, big rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]rat, [4]big rat
+It's Boris's turn.
+
+2015-08-02 20:19:49,994|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:19:49,994|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 191, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 260, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 158, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 59, in execute
+    use_info["modifiers_applied"] += self.prototype_class.get_modifiers_applied(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 224, in get_modifiers_applied
+    if random.randint(0, 100) < Smash.get_knockdown_chance(use_info):
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 219, in get_knockdown_chance
+    print("Knockdown chance", use_info.inhibitor.intelligence*use_info.inhibitor.strength*use_info.inhibitor.dexterity - use_info.target.strength*use_info.target.dexterity-use_info.target.intelligence/2)
+AttributeError: 'Player' object has no attribute 'intelligence'
+2015-08-02 20:20:55,339|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:20:56,887|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:20:56,888|dungeon_bot|DEBUG|Lobby event 924fc3cb created
+2015-08-02 20:20:56,888|dungeon_bot|DEBUG|User btseytlin joined lobby 924fc3cb
+2015-08-02 20:20:56,888|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 924fc3cb.
+
+2015-08-02 20:20:57,162|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:20:57,428|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:20:57,970|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:20:57,971|dungeon_bot|DEBUG|Removing lobby 924fc3cb
+2015-08-02 20:20:57,971|dungeon_bot|DEBUG|Removing event 924fc3cb
+2015-08-02 20:20:57,971|dungeon_bot|DEBUG|Event 924fc3cb removed
+2015-08-02 20:20:57,980|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 20:20:58,247|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:20:58,248|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:20:58,517|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, big rat, big rat.
+Round 1.
+[0]Boris, [1]rat, [2]big rat, [3]big rat
+It's Boris's turn.
+
+2015-08-02 20:21:02,157|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:21:02,158|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 191, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 260, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 158, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 59, in execute
+    use_info["modifiers_applied"] += self.prototype_class.get_modifiers_applied(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 225, in get_modifiers_applied
+    modifier = get_modifier_by_name("knockdown", use_info.use_info["item_used"], use_info.target)
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 279, in get_modifier_by_name
+    mod = prototype(source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"], params["priority"])
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 126, in __init__
+    characteristics_change = {"dexterity": -self.host.characteristics["dexterity"]}
+AttributeError: 'KnockedDown' object has no attribute 'host'
+2015-08-02 20:22:29,798|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:22:32,889|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:22:32,889|dungeon_bot|DEBUG|Lobby event ca28b5fb created
+2015-08-02 20:22:32,890|dungeon_bot|DEBUG|User btseytlin joined lobby ca28b5fb
+2015-08-02 20:22:32,890|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby ca28b5fb.
+
+2015-08-02 20:22:33,164|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:22:33,434|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:22:33,971|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:22:33,971|dungeon_bot|DEBUG|Removing lobby ca28b5fb
+2015-08-02 20:22:33,971|dungeon_bot|DEBUG|Removing event ca28b5fb
+2015-08-02 20:22:33,971|dungeon_bot|DEBUG|Event ca28b5fb removed
+2015-08-02 20:22:33,985|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 20:22:34,250|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:22:34,251|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A rat.
+
+2015-08-02 20:22:34,520|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat
+It's Boris's turn.
+
+2015-08-02 20:22:35,421|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:22:35,421|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:24:12,537|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:24:12,538|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:24:16,499|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:24:16,500|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 191, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 260, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 158, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 66, in execute
+    self.description += modifier.apply()
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 26, in apply
+    msg = self.on_applied() + self.host.on_modifier_applied(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 137, in on_applied
+    msg = super(Shielded, self).on_applied()
+TypeError: super(type, obj): obj must be an instance or subtype of type
+2015-08-02 20:25:53,388|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:25:57,095|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:25:57,095|dungeon_bot|DEBUG|Lobby event f872b81d created
+2015-08-02 20:25:57,095|dungeon_bot|DEBUG|User btseytlin joined lobby f872b81d
+2015-08-02 20:25:57,095|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby f872b81d.
+
+2015-08-02 20:25:57,378|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:25:57,664|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:25:58,197|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:25:58,197|dungeon_bot|DEBUG|Removing lobby f872b81d
+2015-08-02 20:25:58,197|dungeon_bot|DEBUG|Removing event f872b81d
+2015-08-02 20:25:58,197|dungeon_bot|DEBUG|Event f872b81d removed
+2015-08-02 20:25:58,211|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Crypt of undead lords.
+It's said the crypt was built to contain a royal family turned undead.
+
+2015-08-02 20:26:00,100|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:26:00,101|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:26:00,373|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, big rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]big rat
+It's Boris's turn.
+
+2015-08-02 20:26:01,965|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:26:01,967|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 25 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: amulet of defence.
+Knockdown modifier applied to Rat.
+Rat is knocked down!
+
+2015-08-02 20:26:07,514|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:26:07,522|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat. lvl 1
+An angry grey rat.
+Characteristics:
+|	Strength:1
+|	Dexterity:6
+|	Vitality:1
+|	Intelligence:1
+
+Health:
+|	0/12
+
+Average defence, evasion:
+|	-5, 4
+Tags:
+|	animate, rodent, animal, small
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	rodent bite(rodent teeth)
+Equipment:
+|	Primary weapon: rodent teeth |acc:4d6/dmg:1d6|.
+
+2015-08-02 20:27:59,939|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:28:03,312|dungeon_bot|INFO|[MESSAGE] btseytlin: ok google
+2015-08-02 20:28:03,313|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help"
+2015-08-02 20:28:07,332|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:28:07,333|dungeon_bot|DEBUG|Lobby event 01442478 created
+2015-08-02 20:28:07,333|dungeon_bot|DEBUG|User btseytlin joined lobby 01442478
+2015-08-02 20:28:07,333|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 01442478.
+
+2015-08-02 20:28:07,609|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:28:07,898|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:28:08,425|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:28:08,425|dungeon_bot|DEBUG|Removing lobby 01442478
+2015-08-02 20:28:08,425|dungeon_bot|DEBUG|Removing event 01442478
+2015-08-02 20:28:08,425|dungeon_bot|DEBUG|Event 01442478 removed
+2015-08-02 20:28:08,434|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Crypt of undead lords.
+It's said the crypt was built to contain a royal family turned undead.
+
+2015-08-02 20:28:11,997|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:28:11,998|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of undead soldiers.
+
+2015-08-02 20:28:12,275|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead soldier, undead knight, undead soldier.
+Round 1.
+[0]Boris, [1]undead soldier, [2]undead knight, [3]undead soldier
+It's Boris's turn.
+
+2015-08-02 20:28:15,259|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:28:15,260|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 18 damage to Undead Soldier.
+Knockdown modifier applied to Undead Soldier.
+Undead Soldier is knocked down!
+
+2015-08-02 20:28:19,060|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:28:19,068|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier. lvl 1
+An undead soldier.
+Characteristics:
+|	Strength:2
+|	Dexterity:3
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	18/36
+
+Average defence, evasion:
+|	-1, -8
+Tags:
+|	animate, humanoid, undead, slow
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	shieldup(shield), cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:5d6/dmg:3d6|.
+|	Secondary weapon: shield |def:2d4/ev:-1d5|.
+
+2015-08-02 20:28:56,434|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:28:56,435|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 27 damage to Undead Soldier.
+Undead Soldier is killed by Boris.
+Boris earns 100 experience.
+
+2015-08-02 20:29:11,172|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:29:11,174|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 0 damage to Undead Knight.
+Knockdown modifier applied to Undead Knight.
+Undead Knight is knocked down!
+
+2015-08-02 20:29:19,418|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:29:19,419|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 0 damage to Undead Knight.
+Knockdown modifier applied to Undead Knight.
+Undead Knight is knocked down!
+
+2015-08-02 20:29:22,965|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 20:29:22,982|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight. lvl 1
+An undead knight.
+Characteristics:
+|	Strength:4
+|	Dexterity:3
+|	Vitality:4
+|	Intelligence:2
+
+Health:
+|	48/48
+
+Average defence, evasion:
+|	15, -28
+Tags:
+|	animate, humanoid, undead, slow, armor
+Modifiers:
+|	knockdown(club), knockdown(club)
+Abilities:
+|	shieldup(shield), cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:5d6/dmg:2d6|.
+|	Secondary weapon: shield |def:2d6/ev:1d5|.
+|	Armor: chainmail |def:5d6/ev:-3d4|.
+|	Headwear: helmet |def:2d5/ev:-2d3|.
+
+2015-08-02 20:34:16,232|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:34:18,279|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:34:18,279|dungeon_bot|DEBUG|Lobby event 4b4c5c29 created
+2015-08-02 20:34:18,279|dungeon_bot|DEBUG|User btseytlin joined lobby 4b4c5c29
+2015-08-02 20:34:18,280|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 4b4c5c29.
+
+2015-08-02 20:34:18,587|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:34:18,855|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:34:19,377|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:34:19,378|dungeon_bot|DEBUG|Removing lobby 4b4c5c29
+2015-08-02 20:34:19,378|dungeon_bot|DEBUG|Removing event 4b4c5c29
+2015-08-02 20:34:19,378|dungeon_bot|DEBUG|Event 4b4c5c29 removed
+2015-08-02 20:34:19,392|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 20:34:19,899|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:34:19,900|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:34:20,183|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs big rat, big rat, big rat.
+Round 1.
+[0]Boris, [1]big rat, [2]big rat, [3]big rat
+It's Boris's turn.
+
+2015-08-02 20:34:22,936|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:34:22,936|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 191, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 263, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 147, in use
+    use_info.use_info["hit_chance"] = use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 251, in get_chance_to_hit
+    evasion = target.evasion
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 168, in evasion
+    return clam(evasion, 0, 9999)
+NameError: name 'clam' is not defined
+2015-08-02 20:34:57,433|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:35:30,758|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:35:30,758|dungeon_bot|DEBUG|Lobby event c8c7fb2f created
+2015-08-02 20:35:30,758|dungeon_bot|DEBUG|User btseytlin joined lobby c8c7fb2f
+2015-08-02 20:35:30,759|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby c8c7fb2f.
+
+2015-08-02 20:35:31,070|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:35:31,341|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:35:31,846|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:35:31,847|dungeon_bot|DEBUG|Removing lobby c8c7fb2f
+2015-08-02 20:35:31,847|dungeon_bot|DEBUG|Removing event c8c7fb2f
+2015-08-02 20:35:31,847|dungeon_bot|DEBUG|Event c8c7fb2f removed
+2015-08-02 20:35:31,860|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 20:35:32,378|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:35:32,379|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:35:35,650|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, rat, rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]rat, [4]rat
+It's Boris's turn.
+
+2015-08-02 20:35:37,701|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:35:37,703|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 30 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+
+2015-08-02 20:35:42,295|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:35:42,295|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:35:44,102|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:35:44,103|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 49 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: dagger.
+Boris got loot: amulet of defence.
+Boris got loot: amulet of healing.
+Boris got loot: plate armor.
+
+2015-08-02 20:35:47,358|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 20:35:47,359|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 24 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: ring of fire.
+Boris got loot: club.
+
+2015-08-02 20:35:49,648|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 20:35:49,648|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:35:55,131|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:35:55,135|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat bites Boris and deals 2 damage.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 4 damage.
+Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Round 2.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 20:38:03,998|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:38:16,364|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:38:16,365|dungeon_bot|DEBUG|Lobby event 6fe18bd8 created
+2015-08-02 20:38:16,365|dungeon_bot|DEBUG|User btseytlin joined lobby 6fe18bd8
+2015-08-02 20:38:16,365|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 6fe18bd8.
+
+2015-08-02 20:38:16,646|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:38:16,924|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:38:17,706|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:38:17,706|dungeon_bot|DEBUG|Removing lobby 6fe18bd8
+2015-08-02 20:38:17,706|dungeon_bot|DEBUG|Removing event 6fe18bd8
+2015-08-02 20:38:17,706|dungeon_bot|DEBUG|Event 6fe18bd8 removed
+2015-08-02 20:38:17,719|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 20:38:18,245|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:38:18,246|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of wolves.
+
+2015-08-02 20:38:18,503|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs wolf, wolf, wolf.
+Round 1.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:38:20,249|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:38:20,250|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 39 damage to Wolf.
+Wolf is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: ring of fire.
+
+2015-08-02 20:38:23,985|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:38:23,985|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 25 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:38:27,783|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 20:38:27,787|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 14
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:38:47,076|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:38:47,079|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf bites Boris and deals 23 damage.
+Wolf tries to bite Boris but misses.
+Wolf tries to claw Boris but misses.
+Wolf tries to claw Boris but misses.
+Round 2.
+[0]Boris, [1]wolf, [2]wolf
+It's Boris's turn.
+
+2015-08-02 20:38:55,369|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:38:55,374|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 15
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:38:59,390|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 20:38:59,395|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 14
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:43:59,446|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:44:06,954|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:44:06,954|dungeon_bot|DEBUG|Lobby event 7f54cbb3 created
+2015-08-02 20:44:06,954|dungeon_bot|DEBUG|User btseytlin joined lobby 7f54cbb3
+2015-08-02 20:44:06,955|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 7f54cbb3.
+
+2015-08-02 20:44:07,224|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:44:07,482|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:44:07,990|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:44:07,990|dungeon_bot|DEBUG|Removing lobby 7f54cbb3
+2015-08-02 20:44:07,990|dungeon_bot|DEBUG|Removing event 7f54cbb3
+2015-08-02 20:44:07,990|dungeon_bot|DEBUG|Event 7f54cbb3 removed
+2015-08-02 20:44:08,003|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 20:44:08,269|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:44:08,270|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of undead soldiers.
+
+2015-08-02 20:44:08,837|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead knight, undead knight, undead soldier, undead knight.
+Round 1.
+[0]Boris, [1]undead knight, [2]undead knight, [3]undead soldier, [4]undead knight
+It's Boris's turn.
+
+2015-08-02 20:44:12,420|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 20:44:12,421|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 263, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 69, in execute
+    self.description += modifier.apply()
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 26, in apply
+    msg = self.on_applied() + self.host.on_modifier_applied(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 324, in on_modifier_applied
+    self.refresh_characteristics()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 763, in refresh_characteristics
+    self.stats[stat] += modifier.stats_change[stat]
+KeyError: 'defence'
+2015-08-02 20:45:33,534|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:45:40,942|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:45:40,942|dungeon_bot|DEBUG|Lobby event 331cc6ac created
+2015-08-02 20:45:40,942|dungeon_bot|DEBUG|User btseytlin joined lobby 331cc6ac
+2015-08-02 20:45:40,942|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 331cc6ac.
+
+2015-08-02 20:45:41,642|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:45:41,917|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:45:45,428|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:45:45,428|dungeon_bot|DEBUG|Removing lobby 331cc6ac
+2015-08-02 20:45:45,428|dungeon_bot|DEBUG|Removing event 331cc6ac
+2015-08-02 20:45:45,428|dungeon_bot|DEBUG|Event 331cc6ac removed
+2015-08-02 20:45:45,438|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Bandit den.
+All kinds of scum find shelter in these caves.
+
+2015-08-02 20:45:45,717|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:45:45,718|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:45:46,296|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, rat, big rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]rat, [4]big rat
+It's Boris's turn.
+
+2015-08-02 20:45:49,341|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:45:49,342|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 19 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+
+2015-08-02 20:45:51,693|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:45:51,694|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 40 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+
+2015-08-02 20:45:53,523|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 20:45:53,524|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 44 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: ring of more vitality.
+
+2015-08-02 20:45:55,345|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 20:45:55,346|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 263, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 69, in execute
+    self.description += modifier.apply()
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 26, in apply
+    msg = self.on_applied() + self.host.on_modifier_applied(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 324, in on_modifier_applied
+    self.refresh_characteristics()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 764, in refresh_characteristics
+    self.stats[stat] += modifier.stats_change[stat]
+KeyError: 'evasion'
+2015-08-02 20:46:09,595|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:46:12,187|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:46:12,188|dungeon_bot|DEBUG|Lobby event b6e4ae77 created
+2015-08-02 20:46:12,188|dungeon_bot|DEBUG|User btseytlin joined lobby b6e4ae77
+2015-08-02 20:46:12,188|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby b6e4ae77.
+
+2015-08-02 20:46:12,465|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:46:12,732|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:46:13,240|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:46:13,240|dungeon_bot|DEBUG|Removing lobby b6e4ae77
+2015-08-02 20:46:13,240|dungeon_bot|DEBUG|Removing event b6e4ae77
+2015-08-02 20:46:13,241|dungeon_bot|DEBUG|Event b6e4ae77 removed
+2015-08-02 20:46:13,255|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 20:46:14,094|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:46:14,095|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of lesser demons.
+
+2015-08-02 20:46:14,376|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs lesser demon, lesser demon, lesser demon.
+Round 1.
+[0]Boris, [1]lesser demon, [2]lesser demon, [3]lesser demon
+It's Boris's turn.
+
+2015-08-02 20:46:15,564|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:46:15,573|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon tries to claw Boris but misses.
+Lesser Demon tries to claw Boris but misses.
+Lesser Demon tries to claw Boris but misses.
+Round 2.
+[0]Boris, [1]lesser demon, [2]lesser demon, [3]lesser demon
+It's Boris's turn.
+
+2015-08-02 20:46:18,673|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:46:18,674|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 19 damage to Lesser Demon.
+Knockdown modifier applied to Lesser Demon.
+Lesser Demon is knocked down!
+
+2015-08-02 20:46:21,966|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:46:21,972|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon. lvl 1
+A lesser demon.
+Characteristics:
+|	Strength:2
+|	Dexterity:0
+|	Vitality:2
+|	Intelligence:4
+
+Health:
+|	24/24
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, demon
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal claw(animal claws), animal bite(animal teeth)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:4d6/dmg:1d6|.
+
+2015-08-02 20:46:30,922|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:46:30,923|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 40 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+
+2015-08-02 20:46:33,662|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:46:33,665|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 901, in handle_command
+    msg = self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 799, in next_turn
+    return self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 802, in next_turn
+    msg += creature.on_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 299, in on_turn
+    effect = modifier.on_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 135, in on_turn
+    msg += super(KnockedDown, self).on_turn()
+TypeError: Can't convert 'NoneType' object to str implicitly
+2015-08-02 20:47:10,355|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:47:11,615|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:47:11,615|dungeon_bot|DEBUG|Lobby event e9de56ff created
+2015-08-02 20:47:11,615|dungeon_bot|DEBUG|User btseytlin joined lobby e9de56ff
+2015-08-02 20:47:11,616|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby e9de56ff.
+
+2015-08-02 20:47:11,882|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:47:12,146|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:47:12,670|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:47:12,671|dungeon_bot|DEBUG|Removing lobby e9de56ff
+2015-08-02 20:47:12,671|dungeon_bot|DEBUG|Removing event e9de56ff
+2015-08-02 20:47:12,671|dungeon_bot|DEBUG|Event e9de56ff removed
+2015-08-02 20:47:12,683|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Crypt of undead lords.
+It's said the crypt was built to contain a royal family turned undead.
+
+2015-08-02 20:47:12,953|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:47:12,954|dungeon_bot|INFO|[RESPONSE] to user btseytlin: An undead soldier.
+
+2015-08-02 20:47:13,221|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead soldier, undead knight.
+Round 1.
+[0]Boris, [1]undead soldier, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 20:47:16,517|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:47:16,518|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 21 damage to Undead Soldier.
+Knockdown modifier applied to Undead Soldier.
+Undead Soldier is knocked down!
+
+2015-08-02 20:47:19,000|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:47:19,008|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier. lvl 1
+An undead soldier.
+Characteristics:
+|	Strength:2
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	2, 0
+Tags:
+|	animate, humanoid, undead, slow
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:4d6/dmg:2d6|.
+|	Headwear: helmet |def:2d6/ev:-2d2|.
+
+2015-08-02 20:47:24,384|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:47:24,385|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 0 damage to Undead Knight.
+Knockdown modifier applied to Undead Knight.
+Undead Knight is knocked down!
+
+2015-08-02 20:47:28,171|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 20:47:28,176|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 1
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:8
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	60/60
+Energy:
+|	4/8, regen per turn: 2
+Exp:
+|	0/400
+Average defence, evasion:
+|	0, 23
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d5|.
+Level perks:
+|	
+2015-08-02 20:47:29,715|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 20:47:29,727|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight. lvl 1
+An undead knight.
+Characteristics:
+|	Strength:4
+|	Dexterity:0
+|	Vitality:4
+|	Intelligence:2
+
+Health:
+|	48/48
+
+Average defence, evasion:
+|	12, 0
+Tags:
+|	animate, humanoid, undead, slow, armor
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:4d6/dmg:3d6|.
+|	Armor: chainmail |def:4d6/ev:-3d4|.
+|	Headwear: helmet |def:2d5/ev:2d3|.
+
+2015-08-02 20:47:35,483|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:47:35,484|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 0 damage to Undead Knight.
+
+2015-08-02 20:47:38,474|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:47:38,475|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 14 damage to Undead Knight.
+
+2015-08-02 20:47:40,759|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:47:40,760|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:47:43,003|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:47:43,008|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Round 2.
+[0]Boris, [1]undead soldier, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 20:48:41,156|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:48:41,162|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Round 3.
+[0]Boris, [1]undead soldier, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 20:48:47,936|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:48:47,941|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Round 4.
+[0]Boris, [1]undead soldier, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 20:48:53,154|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:48:53,162|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier. lvl 1
+An undead soldier.
+Characteristics:
+|	Strength:2
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	1, 0
+Tags:
+|	animate, humanoid, undead, slow
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:4d6/dmg:2d6|.
+|	Headwear: helmet |def:2d6/ev:-2d2|.
+
+2015-08-02 20:48:57,220|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:48:57,226|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Undead Soldier struggles to get up from the ground.Undead Knight struggles to get up from the ground.Round 5.
+[0]Boris, [1]undead soldier, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 20:49:54,726|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:49:57,730|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:49:57,731|dungeon_bot|DEBUG|Lobby event 117b0173 created
+2015-08-02 20:49:57,731|dungeon_bot|DEBUG|User btseytlin joined lobby 117b0173
+2015-08-02 20:49:57,731|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 117b0173.
+
+2015-08-02 20:49:57,994|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:49:58,262|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:49:58,765|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:49:58,765|dungeon_bot|DEBUG|Removing lobby 117b0173
+2015-08-02 20:49:58,766|dungeon_bot|DEBUG|Removing event 117b0173
+2015-08-02 20:49:58,766|dungeon_bot|DEBUG|Event 117b0173 removed
+2015-08-02 20:49:58,777|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Bandit den.
+All kinds of scum find shelter in these caves.
+
+2015-08-02 20:49:59,270|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:49:59,271|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:49:59,552|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, big rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]big rat
+It's Boris's turn.
+
+2015-08-02 20:50:02,054|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 20:50:02,054|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 20 damage to Big Rat.
+Knockdown modifier applied to Big Rat.
+Big Rat is knocked down!
+
+2015-08-02 20:50:09,033|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:50:09,041|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Big Rat struggles to get up from the ground.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 0 damage.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 5 damage.
+Rat bites Boris and deals 5 damage.
+Big Rat struggles to get up from the ground.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 4 damage.
+Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Big Rat struggles to get up from the ground.
+Round 2.
+[0]Boris, [1]rat, [2]rat, [3]big rat
+It's Boris's turn.
+
+2015-08-02 20:50:41,115|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:50:44,853|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:50:44,854|dungeon_bot|DEBUG|Lobby event 232f05d0 created
+2015-08-02 20:50:44,854|dungeon_bot|DEBUG|User btseytlin joined lobby 232f05d0
+2015-08-02 20:50:44,854|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 232f05d0.
+
+2015-08-02 20:50:45,116|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:50:45,382|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:50:45,900|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:50:45,900|dungeon_bot|DEBUG|Removing lobby 232f05d0
+2015-08-02 20:50:45,900|dungeon_bot|DEBUG|Removing event 232f05d0
+2015-08-02 20:50:45,900|dungeon_bot|DEBUG|Event 232f05d0 removed
+2015-08-02 20:50:45,912|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 20:52:18,098|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 20:52:20,344|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 20:52:20,344|dungeon_bot|DEBUG|Lobby event 16e25bd8 created
+2015-08-02 20:52:20,344|dungeon_bot|DEBUG|User btseytlin joined lobby 16e25bd8
+2015-08-02 20:52:20,344|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 16e25bd8.
+
+2015-08-02 20:52:20,615|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 20:52:20,886|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 20:52:21,420|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 20:52:21,420|dungeon_bot|DEBUG|Removing lobby 16e25bd8
+2015-08-02 20:52:21,420|dungeon_bot|DEBUG|Removing event 16e25bd8
+2015-08-02 20:52:21,420|dungeon_bot|DEBUG|Event 16e25bd8 removed
+2015-08-02 20:52:21,432|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 20:52:21,949|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:52:21,950|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:52:22,222|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs big rat, rat, rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]rat, [4]big rat
+It's Boris's turn.
+
+2015-08-02 20:52:25,229|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:52:25,229|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:52:28,479|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 20:52:28,480|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at big rat but misses.
+
+2015-08-02 20:52:34,496|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 20:52:34,497|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 29 damage to Big Rat.
+Big Rat is killed by Boris.
+Boris earns 80 experience.
+
+2015-08-02 20:52:38,541|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:52:38,541|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:52:40,761|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:52:40,762|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:52:42,548|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:52:42,559|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 0 damage.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 3 damage.
+Rat bites Boris and deals 6 damage.
+Rat bites Boris and deals 0 damage.
+Rat bites Boris and deals 3 damage.
+Rat bites Boris and deals 4 damage.
+Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 0 damage.
+Rat bites Boris and deals 2 damage.
+Rat bites Boris and deals 4 damage.
+Round 2.
+[0]Boris, [1]rat, [2]rat, [3]rat
+It's Boris's turn.
+
+2015-08-02 20:52:45,581|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:52:45,582|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 49 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+
+2015-08-02 20:52:49,044|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:52:49,045|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:52:49,813|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 20:52:49,813|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:52:54,586|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:52:54,593|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 4 damage.
+Round 3.
+[0]Boris, [1]rat, [2]rat
+It's Boris's turn.
+
+2015-08-02 20:52:57,679|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:52:57,680|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 25 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: club.
+Boris got loot: helmet.
+Boris got loot: dagger.
+
+2015-08-02 20:53:01,720|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:53:01,721|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:53:05,055|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:53:05,061|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat bites Boris and deals 1 damage.
+Rat bites Boris and deals 3 damage.
+Round 4.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 20:53:06,327|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:53:06,328|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target required.
+2015-08-02 20:53:10,593|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:53:10,594|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:53:13,574|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:53:13,575|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:53:19,837|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:53:19,840|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Round 5.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 20:53:20,101|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:53:20,101|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:53:23,941|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:53:23,941|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:53:24,941|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:53:24,944|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat bites Boris and deals 3 damage.
+Rat tries to bite Boris but misses.
+Round 6.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 20:53:26,690|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:53:26,693|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat bites Boris and deals 6 damage.
+Rat tries to bite Boris but misses.
+Round 7.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 20:53:29,261|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:53:29,262|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 20:53:31,752|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:53:31,753|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 44 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: sword.
+Boris got loot: ring of fire.
+
+2015-08-02 20:53:42,164|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:53:42,165|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 20:53:42,439|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 20:53:42,439|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:5d6/dmg:2d4|, 2.sword |acc:4d6/dmg:3d6|, 3.dagger |acc:4d6/dmg:1d4|, 4.helmet |def:3d5/ev:-2d2|, 5.ring of fire!
+Your equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d5|.
+
+
+2015-08-02 20:53:51,972|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 1
+2015-08-02 20:53:51,972|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped club.
+2015-08-02 20:54:00,024|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 5
+2015-08-02 20:54:00,025|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped ring of fire.
+2015-08-02 20:54:04,231|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 4
+2015-08-02 20:54:04,231|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped helmet.
+2015-08-02 20:54:06,974|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 20:54:06,975|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 20:54:07,972|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:54:07,973|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 20:54:08,253|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs big rat, rat, big rat.
+Round 1.
+[0]Boris, [1]rat, [2]big rat, [3]big rat
+It's Boris's turn.
+
+2015-08-02 20:54:11,551|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 20:54:11,552|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 29 damage to Big Rat.
+Big Rat is killed by Boris.
+Boris earns 80 experience.
+Boris got loot: amulet of defence.
+Boris got loot: amulet of healing.
+
+2015-08-02 20:54:16,036|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:54:16,036|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at big rat but misses.
+
+2015-08-02 20:54:17,767|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:54:17,776|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat bites Boris and deals 0 damage.
+Rat tries to bite Boris but misses.
+Rat bites Boris and deals 0 damage.
+Rat bites Boris and deals 0 damage.
+Rat bites Boris and deals 0 damage.
+Big Rat bites Boris and deals 6 damage.
+Big Rat tries to bite Boris but misses.
+Big Rat tries to bite Boris but misses.
+Big Rat bites Boris and deals 0 damage.
+Round 2.
+[0]Boris, [1]rat, [2]big rat
+It's Boris's turn.
+
+2015-08-02 20:54:19,780|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:54:19,781|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 24 damage to Big Rat.
+Big Rat is killed by Boris.
+Boris earns 80 experience.
+Boris got loot: ring of fire.
+
+2015-08-02 20:54:22,265|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:54:22,269|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat tries to bite Boris but misses.
+Rat bites Boris and deals 0 damage.
+Ring Of Fire causes 6 fire damage to Boris.
+Round 3.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 20:54:24,508|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:54:24,509|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 263, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 72, in execute
+    self.description += self.inhibitor.add_experience(use_info["experience_gained"])
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 865, in add_experience
+    self.experience += value
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 846, in experience
+    self.level_up()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 892, in level_up
+    msg = self.on_level_up()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 460, in on_level_up
+    effect = modifier.on_level_up()
+AttributeError: 'FireAttack' object has no attribute 'on_level_up'
+2015-08-02 20:54:28,016|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:54:28,016|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target is already dead.
+2015-08-02 20:55:10,583|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:55:10,588|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat. lvl 1
+An angry grey rat.
+Characteristics:
+|	Strength:1
+|	Dexterity:6
+|	Vitality:1
+|	Intelligence:1
+
+Health:
+|	0/12
+
+Average defence, evasion:
+|	0, 17
+Tags:
+|	animate, rodent, animal, small
+Modifiers:
+|	
+Abilities:
+|	rodent bite(rodent teeth)
+Equipment:
+|	Primary weapon: rodent teeth |acc:4d6/dmg:1d6|.
+
+2015-08-02 20:56:53,053|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:56:53,055|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 20:56:57,508|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help"
+2015-08-02 20:56:58,511|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 20:56:58,512|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of wolves.
+
+2015-08-02 20:56:58,778|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs wolf, wolf, wolf.
+Round 1.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:57:01,571|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:57:01,572|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 24 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:57:04,041|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:57:04,047|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, animal
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:57:10,024|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:57:10,033|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf claws Boris and deals 0 damage.
+Wolf tries to bite Boris but misses.
+Wolf claws Boris and deals 3 damage.
+Wolf tries to claw Boris but misses.
+Wolf struggles to get up from the ground.
+Round 2.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:57:15,205|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:57:15,209|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 14
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:57:24,704|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 3
+2015-08-02 20:57:24,710|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, animal
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:57:44,501|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 20:57:44,501|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 15 damage to Wolf.
+Ring Of Fire causes 3 fire damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:57:58,971|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:57:58,981|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf tries to bite Boris but misses.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Round 3.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:58:04,769|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:58:04,770|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 9 damage to Wolf.
+Ring Of Fire causes 8 fire damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:58:08,027|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:58:08,036|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Round 4.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:58:10,013|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 3
+2015-08-02 20:58:10,019|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, animal
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:58:24,276|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:58:24,286|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Knockdown modifier lifted from Wolf.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Round 5.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:58:28,997|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:58:29,001|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 15
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:58:33,554|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:58:33,554|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at wolf but misses.
+
+2015-08-02 20:58:35,978|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:58:35,979|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 20 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:58:38,380|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:58:38,389|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Knockdown modifier lifted from Wolf.
+Round 6.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:58:42,172|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:58:42,177|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 15
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:58:48,397|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:58:48,398|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 19 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:59:02,472|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:02,472|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 20 damage to Wolf.
+
+2015-08-02 20:59:04,746|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:04,747|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 15 damage to Wolf.
+
+2015-08-02 20:59:07,987|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:07,987|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:59:10,044|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:59:10,052|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Knockdown modifier lifted from Wolf.
+Round 7.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:59:11,075|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:11,076|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 4 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:59:16,570|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:16,570|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:59:22,004|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:59:22,006|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Round 8.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:59:27,020|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:27,021|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 30 damage to Wolf.
+
+2015-08-02 20:59:30,793|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:30,793|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:59:34,814|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:59:34,819|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	6/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, animal
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:59:36,369|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:59:36,372|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Knockdown modifier lifted from Wolf.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Round 9.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:59:39,843|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:39,844|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 19 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:59:42,858|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:42,858|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:59:44,900|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:59:44,903|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Knockdown modifier lifted from Wolf.
+Round 10.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:59:46,650|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:46,651|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 20 damage to Wolf.
+Knockdown modifier applied to Wolf.
+Wolf is knocked down!
+
+2015-08-02 20:59:50,685|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 20:59:50,685|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 20:59:52,564|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 20:59:52,567|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Wolf struggles to get up from the ground.
+Knockdown modifier lifted from Wolf.
+Round 11.
+[0]Boris, [1]wolf, [2]wolf, [3]wolf
+It's Boris's turn.
+
+2015-08-02 20:59:54,333|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 20:59:54,337|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:5
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 15
+Tags:
+|	animate, animal
+Modifiers:
+|	
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:59:56,885|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 20:59:56,891|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, animal
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 20:59:58,617|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 3
+2015-08-02 20:59:58,623|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Wolf. lvl 1
+An angry grey wolf.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:1
+
+Health:
+|	36/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, animal
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal bite(animal teeth), animal claw(animal claws)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:3d6/dmg:1d6|.
+
+2015-08-02 21:01:34,801|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:01:37,285|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:01:37,285|dungeon_bot|DEBUG|Lobby event 6a9a349f created
+2015-08-02 21:01:37,286|dungeon_bot|DEBUG|User btseytlin joined lobby 6a9a349f
+2015-08-02 21:01:37,286|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 6a9a349f.
+
+2015-08-02 21:01:37,571|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:01:37,836|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:01:38,353|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:01:38,353|dungeon_bot|DEBUG|Removing lobby 6a9a349f
+2015-08-02 21:01:38,353|dungeon_bot|DEBUG|Removing event 6a9a349f
+2015-08-02 21:01:38,353|dungeon_bot|DEBUG|Event 6a9a349f removed
+2015-08-02 21:01:38,364|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 21:01:39,541|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:01:39,542|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A group of undead soldiers.
+
+2015-08-02 21:01:39,816|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead knight, undead soldier, undead knight, undead soldier, undead soldier.
+Round 1.
+[0]Boris, [1]undead knight, [2]undead soldier, [3]undead knight, [4]undead soldier, [5]undead soldier
+It's Boris's turn.
+
+2015-08-02 21:01:42,055|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:01:42,055|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 913, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 847, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 263, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 56, in execute
+    self = self.inhibitor.on_hit(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 522, in on_hit
+    at_info = modifier.on_hit(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\modifiers.py", line 259, in on_hit
+    if attack_info.inhibitor == host:
+NameError: name 'host' is not defined
+2015-08-02 21:02:06,648|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:02:09,079|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:02:09,079|dungeon_bot|DEBUG|Lobby event 32c27989 created
+2015-08-02 21:02:09,079|dungeon_bot|DEBUG|User btseytlin joined lobby 32c27989
+2015-08-02 21:02:09,079|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 32c27989.
+
+2015-08-02 21:02:09,388|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:02:09,664|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:02:10,256|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:02:10,257|dungeon_bot|DEBUG|Removing lobby 32c27989
+2015-08-02 21:02:10,257|dungeon_bot|DEBUG|Removing event 32c27989
+2015-08-02 21:02:10,257|dungeon_bot|DEBUG|Event 32c27989 removed
+2015-08-02 21:02:10,267|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Bandit den.
+All kinds of scum find shelter in these caves.
+
+2015-08-02 21:02:10,573|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:02:10,574|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A peasant.
+
+2015-08-02 21:02:11,263|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs peasant, peasant.
+Round 1.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:02:13,142|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:02:13,142|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 19 damage to Peasant.
+
+2015-08-02 21:02:21,155|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:02:21,158|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:2
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	17/36
+
+Average defence, evasion:
+|	0, 6
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+
+2015-08-02 21:02:25,492|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:02:25,493|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 4 damage to Peasant.
+Knockdown modifier applied to Peasant.
+Peasant is knocked down!
+
+2015-08-02 21:02:30,285|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 21:02:30,290|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	32/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	quickstab(dagger), quickcut(dagger)
+Equipment:
+|	Secondary weapon: dagger |acc:3d6/dmg:1d4|.
+
+2015-08-02 21:02:37,981|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:02:37,982|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 30 damage to Peasant.
+
+2015-08-02 21:02:40,008|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 21:02:40,014|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	2/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	quickstab(dagger), quickcut(dagger)
+Equipment:
+|	Secondary weapon: dagger |acc:3d6/dmg:1d4|.
+
+2015-08-02 21:02:42,539|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:02:42,540|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 9 damage to Peasant.
+Knockdown modifier applied to Peasant.
+Peasant is knocked down!
+
+2015-08-02 21:02:45,168|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:02:45,168|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 21:02:47,647|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:02:47,649|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant uses ability QuickStab with dagger on Boris, but misses.
+Peasant struggles to get up from the ground.
+Peasant struggles to get up from the ground.
+Round 2.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:02:52,152|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:02:52,157|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	8/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+
+2015-08-02 21:02:56,032|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:02:56,033|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 40 damage to Peasant.
+Peasant is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: ring of more vitality.
+Boris has leveled up to level 4!
+
+2015-08-02 21:03:04,229|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:03:04,231|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant uses ability QuickStab with dagger on Boris, but misses.
+Peasant struggles to get up from the ground.
+Peasant struggles to get up from the ground.
+Round 3.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:03:06,767|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:03:06,768|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant uses ability QuickStab with dagger on Boris, but misses.
+Peasant struggles to get up from the ground.
+Round 4.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:03:14,304|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:03:14,306|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant uses ability QuickStab with dagger on Boris, but misses.
+Peasant struggles to get up from the ground.
+Knockdown modifier lifted from Peasant.
+Round 5.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:03:18,799|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:03:18,802|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:2
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	2/36
+
+Average defence, evasion:
+|	0, 5
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	
+Abilities:
+|	quickstab(dagger), quickcut(dagger)
+Equipment:
+|	Secondary weapon: dagger |acc:3d6/dmg:1d4|.
+
+2015-08-02 21:03:21,923|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:03:21,924|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 24 damage to Peasant.
+Peasant is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: chainmail.
+Boris has leveled up to level 5!
+
+2015-08-02 21:03:54,916|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:03:54,917|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try help.
+2015-08-02 21:03:57,997|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:03:57,999|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:03:59,175|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:03:59,175|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 656, in handle_command
+    return(self.open_level_up(user))
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 603, in open_level_up
+    logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
+NameError: name 'logger' is not defined
+2015-08-02 21:04:41,315|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:04:41,315|dungeon_bot|INFO|[RESPONSE] to user btseytlin: None
+2015-08-02 21:04:43,069|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:04:43,069|dungeon_bot|INFO|[RESPONSE] to user btseytlin: None
+2015-08-02 21:04:50,520|dungeon_bot|INFO|[MESSAGE] btseytlin: help
+2015-08-02 21:04:50,520|dungeon_bot|INFO|[RESPONSE] to user btseytlin: None
+2015-08-02 21:04:56,255|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:05:12,578|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:05:12,578|dungeon_bot|DEBUG|Lobby event 4e9f87d6 created
+2015-08-02 21:05:12,578|dungeon_bot|DEBUG|User btseytlin joined lobby 4e9f87d6
+2015-08-02 21:05:12,578|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 4e9f87d6.
+
+2015-08-02 21:05:13,155|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:05:13,429|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:05:13,932|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:05:13,932|dungeon_bot|DEBUG|Removing lobby 4e9f87d6
+2015-08-02 21:05:13,932|dungeon_bot|DEBUG|Removing event 4e9f87d6
+2015-08-02 21:05:13,932|dungeon_bot|DEBUG|Event 4e9f87d6 removed
+2015-08-02 21:05:13,949|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 21:05:14,218|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:05:14,219|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A group of undead soldiers.
+
+2015-08-02 21:05:14,484|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead knight, undead knight, undead knight, undead knight, undead knight, undead knight, undead knight.
+Round 1.
+[0]Boris, [1]undead knight, [2]undead knight, [3]undead knight, [4]undead knight, [5]undead knight, [6]undead knight, [7]undead knight
+It's Boris's turn.
+
+2015-08-02 21:05:19,207|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:05:19,208|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 26 damage to Undead Knight.
+Knockdown modifier applied to Undead Knight.
+Undead Knight is knocked down!
+
+2015-08-02 21:05:23,445|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:05:23,454|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight. lvl 1
+An undead knight.
+Characteristics:
+|	Strength:4
+|	Dexterity:0
+|	Vitality:4
+|	Intelligence:2
+
+Health:
+|	21/48
+
+Average defence, evasion:
+|	6, 0
+Tags:
+|	animate, humanoid, undead, slow, armor
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:4d6/dmg:3d6|.
+|	Armor: chainmail |def:4d6/ev:-2d4|.
+
+2015-08-02 21:05:29,981|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:05:29,982|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 16 damage to Undead Knight.
+
+2015-08-02 21:05:32,480|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:05:32,481|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 8 damage to Undead Knight.
+Undead Knight is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: plate armor.
+Boris got loot: ring of much more dexterity.
+Boris got loot: shield.
+Boris has leveled up to level 10!
+
+2015-08-02 21:05:35,480|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:05:35,485|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 902, in handle_command
+    msg = self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 800, in next_turn
+    return self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 804, in next_turn
+    return msg + self.this_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 783, in this_turn
+    return msg + self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 804, in next_turn
+    return msg + self.this_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 783, in this_turn
+    return msg + self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 804, in next_turn
+    return msg + self.this_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 783, in this_turn
+    return msg + self.next_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 804, in next_turn
+    return msg + self.this_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 782, in this_turn
+    msg += self.ai_turn()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 815, in ai_turn
+    use_infos = self.turn_qeue[self.turn].act(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\enemies.py", line 393, in act
+    attack_infos.append(self.abilities[0].__class__.use(self, c, self.primary_weapon, combat_event))
+TypeError: use() takes from 1 to 3 positional arguments but 4 were given
+2015-08-02 21:07:48,993|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:07:50,966|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:07:50,966|dungeon_bot|DEBUG|Levelup event 9ce4d189 created
+2015-08-02 21:07:50,966|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 1 characteristics points.
+Let's begin.
+Currently your characteristics are:
+You can save points for later by using 'done'.
+|	Strength:5
+|	Dexterity:8
+|	Vitality:5
+|	Intelligence:5
+You can raise your characteristics with commands like "dex +", but you can't lower them.
+.
+
+2015-08-02 21:07:57,176|dungeon_bot|INFO|[MESSAGE] btseytlin: dex +
+2015-08-02 21:07:57,177|dungeon_bot|INFO|[RESPONSE] to user btseytlin: |	Strength:5
+|	Dexterity:9
+|	Vitality:5
+|	Intelligence:5
+You have no points left to spend.
+Choose a perk by typing it's number:
+1. Flow-Get 2 energy on kill.
+2. Educated-Get 10 percent additional experience.
+2015-08-02 21:08:01,226|dungeon_bot|INFO|[MESSAGE] btseytlin: 1
+2015-08-02 21:08:01,228|dungeon_bot|DEBUG|Removing event 9ce4d189
+2015-08-02 21:08:01,228|dungeon_bot|DEBUG|Event 9ce4d189 removed
+2015-08-02 21:08:01,233|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Added perk Flow.
+Done leveling up.
+
+2015-08-02 21:08:45,349|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:08:45,357|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 5
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:8
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	100/100
+Energy:
+|	8/8, regen per turn: 2
+Exp:
+|	460/420
+Average defence, evasion:
+|	8, 21
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	fire attack(ring of fire)
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+Level perks:
+|	Flow
+2015-08-02 21:08:48,294|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:08:48,295|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You don't have any perk points or characteristic points to spend.
+2015-08-02 21:08:50,929|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:08:50,930|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help"
+2015-08-02 21:08:58,603|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:08:58,603|dungeon_bot|DEBUG|Lobby event 66b24c55 created
+2015-08-02 21:08:58,604|dungeon_bot|DEBUG|User btseytlin joined lobby 66b24c55
+2015-08-02 21:08:58,604|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 66b24c55.
+
+2015-08-02 21:08:58,877|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:08:59,150|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:08:59,666|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:08:59,666|dungeon_bot|DEBUG|Removing lobby 66b24c55
+2015-08-02 21:08:59,666|dungeon_bot|DEBUG|Removing event 66b24c55
+2015-08-02 21:08:59,666|dungeon_bot|DEBUG|Event 66b24c55 removed
+2015-08-02 21:08:59,678|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 443, in handle_command
+    return(self.start_crawl())
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 497, in start_crawl
+    return self.finished_callback(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 41, in lobby_event_lover_callback
+    dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in lobby.users])
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon.py", line 30, in new_dungeon
+    dungeon.generate_rooms(random.randint(3, 10))
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon.py", line 43, in generate_rooms
+    room.combat_enemies, room.description = retrieve_enemies_for_difficulty(enemy_type, self.difficulty)
+  File "D:\projects\dungeon_bot\dungeon_bot\enemies.py", line 25, in retrieve_enemies_for_difficulty
+    return enemies[0](*enemies[1])
+  File "D:\projects\dungeon_bot\dungeon_bot\enemies.py", line 752, in thief
+    thief = Thief()
+  File "D:\projects\dungeon_bot\dungeon_bot\enemies.py", line 579, in __init__
+    self.equip(item)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 207, in equip
+    self.refresh_derived()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 775, in refresh_derived
+    self.refresh_modifiers()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 715, in refresh_modifiers
+    modifier_object = get_modifier_by_name( modifier["name"], self.equipment[key], self, modifier["params"] )
+TypeError: string indices must be integers
+2015-08-02 21:08:59,684|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:08:59,684|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help".
+2015-08-02 21:10:16,754|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:10:18,243|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:10:18,243|dungeon_bot|DEBUG|Lobby event 1f2c13d5 created
+2015-08-02 21:10:18,243|dungeon_bot|DEBUG|User btseytlin joined lobby 1f2c13d5
+2015-08-02 21:10:18,243|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 1f2c13d5.
+
+2015-08-02 21:10:21,508|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:10:21,778|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:10:22,293|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:10:22,293|dungeon_bot|DEBUG|Removing lobby 1f2c13d5
+2015-08-02 21:10:22,293|dungeon_bot|DEBUG|Removing event 1f2c13d5
+2015-08-02 21:10:22,293|dungeon_bot|DEBUG|Event 1f2c13d5 removed
+2015-08-02 21:10:22,304|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Underground forest.
+A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.
+
+2015-08-02 21:10:23,289|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:10:23,290|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A pack of rats.
+
+2015-08-02 21:10:23,550|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, rat, rat, big rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]rat, [4]big rat
+It's Boris's turn.
+
+2015-08-02 21:10:26,022|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:10:26,023|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 914, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 848, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 263, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 57, in execute
+    self = self.target.on_got_hit(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 517, in on_got_hit
+    attack_info = self.kill_if_nececary(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 628, in kill_if_nececary
+    attack_info = self.die(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 969, in die
+    attack_info = super(Enemy, self).die(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 636, in die
+    attack_info = attack_info.inhibitor.on_kill(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 942, in on_kill
+    return super(Player, self).on_kill(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 558, in on_kill
+    at_info = perk.on_kill(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\level_perks.py", line 132, in on_kill
+    ability_info.inhibior.energy += 2
+AttributeError: 'AttackInfo' object has no attribute 'inhibior'
+2015-08-02 21:11:31,166|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:11:33,753|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:11:33,753|dungeon_bot|DEBUG|Lobby event 230091ae created
+2015-08-02 21:11:33,753|dungeon_bot|DEBUG|User btseytlin joined lobby 230091ae
+2015-08-02 21:11:33,753|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 230091ae.
+
+2015-08-02 21:11:34,148|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:11:34,541|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:11:35,589|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:11:35,589|dungeon_bot|DEBUG|Removing lobby 230091ae
+2015-08-02 21:11:35,590|dungeon_bot|DEBUG|Removing event 230091ae
+2015-08-02 21:11:35,590|dungeon_bot|DEBUG|Event 230091ae removed
+2015-08-02 21:11:35,610|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 21:11:35,995|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:11:35,996|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A group of lesser demons.
+
+2015-08-02 21:11:37,082|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs lesser demon, lesser demon, lesser demon, lesser demon, lesser demon, lesser demon.
+Round 1.
+[0]Boris, [1]lesser demon, [2]lesser demon, [3]lesser demon, [4]lesser demon, [5]lesser demon, [6]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:11:38,592|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:11:38,593|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 30 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris has leveled up to level 10!
+
+2015-08-02 21:11:41,513|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:11:41,521|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 10
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:9
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	100/100
+Energy:
+|	9/9, regen per turn: 3
+Exp:
+|	530/550
+Average defence, evasion:
+|	8, 25
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	fire attack(ring of fire)
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+Level perks:
+|	Flow
+2015-08-02 21:11:47,889|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:11:47,890|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 35 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris has leveled up to level 12!
+
+2015-08-02 21:11:51,230|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 21:11:51,231|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 4 damage to Lesser Demon.
+Knockdown modifier applied to Lesser Demon.
+Lesser Demon is knocked down!
+
+2015-08-02 21:11:53,836|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 21:11:53,837|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 25 damage to Lesser Demon.
+Ring Of Fire causes 2 fire damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris has leveled up to level 13!
+
+2015-08-02 21:11:56,782|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 21:11:56,783|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target is already dead.
+2015-08-02 21:11:58,235|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 5
+2015-08-02 21:11:58,236|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 34 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: plate armor.
+Boris has leveled up to level 14!
+
+2015-08-02 21:12:03,964|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:12:03,968|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon tries to claw Boris but misses.
+Lesser Demon tries to claw Boris but misses.
+Lesser Demon struggles to get up from the ground.
+Round 2.
+[0]Boris, [1]lesser demon, [2]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:12:07,143|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:12:07,143|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 14 damage to Lesser Demon.
+Knockdown modifier applied to Lesser Demon.
+Lesser Demon is knocked down!
+
+2015-08-02 21:12:08,217|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:12:08,218|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 10 damage to Lesser Demon.
+
+2015-08-02 21:12:14,212|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:12:14,216|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon tries to claw Boris but misses.
+Lesser Demon tries to claw Boris but misses.
+Lesser Demon struggles to get up from the ground.
+Lesser Demon struggles to get up from the ground.
+Round 3.
+[0]Boris, [1]lesser demon, [2]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:12:17,914|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:12:17,920|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon. lvl 1
+A lesser demon.
+Characteristics:
+|	Strength:2
+|	Dexterity:0
+|	Vitality:2
+|	Intelligence:4
+
+Health:
+|	10/24
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, demon
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal claw(animal claws), animal bite(animal teeth)
+Equipment:
+|	Primary weapon: animal teeth |acc:3d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:5d6/dmg:1d6|.
+
+2015-08-02 21:12:19,941|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:12:19,942|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 25 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: amulet of healing.
+Boris got loot: club.
+Boris has leveled up to level 16!
+
+2015-08-02 21:12:22,400|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 21:12:22,400|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target required.
+2015-08-02 21:12:24,194|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:12:24,204|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 16
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:9
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	100/100
+Energy:
+|	8/9, regen per turn: 3
+Exp:
+|	690/780
+Average defence, evasion:
+|	8, 24
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	fire attack(ring of fire)
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+Level perks:
+|	Flow
+2015-08-02 21:16:26,866|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:16:31,982|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:16:31,982|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You don't have any perk points or characteristic points to spend.
+2015-08-02 21:16:34,733|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:16:34,742|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 5
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:9
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	100/100
+Energy:
+|	9/9, regen per turn: 3
+Exp:
+|	460/420
+Average defence, evasion:
+|	8, 25
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	fire attack(ring of fire)
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+Level perks:
+|	Flow
+2015-08-02 21:16:37,296|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:16:37,296|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help"
+2015-08-02 21:16:38,789|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:16:38,789|dungeon_bot|DEBUG|Lobby event 102961e3 created
+2015-08-02 21:16:38,789|dungeon_bot|DEBUG|User btseytlin joined lobby 102961e3
+2015-08-02 21:16:38,790|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 102961e3.
+
+2015-08-02 21:16:39,362|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:16:39,633|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:16:40,153|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:16:40,154|dungeon_bot|DEBUG|Removing lobby 102961e3
+2015-08-02 21:16:40,154|dungeon_bot|DEBUG|Removing event 102961e3
+2015-08-02 21:16:40,154|dungeon_bot|DEBUG|Event 102961e3 removed
+2015-08-02 21:16:40,166|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Bandit den.
+All kinds of scum find shelter in these caves.
+
+2015-08-02 21:16:41,885|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:16:41,886|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A thief.
+
+2015-08-02 21:16:42,153|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs thief.
+Round 1.
+[0]Boris, [1]thief
+It's Boris's turn.
+
+2015-08-02 21:16:43,882|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:16:43,883|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 15 damage to Thief.
+Knockdown modifier applied to Thief.
+Thief is knocked down!
+
+2015-08-02 21:16:46,869|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:16:46,875|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Thief. lvl 1
+A professional thief.
+Characteristics:
+|	Strength:3
+|	Dexterity:0
+|	Vitality:3
+|	Intelligence:8
+
+Health:
+|	21/36
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, humanoid, quick
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	quickstab(dagger), quickcut(dagger)
+Equipment:
+|	Secondary weapon: dagger |acc:5d6/dmg:1d6|.
+
+2015-08-02 21:16:51,057|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:16:51,058|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 15 damage to Thief.
+
+2015-08-02 21:16:55,051|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:16:55,052|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 35 damage to Thief.
+Thief is killed by Boris.
+Boris earns 400 experience.
+Boris got loot: club.
+Boris got loot: sword.
+Boris got loot: helmet.
+Boris got loot: ring of more vitality.
+Boris has leveled up to level 7!
+
+2015-08-02 21:17:02,925|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:17:02,925|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try help.
+2015-08-02 21:17:11,763|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:17:11,765|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:17:13,002|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:17:13,010|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 7
+----
+Characteristics:
+|	Strength:5
+|	Dexterity:9
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	100/100
+Energy:
+|	9/9, regen per turn: 3
+Exp:
+|	0/460
+Average defence, evasion:
+|	7, 24
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	fire attack(ring of fire)
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+Level perks:
+|	Flow
+2015-08-02 21:17:20,928|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:17:20,929|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:5d6/dmg:2d5|, 2.club |acc:5d6/dmg:2d6|, 3.sword |acc:4d6/dmg:3d6|, 4.sword |acc:4d6/dmg:2d6|, 5.dagger |acc:4d6/dmg:1d4|, 6.chainmail |def:3d6/ev:-1d4|, 7.helmet |def:2d6/ev:-1d3|, 8.amulet of defence, 9.amulet of healing!, 10.ring of fire!, 11.ring of more vitality, 12.ring of more vitality
+Your equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+
+
+2015-08-02 21:17:29,539|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 3
+2015-08-02 21:17:29,540|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped sword.
+2015-08-02 21:17:36,337|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 21:17:36,338|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 21:17:38,004|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:17:38,005|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A peasant.
+
+2015-08-02 21:17:38,267|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs peasant, peasant.
+Round 1.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:17:40,519|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:17:40,520|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 81 damage to Peasant.
+Peasant is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: plate armor.
+Boris got loot: helmet.
+Boris got loot: amulet of defence.
+
+2015-08-02 21:17:44,252|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:17:44,253|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 19 damage to Peasant.
+Bleeding modifier applied to Peasant.
+Peasant has a major bleeding!.
+
+2015-08-02 21:17:48,490|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 21:17:48,499|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:4
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	16/36
+
+Average defence, evasion:
+|	1, 1
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	bleeding(sword)
+Abilities:
+|	shieldup(shield)
+Equipment:
+|	Secondary weapon: shield |def:3d4/ev:-1d4|.
+
+2015-08-02 21:17:52,745|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:17:52,747|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 3 hp due to bleeding.
+Round 2.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:17:59,531|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 2
+2015-08-02 21:17:59,532|dungeon_bot|INFO|[RESPONSE] to user btseytlin: No such player, user, enemy or ability.
+2015-08-02 21:18:03,032|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:18:03,042|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:4
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	13/36
+
+Average defence, evasion:
+|	6, 0
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	bleeding(sword), shielded(shield)
+Abilities:
+|	shieldup(shield)
+Equipment:
+|	Secondary weapon: shield |def:3d4/ev:-1d4|.
+
+2015-08-02 21:18:06,081|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:06,084|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 2 hp due to bleeding.
+Shielded modifier lifted from Peasant.
+Round 3.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:08,921|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:08,925|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 0 hp due to bleeding.
+Round 4.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:11,331|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:11,335|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 3 hp due to bleeding.
+Shielded modifier lifted from Peasant.
+Round 5.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:13,389|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:13,393|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 2 hp due to bleeding.
+Shielded modifier lifted from Peasant.
+Round 6.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:15,209|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:15,212|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 2 hp due to bleeding.
+Shielded modifier lifted from Peasant.
+Round 7.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:17,001|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:17,005|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 2 hp due to bleeding.
+Shielded modifier lifted from Peasant.
+Round 8.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:19,497|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:18:19,509|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:4
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	2/36
+
+Average defence, evasion:
+|	13, 0
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	bleeding(sword), shielded(shield), shielded(shield)
+Abilities:
+|	shieldup(shield)
+Equipment:
+|	Secondary weapon: shield |def:3d4/ev:-1d4|.
+
+2015-08-02 21:18:21,758|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:21,762|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Peasant looses 3 hp due to bleeding.
+Bleeding modifier lifted from Peasant.
+Shielded modifier lifted from Peasant.
+Round 9.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:18:28,548|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:18:28,556|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant. lvl 1
+A peasant turned bandit.
+Characteristics:
+|	Strength:3
+|	Dexterity:2
+|	Vitality:3
+|	Intelligence:4
+
+Health:
+|	0/36
+
+Average defence, evasion:
+|	18, 3
+Tags:
+|	animate, humanoid, slow
+Modifiers:
+|	shielded(shield), shielded(shield)
+Abilities:
+|	shieldup(shield)
+Equipment:
+|	Secondary weapon: shield |def:3d4/ev:-1d4|.
+
+2015-08-02 21:18:30,457|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:18:30,461|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant put his shieldup and gained a defence bonus.
+Shielded modifier applied to Peasant.
+peasant raises his shieldup and gains a 3d4 defence for the next turn.
+Shielded modifier lifted from Peasant.
+Round 10.
+[0]Boris, [1]peasant
+It's Boris's turn.
+
+2015-08-02 21:30:53,248|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:30:56,162|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:30:56,162|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help"
+2015-08-02 21:30:56,894|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:30:56,894|dungeon_bot|DEBUG|Lobby event 9006663b created
+2015-08-02 21:30:56,894|dungeon_bot|DEBUG|User btseytlin joined lobby 9006663b
+2015-08-02 21:30:56,894|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 9006663b.
+
+2015-08-02 21:30:57,152|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:30:57,416|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:30:57,929|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:30:57,930|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help".
+2015-08-02 21:31:05,429|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:31:05,429|dungeon_bot|DEBUG|Removing lobby 9006663b
+2015-08-02 21:31:05,429|dungeon_bot|DEBUG|Removing event 9006663b
+2015-08-02 21:31:05,429|dungeon_bot|DEBUG|Event 9006663b removed
+2015-08-02 21:31:05,443|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Bandit den.
+All kinds of scum find shelter in these caves.
+
+2015-08-02 21:31:05,949|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:31:05,950|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A rat.
+
+2015-08-02 21:31:06,209|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs big rat, big rat.
+Round 1.
+[0]Boris, [1]big rat, [2]big rat
+It's Boris's turn.
+
+2015-08-02 21:31:09,174|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:31:09,174|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword on big rat, but misses.
+
+2015-08-02 21:31:10,401|dungeon_bot|INFO|[MESSAGE] btseytlin: help
+2015-08-02 21:31:10,401|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Available commands:
+  ex [creature], examine [creature] : shows a creature's stats
+  ex, examine, stats : shows your stats
+  info, help, h : shows help
+  status : shows where you are and what you are doing
+  t, turn : ends turn
+
+Available combat commands:
+ name | energy_required
+cut | 2
+stab | 2
+
+2015-08-02 21:31:15,256|dungeon_bot|INFO|[MESSAGE] btseytlin: status
+2015-08-02 21:31:15,256|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are fighting big rat, big rat.
+The turn qeue:[0]Boris, [1]big rat, [2]big rat
+
+You can use creature numbers as arguemnts for commands, for example "smash 1".
+You have 7 energy and 120 health.
+It's Boris's turn.
+
+2015-08-02 21:31:17,697|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:31:17,698|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 914, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 848, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 342, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 57, in execute
+    self = self.target.on_got_hit(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 506, in on_got_hit
+    attack_info.description += self.damage(attack_info.use_info["damage_dealt"])
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 185, in damage
+    killed = self.kill_if_nececary()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 635, in kill_if_nececary
+    self.die()
+TypeError: die() missing 1 required positional argument: 'attack_info'
+2015-08-02 21:31:40,261|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:31:41,715|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:31:41,715|dungeon_bot|DEBUG|Lobby event cfffc78d created
+2015-08-02 21:31:41,715|dungeon_bot|DEBUG|User btseytlin joined lobby cfffc78d
+2015-08-02 21:31:41,716|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby cfffc78d.
+
+2015-08-02 21:31:41,981|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:31:42,247|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:31:42,759|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:31:42,759|dungeon_bot|DEBUG|Removing lobby cfffc78d
+2015-08-02 21:31:42,759|dungeon_bot|DEBUG|Removing event cfffc78d
+2015-08-02 21:31:42,759|dungeon_bot|DEBUG|Event cfffc78d removed
+2015-08-02 21:31:42,781|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 21:31:43,045|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:31:43,046|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A group of lesser demons.
+
+2015-08-02 21:31:43,310|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs lesser demon, lesser demon, lesser demon, lesser demon, lesser demon.
+Round 1.
+[0]Boris, [1]lesser demon, [2]lesser demon, [3]lesser demon, [4]lesser demon, [5]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:31:46,256|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:31:46,257|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 914, in handle_command
+    return self.handle_combat_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 848, in handle_combat_command
+    use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 342, in use
+    return Ability.use(attack_info)
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 161, in use
+    use_info = use_info.execute()
+  File "D:\projects\dungeon_bot\dungeon_bot\abilities.py", line 57, in execute
+    self = self.target.on_got_hit(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 522, in on_got_hit
+    attack_info = attack_info.inhibitor.on_kill()
+TypeError: on_kill() missing 1 required positional argument: 'attack_info'
+2015-08-02 21:31:59,624|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:32:05,451|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:32:05,451|dungeon_bot|DEBUG|Lobby event 0e94914d created
+2015-08-02 21:32:05,451|dungeon_bot|DEBUG|User btseytlin joined lobby 0e94914d
+2015-08-02 21:32:05,451|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 0e94914d.
+
+2015-08-02 21:32:05,713|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:32:05,988|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:32:06,267|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:32:06,267|dungeon_bot|DEBUG|Removing lobby 0e94914d
+2015-08-02 21:32:06,267|dungeon_bot|DEBUG|Removing event 0e94914d
+2015-08-02 21:32:06,267|dungeon_bot|DEBUG|Event 0e94914d removed
+2015-08-02 21:32:06,279|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Crypt of undead lords.
+It's said the crypt was built to contain a royal family turned undead.
+
+2015-08-02 21:32:06,545|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:32:06,546|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of undead soldiers.
+
+2015-08-02 21:32:06,809|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead knight, undead soldier, undead soldier.
+Round 1.
+[0]Boris, [1]undead knight, [2]undead soldier, [3]undead soldier
+It's Boris's turn.
+
+2015-08-02 21:32:11,240|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:32:11,241|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 0 damage to Undead Knight.
+Ring Of Fire causes 3 fire damage to Undead Knight.
+Bleeding modifier applied to Undead Knight.
+Undead Knight has a major bleeding!.
+
+2015-08-02 21:32:22,040|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:32:22,042|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 71 damage to Undead Soldier.
+undead soldier is killed by Boris.Boris earns 100 experience.
+Boris got loot: ring of more vitality.
+Boris got loot: ring of fire.
+
+2015-08-02 21:32:25,210|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 3
+2015-08-02 21:32:25,211|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 0 damage to Undead Soldier.
+Bleeding modifier applied to Undead Soldier.
+Undead Soldier has a major bleeding!.
+
+2015-08-02 21:32:33,315|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:32:33,316|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 38 damage to Undead Knight.
+
+2015-08-02 21:32:35,111|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:32:35,112|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 0 damage to Undead Knight.
+Pain modifier applied to Undead Knight.
+Undead Knight is wrecked with pain!
+
+2015-08-02 21:32:39,036|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:32:39,046|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight. lvl 1
+An undead knight.
+Characteristics:
+|	Strength:1
+|	Dexterity:0
+|	Vitality:4
+|	Intelligence:-1
+
+Health:
+|	4/48
+
+Average defence, evasion:
+|	26, 0
+Tags:
+|	animate, humanoid, undead, slow, armor
+Modifiers:
+|	bleeding(sword), pain(sword)
+Abilities:
+|	cut(sword), stab(sword), shieldup(shield)
+Equipment:
+|	Primary weapon: sword |acc:6d6/dmg:4d6|.
+|	Secondary weapon: shield |def:4d5/ev:-1d5|.
+|	Armor: chainmail |def:3d6/ev:-2d3|.
+|	Headwear: helmet |def:3d5/ev:-2d3|.
+
+2015-08-02 21:35:41,521|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:35:44,022|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:35:44,023|dungeon_bot|DEBUG|Lobby event b4857e5c created
+2015-08-02 21:35:44,023|dungeon_bot|DEBUG|User btseytlin joined lobby b4857e5c
+2015-08-02 21:35:44,023|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby b4857e5c.
+
+2015-08-02 21:35:45,138|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:35:45,552|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:35:47,596|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:35:47,596|dungeon_bot|DEBUG|Removing lobby b4857e5c
+2015-08-02 21:35:47,596|dungeon_bot|DEBUG|Removing event b4857e5c
+2015-08-02 21:35:47,596|dungeon_bot|DEBUG|Event b4857e5c removed
+2015-08-02 21:35:47,608|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 21:35:48,329|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:35:48,330|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A lesser demon.
+
+2015-08-02 21:35:49,137|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs lesser demon, lesser demon.
+Round 1.
+[0]Boris, [1]lesser demon, [2]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:35:53,277|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:35:53,278|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 65 damage to Lesser Demon.
+lesser demon is killed by Boris.Boris earns 100 experience.
+Boris got loot: ring of fire.
+Boris got loot: ring of more vitality.
+
+2015-08-02 21:35:56,375|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:35:56,376|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 43 damage to Lesser Demon.
+lesser demon is killed by Boris.Boris earns 100 experience.
+
+2015-08-02 21:36:03,628|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:36:03,630|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:36:07,216|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:36:07,216|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:5d6/dmg:2d5|, 2.club |acc:5d6/dmg:2d6|, 3.club |acc:5d6/dmg:2d4|, 4.sword |acc:4d6/dmg:2d6|, 5.dagger |acc:4d6/dmg:1d4|, 6.chainmail |def:3d6/ev:-1d4|, 7.helmet |def:2d6/ev:-1d3|, 8.amulet of defence, 9.amulet of healing!, 10.ring of fire!, 11.ring of fire!, 12.ring of more vitality, 13.ring of more vitality, 14.ring of more vitality
+Your equipment:
+|	Primary weapon: sword |acc:4d6/dmg:3d6|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+
+
+2015-08-02 21:36:20,325|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 9
+2015-08-02 21:36:20,325|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 360, in handle_command
+    msg = self.player.equip(item)
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 209, in equip
+    self.refresh_derived()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 777, in refresh_derived
+    self.refresh_modifiers()
+  File "D:\projects\dungeon_bot\dungeon_bot\creatures.py", line 717, in refresh_modifiers
+    modifier_object = get_modifier_by_name( modifier["name"], self.equipment[key], self, modifier["params"] )
+TypeError: string indices must be integers
+2015-08-02 21:36:20,329|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 21:36:20,330|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 21:37:37,907|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:37:37,907|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:5d6/dmg:2d5|, 2.club |acc:5d6/dmg:2d6|, 3.club |acc:5d6/dmg:2d4|, 4.sword |acc:4d6/dmg:2d6|, 5.dagger |acc:4d6/dmg:1d4|, 6.chainmail |def:3d6/ev:-1d4|, 7.helmet |def:2d6/ev:-1d3|, 8.amulet of defence, 9.ring of fire!, 10.ring of fire!, 11.ring of more vitality, 12.ring of more vitality, 13.ring of more vitality
+Your equipment:
+|	Primary weapon: sword |acc:4d6/dmg:3d6|.
+|	Headwear: helmet |def:3d5/ev:-2d2|.
+|	Ring: ring of fire!.
+|	Talisman: amulet of healing!.
+
+
+2015-08-02 21:37:44,287|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 21:37:44,288|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 21:37:52,304|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:37:52,306|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A group of undead soldiers.
+
+2015-08-02 21:37:52,558|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead knight, undead knight, undead soldier, undead knight.
+Round 1.
+[0]Boris, [1]undead knight, [2]undead knight, [3]undead soldier, [4]undead knight
+It's Boris's turn.
+
+2015-08-02 21:37:57,189|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:37:57,190|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 0 damage to Undead Knight.
+Pain modifier applied to Undead Knight.
+Undead Knight is wrecked with pain!
+
+2015-08-02 21:37:59,915|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:37:59,923|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight. lvl 1
+An undead knight.
+Characteristics:
+|	Strength:1
+|	Dexterity:0
+|	Vitality:4
+|	Intelligence:0
+
+Health:
+|	48/48
+
+Average defence, evasion:
+|	17, 0
+Tags:
+|	animate, humanoid, undead, slow, armor
+Modifiers:
+|	pain(sword)
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:5d6/dmg:2d6|.
+|	Armor: chainmail |def:4d6/ev:-3d4|.
+|	Headwear: helmet |def:2d5/ev:-1d3|.
+
+2015-08-02 21:38:03,076|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:03,077|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 9 damage to Undead Knight.
+Bleeding modifier applied to Undead Knight.
+Undead Knight has a major bleeding!.
+
+2015-08-02 21:38:05,329|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:05,331|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 26 damage to Undead Knight.
+
+2015-08-02 21:38:06,579|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:06,580|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 11 damage to Undead Knight.
+
+2015-08-02 21:38:08,538|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:08,539|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:38:11,526|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:38:11,541|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight uses ability Cut with sword on Boris, but misses.
+Undead Knight uses ability Cut with sword and deals 12 damage to Boris.
+Undead Soldier smashes club at Boris but misses.
+Undead Knight uses ability Cut with sword and deals 34 damage to Boris.
+Undead Knight looses 2 hp due to bleeding.
+Round 2.
+[0]Boris, [1]undead knight, [2]undead soldier, [3]undead knight
+It's Boris's turn.
+
+2015-08-02 21:38:20,272|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 3
+2015-08-02 21:38:20,273|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 0 damage to Undead Knight.
+Pain modifier applied to Undead Knight.
+Undead Knight is wrecked with pain!
+
+2015-08-02 21:38:21,561|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 2
+2015-08-02 21:38:21,562|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 71 damage to Undead Soldier.
+undead soldier is killed by Boris.Boris earns 100 experience.
+Boris got loot: club.
+
+2015-08-02 21:38:23,859|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:38:23,860|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target is already dead.
+2015-08-02 21:38:25,838|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 3
+2015-08-02 21:38:25,840|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 14 damage to Undead Knight.
+Bleeding modifier applied to Undead Knight.
+Undead Knight has a major bleeding!.
+
+2015-08-02 21:38:28,254|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:28,255|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 2 energy to use.
+2015-08-02 21:38:33,361|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:38:33,368|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight uses ability Cut with sword and deals 13 damage to Boris.
+Undead Knight uses ability Cut with sword on Boris, but misses.
+Undead Knight looses 3 hp due to bleeding.
+Round 3.
+[0]Boris, [1]undead knight, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 21:38:41,368|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:41,369|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 21 damage to Undead Knight.
+Bleeding modifier applied to Undead Knight.
+Undead Knight has a major bleeding!.
+
+2015-08-02 21:38:42,374|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:38:42,374|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:38:46,634|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:38:46,641|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight uses ability Cut with sword and deals 34 damage to Boris.
+Undead Knight uses ability Cut with sword on Boris, but misses.
+Undead Knight looses 2 hp due to bleeding.
+Pain modifier lifted from Undead Knight.
+Round 4.
+[0]Boris, [1]undead knight, [2]undead knight
+It's Boris's turn.
+
+2015-08-02 21:38:48,367|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 1
+2015-08-02 21:38:48,373|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight. lvl 1
+An undead knight.
+Characteristics:
+|	Strength:4
+|	Dexterity:3
+|	Vitality:4
+|	Intelligence:2
+
+Health:
+|	24/48
+
+Average defence, evasion:
+|	8, 17
+Tags:
+|	animate, humanoid, undead, slow, armor
+Modifiers:
+|	bleeding(sword)
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:6d6/dmg:2d6|.
+|	Armor: chainmail |def:3d6/ev:3d5|.
+
+2015-08-02 21:38:51,548|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:38:51,549|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 18 damage to Undead Knight.
+
+2015-08-02 21:38:53,524|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:38:53,525|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 48 damage to Undead Knight.
+undead knight is killed by Boris.Boris earns 100 experience.
+Boris got loot: dagger.
+Boris got loot: chainmail.
+
+2015-08-02 21:38:59,397|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:38:59,398|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 10 damage to Undead Knight.
+
+2015-08-02 21:39:01,377|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:39:01,381|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight uses ability Cut with sword on Boris, but misses.
+Undead Knight looses 3 hp due to bleeding.
+Round 5.
+[0]Boris, [1]undead knight
+It's Boris's turn.
+
+2015-08-02 21:39:04,073|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:39:04,074|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 0 damage to Undead Knight.
+
+2015-08-02 21:39:05,808|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:39:05,809|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:39:09,615|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:39:09,615|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:39:09,880|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:39:09,883|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Undead Knight uses ability Cut with sword on Boris, but misses.
+Undead Knight looses 3 hp due to bleeding.
+Round 6.
+[0]Boris, [1]undead knight
+It's Boris's turn.
+
+2015-08-02 21:39:13,077|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:39:13,078|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 14 damage to Undead Knight.
+undead knight is killed by Boris.Boris earns 100 experience.
+Boris has leveled up to level 8!
+
+2015-08-02 21:39:17,128|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:39:17,130|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:39:19,107|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:39:19,107|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 657, in handle_command
+    return(self.open_level_up(user))
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 604, in open_level_up
+    logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
+NameError: name 'logger' is not defined
+2015-08-02 21:40:56,605|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:41:08,251|dungeon_bot|INFO|[MESSAGE] btseytlin: hey
+2015-08-02 21:41:09,021|dungeon_bot|DEBUG|Registration event 60bfe199 created
+2015-08-02 21:41:09,374|dungeon_bot|INFO|[MESSAGE] btseytlin: Boris
+2015-08-02 21:41:09,375|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Great. Now let's input your characteristics. Currently they are:
+|	Strength:5
+|	Dexterity:5
+|	Vitality:5
+|	Intelligence:5
+Strength affects how much damage you do, how resistant you are to damage.
+Dexterity affects how fast you act and how accurate you hit.
+Vitality affects how much health you have.
+Intelligence affects how likely you are to strike a critial effect, how quickly you level up.
+Use commands like "dexterity +" or "dex +" to increase or lower characteristics.
+Type "done" once finished.
+
+2015-08-02 21:41:12,316|dungeon_bot|INFO|[MESSAGE] btseytlin: dex +
+2015-08-02 21:41:12,317|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 2 points left.
+|	Strength:5
+|	Dexterity:6
+|	Vitality:5
+|	Intelligence:5
+
+2015-08-02 21:41:13,066|dungeon_bot|INFO|[MESSAGE] btseytlin: dex +
+2015-08-02 21:41:13,066|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 1 points left.
+|	Strength:5
+|	Dexterity:7
+|	Vitality:5
+|	Intelligence:5
+
+2015-08-02 21:41:15,994|dungeon_bot|INFO|[MESSAGE] btseytlin: str +
+2015-08-02 21:41:15,995|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You have 0 points left.
+|	Strength:6
+|	Dexterity:7
+|	Vitality:5
+|	Intelligence:5
+
+2015-08-02 21:41:20,447|dungeon_bot|INFO|[MESSAGE] btseytlin: done
+2015-08-02 21:41:20,448|dungeon_bot|DEBUG|Removing event 60bfe199
+2015-08-02 21:41:20,449|dungeon_bot|DEBUG|Event 60bfe199 removed
+2015-08-02 21:41:20,454|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Registration complete!
+A club has been added to your inventory, don't forget to equip it.
+Try "examine" to see your stats, "inventory" to see your items.
+Also remember to use "status" and "help" whenever you don't know where you are or what to do.
+2015-08-02 21:41:23,041|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:41:23,041|dungeon_bot|DEBUG|Inventory event ea248737 created
+2015-08-02 21:41:23,041|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:5d6/dmg:2d4|
+Your equipment:
+
+
+2015-08-02 21:41:26,788|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 1
+2015-08-02 21:41:26,788|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped club.
+2015-08-02 21:41:27,173|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 21:41:27,174|dungeon_bot|DEBUG|Removing event ea248737
+2015-08-02 21:41:27,174|dungeon_bot|DEBUG|Event ea248737 removed
+2015-08-02 21:41:27,179|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 21:41:31,986|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:41:31,986|dungeon_bot|DEBUG|Lobby event d04fe43b created
+2015-08-02 21:41:31,987|dungeon_bot|DEBUG|User btseytlin joined lobby d04fe43b
+2015-08-02 21:41:31,987|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby d04fe43b.
+
+2015-08-02 21:41:32,376|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:41:32,776|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:41:33,529|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:41:33,529|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help".
+2015-08-02 21:41:36,162|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:41:36,162|dungeon_bot|DEBUG|Removing lobby d04fe43b
+2015-08-02 21:41:36,162|dungeon_bot|DEBUG|Removing event d04fe43b
+2015-08-02 21:41:36,162|dungeon_bot|DEBUG|Event d04fe43b removed
+2015-08-02 21:41:36,174|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Tunnel of dimensions.
+A series of wormholes between worlds. The horrors that don't belong to any world infest it..
+
+2015-08-02 21:41:40,209|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:41:40,210|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small pack of rats.
+
+2015-08-02 21:41:40,603|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs rat, big rat, rat, rat.
+Round 1.
+[0]Boris, [1]rat, [2]rat, [3]rat, [4]big rat
+It's Boris's turn.
+
+2015-08-02 21:41:45,031|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:41:45,032|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 17 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: sword.
+Boris got loot: plate armor.
+
+2015-08-02 21:41:56,546|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:41:56,546|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 42 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+Boris got loot: dagger.
+
+2015-08-02 21:41:57,748|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 21:41:57,749|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club at rat but misses.
+
+2015-08-02 21:41:59,251|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 21:41:59,252|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:42:01,986|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:42:01,990|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat tries to bite Boris but misses.
+Rat bites Boris and deals 0 damage.
+Rat bites Boris and deals 2 damage.
+Rat bites Boris and deals 6 damage.
+Rat tries to bite Boris but misses.
+Big Rat tries to bite Boris but misses.
+Big Rat bites Boris and deals 11 damage.
+Big Rat tries to bite Boris but misses.
+Big Rat tries to bite Boris but misses.
+Round 2.
+[0]Boris, [1]rat, [2]big rat
+It's Boris's turn.
+
+2015-08-02 21:42:04,194|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 4
+2015-08-02 21:42:04,195|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target required.
+2015-08-02 21:42:44,872|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:42:44,873|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 5 damage to Big Rat.
+
+2015-08-02 21:42:46,765|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:42:46,766|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:42:48,444|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:42:48,445|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:42:50,694|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:42:50,697|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat bites Boris and deals 5 damage.
+Rat tries to bite Boris but misses.
+Big Rat tries to bite Boris but misses.
+Big Rat tries to bite Boris but misses.
+Round 3.
+[0]Boris, [1]rat, [2]big rat
+It's Boris's turn.
+
+2015-08-02 21:42:51,453|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:42:51,454|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 42 damage to Big Rat.
+Big Rat is killed by Boris.
+Boris earns 80 experience.
+
+2015-08-02 21:42:54,851|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:42:54,853|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Rat tries to bite Boris but misses.
+Rat tries to bite Boris but misses.
+Round 4.
+[0]Boris, [1]rat
+It's Boris's turn.
+
+2015-08-02 21:42:58,537|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:42:58,538|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 47 damage to Rat.
+Rat is killed by Boris.
+Boris earns 50 experience.
+
+2015-08-02 21:43:01,238|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:43:01,239|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:43:09,722|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:43:09,723|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of lesser demons.
+
+2015-08-02 21:43:10,184|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs lesser demon, lesser demon, lesser demon, lesser demon.
+Round 1.
+[0]Boris, [1]lesser demon, [2]lesser demon, [3]lesser demon, [4]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:43:15,306|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:43:15,307|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 30 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+
+2015-08-02 21:43:18,880|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:43:18,881|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 35 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris has leveled up to level 2!
+
+2015-08-02 21:43:22,386|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 3
+2015-08-02 21:43:22,387|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 23 damage to Lesser Demon.
+Knockdown modifier applied to Lesser Demon.
+Lesser Demon is knocked down!
+
+2015-08-02 21:43:25,988|dungeon_bot|INFO|[MESSAGE] btseytlin: ex 3
+2015-08-02 21:43:25,994|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon. lvl 1
+A lesser demon.
+Characteristics:
+|	Strength:2
+|	Dexterity:0
+|	Vitality:2
+|	Intelligence:4
+
+Health:
+|	1/24
+
+Average defence, evasion:
+|	0, 0
+Tags:
+|	animate, demon
+Modifiers:
+|	knockdown(club)
+Abilities:
+|	animal claw(animal claws), animal bite(animal teeth)
+Equipment:
+|	Primary weapon: animal teeth |acc:4d6/dmg:2d6|.
+|	Secondary weapon: animal claws |acc:4d6/dmg:1d6|.
+
+2015-08-02 21:43:37,472|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:43:37,475|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon tries to claw Boris but misses.
+Lesser Demon tries to claw Boris but misses.
+Lesser Demon struggles to get up from the ground.
+Round 2.
+[0]Boris, [1]lesser demon, [2]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:43:46,986|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:43:46,986|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 18 damage to Lesser Demon.
+Knockdown modifier applied to Lesser Demon.
+Lesser Demon is knocked down!
+
+2015-08-02 21:43:50,489|dungeon_bot|INFO|[MESSAGE] btseytlin: thr
+2015-08-02 21:43:50,490|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try help.
+2015-08-02 21:43:52,454|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:43:52,457|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon tries to claw Boris but misses.
+Lesser Demon tries to claw Boris but misses.
+Lesser Demon struggles to get up from the ground.
+Lesser Demon struggles to get up from the ground.
+Round 3.
+[0]Boris, [1]lesser demon, [2]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:43:54,680|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:43:54,681|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 42 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: helmet.
+Boris got loot: plate armor.
+
+2015-08-02 21:43:55,672|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 2
+2015-08-02 21:43:55,672|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Not enough energy. Need 1 energy to use.
+2015-08-02 21:43:58,374|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:43:58,375|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Target is already dead.
+2015-08-02 21:44:00,623|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:44:00,624|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Lesser Demon tries to claw Boris but misses.
+Lesser Demon struggles to get up from the ground.
+Lesser Demon struggles to get up from the ground.
+Round 4.
+[0]Boris, [1]lesser demon
+It's Boris's turn.
+
+2015-08-02 21:44:04,357|dungeon_bot|INFO|[MESSAGE] btseytlin: smash 1
+2015-08-02 21:44:04,358|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris smashes club and deals 18 damage to Lesser Demon.
+Lesser Demon is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: club.
+
+2015-08-02 21:44:08,845|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:44:08,846|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:44:09,848|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:44:09,853|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 2
+----
+Characteristics:
+|	Strength:6
+|	Dexterity:7
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	36/60
+Energy:
+|	7/7, regen per turn: 2
+Exp:
+|	230/420
+Average defence, evasion:
+|	0, 20
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	
+Abilities:
+|	smash(club)
+Equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+Level perks:
+|	
+2015-08-02 21:44:14,291|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:44:14,292|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You don't have any perk points or characteristic points to spend.
+2015-08-02 21:44:16,985|dungeon_bot|INFO|[MESSAGE] btseytlin: inv
+2015-08-02 21:44:16,986|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are in the inventory screen.
+You can use item numbers as arguemnts for commands, for example "equip 1".
+Your inventory:
+1.club |acc:4d6/dmg:2d4|, 2.sword |acc:5d6/dmg:3d6|, 3.dagger |acc:5d6/dmg:1d4|, 4.plate armor |def:6d6/ev:5d6|, 5.plate armor |def:4d6/ev:4d6|, 6.helmet |def:2d5/ev:2d3|
+Your equipment:
+|	Primary weapon: club |acc:5d6/dmg:2d4|.
+
+
+2015-08-02 21:44:22,479|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 6
+2015-08-02 21:44:22,479|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped helmet.
+2015-08-02 21:44:25,727|dungeon_bot|INFO|[MESSAGE] btseytlin: eq 2
+2015-08-02 21:44:25,728|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Succesfully equipped sword.
+2015-08-02 21:44:29,265|dungeon_bot|INFO|[MESSAGE] btseytlin: back
+2015-08-02 21:44:29,267|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Closed inventory
+2015-08-02 21:44:29,779|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:44:29,780|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of undead soldiers.
+
+2015-08-02 21:44:30,044|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs undead soldier, undead soldier, undead soldier.
+Round 1.
+[0]Boris, [1]undead soldier, [2]undead soldier, [3]undead soldier
+It's Boris's turn.
+
+2015-08-02 21:44:31,999|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 1
+2015-08-02 21:44:32,000|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 105 damage to Undead Soldier.
+Undead Soldier is killed by Boris.
+Boris earns 100 experience.
+
+2015-08-02 21:44:34,468|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 2
+2015-08-02 21:44:34,470|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 58 damage to Undead Soldier.
+Undead Soldier is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: plate armor.
+Boris has leveled up to level 3!
+
+2015-08-02 21:44:38,904|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 3
+2015-08-02 21:44:38,906|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 65 damage to Undead Soldier.
+Undead Soldier is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: chainmail.
+Boris got loot: ring of more vitality.
+Boris got loot: club.
+Boris got loot: dagger.
+
+2015-08-02 21:44:43,067|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:44:43,069|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Players won the battle!
+
+The players have defeated the enemies and are ready to advance further.
+
+2015-08-02 21:44:44,796|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:44:44,797|dungeon_bot|DEBUG|Levelup event de31b9ba created within dungeon 1e92ab2d.
+2015-08-02 21:44:44,797|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You can choose 1 new perks.
+Choose a perk by typing it's number:
+1. Educated-Get 10 percent additional experience.
+2. Flow-Get 2 energy on kill.
+2015-08-02 21:44:48,282|dungeon_bot|INFO|[MESSAGE] btseytlin: 2
+2015-08-02 21:44:48,283|dungeon_bot|ERROR|E:
+Traceback (most recent call last):
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 169, in start_main_loop
+    self.on_message(message)
+  File "D:\projects\dungeon_bot\dungeon_bot\dungeon_bot.py", line 192, in on_message
+    response = ply.event.handle_command(user, command, *args)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 240, in handle_command
+    return msg + self.finish()
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 63, in finish
+    return self.finished_callback(self)
+  File "D:\projects\dungeon_bot\dungeon_bot\bot_events.py", line 599, in lvl_over_callback
+    del sel
+UnboundLocalError: local variable 'sel' referenced before assignment
+2015-08-02 21:46:01,162|dungeon_bot|DEBUG|DungeonBot initialized
+2015-08-02 21:46:03,175|dungeon_bot|INFO|[MESSAGE] btseytlin: lvl
+2015-08-02 21:46:03,176|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You don't have any perk points or characteristic points to spend.
+2015-08-02 21:46:05,719|dungeon_bot|INFO|[MESSAGE] btseytlin: ex
+2015-08-02 21:46:05,727|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris. lvl 3
+----
+Characteristics:
+|	Strength:6
+|	Dexterity:7
+|	Vitality:5
+|	Intelligence:5
+
+Health:
+|	80/80
+Energy:
+|	7/7, regen per turn: 2
+Exp:
+|	110/420
+Average defence, evasion:
+|	5, 23
+Tags:
+|	animate, humanoid, human
+Modifiers:
+|	
+Abilities:
+|	cut(sword), stab(sword)
+Equipment:
+|	Primary weapon: sword |acc:5d6/dmg:3d6|.
+|	Headwear: helmet |def:2d5/ev:2d3|.
+Level perks:
+|	Flow
+2015-08-02 21:46:10,179|dungeon_bot|INFO|[MESSAGE] btseytlin: join
+2015-08-02 21:46:10,179|dungeon_bot|DEBUG|Lobby event 569c1928 created
+2015-08-02 21:46:10,179|dungeon_bot|DEBUG|User btseytlin joined lobby 569c1928
+2015-08-02 21:46:10,180|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You were added to lobby 569c1928.
+
+2015-08-02 21:46:10,445|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A dungeon crawl will start once there are enough players (1). Use "abort" to leave, "start" to begin.
+2015-08-02 21:46:10,726|dungeon_bot|INFO|[RESPONSE] to user btseytlin: The lobby has enough players to start, use "start" command to proceed.
+
+2015-08-02 21:46:11,217|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:46:11,217|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Unknown command, try "help".
+2015-08-02 21:46:15,473|dungeon_bot|INFO|[MESSAGE] btseytlin: start
+2015-08-02 21:46:15,473|dungeon_bot|DEBUG|Removing lobby 569c1928
+2015-08-02 21:46:15,473|dungeon_bot|DEBUG|Removing event 569c1928
+2015-08-02 21:46:15,473|dungeon_bot|DEBUG|Event 569c1928 removed
+2015-08-02 21:46:15,483|dungeon_bot|INFO|[RESPONSE] to user btseytlin: You are entering Bandit den.
+All kinds of scum find shelter in these caves.
+
+2015-08-02 21:46:15,737|dungeon_bot|INFO|[MESSAGE] btseytlin: adv
+2015-08-02 21:46:15,739|dungeon_bot|INFO|[RESPONSE] to user btseytlin: A small group of Peasants.
+
+2015-08-02 21:46:16,001|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Combat starts!
+ Boris vs peasant, peasant, peasant.
+Round 1.
+[0]Boris, [1]peasant, [2]peasant, [3]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:17,986|dungeon_bot|INFO|[MESSAGE] btseytlin: cut 1
+2015-08-02 21:46:17,987|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Cut with sword and deals 72 damage to Peasant.
+Peasant is killed by Boris.
+Boris earns 100 experience.
+Boris got loot: ring of much more dexterity.
+
+2015-08-02 21:46:20,746|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 2
+2015-08-02 21:46:20,747|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 0 damage to Peasant.
+Pain modifier applied to Peasant.
+Peasant is wrecked with pain!
+
+2015-08-02 21:46:24,117|dungeon_bot|INFO|[MESSAGE] btseytlin: stab 3
+2015-08-02 21:46:24,118|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Boris uses ability Stab with sword and deals 9 damage to Peasant.
+Pain modifier applied to Peasant.
+Peasant is wrecked with pain!
+
+2015-08-02 21:46:27,505|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:27,507|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 2.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:29,886|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:29,888|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Pain modifier lifted from Peasant.
+Pain modifier lifted from Peasant.
+Round 3.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:32,009|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:32,012|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 4.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:33,820|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:33,822|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 5.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:36,700|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:36,703|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 6.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:38,282|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:38,285|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 7.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:39,855|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:39,857|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 8.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:41,662|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:41,664|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 9.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:43,205|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:43,208|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 10.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:45,680|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:45,682|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 11.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+
+2015-08-02 21:46:47,452|dungeon_bot|INFO|[MESSAGE] btseytlin: turn
+2015-08-02 21:46:47,455|dungeon_bot|INFO|[RESPONSE] to user btseytlin: Peasant smashes club at Boris but misses.
+Peasant smashes club at Boris but misses.
+Round 12.
+[0]Boris, [1]peasant, [2]peasant
+It's Boris's turn.
+

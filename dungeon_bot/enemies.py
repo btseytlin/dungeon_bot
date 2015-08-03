@@ -71,19 +71,10 @@ rat_characteristics = {
 
 class Rat(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"club" : 5,
+		"dagger" : 5,
+		"ring" : 5,
+		"random": 2,
 	}
 	loot_coolity = 0.5
 
@@ -116,19 +107,12 @@ big_rat_characteristics = {
 
 class BigRat(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"club" : 5,
+		"dagger" : 5,
+		"ring" : 5,
+		"talisman": 5,
+		"headwear": 5,
+		"random": 5,
 	}
 	
 	loot_coolity = 0.5
@@ -171,20 +155,15 @@ wolf_characteristics = {
 
 class Wolf(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"chainmail" : 3,
+		"primary_weapon" : 3,
+		"secondary_weapon" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"headwear": 5,
+		"random": 3,
 	}
+
 	loot_coolity = 0.5
 
 	def __init__(self, level=1, name="wolf", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal"],abilities=[],modifiers=[], exp_value=100):
@@ -221,21 +200,15 @@ wolf_leader_characteristics = {
 
 class WolfLeader(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"chainmail" : 3,
+		"primary_weapon" : 5,
+		"secondary_weapon" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"headwear": 5,
+		"random": 3,
 	}
-	loot_coolity = 0.5
+	loot_coolity = 0.8
 
 	def __init__(self, level=1, name="wolf pack leader", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
@@ -271,20 +244,19 @@ bear_characteristics = {
 
 class Bear(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"chainmail" : 3,
+		"plate armor" : 3,
+		"primary_weapon" : 3,
+		"sword": 4,
+		"club": 5,
+		"secondary_weapon" : 3,
+		"ring of fire" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"headwear": 5,
+		"random": 3,
 	}
+
 	loot_coolity = 1
 
 	def __init__(self, level=1, name="bear", characteristics = bear_characteristics, stats=None, description="An angry big bear. Very dangerous!", inventory=[], equipment=default_equipment, tags=["animate", "animal", "big"],abilities=[],modifiers=[], exp_value=300):
@@ -323,20 +295,20 @@ undead_soldier_characteristics = {
 
 class UndeadSoldier(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"chainmail" : 3,
+		"plate armor" : 1,
+		"primary_weapon" : 3,
+		"sword": 4,
+		"club": 5,
+		"dagger": 5,
+		"secondary_weapon" : 3,
+		"amulet of healing" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"headwear": 5,
+		"random": 3,
 	}
+
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
@@ -373,20 +345,21 @@ undead_knight_characteristics = {
 
 class UndeadKnight(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"chainmail" : 7,
+		"plate armor" : 4,
+		"primary_weapon" : 3,
+		"sword": 7,
+		"club": 5,
+		"dagger": 5,
+		"secondary_weapon" : 3,
+		"amulet of healing" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"helmet": 5,
+		"headwear": 5,
+		"random": 3,
 	}
+
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="undead knight", characteristics = undead_knight_characteristics, stats=None, description="An undead knight.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
@@ -425,20 +398,14 @@ lesser_demon_characteristics = {
 
 class LesserDemon(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"ring of fire": 3,
+		"ring" : 3,
+		"talisman": 4,
+		"helmet": 5,
+		"headwear": 5,
+		"random": 3,
 	}
+
 	loot_coolity = 0.2
 	def __init__(self, level=1, name="lesser demon", characteristics = lesser_demon_characteristics, stats=None, description="A lesser demon.", inventory=[], equipment=default_equipment, tags=["animate", "demon" ],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
@@ -474,18 +441,15 @@ beta_demon_characteristics = {
 class BetaDemon(Enemy):
 	drop_table = {
 		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
+		"ring of fire": 3,
 		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"ring of more dexterity" : 3,
+		"ring of more vitality" : 6,
+		"ring" : 3,
+		"talisman": 4,
+		"helmet": 5,
+		"headwear": 5,
+		"random": 3,
 	}
 	loot_coolity = 0.2
 	def __init__(self, level=1, name="beta demon", characteristics = beta_demon_characteristics, stats=None, description="An beta demon. It's huge and wields a club from a huge bone.", inventory=[], equipment=default_equipment, tags=["animate", "demon", "slow", "big"],abilities=[],modifiers=[], exp_value=300):
@@ -523,19 +487,17 @@ peasant_characteristics = {
 
 class Peasant(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"club" : 7,
+		"dagger" : 7,
+		"primary_weapon": 3,
+		"armor": 2,
+		"ring of more strength" : 5,
+		"ring of more intelligence" : 2,
+		"ring" : 3,
+		"talisman": 4,
+		"helmet": 5,
+		"headwear": 5,
+		"random": 3,
 	}
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
@@ -572,19 +534,7 @@ thief_characteristics = {
 
 class Thief(Enemy):
 	drop_table = {
-		"club" : 10,
-		"sword" : 10,
-		"plate armor" : 10,
-		"helmet" : 10,
-		"dagger" : 10,
-		"chainmail" : 10,
-		"amulet of defence" : 10,
-		"amulet of healing" : 10,
-		"ring of fire" : 10,
-		"shield" : 10,
-		"ring of not dying" : 1,
-		"ring of much more dexterity" : 5,
-		"ring of more vitality" : 10,
+		"random": 20
 	}
 	loot_coolity = 0.7
 	def __init__(self, level=1, name="thief", characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):

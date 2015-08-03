@@ -131,6 +131,37 @@ def get_dice_in_range(dice_range, coolity, inverse = False): #returns dice in ra
 		return "-"+str(dice_amount) + "d" + str(dice_nominal)
 	return str(dice_amount) + "d" + str(dice_nominal)
 
+
+
+def get_number_in_range(number_range, coolity, inverse = False): #returns dice in range. Coolity is 0..1, more means values are more likely to be closer to right boundary
+
+	#If inverse = true then smaller numbers will be at the right border. So the numbers to pick from will be sorted from max to min, "smaller is better"
+	#If inverse = false then numbers are sorted from min to max, "bigger is better"
+	negative = False
+	if number_range[0] < 0 and number_range[1] < 0:
+		negative = True
+
+	if number_range[0] > number_range[1]:
+		inverse = True
+
+	if not inverse:
+		left = min(number_range[0], number_range[1])
+		right = max(number_range[0], number_range[1])
+		number_range = range(left, right+1)
+
+	else:
+		left = max(number_range[0], number_range[1])
+		right = min(number_range[0], number_range[1])
+		number_range = range(left, right-1, -1)
+
+	if len(number_range) <= 1:
+		random_for_coolity = 0
+	else:
+		random_for_coolity = random_in_range_for_coolity(0, len(number_range)-1, coolity)
+	random_ind = int( math.ceil(random_for_coolity ))
+	number = number_range[random_ind]
+
+	return number
 def round_to_base(x, base=10):
 	return int(base * round(float(x)/base))
 	

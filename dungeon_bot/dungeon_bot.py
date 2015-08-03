@@ -154,16 +154,15 @@ class DungeonBot(object):
 					updates = self.api.getUpdates()
 
 				for update in updates:
-					try:
-						#logger.debug("Got update with id %d"%(update.update_id))
-						self.last_update_id = update.update_id+1
-						#logger.debug("Last update id is %d"%(self.last_update_id))
+					#logger.debug("Got update with id %d"%(update.update_id))
+					self.last_update_id = update.update_id+1
+					#logger.debug("Last update id is %d"%(self.last_update_id))
 
-						message = update.message
-						close_enough = self.time_started - datetime.timedelta(minutes=15)
-						if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-							logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
-							self.on_message(message)
+					message = update.message
+					close_enough = self.time_started - datetime.timedelta(minutes=15)
+					if datetime.datetime.fromtimestamp(message.date) >= close_enough :
+						logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
+						self.on_message(message)
 		except:
 			logger.exception("E:")
 			self.timer.cancel()

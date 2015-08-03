@@ -171,7 +171,10 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 		real_stats = stats.copy()
 		for key in list(stats.keys()):
 			if isinstance(stats[key], list): #is a dice range
-				real_stats[key] = get_dice_in_range(stats[key], coolity)
+				if isinstance( stats[key][0], str):
+					real_stats[key] = get_dice_in_range(stats[key], coolity)
+				if isinstance( stats[key][0], int):
+					real_stats[key] = get_number_in_range(stats[key], coolity)
 
 		if not "modifiers_granted" in item_args.keys():
 				item_args["modifiers_granted"] = []
@@ -184,15 +187,23 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 		return prototype(item_args["name"], item_args["description"], item_args["item_type"], real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 def get_item_by_name(name, coolity=0):
+	if name == "random":
+		name = random.choice([name for name in item_listing[item_type] for item_type in list( item_listing.keys() )])
+
+
 	item_args = None
 	item_stats = None
 	item_type = None
 	for key in list(item_listing.keys()):
+		if name == key:
+			name = random.choice(list(item_listing[key].keys()))
 		for item in list(item_listing[key].keys()):
 			if item == name:
 				item_args = item_listing[key][item]["args"]
 				item_stats = item_listing[key][item]["stats"]
 				item_type = key
+				break
+
 	prototype = None
 	if item_type == "primary_weapon":
 		prototype = PrimaryWeapon
@@ -253,23 +264,15 @@ item_listing = {
 			]
 		}},
 
-		"ring of more strength": {"stats": {"characteristics_change": {"strength" : 1}} , "args":{"name":"ring of more strength", "description":"Just gives you +1 str."} },
+		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : [1, 3]}} , "args":{"name":"ring of more vitality", "description":"Just gives you more vit."} },
 
-		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : 1}} , "args":{"name":"ring of more vitality", "description":"Just gives you +1 vit."} },
+		"ring of more dexterity": {"stats": {"characteristics_change": {"dexterity" : [1, 3]}} , "args":{"name":"ring of much more dexterity", "description":"Just gives you more str."} },
 
-		"ring of much more dexterity": {"stats": {"characteristics_change": {"dexterity" : 5}} , "args":{"name":"ring of much more dexterity", "description":"Just gives you +5 dex."} },
+		"ring of more strength": {"stats": {"characteristics_change": {"strength" : [1, 3]}} , "args":{"name":"ring of more strength", "description":"Just gives you more str."} },
 
-		"ring of modifier test": {"stats": {} , "args":{"name":"ring of modifier test", "description":"Just gives you +1 vit, but via a modifier.",
-			 "modifiers_granted": [ 
-					{
-						"name":"bonus", 
-						"params":{"characteristics_change": {"vitality": 1}}
-					} 
-				] 
-			} 
-		},
+		"ring of more intelligence": {"stats": {"characteristics_change": {"intelligence" : [1, 3]}} , "args":{"name":"ring of more intelligence", "description":"Just gives you more int."} },
 
-		"ring of more hp": {"stats": {"stats_change": {"max_health" : 10}} , "args":{"name":"ring of more hp", "description":"Just gives you +10 max hp."}}  ,
+		"ring of more hp": {"stats": {"stats_change": {"max_health" : [10, 50]}} , "args":{"name":"ring of more hp", "description":"Just gives you more max hp."}}  ,
 		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
 	},
 	"headwear":{
