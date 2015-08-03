@@ -35,8 +35,9 @@ def start():
 	except:
 		clean_up()
 		logger.exception("E:")
-		start()
 		DungeonBot.resart()
+		start()
+		
 
 
 log_path = './logs/botlog.log'

@@ -65,7 +65,7 @@ class BotEvent(object):
 				self.on_player_leave(user)
 
 	def finish(self):
-		self.finished = False
+		self.finished = True
 		self.free_users()
 		return self.finished_callback(self)
 
@@ -559,7 +559,7 @@ class DungeonCrawlEvent(BotEvent):
 				if not player.dead:
 					alive_player = True
 			if not alive_player:
-				return "\nThe players perished in the dungeon.\n" 
+				return "\nThe players perished in the dungeon.\n" +self.finish() 
 			return "\nThe players have defeated the enemies and are ready to advance further.\n"
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
@@ -694,7 +694,7 @@ class DungeonCrawlEvent(BotEvent):
 		if self.combat_event:
 			if not self.combat_event.finished:
 				self.combat_event.finish()
-		return super(DungeonCrawlEvent, self).finish()
+		return super(DungeonCrawlEvent, self).finish() or ""
 
 class CombatEvent(BotEvent):
 	def __init__(self, finished_callback, players, users, enemies):

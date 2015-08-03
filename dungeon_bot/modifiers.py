@@ -253,7 +253,7 @@ class Regeneration(Modifier): #simply adds defence, hinders evasion
 		chance = diceroll(self.healing_chance)
 		msg = ""
 		if random.randint(0, 100) < chance:
-			heal = diceroll(healing_amount)
+			heal = diceroll(self.healing_amount)
 			if self.host.health < self.host.stats["max_health"]: 
 				self.host.health += heal
 				msg += "%s regenerates %d hp due to %s.\n"%(self.host.name.title(), heal, self.granted_by.name)

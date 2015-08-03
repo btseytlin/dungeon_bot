@@ -37,7 +37,8 @@ def crawl_event_over_callback(event):
 
 def lobby_event_lover_callback(lobby):
 	logger.debug("Removing lobby %s"%(lobby.uid))
-	del DungeonBot.open_lobbies[lobby.uid]
+	if lobby.uid in DungeonBot.open_lobbies:
+		del DungeonBot.open_lobbies[lobby.uid]
 	event_over_callback(lobby)
 	if len(lobby.users) > 0:
 		dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in lobby.users])
@@ -99,8 +100,8 @@ class DungeonBot(object):
 	def resart():
 		global persistence_controller
 		persistence_controller.clear_events()
-		PersistenceController.instance = None
-		persistence_controller = PersistenceController.get_instance()
+		#PersistenceController.instance = None
+		#persistence_controller = PersistenceController.get_instance()
 		DungeonBot.events = {}
 		DungeonBot.open_lobbies = {}
 

@@ -194,16 +194,20 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 		return prototype(item_args["name"], item_args["description"], item_args["item_type"], real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 def get_item_by_name(name, coolity=0):
-	banned_tiems = ["animal_teeth", "animal_claws", "rodent_teeth"]
+	banned_items = ["animal_teeth", "animal_claws", "rodent_teeth"]
 	if name == "random":
-		name = random.choice([name for name in item_listing[item_type] for item_type in list( item_listing.keys() )] - banned_tiems)
-
+		names = []
+		for itemtype in item_listing.keys():
+			for item in item_listing[itemtype].keys():
+				if not item in banned_items:
+					names.append(item)
+		name = random.choice(names)
 	item_args = None
 	item_stats = None
 	item_type = None
 	for key in list(item_listing.keys()):
 		if name == key:
-			name = random.choice(list(item_listing[key].keys()) - banned_tiems)
+			name = random.choice([item for item in list(item_listing[key].keys()) if not item in banned_items])
 		for item in list(item_listing[key].keys()):
 			if item == name:
 				item_args = item_listing[key][item]["args"]
@@ -236,8 +240,8 @@ item_listing = {
 		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["3d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
 
 		# enemy equipment below
-		"rodent_teeth": {"stats": {"damage" : ["1d3","1d5"], "accuracy" : ["4d6", "6d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
-		"animal_teeth": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"animal teeth", "description":"Sharp teeth.", "abilities_granted":["animal bite"]}},
+		"rodent_teeth": {"stats": {"damage" : ["1d3","2d5"], "accuracy" : ["4d6", "6d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
+		"animal_teeth": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["3d6","5d6"]} , "args":{"name":"animal teeth", "description":"Sharp teeth.", "abilities_granted":["animal bite"]}},
 
 	},
 	"secondary_weapon":{
@@ -245,7 +249,7 @@ item_listing = {
 		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shieldup"]}},
 
 		# enemy equipment below
-		"animal_claws": {"stats": {"damage" : ["1d6","1d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
+		"animal_claws": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
 		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defence" : ["2d6","5d6"], "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},

@@ -64,8 +64,8 @@ class Dummy(Enemy):
 
 rat_characteristics = {
 		"strength": 1, #how hard you hit
-		"vitality": 1, #how much hp you have
-		"dexterity": 3, #how fast you act, your position in turn qeue
+		"vitality": 2, #how much hp you have
+		"dexterity": 5, #how fast you act, your position in turn qeue
 		"intelligence": 5, #how likely you are to strike a critical
 	}
 
@@ -74,6 +74,7 @@ class Rat(Enemy):
 		"club" : 5,
 		"dagger" : 5,
 		"ring" : 5,
+		"helmet": 100,
 		"random": 2,
 	}
 	loot_coolity = 0.5
@@ -100,7 +101,7 @@ class Rat(Enemy):
 big_rat_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 2, #how much hp you have
-	"dexterity": 3, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -237,7 +238,7 @@ class WolfLeader(Enemy):
 bear_characteristics = {
 	"strength": 7, #how hard you hit
 	"vitality": 7, #how much hp you have
-	"dexterity": 3, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -288,7 +289,7 @@ class Bear(Enemy):
 undead_soldier_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 3, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -323,7 +324,6 @@ class UndeadSoldier(Enemy):
 
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
-		print(self.target, self.energy, self.abilities[0].energy_required)
 		if self.target and not self.target.dead:
 			for ability in self.abilities:
 				while self.energy >= ability.energy_required:
@@ -338,7 +338,7 @@ class UndeadSoldier(Enemy):
 undead_knight_characteristics = {
 	"strength": 4, #how hard you hit
 	"vitality": 4, #how much hp you have
-	"dexterity": 3, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 6, #how likely you are to strike a critical
 }
 
@@ -354,7 +354,7 @@ class UndeadKnight(Enemy):
 		"amulet of healing" : 3,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 5,
+		"helmet": 100,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -391,7 +391,7 @@ class UndeadKnight(Enemy):
 lesser_demon_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 2, #how much hp you have
-	"dexterity": 3, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -400,7 +400,7 @@ class LesserDemon(Enemy):
 		"ring of fire": 3,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 5,
+		"helmet": 100,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -434,7 +434,7 @@ class LesserDemon(Enemy):
 beta_demon_characteristics = {
 	"strength": 6, #how hard you hit
 	"vitality": 5, #how much hp you have
-	"dexterity": 2, #how fast you act, your position in turn qeue
+	"dexterity": 4, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 class BetaDemon(Enemy):
@@ -446,7 +446,7 @@ class BetaDemon(Enemy):
 		"ring of more vitality" : 6,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 5,
+		"helmet": 100,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -480,8 +480,8 @@ class BetaDemon(Enemy):
 peasant_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 2, #how fast you act, your position in turn qeue
-	"intelligence": 4, #how likely you are to strike a critical
+	"dexterity": 4, #how fast you act, your position in turn qeue
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class Peasant(Enemy):
@@ -494,7 +494,7 @@ class Peasant(Enemy):
 		"ring of more intelligence" : 2,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 5,
+		"helmet": 100,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -732,7 +732,7 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 	"common": { 
 		"1": (rat_pack, [] ),
 		"1": (rat_pack,["small"] ),
-		"2": (rat_pack, ["medium"] ),
+		"5": (rat_pack, ["medium"] ),
 		"10": (rat_pack, ["big"] ),
 		"30": (rat_pack, ["huge"] )
 	},

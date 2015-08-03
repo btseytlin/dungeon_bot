@@ -86,14 +86,15 @@ def get_dice_in_range(dice_range, coolity, inverse = False): #returns dice in ra
 
 	#If inverse = true then smaller numbers will be at the right border. So the numbers to pick from will be sorted from max to min, "smaller is better"
 	#If inverse = false then numbers are sorted from min to max, "bigger is better"
+	d_range = dice_range.copy()
 	negative = False
-	if dice_range[0][0] == "-" and dice_range[1][0] == "-":
+	if d_range[0][0] == "-" and d_range[1][0] == "-":
 		negative = True
-		dice_range[0] = dice_range[0][1:]
-		dice_range[1] = dice_range[1][1:]
+		d_range[0] = d_range[0][1:]
+		d_range[1] = d_range[1][1:]
 
-	dice_one = [int(x) for x in dice_range[0].split("d")]
-	dice_two = [int(x) for x in dice_range[1].split("d")]
+	dice_one = [int(x) for x in d_range[0].split("d")]
+	dice_two = [int(x) for x in d_range[1].split("d")]
 	if dice_one[0] > dice_two[0] or dice_one[0] == dice_two[0] and dice_one[1] > dice_two[1]:
 		inverse = True
 

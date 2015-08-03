@@ -252,7 +252,7 @@ class Smash(Ability):
 		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -318,7 +318,7 @@ class Stab(Ability):
 		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -401,7 +401,7 @@ class QuickStab(Ability):
 		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -478,8 +478,7 @@ class Cut(Ability): #TODO test and adapt
 		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
-
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -559,7 +558,7 @@ class QuickCut(Ability): #TODO test and adapt
 		accuracy = user.accuracy
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp(accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 5, 95 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -660,7 +659,7 @@ class RodentBite(Ability):
 		evasion = target.evasion
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp( accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -734,7 +733,7 @@ class AnimalBite(Ability):
 		evasion = target.evasion
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp( accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 
@@ -807,7 +806,7 @@ class AnimalClaw(Ability):
 		evasion = target.evasion
 		dexterity = user.characteristics["dexterity"]
 
-		chance_to_hit = clamp( accuracy - evasion - is_small*evasion - is_quick *evasion + is_big * evasion + is_slow * evasion , 0, 100 )
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
 

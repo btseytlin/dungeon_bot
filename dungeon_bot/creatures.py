@@ -142,7 +142,7 @@ class Creature(object):
 
 	@property
 	def accuracy(self, weapon = None):
-		base_accuracy = diceroll( str(int(2*self.characteristics["intelligence"])) + "d" + str(2*self.characteristics["dexterity"] ))
+		base_accuracy = diceroll( str(int(3*self.characteristics["intelligence"])) + "d" + str(2*self.characteristics["dexterity"] ))
 		accuracy = base_accuracy
 		for key in list(self.equipment.keys()):
 			if key != "primary_weapon" and key != "secondary_weapon" and self.equipment[key] and "accuracy" in list(self.equipment[key].stats.keys()):
@@ -186,7 +186,7 @@ class Creature(object):
 
 	@property
 	def evasion(self):
-		base_ev = diceroll(str(2*self.characteristics["dexterity"])+"d6")
+		base_ev = diceroll(str(self.characteristics["dexterity"])+"d6")
 		evasion = base_ev
 		for key in list(self.equipment.keys()):
 			if self.equipment[key] and "evasion" in list(self.equipment[key].stats.keys()):
