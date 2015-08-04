@@ -2,6 +2,7 @@
 import dungeon_bot
 from dungeon_bot.dungeon_bot import DungeonBot
 import telegram
+from telegram import TelegramError
 #from telegram import Bot
 import atexit
 import logging
@@ -29,7 +30,7 @@ def start():
 		dungeon_bot_instance.api = tg
 
 		dungeon_bot_instance.start_main_loop()
-	except KeyboardInterrupt, TelegramError:
+	except (KeyboardInterrupt, TelegramError):
 		logger.exception("Finished program.")
 		clean_up()
 	except:
