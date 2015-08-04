@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Contributing to dungeon bot</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Contributing to dungeon bot</h1>
+      <h2 class="project-tagline">Add items, monsters, perks, modifiers and more!</h2>
+      <a href="https://github.com/Euphe/dungeon_bot" class="btn">View on GitHub</a>
+    </section>
+
+    <section class="main-content">
+      <p>This guide will walk you through creating items, modifiers, enemies, perks.</p>
+      <h3>Cloning and making pull requests</h3>
+      <p>Contributing requires making pull requests so reading the <a href="https://guides.github.com/activities/contributing-to-open-source/">contributing to open source guide</a> is required if you are new.</p>
+      <h2>Making an item</h2>
+      <p>Making an item consists of following steps:</p>
+      <ul>
+      <li>adding the item to the item table</li>
+      <li>adding the item to loot drop tables.</li>
+      </ul>
+      <p>Let's add a rapier, a primary weapon utilising existing abilities.</p>
+      <h4>Adding</h4>
+      <p>Open <code>items.py</code>.</p>
+      <p>A rapier is quite accurate, but it doesn't deal much damage.
+      Go the bottom of <code>items.py</code>, to <code>item_listing</code>.
+      Taking analogy from sword let's make a rapier entry in the "primary_weapon" category.</p>
+      <pre><code>item_listing: {
+          "primary_weapon":{
+              "rapier": {
+                  "stats": {
+                      "damage" : ["1d6","2d6"],
+                      "accuracy" : ["2d6","7d6"]
+                  },
+                  "args":{
+                      "name":"rapier",
+                      "description":"Steel rapier!",
+                      "abilities_granted":["stab"]
+                  }
+              }
+              #other primary weapons
+          },
+          #other item categories
+      }
+      </code></pre>
+      <p>After the item has been added to the item listing, let's make it so undead soldier enemies will sometimes spawn with rapiers.</p>
+      <p>Open <code>enemies.py</code> and find class <code>UndeadSoldier</code>. In the constructor of the class find line</p>
+      <pre><code>        items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace"]), 0 )]
+      </code></pre>
+      <p>These are the weapons an undead soldier can spawn with. Change it to:</p>
+      <pre><code>        items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "rapier"]), 0 )]
+      </code></pre>
+      <p>Done, now let's make them drop rapiers too.</p>
+      <p>Find the <code>drop_table</code> propery of the <code>UndeadSoldier</code> class.</p>
+      <pre><code>drop_table = {
+          "chainmail" : 3,
+          #other items
+          "random": 3,
+      }
+      </code></pre>
+      <p>Add <code>"rapier": 5,</code> to the top.</p>
+      <pre><code>drop_table = {
+          "rapier": 5,
+          "chainmail" : 3,
+          #other items
+          "random": 3,
+      }
+      </code></pre>
+      <p>Done! Now UndeadSoldiers will drop rapiers with 5% chance!</p>
+      <h4>Explanation</h4>
+      <p><strong>Item listing explained.</strong></p>
+      <p>You can see the 5 basic prototypes for items: <em>PrimaryWeapon, SecondaryWeapon, Armor, Helmet, Ring, Talisman</em>.
+      <code>item_listing</code> contains all the parameters for items in the game.
+      Let's take, for example, club.</p>
+      <pre><code>"club": {
+          "stats": {
+              "damage" : ["1d3","2d6"],
+              "accuracy" : ["1d6","2d6"]},
+          }
+          "args":{
+                  "name":"club",
+                  "description":"A rough wooden club, good enough to break a skull!", 
+                  "abilities_granted":["smash"]
+          }
+          
+      }
+      </code></pre>
+      <p>That info means that if we call <code>get_item_by_name("club")</code> (that function is called every time loot is dropped and items are given to enemies on spawn) we will get a PrimaryWeapon object with <code>"damage"</code> stat somewhere between <code>"1d3"</code> and <code>"2d6"</code>. So it could be anything among <em>"1d3", "1d4, "1d5", "1d6", "2d1", "2d2", "2d3", "2d4", "2d5", "2d6"</em>.</p>
+      <p>The right range boundary is considered the best possible condition.</p>
+      <p>Range values can be negative, for example:
+      <code>"accuracy" : ["-1d6","2d6"]</code>.</p>
+      <p>Ranges can be inverse, from max to min, like armor evasion ranges:
+      <code>"evasion": ["-3d4","-1d2"]</code></p>
+      <p>Mind that absolute dice value decides if the range will be inverse or not. In the case above <em>"-3d4"</em> will be considered the absolute worst outcome, <em>"-1d2"</em> will be considered the absolute best. That's useful if you want an item that applies an evasion penalty and you want the best item to have <em>the smallest penalty</em>.</p>
+      <p><code>"abilities_granted"</code> specifies names of abilities a creature will be given when it's equipped. The actual class of the available ability can be found in <code>abilities.py</code>. You can see that <code>"smash"</code> will be mapped to the <code>"Smash"</code> class.
+      Abilities are exactly the combat commands a creature will be able to use in a fight.
+      Other available options to <code>"stats"</code> are fields <code>"modifiers_granted"</code> and <code>"tags_granted"</code>.</p>
+      <p><code>"modifiers_granted"</code> work just like abilities, modifier (temporary or permanent effects, such as bleeding or getting 10% more experience every experience gain) names are specified. You can see what modifiers exist in <code>modifiers.py</code>, <code>modifier_listing</code> dictionary.</p>
+      <p><code>"tags_granted"</code> are just strings that will be appended to a creature's <code>.tags</code> list when the item is equipped. For example equipping <em>chainmail</em> will add the tag <code>"armor"</code>. Tags are used by various ability formulas to change effectiveness of attacks. For example <code>Smash</code> is more likely to knockdown an enemy with <code>"armor"</code> tag.</p>
+      <p>An item's <code>"stats"</code> can also have various bonuses. For example:</p>
+      <pre><code>"ring of thievery": {
+          "stats": {
+              "stats_change": {
+                  "evasion": ["1d6", "3d6"]
+              },
+                  "characteristics_change": {
+              "dexterity" : [0, 2]
+              }
+          },
+          "args":{
+              "name":"ring of more thievery",
+              "description":"Gives a dex bonus and an evasion bonus."
+          }
+       },
+      </code></pre>
+      <p>This item gives a bonus  <em>characteristics</em> and to <em>evasion</em>.
+      Note that characteristics also come in ranges, but in regular numbers. Notation above means that the ring of thievery can have a dex bonus of 0, 1 or 2.</p>
+      <p>That's can also contain values that will be used by various modifiers. Take a look at <code>"amulet of healing"</code> or <code>"ring of fire"</code>.</p>
+      <p><strong>Drop tables explained.</strong></p>
+      <p>Each key of a drop table is either an item name, item type or <code>"random"</code>. The value is the drop chance in percents.</p>
+      <ul>
+      <li><code>"chainmail": 3</code> means that there is a 3% chance this enemy will drop a chainmail on death.</li>
+      <li><code>"armor": 3</code> means that there is a 3% chance this enemy will drop a random item from the armor category.</li>
+      <li><code>"random": 3</code> means that there is a 3% chance this enemy will drop a random item from any category.</li>
+      </ul>
+      <p>The function <code>get_item_by_name</code> accepts <code>coolity</code> as a second argument. Coolity can be a number between 0 and 1. More coolity means more chance that ranges will tilt towards the right boundary.
+      For example for item:</p>
+      <pre><code>"ring of fire": {
+              "stats": {
+              "fire_damage" : ["1d3","2d6"],
+              "fire_chance" : ["1d4", "6d6"]
+          },
+          "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",
+              "modifiers_granted": [
+                  {
+                      "name":"fire_attack", 
+                      "params":{}
+                  } 
+              ]
+          }
+      },
+      </code></pre>
+      <p>If you call <code>get_item_by_name("ring of fire", 1)</code> (coolity = 1) there will be an almost 30 percent chance to get <code>"fire_chance": "6d6"</code>. If you call <code>get_item_by_name("ring of fire", 0)</code> there will be an almost 30 percent chance to get <code>"fire_chance": "1d4"</code>.</p>
+      <p>So, more coolity means cooler loot.</p>
+      <p>Every enemy class has a <code>loot_coolity</code> property. That's the coolity used when an enemy of that class drops loot and items are spawned.
+      This way if you want an enemy to drop mostly cool loot you should set it to 1.
+      A generic rat usually drops bad items because it has <code>loot_coolity = 0</code>.</p>
+      <h2>Making an enemy</h2>
+      <p>Making an enemy consists of following steps:</p>
+      <ul>
+      <li>creating the enemy class</li>
+      <li>adding the enemy to dungeon tables</li>
+      </ul>
+      <p>Let's add a thug, a human enemy with high vitality and strength.</p>
+      <h4>Adding</h4>
+      <p>Open <code>enemies.py</code>.</p>
+      <p>Go the section marked by a comment:</p>
+      <pre><code>""" human enemies below """
+      </code></pre>
+      <p>Taking analogy from peasant let's make a <code>Thug</code> class.
+      Add the following:</p>
+      <pre><code>thug_characteristics = {
+          "strength": 7,
+          "vitality": 6,
+          "dexterity": 4, 
+          "intelligence": 4,
+      }
+
+      class Thug(Enemy):
+          drop_table = {
+              "club" : 7,
+              "mace": 4,
+              "primary_weapon": 3,
+              "armor": 4,
+              "ring of more strength" : 5,
+              "ring of more intelligence" : 2,
+              "ring" : 3,
+              "talisman": 4,
+              "helmet": 3,
+              "headwear": 5,
+              "random": 3,
+          }
+          loot_coolity = 0.5
+          def __init__(self, level=1, name="thug", characteristics = thug_characteristics, stats=None, description="A thug, strong and massive, but quite slow.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big"],abilities=[],modifiers=[], exp_value=200):
+              Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+              items = [get_item_by_name( random.choice(["club", "sword", "mace"]), 0 )]
+              for item in items:
+                  self.inventory.append(item)
+                  self.equip(item)
+
+          def act(self, combat_event):
+              attack_infos = []
+
+              if not self.target or self.target.dead:
+                  self.select_target(combat_event)
+              if self.target and not self.target.dead:
+                  for ability in self.abilities:
+                      while self.energy &gt;= ability.energy_required:
+                          attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+                          if not self.target or self.target.dead:
+                              break
+                      if not self.target or self.target.dead:
+                              break
+
+              return attack_infos
+      </code></pre>
+      <p>We have added the class, but it won't spawn in the world yet.
+      head to <code>enemy_tables</code> at the bottom of the document. Add the following entry to the <code>"human"</code> category:</p>
+      <pre><code>enemy_tables: {
+      #other categories
+          "human":{
+              "1": (thugs, []),
+              "5": (thugs, ["small"]),
+              "10": (thugs, ["medium"]),
+              #other human enemy functions
+          }
+      }
+      </code></pre>
+      <p>Now directly above <code>enemy_tables</code> add the <code>thugs</code> function:</p>
+      <pre><code>def thugs(size):
+          description = "A thug.\n"
+          levels = list(range(1,5))
+          amount = 1
+          if size == "small":
+              amount = random.randint(2, 3)
+              if amount != 1:
+                  description = "A small group of thugs.\n"
+          elif size == "medium":
+              description = "A group of thugs.\n"
+              amount = random.randint(3, 5)
+
+          elif size == "big":
+              description = "A hoard of thugs.\n"
+              amount = random.randint(5, 8)
+
+          elif size == "huge":
+              description = "thugs are everywhere.\n"
+              amount = random.randint(8, 15)
+          thugs = [ Thug(random.choice(levels)) for x in range(amount+1)]
+          return thugs, description
+      </code></pre>
+      <p>Done! Now in dungeons with difficulty approximately 1 to 13 thugs of levels 1 to 5 will spawn. Either a lone thug, a small group of thugs or a medium group of thugs.</p>
+      <h4>Explanation</h4>
+      <p>Creating the enemy class has some quirks to it.</p>
+      <p><strong>Enemy classes explained.</strong></p>
+      <p>Enemies gain combat abilities just like players: from equipment and modifiers.
+      That means if you want an enemy to swing a sword you have got to give that enemy a sword.
+      This is why in the constructor, right after initializing the enemy, we give the enemy items and equip them:</p>
+      <pre><code>items = [get_item_by_name( random.choice(["chainmail", "plate armor"], 0), get_item_by_name( random.choice(["club", "sword", "mace"]), 0 )]
+      for item in items:
+          self.inventory.append(item)
+          self.equip(item)
+      </code></pre>
+      <p>If you want your enemy to do something special, not covered by current items, you should add a special item for it.
+      This way <code>Rat</code> and <code>BigRat</code> have a special item <code>rodent_teeth</code> dedicaded to give them the <code>RodentBite</code> ability.
+      Say you are making a mage that throws fireball. The logical way is to create an ability <code>Fireball</code>, an item <code>fire staff</code> that grants ability <code>fireball</code>, and give a <code>fire staff</code> to each mage on creation.</p>
+      <p>How the enemies will use their abilities is defined in the <code>act</code> method. It's called every turn, the method has to return an list of abilities used (more on <code>ability_info</code> later).</p>
+      <p>It can be simple as the one we used for thugs, which basically means "use available abilities until I run out of energy", or it can be something complex and tactical.
+      The method accepts <code>combat_event</code> instance (see <code>bot_events.py</code>) that has such properties as <code>turn_qeue</code>, <code>players</code>, <code>enemies</code>. It allows you to get all the information about the combat situation so the enemy can make tactical decisions, change targets and use specific abilities.</p>
+      <p>Optionally the method <code>select_target</code> of the <code>Enemy</code> class can be overriden to specify how an enemy will pick it's targets. By default enemies pick random targets from among the living players.</p>
+      <p><strong>Enemy tables explained.</strong></p>
+      <p>If you take a look at the <code>dungeons</code> dictionary  in <code>dungeon.py</code> you will see the current types of dungeons, for example:</p>
+      <pre><code>dungeons = {
+          "Bandit den" : {
+              "description": "All kinds of scum find shelter in these caves.", 
+              "enemy_types":["common", "human"]
+          },
+      }
+      </code></pre>
+      <p><code>enemy_types</code> here are a list of keys for <code>enemy_table</code>.</p>
+      <p>Basically it specifies from where will a dungeon draw enemies when generating rooms.</p>
+      <p>Back to <code>enemies.py</code> <code>enemy_tables</code>. We want some enemies appear in numbers (like rats), we wants some enemies to appear alone, we want some enemies to appear high leveled and others low leveled.
+      That's where enemy functions come in.
+      In <code>enemy_tables</code> the keys are difficulty ratings and values are tuples of enemy function and it's arguments.</p>
+      <pre><code>enemy_tables = { # 
+          "common": { 
+              "1": (rat_pack, [] ),
+              "1": (rat_pack,["small"] ),
+              "5": (rat_pack, ["medium"] ),
+           }
+      }
+      </code></pre>
+      <p>Difficulty rating is a number 1 to 100 that represents what dungeon difficulty that enemy should appear in. A dungeon difficulty is calculated as average of players levels.</p>
+      <p>A difficulty rating of 6 means that dungeons with difficulty from 3 to 9 has a chance of spawning this group of enemies. See <code>retrieve_enemies_for_difficulty</code> in <code>enemies.py</code> for more information.
+      Yes, that means there is always a chance to get an enemy that's dedicated for higher difficulty then the current difficulty. That's made so that players will face some challange.</p>
+      <p>Enemy functions like <code>rat_pack</code> and <code>thugs</code> are functions that return a list of enemy objects and a description for the encounter.
+      It doesn't matter how you create  the objects inside the function. It's only known that if you put a function in an enemy
+      table and a list of arguments for it, it  will be called with that list of arguments unpacked.</p>
+      <p>You can make your own functions with any kind of arguments:</p>
+      <pre><code>def ouch(fruit):
+         rat = Rat(random.randint(100, 10000))
+         description = "You are witnessing a huge rat that got really big by eating %s."%(fruit)
+         return [rat], description #return a list of enemies even if there is just one enemy
+      "common": { 
+       "50": (ouch, ["bananas"] ),
+      }
+      </code></pre>
+
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Euphe/dungeon_bot">Dungeon bot</a> is maintained by <a href="https://github.com/Euphe">Euphe</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
