@@ -58,7 +58,10 @@ def diceroll(string, form_uniform=False, mode_loc = 0.9):
 		if form_uniform:
 			total_sum += int(random.randint(1, nums[1]))
 		else:
-			total_sum += int(random.triangular(1, nums[1], mode_loc*nums[1]))
+			if nums[1] <= 1:
+				total_sum += 1
+			else:
+				total_sum += int(random.triangular(1.0, nums[1], mode_loc*nums[1]))
 
 	if negative:
 		total_sum *= -1

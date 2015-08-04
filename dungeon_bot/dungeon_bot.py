@@ -256,7 +256,7 @@ class DungeonBot(object):
 		for key in list(self.open_lobbies.keys()):
 			if self.open_lobbies[key]:
 				lobby = self.open_lobbies[key]
-				if not lobby.is_enough_players:
+				if not lobby.is_enough_players():
 					lobby_desc = "Lobby %s\n"%(lobby.uid)
 					lobby_desc += "%d out of %d users:"%(len(lobby.users), lobby.total_users)
 					lobby_desc += ", ".join([ u.username for u in lobby.users ]) + ".\n"

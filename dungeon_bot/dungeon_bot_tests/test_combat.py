@@ -67,11 +67,13 @@ def controlled_combat_event(players, enemies):
 		inp = input(">")
 		msg = inp.strip().lower().split(' ')
 		command, args = msg[0], msg[1:]
-		user = next((x for x in combat_event.users if x.username == players[0].username), None)
+		user = next((x for x in combat_event.users if x.username == combat_event.turn_qeue[combat_event.turn].username), None)
 		output = combat_event.handle_command(user, command, *args)
 		if isinstance(output, list):
-			output = output[0][1]
-		print(output)
+			for msg in output:
+				print("%s received:\n-%s-\n"%(msg[0].username, msg[1] ))
+		else:
+			print(output)
 		if "Event is over" in output:
 			break
 
@@ -98,10 +100,11 @@ def run_tests():
 
 	test_abilities()
 	#controlled combat event
-	ply = Player("testman", "testply")
+	ply = Player("player1", "testply1")
+	ply1 = Player("player2", "testply2")
 	item = "club"
 	item = get_item_by_name(item)
 	ply.inventory.append(item)
 	ply.equip(item)
 	enemy = Rat()
-	controlled_combat_event([ply], [enemy])
+	controlled_combat_event([ply, ply1], [enemy])

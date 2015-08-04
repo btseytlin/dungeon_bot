@@ -132,7 +132,7 @@ class KnockedDown(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="knockdown", description="Loose 5d6 evasion, 2d6 your defence, and half your dexterity.") :
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
 		self.characteristics_change = {"dexterity": -host.characteristics["dexterity"]}
-		self.duration = clamp( 10 - host.characteristics["dexterity"], 1, 3)
+		self.duration = clamp( 10 - host.characteristics["dexterity"], 2, 4)
 		self.stats_change = {"evasion": "-5d6", "defence": "-2d6"}
 		
 	def on_round(self):
@@ -150,7 +150,7 @@ class KnockedDown(Modifier): #simply adds defence, hinders evasion
 
 class Vunerable(Modifier): #simply adds defence, hinders evasion
 	priority = 0
-	duration = 1
+	duration = 2
 	characteristics_change = {}
 	stats_change =  {"defence": "-3d6"}
 	abilities_granted = []
@@ -168,7 +168,7 @@ class Vunerable(Modifier): #simply adds defence, hinders evasion
 
 class Pain(Modifier): #simply adds defence, hinders evasion
 	priority = 0
-	duration = 1
+	duration = 2
 	characteristics_change = {"dexterity":-3, "strength":-3, "intelligence":-3}
 	stats_change =  {}
 	abilities_granted = []
@@ -188,7 +188,7 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 
 class Bleeding(Modifier): #simply adds defence, hinders evasion
 	priority = 0
-	duration = 1
+	duration = 2
 	characteristics_change = {}
 	stats_change =  {}
 	abilities_granted = []
@@ -217,12 +217,12 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 
 class Shielded(Modifier): #simply adds defence, hinders evasion
 	priority = 0
-	duration = 1
+	duration = 2
 	characteristics_change = {}
 	stats_change =  {"defence":"3d6"}
 	abilities_granted = []
 	tags_granted = []
-	def __init__(self, granted_by, host, duration=1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="shielded", description="grants defence") :
+	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="shielded", description="grants defence") :
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description)
 
 	def on_applied(self):

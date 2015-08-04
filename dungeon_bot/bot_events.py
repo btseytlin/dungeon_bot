@@ -423,6 +423,8 @@ class DungeonLobbyEvent(BotEvent):
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby",
 		"status": "shows where you are and what you are doing",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
+
 	}
 
 	def __init__(self, finished_callback, total_users):
@@ -449,6 +451,16 @@ class DungeonLobbyEvent(BotEvent):
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
+		elif (command in ["say", "s"]):
+			if len(args)>0:
+				msg = " ".join(args)
+				broadcast = []
+				broadcast.append([user, "You said:"+msg])
+				for u in self.users:
+					if user.username != u.username:
+						broadcast.append([u, "%s said:%s"%(user.username.title(), msg)])
+				return broadcast
+			return "Specify what you want to say."
 		elif (command in ["start"]):
 			return(self.start_crawl())
 		return 'Unknown command, try "help".'
@@ -536,11 +548,13 @@ class DungeonCrawlEvent(BotEvent):
 		return True
 
 	def remove_user(self, user):
+		if self.dungeon:
+			self.dungeon.players.remove(persistence_controller.get_ply(user))
 		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
-		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is'%(persistence_controller.get_ply(user))
+		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is.'%(user.username)
 
-		broadcast.append([user, "You were removed from lobby %s"%(self.uid)])
+		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
 		for u in self.users:
 			if u != user:
 				broadcast.append([u, msg])
@@ -668,6 +682,16 @@ class DungeonCrawlEvent(BotEvent):
 			return(self.open_inventory(user))
 		elif (command in ["levelup","lvl"]):
 			return(self.open_level_up(user))
+		elif (command in ["say", "s"]):
+			if len(args)>0:
+				msg = " ".join(args)
+				broadcast = []
+				broadcast.append([user, "You said:"+msg])
+				for u in self.users:
+					if user.username != u.username:
+						broadcast.append([u, "%s said:%s"%(user.username.title(), msg)])
+				return broadcast
+			return "Specify what you want to say."
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
@@ -748,7 +772,7 @@ class CombatEvent(BotEvent):
 	def next_round(self):
 		self.round += 1
 		self.turn = 0
-		msg = "".join([c.on_round() for c in self.turn_qeue])
+		msg = "".join([c.on_round() for c in self.turn_qeue if not c.dead])
 		msg += "Round %d.\n"%(self.round)
 		self.turn_qeue = self.update_turn_qeue()
 		msg += self.get_printable_turn_qeue()
@@ -813,7 +837,8 @@ class CombatEvent(BotEvent):
 			return self.next_turn()
 
 		for creature in self.turn_qeue:
-			msg += creature.on_turn()
+			if not creature.dead:
+				msg += creature.on_turn()
 		return msg + self.this_turn()
 
 	def update_turn_qeue(self):
@@ -911,13 +936,29 @@ class CombatEvent(BotEvent):
 
 				return "No such player, user, enemy or ability."
 
+		elif (command in ["say", "s"]):
+			if len(args)>0:
+				msg = " ".join(args)
+				broadcast = []
+				broadcast.append([user, "You said:"+msg])
+				for u in self.users:
+					if user.username != u.username:
+						broadcast.append([u, "%s said:%s"%(user.username.title(), msg)])
+				return broadcast
+			return "Specify what you want to say."
+
 		elif (command in ["turn", "t"]):
-			#broadcast new turn 
-			msg = self.next_turn()
-			broadcast = []
-			for u in self.users:
-				broadcast.append([u, msg])
-			return broadcast
+			if hasattr(self.turn_qeue[self.turn],"username") and self.turn_qeue[self.turn].username == user.username:
+				
+				msg = self.next_turn()
+				msg_others = "%s ends turn.\n"%(self.users_to_players[user.username].name.title()) + msg
+				broadcast = []
+				broadcast.append([user, msg])
+				for u in self.users:
+					if u.username != user.username:
+						broadcast.append([u, msg_others])
+				return broadcast
+			return "It's not your turn!"
 
 		elif (command in ["status"]):
 			msg = self.status(user)
