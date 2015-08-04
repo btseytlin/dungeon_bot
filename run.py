@@ -22,14 +22,14 @@ def start():
 	try:
 		global dungeon_bot_instance
 		with open(api_token_path) as f:
-			apitoken = f.read()
+			apitoken = f.read().strip()
 		tg = telegram.Bot(token=apitoken) 
 
 		dungeon_bot_instance = DungeonBot()
 		dungeon_bot_instance.api = tg
 
 		dungeon_bot_instance.start_main_loop()
-	except KeyboardInterrupt:
+	except KeyboardInterrupt, TelegramError:
 		logger.exception("Finished program.")
 		clean_up()
 	except:
