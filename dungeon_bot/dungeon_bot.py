@@ -75,6 +75,7 @@ class DungeonBot(object):
 		"join": "joins a random lobby",
 		"create [player_amount]": "creates a lobby",
 		"cr [player_amount]": "creates a lobby",
+		"reset_character [character name]": "removes your character and starts the registration process again, can't be undone!",
 	}
 
 	instance = None
@@ -139,6 +140,17 @@ class DungeonBot(object):
 			if len(args) != 0:
 				lobby_uid = args[0]
 			return(self.join_lobby(user, lobby_uid))
+		elif (command in ["reset_character"]):
+			character = ""
+			if len(args) != 0:
+				character = " ".join(args)
+				if character.lower() == persistence_controller.get_ply(user).name.lower():
+					del persistence_controller.players[user.username]
+					persistence_controller.save_players()
+					return "Character deleted, type something to initiate registration."
+				return "Wrong character name."
+
+			return "Type your character name. It's required for confirmation."
 		elif (command in ["create", "cr"]):
 			if len(args) < 1:
 				return "Specify the amount of players!"

@@ -5,7 +5,7 @@ from .util import *
 from .modifiers import *
 from .abilities import *
 from .level_perks import *
-
+from . import settings
 import random
 default_characteristics = {
 	"strength": 5, #how hard you hit
@@ -57,9 +57,9 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]*10 + characteristics["vitality"]*self.level*2
+		stats["max_health"] = characteristics["vitality"]*10 + characteristics["vitality"]*self.level*4
 		stats["max_energy"] = characteristics["dexterity"] + int(self.level / 10)
-		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3) + int(self.level / 20), 2, 10)
+		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3) + int(self.level / 10), 2, 10)
 		stats["health"] = stats["max_health"]
 		stats["energy"] = stats["max_energy"]
 		return stats
@@ -140,9 +140,8 @@ class Creature(object):
 	def headwear(self, value):
 		self.equipment["headwear"] = value
 
-	@property
-	def accuracy(self, weapon = None):
-		base_accuracy = diceroll( str(int(3*self.characteristics["intelligence"])) + "d" + str(2*self.characteristics["dexterity"] ))
+	def get_accuracy(self, weapon = None):
+		base_accuracy = diceroll( str(int(2*self.characteristics["intelligence"])) + "d" + str(2*self.characteristics["dexterity"] ))
 		accuracy = base_accuracy
 		for key in list(self.equipment.keys()):
 			if key != "primary_weapon" and key != "secondary_weapon" and self.equipment[key] and "accuracy" in list(self.equipment[key].stats.keys()):
@@ -838,7 +837,7 @@ class Creature(object):
 		
 		avg_defence = sum([self.defence for x in range(501)])/500
 		avg_evasion = sum([self.evasion for x in range(501)])/500
-		avg_accuracy = sum([self.accuracy for x in range(501)])/500
+		avg_accuracy = sum([self.get_accuracy() for x in range(501)])/500
 
 		desc = "\n".join(
 		[
@@ -982,7 +981,7 @@ class Player(Creature):
 			attack_info = attack_info.inhibitor.on_experience_gained(attack_info)
 			drop_table = target.__class__.drop_table
 			for item in list(drop_table.keys()):
-				prob = int(drop_table[item])
+				prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
 				got_item = random.randint(0, 100) <= prob 
 				if got_item:
 					item = get_item_by_name(item, target.__class__.loot_coolity)

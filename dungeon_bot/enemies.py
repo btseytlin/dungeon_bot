@@ -65,8 +65,8 @@ class Dummy(Enemy):
 rat_characteristics = {
 		"strength": 1, #how hard you hit
 		"vitality": 2, #how much hp you have
-		"dexterity": 5, #how fast you act, your position in turn qeue
-		"intelligence": 5, #how likely you are to strike a critical
+		"dexterity": 4, #how fast you act, your position in turn qeue
+		"intelligence": 3, #how likely you are to strike a critical
 	}
 
 class Rat(Enemy):
@@ -74,7 +74,7 @@ class Rat(Enemy):
 		"club" : 5,
 		"dagger" : 5,
 		"ring" : 5,
-		"helmet": 100,
+		"helmet": 3,
 		"random": 2,
 	}
 	loot_coolity = 0.5
@@ -290,7 +290,7 @@ undead_soldier_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
-	"intelligence": 5, #how likely you are to strike a critical
+	"intelligence": 4, #how likely you are to strike a critical
 }
 
 class UndeadSoldier(Enemy):
@@ -298,6 +298,7 @@ class UndeadSoldier(Enemy):
 		"chainmail" : 3,
 		"plate armor" : 1,
 		"primary_weapon" : 3,
+		"mace": 6,
 		"sword": 4,
 		"club": 5,
 		"dagger": 5,
@@ -312,7 +313,7 @@ class UndeadSoldier(Enemy):
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["club", "sword", "dagger"]), 0 )]
+		items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
@@ -339,7 +340,7 @@ undead_knight_characteristics = {
 	"strength": 4, #how hard you hit
 	"vitality": 4, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
-	"intelligence": 6, #how likely you are to strike a critical
+	"intelligence": 4, #how likely you are to strike a critical
 }
 
 class UndeadKnight(Enemy):
@@ -348,13 +349,14 @@ class UndeadKnight(Enemy):
 		"plate armor" : 4,
 		"primary_weapon" : 3,
 		"sword": 7,
+		"mace": 7,
 		"club": 5,
 		"dagger": 5,
 		"secondary_weapon" : 3,
 		"amulet of healing" : 3,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 100,
+		"helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -362,7 +364,7 @@ class UndeadKnight(Enemy):
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="undead knight", characteristics = undead_knight_characteristics, stats=None, description="An undead knight.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["sword"]), 0 )]
+		items = [get_item_by_name( random.choice(["sword", "mace"]), 0 )]
 		items.append( get_item_by_name( "shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( "chainmail" , 0 ) ) if random.randint(0,10) > 2 else items.append( get_item_by_name( "plate armor" , 0 ) )
 		items.append( get_item_by_name( "helmet" , 0 ) ) if random.randint(0,10) > 2 else None
@@ -392,7 +394,7 @@ lesser_demon_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 2, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
-	"intelligence": 5, #how likely you are to strike a critical
+	"intelligence": 4, #how likely you are to strike a critical
 }
 
 class LesserDemon(Enemy):
@@ -400,7 +402,7 @@ class LesserDemon(Enemy):
 		"ring of fire": 3,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 100,
+		"helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -446,7 +448,7 @@ class BetaDemon(Enemy):
 		"ring of more vitality" : 6,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 100,
+		"helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -481,27 +483,28 @@ peasant_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 4, #how fast you act, your position in turn qeue
-	"intelligence": 5, #how likely you are to strike a critical
+	"intelligence": 4, #how likely you are to strike a critical
 }
 
 class Peasant(Enemy):
 	drop_table = {
 		"club" : 7,
 		"dagger" : 7,
+		"mace": 4,
 		"primary_weapon": 3,
 		"armor": 2,
 		"ring of more strength" : 5,
 		"ring of more intelligence" : 2,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 100,
+		"helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["club", "dagger"]), 0 )]
+		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:

@@ -47,7 +47,7 @@ def print_available_commands(available_commands):
 	help_text+= "".join(lines)
 	return help_text
 
-def diceroll(string):
+def diceroll(string, form_uniform=False, mode_loc = 0.9):
 	negative = False
 	if string[0] == "-":
 		negative = True
@@ -55,7 +55,10 @@ def diceroll(string):
 	nums = [int(x) for x in string.split("d")]
 	total_sum = 0 
 	for i in range(0, nums[0]):
-		total_sum += random.randint(0, nums[1])
+		if form_uniform:
+			total_sum += int(random.randint(1, nums[1]))
+		else:
+			total_sum += int(random.triangular(1, nums[1], mode_loc*nums[1]))
 
 	if negative:
 		total_sum *= -1
