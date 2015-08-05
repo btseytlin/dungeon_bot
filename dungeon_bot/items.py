@@ -194,6 +194,7 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 		return prototype(item_args["name"], item_args["description"], item_args["item_type"], real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
 
 def get_item_by_name(name, coolity=0):
+	print(name)
 	banned_items = ["animal_teeth", "animal_claws", "rodent_teeth"]
 	if name == "random":
 		names = []

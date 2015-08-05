@@ -459,7 +459,7 @@ class DungeonLobbyEvent(BotEvent):
 				broadcast.append([user, "You said:"+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s said:%s"%(user.id.title(), msg)])
+						broadcast.append([u, "%s said:%s"%(str(user.username)+"("+str(user.id)+")".title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["start"]):
@@ -474,7 +474,7 @@ class DungeonLobbyEvent(BotEvent):
 	def add_user(self, user):
 		super(DungeonLobbyEvent, self).add_user(user)
 		broadcast = []
-		msg = "User %s joined the lobby"%(user.id)
+		msg = "User %s joined the lobby"%(str(user.username)+"("+str(user.id)+")")
 
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
 		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
@@ -496,7 +496,7 @@ class DungeonLobbyEvent(BotEvent):
 		broadcast = []
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
 		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
-		msg = "User %s left the lobby.\n"%(user.id)
+		msg = "User %s left the lobby.\n"%(str(user.username)+"("+str(user.id)+")")
 		broadcast.append([user, "You were removed from lobby %s.\n"%(self.uid)])
 		for u in self.users:
 			if u != user:
@@ -659,7 +659,7 @@ class DungeonCrawlEvent(BotEvent):
 		combat_logger.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
 
 		broadcast = []
-		msg = '%s is rummaging in his inventory.'%(user.id.title())
+		msg = '%s is rummaging in his inventory.'%(str(user.username)+"("+str(user.id)+")".title())
 
 		broadcast.append([user, inv.greeting_message])
 		for u in self.users:
@@ -868,7 +868,7 @@ class CombatEvent(BotEvent):
 	}
 
 	def handle_combat_command(self, user, command, *args):
-		combat_logger.info("Command from user %s: %s %s"%(user.id, command, " ".join(args)))
+		combat_logger.info("Command from user %s: %s %s"%(str(user.username)+"("+str(user.id)+")", command, " ".join(args)))
 		if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == user.id: #current turn is of player who sent command
 			if command in list(self.user_abilities[str(user.id)].keys()):
 				ability = self.user_abilities[str(user.id)][command]
@@ -916,7 +916,7 @@ class CombatEvent(BotEvent):
 				return  (self.users_to_players[str(user.id)]).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args)
-				if argument=="self" or argument == user.id or argument == self.users_to_players[str(user.id)].name:
+				if argument=="self" or argument == str(user.id) or argument == self.users_to_players[str(user.id)].name:
 					return (self.users_to_players[str(user.id)].examine_self())
 				elif argument.isdigit():
 					if int(argument) < len(self.turn_qeue):
@@ -944,12 +944,12 @@ class CombatEvent(BotEvent):
 				broadcast.append([user, "You said:"+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s said:%s"%(user.id.title(), msg)])
+						broadcast.append([u, "%s said:%s"%(str(user.username)+"("+str(user.id)+")", msg)])
 				return broadcast
 			return "Specify what you want to say."
 
 		elif (command in ["turn", "t"]):
-			if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == user.id:
+			if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id):
 				
 				msg = self.next_turn()
 				msg_others = "%s ends turn.\n"%(self.users_to_players[str(user.id)].name.title()) + msg

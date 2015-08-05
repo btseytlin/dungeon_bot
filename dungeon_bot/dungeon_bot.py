@@ -123,7 +123,7 @@ class DungeonBot(object):
 		if (command in ["examine","ex","stats","st"]):
 			if len(args) > 1:
 				return self.reply_error(user)
-			elif len(args) == 0 or args[0]=="self" or args[0] == user.id or args[0] == persistence_controller.get_ply(user).name:
+			elif len(args) == 0 or args[0]=="self" or args[0] == str(user.id) or args[0] == persistence_controller.get_ply(user).name:
 				return (persistence_controller.get_ply(user).examine_self())
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
@@ -199,7 +199,7 @@ class DungeonBot(object):
 
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
-			print("User %s is not registered"%(user.id))
+			print("User %s is not registered"%(str(user.username)+"("+str(user.id)+")"))
 			self.api.sendMessage(user.id, DungeonBot.intro_message)
 			self.register_player(user)
 		else:
@@ -281,7 +281,7 @@ class DungeonBot(object):
 			return "No such lobby!"
 
 		lobby = self.open_lobbies[lobby_uid]
-		logger.debug("User %s joined lobby %s"%(user.id, lobby_uid))
+		logger.debug("User %s joined lobby %s"%(str(user.username)+"("+str(user.id)+")"), lobby_uid))
 		return(lobby.add_user(user))
 
 
