@@ -115,7 +115,7 @@ class ChatEvent(BotEvent):
 				broadcast.append([user, "You said: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, ])
+						broadcast.append([u, msg_others])
 				return broadcast
 			return "Specify what you want to say."
 
@@ -384,7 +384,7 @@ class InventoryEvent(BotEvent):
 		self.player = persistence_controller.get_ply(user)
 		self.greeting_message = self.status(user)
 
-	def status(self, user):
+	def status(self, user=None):
 		msg = "You are in the inventory screen.\n"
 		msg += 'You can use item numbers as arguemnts for commands, for example "equip 1".\n'
 		msg += "Your inventory:\n%s\n"%(self.player.examine_inventory())
@@ -547,7 +547,7 @@ class DungeonLobbyEvent(BotEvent):
 		self.status_message = 'There are %d out of %d players.'
 		self.total_users = total_users
 
-	def status(self, user):
+	def status(self, user=None):
 		msg = 'You are in lobby %s.\nThere are %d out of %d players in the lobby.\n'%(self.uid, len(self.users), self.total_users)
 		msg += 'Players in lobby:%s.\n'%(", ".join([persistence_controller.get_ply(user).name+"(@"+persistence_controller.get_ply(user).userid+")" for user in self.users]))
 		if self.is_enough_players():
@@ -575,6 +575,19 @@ class DungeonLobbyEvent(BotEvent):
 						broadcast.append([u, "%s said:%s"%(str(user.username)+"("+str(user.id)+")".title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
+
+		elif (command in ["say", "s"]):
+			if len(args)>0:
+				msg = " ".join(args)
+				msg_others = "%s (%s) said: %s"%(persistence_controller.get_ply(user).name.title(), str(user.username), msg)
+				broadcast = []
+				broadcast.append([user, "You said: "+msg])
+				for u in self.users:
+					if user.id != u.id:
+						broadcast.append([u, msg_others])
+				return broadcast
+			return "Specify what you want to say."
+
 		elif (command in ["start"]):
 			if self.is_enough_players():
 				return(self.start_crawl())
@@ -690,7 +703,7 @@ class DungeonCrawlEvent(BotEvent):
 					alive_player = True
 			if not alive_player:
 				return "\nThe players perished in the dungeon.\n" +self.finish() 
-			return "\nThe players have defeated the enemies and are ready to advance further.\n"
+			return "\nThe players have defeated the enemies and are ready to advance further.\n" + self.status()
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
 		self.combat_event = combat
@@ -767,6 +780,7 @@ class DungeonCrawlEvent(BotEvent):
 				if self.non_combat_events[uname] == event:
 					del self.non_combat_events[uname]
 					break
+			return self.status()
 
 		inv = InventoryEvent(inv_over_callback, user) #Create an inventory event
 		self.non_combat_events[str(user.id)] = inv
@@ -886,7 +900,7 @@ class CombatEvent(BotEvent):
 		#if isinstance(self.turn_qeue[self.turn], Enemy):
 		#	self.greeting_message += self.ai_turn()
 
-	def status(self, user):
+	def status(self, user=None):
 		msg = 'You are fighting %s.\n'%(", ".join([enemy.name for enemy in self.enemies]))
 		msg += 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
 		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'

@@ -27,6 +27,7 @@ def event_over_callback(event):
 	logger.debug("Event %s removed"%(event.uid))
 	gc.collect()
 	return ""
+	
 
 def crawl_event_over_callback(event):
 	persistence_controller.save_players()
@@ -55,6 +56,7 @@ def lobby_event_lover_callback(lobby):
 		for u in lobby.users:
 			broadcast.append([u, msg])
 		return broadcast
+	return DungeonBot.instance.status()
 
 
 
@@ -131,6 +133,7 @@ class DungeonBot(object):
 
 	def status(self, user=None):
 		msg = 'You are in the main screen of DungeonBot.\nFrom here you can inspect your inventory, your stats and characteristics, create and join lobbies.\nCreate a lobby by typing "create 1" (means "create lobby for one player") and jump straight into action!\n'
+		msg += "There are %d players in the chat. Type \"chat\" to join them."%(len(self.chat.users))
 		return msg
 
 	def handle_command(self, user, command, *args):

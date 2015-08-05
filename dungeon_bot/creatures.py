@@ -1026,8 +1026,9 @@ class Enemy(Creature):
 	def select_target(self, combat_event):
 		alive_players = [x for x in combat_event.turn_qeue if isinstance(x, Player)]
 		if len(alive_players) > 0:
-			self.target = random.choice([x for x in combat_event.turn_qeue if isinstance(x, Player)])
-		self.target = None
+			self.target = random.choice(alive_players)
+		else:
+			self.target = None
 
 	def act(self):
 		return "Base enemy has no AI"
