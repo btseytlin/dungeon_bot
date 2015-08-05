@@ -269,11 +269,12 @@ class LevelUpEvent(BotEvent):
 		self.current_step = 0
 		self.perk_step_msg = ""
 		self.available_perks = []
+		self.perk_step_msg = ""
 		self.greeting_message = "In this dialogue you can level up your character.\nYou get a perk every 3 turns and a characteristic point every 5 turns.\nYou can save points for later by typing 'done'.\n"
 
 		if self.player.perk_points > 0:
 			self.perk_step_msg = "Choose a perk by typing it's number:\n"
-			self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key].requirements)]
+			self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
 			self.perk_step_msg += "\n".join([str(i+1) + ". " +self.available_perks[i].name + "-" + self.available_perks[i].description for i in range(len(self.available_perks)) ])
 
 		if self.player.level_up_points <= 0:
@@ -348,13 +349,25 @@ class LevelUpEvent(BotEvent):
 			if command.isdigit():
 				if int(command) > 0 and int(command) <= len(self.available_perks):
 					perk = self.available_perks[int(command)-1]
+					if perk.name in [p.name for p in self.player.level_perks]:
+						return "You already have that perk!"
 					self.player.level_perks.append(perk(self.player))
 					msg = "Added perk %s.\n"%(perk.name)
 					self.player.perk_points -= 1
+
+					self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
+
 					if self.player.perk_points <= 0 or len(self.available_perks) <= 0:
 						msg += "Done leveling up.\n"
 						return msg + str(self.finish())
-					msg = "You still have %d perk points to spend.\n"%(self.player.perk_points)
+
+
+					msg += "You still have %d perk points to spend.\n"%(self.player.perk_points)
+					self.perk_step_msg = "Choose a perk by typing it's number:\n"
+					
+					self.perk_step_msg += "\n".join([str(i+1) + ". " +self.available_perks[i].name + "-" + self.available_perks[i].description for i in range(len(self.available_perks)) ])
+					msg += self.perk_step_msg
+					return msg
 				else:
 					return "No perk under such number."
 			else:
@@ -418,9 +431,9 @@ class InventoryEvent(BotEvent):
 					return True, player.headwear
 				else:
 					return False, "Headwear not equipped."
-			elif arg in ["talisamn", "t"]:				
-				if player.talisamn:
-					return True, player.talisamn
+			elif arg in ["talisman", "t"]:				
+				if player.talisman:
+					return True, player.talisman
 				else:
 					return False, "Talisman not equipped."
 

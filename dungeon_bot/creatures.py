@@ -928,13 +928,14 @@ class Player(Creature):
 			return "%s has leveled up to level %d!\n"%(self.name.title(), self.level)
 		return ""
 
-	def fits_perk_requirements(self, perk_requirements):
-		own_perk_names= [perk.__class__.name for perk in self.level_perks]
-
+	def fits_perk_requirements(self, perk, perk_requirements):
+		own_perk_names= [p.__class__.name for p in self.level_perks]
+		if perk.name in own_perk_names:
+			return False
 		if perk_requirements["level"] > self.level:
 			return False
-		for perk in perk_requirements["has_perks"]:
-			if not perk.__class__.name in own_perk_names:
+		for p in perk_requirements["has_perks"]:
+			if not p.__class__.name in own_perk_names:
 				return False
 		for characteristic in list(perk_requirements["characteristics"].keys()):
 			if self.characteristics[characteristic] < perk_requirements["characteristics"][characteristic]:

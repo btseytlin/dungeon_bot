@@ -77,7 +77,7 @@ def controlled_combat_event(players, enemies):
 		if isinstance(output, list):
 			for msg in output:
 				print("%s received:\n-%s-\n"%(msg[0].userid, msg[1] ))
-				if "Event is over" in msg:
+				if "Event is over" in msg[1]:
 					return
 		else:
 			print(output)
@@ -120,4 +120,4 @@ def run_tests():
 	ply.equip(item)
 
 	enemies = [Dummy(100000)]
-	controlled_combat_event([ply], enemies)
+	#controlled_combat_event([ply], enemies)
