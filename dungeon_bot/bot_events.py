@@ -169,7 +169,7 @@ class LevelUpEvent(BotEvent):
 		self.player = persistence_controller.get_ply(user)
 		self.current_step = 0
 		self.perk_step_msg = ""
-
+		self.available_perks = []
 		self.greeting_message = "In this dialogue you can level up your character.\nYou get a perk every 3 turns and a characteristic point every 5 turns.\nYou can save points for later by typing 'done'.\n"
 
 		if self.player.perk_points > 0:
@@ -234,7 +234,7 @@ class LevelUpEvent(BotEvent):
 								msg += "Done leveling up.\n"
 								return msg + self.finish()
 							else:
-								if len(self.available_perks) <= 0:
+								if self.available_perks and len(self.available_perks) <= 0:
 									msg += "No perks available."
 									msg += "Done leveling up.\n"
 									return msg + self.finish()
@@ -936,8 +936,8 @@ class CombatEvent(BotEvent):
 						return self.turn_qeue[int(argument)].examine_self()
 				else:
 					for u in self.users:
-						target_ply = self.users_to_players[u.id]
-						if u.id == argument or target_ply.name == argument:
+						target_ply = self.users_to_players[str(u.id)]
+						if str(u.id) == argument or target_ply.name == argument:
 							return target_ply.examine_self()
 
 					for enemy in self.enemies:

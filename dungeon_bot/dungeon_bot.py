@@ -195,7 +195,7 @@ class DungeonBot(object):
 		user = message.from_user
 
 		if not message.text: #if message text is missing or empty its an error
-			self.reply_error(user, message)
+			self.reply_error(user)
 
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
@@ -206,7 +206,14 @@ class DungeonBot(object):
 			ply = persistence_controller.get_ply(user)
 			command, args = parse_command(message.text)
 			if ply.event: #Check if player is in event
-				response = ply.event.handle_command(user, command, *args)
+				try:
+					response = ply.event.handle_command(user, command, *args)
+				except:
+					logger.exception("E internal event:")
+					if ply.event:
+						ply.event.finish()
+					persistence_controller.save_players()
+					response = "There has been an error.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message to @btseytlin describing what happened.\nCheers!"
 
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
