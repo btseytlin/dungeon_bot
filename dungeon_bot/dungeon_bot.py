@@ -281,7 +281,7 @@ class DungeonBot(object):
 			return "No such lobby!"
 
 		lobby = self.open_lobbies[lobby_uid]
-		logger.debug("User %s joined lobby %s"%(str(user.username)+"("+str(user.id)+")"), lobby_uid))
+		logger.debug("User %s joined lobby %s"%(str(user.username)+"("+str(user.id)+")", lobby_uid))
 		return(lobby.add_user(user))
 
 

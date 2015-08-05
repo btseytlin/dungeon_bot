@@ -11,6 +11,7 @@ logger.debug("Test abilities loaded")
 class MockUser(object):
 		def __init__(self, userid):
 			self.userid = userid
+			self.username = userid
 			self.id = userid
 
 def test_attack_abilities(player, enemy = None):
@@ -97,7 +98,7 @@ def test_weapon_abilities():
 
 def run_tests():
 
-	#test_weapon_abilities()
+	test_weapon_abilities()
 	#controlled combat event
 	ply = Player("player1", "testply1")
 	ply1 = Player("player2", "testply2")

@@ -553,7 +553,7 @@ class DungeonCrawlEvent(BotEvent):
 			self.dungeon.players.remove(persistence_controller.get_ply(user))
 		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
-		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is.'%(user.id)
+		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is.'%(str(user.username) + "(" + str(user.id)+")")
 
 		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
 		for u in self.users:
@@ -690,7 +690,7 @@ class DungeonCrawlEvent(BotEvent):
 				broadcast.append([user, "You said:"+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s said:%s"%(user.id.title(), msg)])
+						broadcast.append([u, "%s said:%s"%(str(user.username) + "("+user.id+")".title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["status"]):
@@ -701,7 +701,7 @@ class DungeonCrawlEvent(BotEvent):
 				return  (persistence_controller.get_ply(user)).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args)
-				if argument=="self" or argument == user.id or argument == persistence_controller.get_ply(user).name:
+				if argument=="self" or argument == str(user.id) or argument == persistence_controller.get_ply(user).name:
 					return (persistence_controller.get_ply(user).examine_self())
 				else:
 					target_user = None
@@ -744,7 +744,7 @@ class CombatEvent(BotEvent):
 		}
 		for user in self.users:
 			for ply in self.players:
-				if ply.userid == user.id:
+				if ply.userid == str(user.id):
 					self.users_to_players[str(user.id)] = ply
 
 			if not user.id in list(self.user_abilities.keys()):
@@ -869,7 +869,7 @@ class CombatEvent(BotEvent):
 
 	def handle_combat_command(self, user, command, *args):
 		combat_logger.info("Command from user %s: %s %s"%(str(user.username)+"("+str(user.id)+")", command, " ".join(args)))
-		if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == user.id: #current turn is of player who sent command
+		if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id): #current turn is of player who sent command
 			if command in list(self.user_abilities[str(user.id)].keys()):
 				ability = self.user_abilities[str(user.id)][command]
 				ability_class = self.user_abilities[str(user.id)][command].__class__
