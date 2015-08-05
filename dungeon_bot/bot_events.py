@@ -752,7 +752,10 @@ class CombatEvent(BotEvent):
 
 			ply = self.users_to_players[str(user.id)]
 			for ability in ply.abilities:
-				self.user_abilities[str(user.id)][ability.name] = ability
+				if ability.name in [ab for ab in self.user_abilities[str(user.id)] ]:# ability with that name already exists
+					self.user_abilities[str(user.id)][ability.granted_by.name + " " +ability.name] = ability
+				else:
+					self.user_abilities[str(user.id)][ability.name] = ability
 
 		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.userid+")" for p in players]), ", ".join([e.name for e in enemies])))
 

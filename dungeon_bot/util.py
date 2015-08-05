@@ -17,17 +17,20 @@ def clamp(value, range_min, range_max):
 
 def print_combat_abilities(combat_abilities):
 	help_text = "Available combat commands:\n"
-	help_text += " name | energy_required\n"
+	help_text += " command | energy_required | item used\n"
 	for key in list(combat_abilities.keys()):
 		ability = combat_abilities[key]
-		help_text += "%s | %s\n"%(ability.name, ability.energy_required )
-
+		help_text += "%s | %s | %s\n"%(key, ability.energy_required, ability.granted_by.name )
 	return help_text
 
-def parse_command(user, message):
-	words = message.text.strip().lower().split(' ')
-	command = words[0]
-	args = words[1:]
+def parse_command(text):
+	words = text.strip().lower().split(' ')
+	if len(words) > 1:
+		command = " ".join(words[:-1])
+		args = words[-1]
+	else:
+		command = words[0]
+		args = []
 	return command,args
 
 def print_available_commands(available_commands):

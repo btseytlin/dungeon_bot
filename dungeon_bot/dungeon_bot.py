@@ -204,7 +204,7 @@ class DungeonBot(object):
 			self.register_player(user)
 		else:
 			ply = persistence_controller.get_ply(user)
-			command, args = parse_command(user, message)
+			command, args = parse_command(message)
 			if ply.event: #Check if player is in event
 				response = ply.event.handle_command(user, command, *args)
 

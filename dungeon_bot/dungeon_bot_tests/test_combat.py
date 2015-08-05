@@ -66,16 +66,23 @@ def controlled_combat_event(players, enemies):
 	while combat_event != None:
 		inp = input(">")
 		msg = inp.strip().lower().split(' ')
-		command, args = msg[0], msg[1:]
+		
+
 		user = next((x for x in combat_event.users if x.userid == combat_event.turn_qeue[combat_event.turn].userid), None)
+		command, args = parse_command(inp)
 		output = combat_event.handle_command(user, command, *args)
+		for player in combat_event.players:
+			player.energy = player.stats["max_energy"]
+
 		if isinstance(output, list):
 			for msg in output:
 				print("%s received:\n-%s-\n"%(msg[0].userid, msg[1] ))
+				if "Event is over" in msg:
+					return
 		else:
 			print(output)
 		if "Event is over" in output:
-			break
+			return
 
 
 def test_weapon_abilities():
@@ -102,9 +109,15 @@ def run_tests():
 	#controlled combat event
 	ply = Player("player1", "testply1")
 	ply1 = Player("player2", "testply2")
-	item = "claymore"
+	item = "rapier"
 	item = get_item_by_name(item)
 	ply.inventory.append(item)
 	ply.equip(item)
-	enemies = [Rat() for x in range(5)]
+
+	item = "dagger"
+	item = get_item_by_name(item)
+	ply.inventory.append(item)
+	ply.equip(item)
+
+	enemies = [Dummy(100000)]
 	controlled_combat_event([ply], enemies)

@@ -413,7 +413,7 @@ class QuickStab(Ability):
 	above average dex required to use 
 
 	"""
-	name = "quickstab"
+	name = "quick stab"
 	description = "Quick stab in the gut!"
 	energy_required = 1
 	requirements = None
@@ -571,7 +571,7 @@ class QuickCut(Ability): #TODO test and adapt
 	above average dex required to use 
 
 	"""
-	name = "quickcut"
+	name = "quick cut"
 	description = "Cut em up!"
 	energy_required = 1
 	requirements = None
@@ -638,7 +638,7 @@ class ShieldUp(Ability): #TODO test and adapt
 	evasion_lost = ?
 
 	"""
-	name = "shieldup"
+	name = "shield up"
 	description = "Hide behind your steel."
 	energy_required = 3
 	requirements = None
@@ -964,11 +964,11 @@ class AnimalClaw(Ability):
 
 abilities = {
 	"smash": Smash,
-	"shieldup": ShieldUp,
+	"shield up": ShieldUp,
 	"cut": Cut,
 	"stab": Stab,
-	"quickcut": QuickCut,
-	"quickstab": QuickStab,
+	"quick cut": QuickCut,
+	"quick stab": QuickStab,
 	"sweep": Sweep,
 	# animal abilities below
 	"rodent bite": RodentBite,

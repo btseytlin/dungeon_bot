@@ -155,7 +155,7 @@ class Vunerable(Modifier): #simply adds defence, hinders evasion
 	stats_change =  {"defence": "-3d6"}
 	abilities_granted = []
 	tags_granted = []
-	def __init__(self, granted_by, host, duration=1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="vunerable", description="Loose 3d6 defence for a turn."):
+	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="vunerable", description="Loose 3d6 defence for a turn."):
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
 
 	def on_applied(self):
@@ -173,9 +173,10 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 	stats_change =  {}
 	abilities_granted = []
 	tags_granted = []
-	def __init__(self, granted_by, host, duration=1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="pain", description="Loose 3 dexterity, strength and intelligence for a turn.") :
+	def __init__(self, granted_by, host, duration=2, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="pain", description="Loose 3 dexterity, strength and intelligence for a turn.") :
 		characteristics_change = {"dexterity":-3, "strength":-3, "intelligence":-3}
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+		self.duration = Pain.duration
 
 	def on_applied(self):
 		msg = super(Pain, self).on_applied()
