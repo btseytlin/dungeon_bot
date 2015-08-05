@@ -398,9 +398,9 @@ class QuickStab(Ability):
 	High chance to hit.
 	Higher chance to hit big and slow oponents.
 
-	chance to hit = accuracy * dexterity * 1.5 - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
+	chance to hit = ?
 
-	dmg = weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength) - defence * 1.5 - is_armored * defence * 3 - is_heavy_armored * defence * 4
+	dmg = ?
 
 	avg chance to hit = 55
 
@@ -436,7 +436,7 @@ class QuickStab(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.05 *(weapon_dmg * strength) - defence, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * (strength/2) - defence *1.4, user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -594,7 +594,7 @@ class QuickCut(Ability): #TODO test and adapt
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.1 *(weapon_dmg * strength) - defence, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * (strength/2)  - defence*1.4, user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod

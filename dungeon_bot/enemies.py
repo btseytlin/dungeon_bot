@@ -65,7 +65,7 @@ class Dummy(Enemy):
 rat_characteristics = {
 		"strength": 1, #how hard you hit
 		"vitality": 2, #how much hp you have
-		"dexterity": 4, #how fast you act, your position in turn qeue
+		"dexterity": 5, #how fast you act, your position in turn qeue
 		"intelligence": 3, #how likely you are to strike a critical
 	}
 
@@ -687,7 +687,7 @@ def bear():
 
 def undead_soldier_pack(size):
 	description = "An undead soldier.\n"
-	levels = list(range(1,3))
+	levels = list(range(1,10))
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
@@ -708,8 +708,8 @@ def undead_soldier_pack(size):
 def lesser_demon_pack(size):
 	description = "A lesser demon.\n"
 	beta_demon = None
-	levels = list(range(1,3))
-	beta_levels = list(range(1,3))
+	levels = list(range(1,10))
+	beta_levels = list(range(1,10))
 	amount = 1
 	if size == "small":
 		amount = random.randint(1, 3)
@@ -744,13 +744,13 @@ def lesser_demon_pack(size):
 
 def beta_demon():
 	description = "A beta demon.\n"
-	levels = list(range(1,3))
+	levels = list(range(1,10))
 	beta_demon = BetaDemon(levels)
 	return [beta_demon], description
 
 def peasant_pack(size):
 	description = "A peasant.\n"
-	levels = list(range(1,3))
+	levels = list(range(1,10))
 	thief = None
 	amount = 1
 	if size == "small":
