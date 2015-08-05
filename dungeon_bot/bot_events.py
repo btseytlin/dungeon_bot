@@ -261,6 +261,8 @@ class InventoryEvent(BotEvent):
 		"examine": "shows your stats and inventory","ex": "shows your stats and inventory","stats": "shows your stats and inventory",
 		"list": "lists your inventory","l": "lists your inventory",
 		"examine [item]": "shows an item's stats", "ex [item]": "shows an item's stats", 
+		"examine [r/pw/sw/a/h/t]": "examine an equipped item",
+		"ex [r/pw/sw/a/h/t]": "examine an equipped item",
 		"equip [item]": "equips an item","eq [item]": "equips an item",
 		"unequip [item]": "equips an item","uneq [item]": "unequips an item",
 		"use [item]": "uses an item (such as a potion)", "u [item]": "uses an item (such as a potion)",

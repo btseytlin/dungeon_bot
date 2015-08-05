@@ -102,7 +102,7 @@ class AbilityUseInfo(object):
 		msg_lines.append("Inhibitor %s uses %s(%s) of item %s on target %s."%(inhibitor, self.ability_type, self.prototype_class, self.use_info["item_used"].name, target))
 		msg_lines.append("Energy change: %d"%(self.use_info["energy_change"]))
 		if self.ability_type == "aoe_attack":
-			msg = "AOE attack %s by %s."%(self.prototype_class.name, self.inhibitor.userid)
+			msg = "AOE attack %s by %s."%(self.prototype_class.name, self.inhibitor.name)
 			return msg + "\n".join([str(attack) for attack in self.attack_infos])
 		if self.ability_type == "attack":
 			msg_lines.append("Hit chance: %d"%(self.use_info["hit_chance"]))
