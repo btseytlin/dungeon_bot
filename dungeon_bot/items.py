@@ -208,6 +208,7 @@ def get_item_by_name(name, coolity=0):
 	for key in list(item_listing.keys()):
 		if name == key:
 			name = random.choice([item for item in list(item_listing[key].keys()) if not item in banned_items])
+			print(name)
 		for item in list(item_listing[key].keys()):
 			if item == name:
 				item_args = item_listing[key][item]["args"]
@@ -241,6 +242,7 @@ item_listing = {
 		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["1d6","2d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
 		"mace": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"mace", "description":"Like the club, except less bad!", "abilities_granted":["smash"]}},
 		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
+		"claymore": {"stats": {"damage" : ["2d6","4d6"], "accuracy" : ["1d6","4d6"]} , "args":{"name":"claymore", "description":"A two handed sword that allows for sweeping attacks damaging many enemies at once.", "abilities_granted":["sweep", "stab"], "requirements": {"two handed": True}}},
 
 		# enemy equipment below
 		"rodent_teeth": {"stats": {"damage" : ["1d3","2d3"], "accuracy" : ["4d6", "6d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
@@ -269,15 +271,16 @@ item_listing = {
 			]}},
 	},
 	"ring":{
-		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d4", "6d6"]}} , 
-		"args":{
-				"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",
-				"modifiers_granted": [
-					{
-					"name":"fire_attack", 
-					"params":{}
-					} 
-				]
+		"ring of fire": {
+			"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d4", "6d6"]} , 
+			"args":{
+					"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",
+					"modifiers_granted": [
+						{
+						"name":"fire_attack", 
+						"params":{}
+						} 
+					]
 			}
 		},
 
@@ -290,12 +293,12 @@ item_listing = {
 				"stats_change": {
 					"evasion": ["1d6", "3d6"]
 				},
-					"characteristics_change": {
-				"dexterity" : [1, 2]
+				"characteristics_change": {
+					"dexterity" : [1, 2]
 				}
 			},
 			"args":{
-				"name":"ring of more thievery",
+				"name":"ring of thievery",
 				"description":"Gives a dex bonus and an evasion bonus."
 			}
 		 },
@@ -304,9 +307,10 @@ item_listing = {
 
 		"ring of more intelligence": {"stats": {"characteristics_change": {"intelligence" : [1, 3]}} , "args":{"name":"ring of more intelligence", "description":"Just gives you more int."} },
 
-		"ring of more hp": {"stats": {"stats_change": {"max_health" : [10, 50]}} , "args":{"name":"ring of more hp", "description":"Just gives you more max hp."}}  ,
+		"ring of more hp": {"stats": {"stats_change": {"max_health" : [10, 50]}} , "args":{"name":"ring of more hp", "description":"Just gives you more max hp."}},
+	},
 
 	"headwear":{
-		"helmet": {"stats": {"defence" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet."}},
+		"helmet": {"stats": {"defence" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} }, "args":{"name":"helmet", "description":"Helmet, boring helmet."},
 	}
 }

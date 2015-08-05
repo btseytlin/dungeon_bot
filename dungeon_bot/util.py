@@ -7,6 +7,12 @@ def get_uid():
 	return str(uuid.uuid4())[:8]
 
 def clamp(value, range_min, range_max):
+	# if isinstance(range_min, float) or isinstance(range_max, float):
+	# 	if value > range_max:
+	# 		return range_max
+	# 	elif value < range_min:
+	# 		return range_min
+	# 	return value
 	return max(range_min, min(value, range_max))
 
 def print_combat_abilities(combat_abilities):

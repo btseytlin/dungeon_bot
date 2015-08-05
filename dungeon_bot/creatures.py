@@ -228,16 +228,23 @@ class Creature(object):
 
 		if target_item.requirements:
 			for key in list(target_item.requirements.keys()):
-				if self.characteristics[key] < target_item.requirements[key]:
-					return "%d %s required to use this item."%(target_item.requirements[key], key)
+				if key == "characteristics":
+					for characteristic in target_item.requirements[key]:
+						if self.characteristics[characteristic] < target_item.requirements[key][characteristic]:
+							return "%d %s required to use this item."%(target_item.requirements[key][characteristic], key)
+				if key == "two handed" and target_item.requirements[key]:
+					if self.secondary_weapon:
+						return "Can't equip two handed %s because %s is equipped."%(target_item.short_desc, self.secondary_weapon.short_desc)
 
 		if self.equipment[target_item.item_type] == target_item:
 			return "Already equipped %s."%(target_item.name)
 
+		if target_item.item_type == "secondary_weapon" and self.primary_weapon and "two handed" in self.primary_weapon.requirements and self.primary_weapon.requirements["two handed"]:
+			return "Can't equip %s because two handed %s is equipped."%(target_item.short_desc, self.primary_weapon.short_desc)
+
 		if self.equipment[target_item.item_type]:
 			temp = self.equipment[target_item.item_type]
 			self.unequip(temp)
-
 
 		self.equipment[target_item.item_type] = target_item
 		for item in self.inventory:

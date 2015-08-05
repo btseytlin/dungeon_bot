@@ -146,7 +146,7 @@ class DungeonBot(object):
 			if len(args) != 0:
 				character = " ".join(args)
 				if character.lower() == persistence_controller.get_ply(user).name.lower():
-					del persistence_controller.players[user.id]
+					del persistence_controller.players[str(user.id)]
 					persistence_controller.save_players()
 					return "Character deleted, type something to initiate registration."
 				return "Wrong character name."

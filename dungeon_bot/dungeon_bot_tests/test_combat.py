@@ -8,16 +8,18 @@ from ..enemies import *
 logger = logging.getLogger("dungeon_bot_test_log")
 logger.debug("Test abilities loaded")
 
+class MockUser(object):
+		def __init__(self, userid):
+			self.userid = userid
+			self.id = userid
+
 def test_attack_abilities(player, enemy = None):
-	class MockUser(object):
-		def __init__(self, username):
-			self.username = username
 
 	def finished_callback(event):
 		combat_event = None
 		return('Event is over')
 
-	user = MockUser(player.username)
+	user = MockUser(player.userid)
 	dummy = enemy or Dummy()
 
 	combat_event = CombatEvent(finished_callback, [player], [user], [dummy])
@@ -48,16 +50,13 @@ def test_attack_abilities(player, enemy = None):
 	combat_event.finish()
 		
 def controlled_combat_event(players, enemies):
-	class MockUser(object):
-		def __init__(self, username):
-			self.username = username
 
 	def finished_callback(event):
 		combat_event = None
 		return('Event is over')
 	users = []
 	for player in players:
-		users.append(MockUser(player.username))
+		users.append(MockUser(player.userid))
 
 	combat_event = CombatEvent(finished_callback, players, users, enemies)
 	
@@ -67,18 +66,18 @@ def controlled_combat_event(players, enemies):
 		inp = input(">")
 		msg = inp.strip().lower().split(' ')
 		command, args = msg[0], msg[1:]
-		user = next((x for x in combat_event.users if x.username == combat_event.turn_qeue[combat_event.turn].username), None)
+		user = next((x for x in combat_event.users if x.userid == combat_event.turn_qeue[combat_event.turn].userid), None)
 		output = combat_event.handle_command(user, command, *args)
 		if isinstance(output, list):
 			for msg in output:
-				print("%s received:\n-%s-\n"%(msg[0].username, msg[1] ))
+				print("%s received:\n-%s-\n"%(msg[0].userid, msg[1] ))
 		else:
 			print(output)
 		if "Event is over" in output:
 			break
 
 
-def test_abilities():
+def test_weapon_abilities():
 
 
 	ply = Player("testman", "testply")
@@ -98,13 +97,13 @@ def test_abilities():
 
 def run_tests():
 
-	test_abilities()
+	#test_weapon_abilities()
 	#controlled combat event
 	ply = Player("player1", "testply1")
 	ply1 = Player("player2", "testply2")
-	item = "club"
+	item = "claymore"
 	item = get_item_by_name(item)
 	ply.inventory.append(item)
 	ply.equip(item)
-	enemy = Rat()
-	controlled_combat_event([ply, ply1], [enemy])
+	enemies = [Rat() for x in range(5)]
+	controlled_combat_event([ply], enemies)
