@@ -887,13 +887,13 @@ class Creature(object):
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, userid, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0):
+	def __init__(self, userid, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0, last_read_notification_id = -1):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.level_up_points = level_up_points
 		self.perk_points = perk_points
 		self.userid = str(userid)
-
+		self.last_read_notification_id = last_read_notification_id
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
 	@property
@@ -974,7 +974,9 @@ class Player(Creature):
 				equipment[key] = Item.de_json(eq[key])
 		data["equipment"] = equipment
 
-		ply = Player(data.get("userid"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], [], data.get("_experience"), data.get("level_up_points"), data.get("perk_points"))
+		if not "last_read_notification_id" in data:
+			data["last_read_notification_id"] = -1
+		ply = Player(data.get("userid"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], [], data.get("_experience"), data.get("level_up_points"), data.get("perk_points"), data.get("last_read_notification_id"))
 		level_perks = [level_perks_listing[name](ply) for name in data["level_perks"]]
 		ply.level_perks = level_perks
 		ply.refresh_derived()

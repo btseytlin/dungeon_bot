@@ -96,8 +96,15 @@ class DungeonBot(object):
 		logger.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
 		self.chat = ChatEvent(chat_over_callback)
-		DungeonBot.instance = self
+		
 
+		self.notifications = []
+
+		with open("data/notifications.json") as f:
+			notfications_plaintext = f.read()
+			self.notifications = json.loads(notfications_plaintext) 
+		print("Notifications loaded:\n%s"%("\n".join(["%s : %s"%(notification["id"], notification["text"]) for notification in self.notifications])))
+		DungeonBot.instance = self
 
 	@staticmethod
 	def get_instance():
@@ -178,10 +185,6 @@ class DungeonBot(object):
 			return self.handle_command(user, command, *args)
 		return 'Unknown command, try "help".'
 
-
-	def reply_error(self, user):
-		self.api.sendMessage(user.id, "Unknown command, try \"help\".")
-
 	def start_main_loop(self):
 		#start dead event collection timer
 		self.timer = threading.Timer(600, self.cleanse_dead_events)
@@ -204,6 +207,14 @@ class DungeonBot(object):
 					logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
 					self.on_message(message)
 
+	def send_message(self, user, message):
+		if persistence_controller.is_registered(user): 
+			ply = persistence_controller.get_ply(user)
+			for notification in self.notifications:
+				if ply.last_read_notification_id < notification["id"]:
+					ply.last_read_notification_id = notification["id"]
+					message += "\n"+notification["text"]
+		self.api.sendMessage(user.id, message)
 
 	def on_message(self, message):
 		user = message.from_user
@@ -214,7 +225,7 @@ class DungeonBot(object):
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
 			print("User %s is not registered"%(str(user.username)+"("+str(user.id)+")"))
-			self.api.sendMessage(user.id, DungeonBot.intro_message)
+			self.send_message(user, DungeonBot.intro_message)
 			self.register_player(user)
 		else:
 			ply = persistence_controller.get_ply(user)
@@ -232,27 +243,28 @@ class DungeonBot(object):
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
 						logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
-						self.api.sendMessage(message[0].id, message[1])
+
+						self.send_message(message[0], message[1])
 				else:
 					logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-					self.api.sendMessage(user.id, response) #If he is, let the event handle the message
+					self.send_message(user, response) #If he is, let the event handle the message
 			else:
 				#parse command on your own
 				response = self.handle_command(user, command, *args)
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
 						logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
-						self.api.sendMessage(message[0].id, message[1])
+						self.send_message(message[0], message[1])
 				else:
 					logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-					self.api.sendMessage(user.id, response)
+					self.send_message(user, response)
 
 	def register_player(self, user):
 		new_player = Player(user.id, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
 		registration = RegistrationEvent(event_over_callback, user) #Create a registration event
 		self.events[registration.uid] = registration #add event to collection of events
-		self.api.sendMessage(user.id, registration.greeting_message)
+		self.send_message(user, registration.greeting_message)
 		logger.debug("Registration event %s created"%(registration.uid))
 
 	def open_inventory(self, user):
