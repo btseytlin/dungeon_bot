@@ -27,7 +27,7 @@ def parse_command(text):
 	words = text.strip().lower().split(' ')
 	if len(words) > 1:
 		command = " ".join(words[:-1])
-		args = words[-1]
+		args = [words[-1]]
 	else:
 		command = words[0]
 		args = []

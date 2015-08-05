@@ -16,6 +16,10 @@ def get_dungeon_bot_instance():
 	if DungeonBot.instance:
 		return DungeonBot.instance
 
+def chat_over_callback(event):
+	logger.debug("Chat tried to shutdown, this is a bug.")
+	return ""
+
 def event_over_callback(event):
 	persistence_controller.save_players()
 	logger.debug("Removing event %s"%(event.uid))
@@ -76,6 +80,7 @@ class DungeonBot(object):
 		"create [player_amount]": "creates a lobby",
 		"cr [player_amount]": "creates a lobby",
 		"reset_character [character name]": "removes your character and starts the registration process again, can't be undone!",
+		"chat": "joins global chat"
 	}
 
 	instance = None
@@ -90,7 +95,9 @@ class DungeonBot(object):
 		print('DungeonBot initialized')
 		logger.debug("DungeonBot initialized")
 		self.time_started = datetime.datetime.now()
+		self.chat = ChatEvent(chat_over_callback)
 		DungeonBot.instance = self
+
 
 	@staticmethod
 	def get_instance():
@@ -111,7 +118,7 @@ class DungeonBot(object):
 		for key in list(DungeonBot.events.keys()):
 			event = DungeonBot.events[key]
 			minutes_since_activity = divmod((datetime.datetime.now() - event.last_activity).total_seconds(), 60)[0]
-			if minutes_since_activity > 10:
+			if minutes_since_activity > settings.event_cleanse_time:
 				event.finish()
 				logger.info("Finished %s %s for having %d minutes since last activity."%(event.__class__.__name__, event.uid, minutes_since_activity) )
 
@@ -121,9 +128,8 @@ class DungeonBot(object):
 
 	def handle_command(self, user, command, *args):
 		if (command in ["examine","ex","stats","st"]):
-			if len(args) > 1:
-				return self.reply_error(user)
-			elif len(args) == 0 or args[0]=="self" or args[0] == str(user.id) or args[0] == persistence_controller.get_ply(user).name:
+			argument = " ".join(args).lower()
+			if len(args) == 0 or argument=="self" or argument == str(user.id) or argument.lower() == persistence_controller.get_ply(user).name.lower():
 				return (persistence_controller.get_ply(user).examine_self())
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
@@ -133,6 +139,8 @@ class DungeonBot(object):
 			return(print_available_commands(self.allowed_commands))
 		elif (command in ["lob","lobbies"]):
 			return(self.list_lobbies())
+		elif (command in ["chat"]):
+			return(self.chat.add_user(user))
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
@@ -144,8 +152,8 @@ class DungeonBot(object):
 		elif (command in ["reset_character"]):
 			character = ""
 			if len(args) != 0:
-				character = " ".join(args)
-				if character.lower() == persistence_controller.get_ply(user).name.lower():
+				character = " ".join(args).lower()
+				if character == persistence_controller.get_ply(user).name.lower():
 					del persistence_controller.players[str(user.id)]
 					persistence_controller.save_players()
 					return "Character deleted, type something to initiate registration."
@@ -155,18 +163,24 @@ class DungeonBot(object):
 		elif (command in ["create", "cr"]):
 			if len(args) < 1:
 				return "Specify the amount of players!"
-			argument = " ".join(args)
+			argument = " ".join(args).lower()
 			if not argument.isdigit():
 				return "Input a number!"
 			amount = int(argument)
 			lobby_uid = self.new_crawl_lobby(amount)
 			return self.join_lobby(user, lobby_uid)
 
-		return 'Unknown command, try "help"'
+		if len(command.split(" "))>1:
+			if isinstance(args, tuple):
+				args = list(args)
+			args = command.split(" ")[1:] + args
+			command = command.split(" ")[0]
+			return self.handle_command(user, command, *args)
+		return 'Unknown command, try "help".'
 
 
 	def reply_error(self, user):
-		self.api.sendMessage(user.id, "Unknown command, try 'help'.")
+		self.api.sendMessage(user.id, "Unknown command, try \"help\".")
 
 	def start_main_loop(self):
 		#start dead event collection timer

@@ -41,7 +41,7 @@ class BotEvent(object):
 			for player in players:
 				if player:
 					player.event = self
-		logger.debug("created event %s (%s)"%(self.__class__.__name__, self.uid))
+		logger.debug("Created event %s (%s)"%(self.__class__.__name__, self.uid))
 
 	def handle_command(self, user, command, *args):
 		self.last_activity = datetime.datetime.now()
@@ -74,6 +74,105 @@ class BotEvent(object):
 		self.finished = True
 		self.free_users()
 		return self.finished_callback(self)
+
+class ChatEvent(BotEvent):
+	def __init__(self, finished_callback):
+		BotEvent.__init__(self, finished_callback, [])
+		self.log = []
+
+		self.greeting_message = 'You are in the chat. Use the "say" command to chat, "log" to see the message history, "examine" to examine characters.\n'
+
+	allowed_commands = {
+		"examine": "shows your stats", "ex": "shows your stats", "stats": "shows your stats","st": "shows your stats",
+		"examine [character]": "shows a chracter's stats", "ex [character]": "shows a chracter's stats", "stats [character]": "shows a chracter's stats","st [character]": "shows a chracter's stats",
+		"info": "shows help","help": "shows help","h": "shows help",
+		"back": "leaves chat","abort": "leaves chat","ab": "leaves chat","b": "leaves chat", "leave": "leaves chat",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
+		"status": "shows where you are and what you are doing",
+	}
+
+	def status(self):
+		return 'Players in chat:\n%s'%(", ".join(["%s (%s)"%(persistence_controller.get_ply(u).name.title(), str(u.username)) for u in self.users]))
+
+	def handle_command(self, user, command, *args):
+		super(ChatEvent, self).handle_command(user, command, *args)
+		if (command in ["help","info","h"]):
+			return(print_available_commands(self.allowed_commands))
+		elif (command in ["back","abort","b", "leave", "ab"]):
+			return(self.remove_user(user))
+		elif (command in ["status"]):
+			msg = self.status()
+			return msg
+		elif (command in ["say", "s"]):
+			if len(args)>0:
+				msg = " ".join(args)
+				msg_others = "%s (%s) said: %s"%(persistence_controller.get_ply(user).name.title(), str(user.username), msg)
+				self.log.append(msg_others)
+
+				if len(self.log) > 1000:
+					self.log = []
+				broadcast = []
+				broadcast.append([user, "You said: "+msg])
+				for u in self.users:
+					if user.id != u.id:
+						broadcast.append([u, ])
+				return broadcast
+			return "Specify what you want to say."
+
+		elif (command in ["log"]):
+			if len(args) == 0:
+				return "Last 10 messages (old first):\n"+"\n".join(self.log[-10:])
+			if len(args)>0:
+				if args[0].isdigit() and int(args[0])>0:
+					msg = "Last %s messages (old first):\n"%(args[0])
+					return msg+ "\n".join(self.log[-int(args[0]):])
+			return "Invalid amount of messages."
+
+		elif (command in ["examine", "stats", "ex", "st"]):
+			if len(args) == 0:
+				return  (persistence_controller.get_ply(user)).examine_self()
+			if len(args) > 0:
+				argument = " ".join(args).lower()
+				if argument=="self" or argument == str(user.id) or argument == user.username.lower() or argument == persistence_controller.get_ply(user).name.lower():
+					return (persistence_controller.get_ply(user).examine_self())
+				else:
+					target_user = None
+					for u in self.users:
+						target_ply = persistence_controller.get_ply(u)
+						if u.username.lower() == argument or u.id == argument or persistence_controller.get_ply(u).name.lower() == argument:
+							target_user = u
+							return (target_ply.examine_self())
+					return "No such player or user in chat."
+
+		if len(command.split(" "))>1:
+			if isinstance(args, tuple):
+				args = list(args)
+			args = command.split(" ")[1:] + args
+			command = command.split(" ")[0]
+			return self.handle_command(user, command, *args)
+		return 'Unknown command, try "help".'
+
+	def add_user(self, user):
+		super(ChatEvent, self).add_user(user)
+		broadcast = []
+		msg = "%s (%s) joined the chat."%(persistence_controller.get_ply(user).name.title(), str(user.username))
+
+		broadcast.append([user, self.greeting_message+ self.status()])
+		for u in self.users:
+			if u.username != user.username:
+				broadcast.append([u, msg])
+		return broadcast
+
+	def remove_user(self, user):
+		super(ChatEvent, self).remove_user(user)
+		broadcast = []
+		msg = "%s (%s) left the chat."%(persistence_controller.get_ply(user).name.title(), str(user.username))
+
+		broadcast.append([user, "You left the chat."])
+		for u in self.users:
+			if u.username != user.username:
+				broadcast.append([u, msg])
+		return broadcast
 
 class RegistrationEvent(BotEvent):
 
@@ -118,7 +217,7 @@ class RegistrationEvent(BotEvent):
 
 		elif self.current_step == 1:
 			if command in ["dex", "dexterity", "strength", "str", "vitality", "vit", "intelligence", "int"]:
-				argument = " ".join(args)
+				argument = " ".join(args).lower()
 				shortened_to_full = {
 					"dex": "dexterity",
 					"str": "strength",
@@ -209,7 +308,7 @@ class LevelUpEvent(BotEvent):
 
 		if self.current_step == 0:
 			if command in ["dex", "dexterity", "strength", "str", "vitality", "vit", "intelligence", "int"]:
-				argument = " ".join(args)
+				argument = " ".join(args).lower()
 				shortened_to_full = {
 					"dex": "dexterity",
 					"str": "strength",
@@ -340,9 +439,9 @@ class InventoryEvent(BotEvent):
 			if item and item.name == arg or arg.isdigit() and i == int(arg):
 				return True, item
 
-		error_text = "No such item in your inventory"
+		error_text = "No such item in your inventory "
 		if not inventory_only:
-			error_text += "or equipment."
+			error_text += "or equipment.\n"
 		else:
 			error_text += "."
 		return False, error_text
@@ -424,7 +523,13 @@ class InventoryEvent(BotEvent):
 			self.finish()
 			return "Closed inventory"
 
-		return 'Unknown command, try "help"'
+		if len(command.split(" "))>1:
+			if isinstance(args, tuple):
+				args = list(args)
+			args = command.split(" ")[1:] + args
+			command = command.split(" ")[0]
+			return self.handle_command(user, command, *args)
+		return 'Unknown command, try "help".'
 
 class DungeonLobbyEvent(BotEvent):
 	allowed_commands = {
@@ -492,7 +597,7 @@ class DungeonLobbyEvent(BotEvent):
 		broadcast.append([user, "You were added to lobby %s.\n"%(self.uid)])
 		broadcast.append([user, self.greeting_message])
 		for u in self.users:
-			if u != user:
+			if u.username != user.username:
 				broadcast.append([u, msg])
 			if self.is_enough_players():
 				broadcast.append([u, msg_enough])
@@ -509,7 +614,7 @@ class DungeonLobbyEvent(BotEvent):
 		msg = "User %s left the lobby.\n"%(str(user.username)+"("+str(user.id)+")")
 		broadcast.append([user, "You were removed from lobby %s.\n"%(self.uid)])
 		for u in self.users:
-			if u != user:
+			if u.username != user.username:
 				broadcast.append([u, msg])
 				if self.is_enough_players():
 					broadcast.append([u, msg_enough])
@@ -567,7 +672,7 @@ class DungeonCrawlEvent(BotEvent):
 
 		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
 		for u in self.users:
-			if u != user:
+			if u.username != user.username:
 				broadcast.append([u, msg])
 
 		if len(self.users) == 0:
@@ -710,18 +815,24 @@ class DungeonCrawlEvent(BotEvent):
 			if len(args) == 0:
 				return  (persistence_controller.get_ply(user)).examine_self()
 			if len(args) > 0:
-				argument = " ".join(args)
-				if argument=="self" or argument == str(user.id) or argument == persistence_controller.get_ply(user).name:
+				argument = " ".join(args).lower().lower()
+				if argument=="self" or argument == str(user.id) or argument == persistence_controller.get_ply(user).name.lower():
 					return (persistence_controller.get_ply(user).examine_self())
 				else:
 					target_user = None
 					for u in self.users:
 						target_ply = persistence_controller.get_ply(u)
-						if u.id == argument or persistence_controller.get_ply(u).name == argument:
+						if u.id == argument or persistence_controller.get_ply(u).name.lower() == argument:
 							target_user = u
 							return (target_ply.examine_self())
 					return "No such player or user in that dungeon"
-		return 'Unknown command, try "help"'
+		if len(command.split(" "))>1:
+			if isinstance(args, tuple):
+				args = list(args)
+			args = command.split(" ")[1:] + args
+			command = command.split(" ")[0]
+			return self.handle_command(user, command, *args)
+		return 'Unknown command, try "help".'
 
 	def finish(self):
 		for key in list(self.non_combat_events.keys()):
@@ -887,7 +998,7 @@ class CombatEvent(BotEvent):
 				ability = self.user_abilities[str(user.id)][command]
 				ability_class = self.user_abilities[str(user.id)][command].__class__
 				granted_by = ability.granted_by
-				argument = " ".join(args)
+				argument = " ".join(args).lower()
 				target = None
 				if len(argument) > 0:
 					for i in range(len(self.turn_qeue)):
@@ -913,6 +1024,12 @@ class CombatEvent(BotEvent):
 				else:
 					return "Specify your target"
 
+			if len(command.split(" "))>1:
+				if isinstance(args, tuple):
+					args = list(args)
+				args = command.split(" ")[1:] + args
+				command = command.split(" ")[0]
+				return self.handle_combat_command(user, command, *args)
 			return "No such ability!"
 		else:
 			return "It's not your turn!"
@@ -928,7 +1045,7 @@ class CombatEvent(BotEvent):
 			if len(args) == 0:
 				return  (self.users_to_players[str(user.id)]).examine_self()
 			if len(args) > 0:
-				argument = " ".join(args)
+				argument = " ".join(args).lower()
 				if argument=="self" or argument == str(user.id) or argument == self.users_to_players[str(user.id)].name:
 					return (self.users_to_players[str(user.id)].examine_self())
 				elif argument.isdigit():
@@ -981,7 +1098,13 @@ class CombatEvent(BotEvent):
 		else:
 			if command in list(self.user_abilities[str(user.id)].keys()): #is it a combat ability?
 				return self.handle_combat_command(user, command, *args)
-			return "Unknown command, try help."
+			if len(command.split(" "))>1:
+				if isinstance(args, tuple):
+					args = list(args)
+				args = command.split(" ")[1:] + args
+				command = command.split(" ")[0]
+				return self.handle_command(user, command, *args)
+			return 'Unknown command, try "help".'
 	
 	def finish(self):
 		msg = ""

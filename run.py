@@ -36,7 +36,7 @@ def start():
 	except:
 		clean_up()
 		logger.exception("E:")
-		DungeonBot.resart()
+		#DungeonBot.resart()
 		start()
 		
 
