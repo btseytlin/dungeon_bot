@@ -23,6 +23,7 @@ logger = logging.getLogger('dungeon_bot')
 persistence_controller = PersistenceController.get_instance()
 class BotEvent(object):
 	def __init__(self, finished_callback, users, players = None):
+
 		self.finished_callback = finished_callback
 		self.finished = False
 		self.users = users
@@ -40,25 +41,29 @@ class BotEvent(object):
 			for player in players:
 				if player:
 					player.event = self
+		logger.debug("created event %s (%s)"%(self.__class__.__name__, self.uid))
 
 	def handle_command(self, user, command, *args):
 		self.last_activity = datetime.datetime.now()
+		logger.debug("last activity of event %s (%s) updated to %s."%(self.__class__.__name__, self.uid, str(self.last_activity)))
 		return ""
 
 	def add_user(self, user):
 		self.users.append(user)
 		player = persistence_controller.get_ply(user)
 		player.event = self
+		logger.debug("User %s (%d) added to event %s (%s)."%(user.username, user.id, self.__class__.__name__, self.uid))
 
 	def on_player_leave(self, user):
 		player = persistence_controller.get_ply(user)
 		player.event = None
+		logger.debug("User %s (%d) left event %s (%s)."%(user.username, user.id, self.__class__.__name__, self.uid))
 
 	def remove_user(self, user):
 		for u in self.users:
-			if u.id == user.id and u.id == user.id:
+			if u.id == user.id:
 				self.users.remove(u)
-		self.on_player_leave(user)
+				self.on_player_leave(user)
 
 	def free_users(self):
 		for user in self.users:
@@ -151,6 +156,7 @@ class RegistrationEvent(BotEvent):
 				club = get_item_by_name("club")
 				self.new_player.inventory = [club]
 				self.new_player.refresh_derived()
+				logger.debug("Registered Player %s for User %s (%d)."%(self.new_player.name, user.username, user.id))
 				self.finish()
 				return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\nAlso remember to use "status" and "help" whenever you don\'t know where you are or what to do.')
 			else:
@@ -248,7 +254,7 @@ class LevelUpEvent(BotEvent):
 					self.player.perk_points -= 1
 					if self.player.perk_points <= 0 or len(self.available_perks) <= 0:
 						msg += "Done leveling up.\n"
-						return msg + self.finish()
+						return msg + str(self.finish())
 					msg = "You still have %d perk points to spend.\n"%(self.player.perk_points)
 				else:
 					return "No perk under such number."
@@ -465,7 +471,9 @@ class DungeonLobbyEvent(BotEvent):
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["start"]):
-			return(self.start_crawl())
+			if self.is_enough_players():
+				return(self.start_crawl())
+			return "Not enough players to start."
 		return 'Unknown command, try "help".'
 
 	def is_enough_players(self):
