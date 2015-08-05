@@ -309,12 +309,13 @@ class UndeadSoldier(Enemy):
 		"talisman": 4,
 		"headwear": 5,
 		"random": 3,
+		"rapier": 3,
 	}
 
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "claymore"]), 0 )]
+		items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "claymore", "rapier"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
@@ -548,6 +549,7 @@ class Peasant(Enemy):
 		"helmet": 3,
 		"headwear": 5,
 		"random": 3,
+		"rapier": 3,
 	}
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], exp_value=100):
@@ -584,12 +586,15 @@ thief_characteristics = {
 
 class Thief(Enemy):
 	drop_table = {
-		"random": 20
+		"random": 20,
+		"dagger": 10,
+		"rapier": 5,
 	}
 	loot_coolity = 0.7
 	def __init__(self, level=1, name="thief", characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( "dagger", 1 )]
+		items.append( get_item_by_name( "rapier" , 0 ) ) if random.randint(0,10) > 5 else None
 		items.append( get_item_by_name( random.choice(["ring of fire", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		items.append( get_item_by_name( random.choice(["amulet of defence", "amulet of healing"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:

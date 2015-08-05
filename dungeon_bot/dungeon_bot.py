@@ -156,7 +156,7 @@ class DungeonBot(object):
 			if len(args) < 1:
 				return "Specify the amount of players!"
 			argument = " ".join(args)
-			if not argument.isditi():
+			if not argument.isdigit():
 				return "Input a number!"
 			amount = int(argument)
 			lobby_uid = self.new_crawl_lobby(amount)
