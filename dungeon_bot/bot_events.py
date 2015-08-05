@@ -38,7 +38,8 @@ class BotEvent(object):
 		else:
 			self.players = players
 			for player in players:
-				player.event = self
+				if player:
+					player.event = self
 
 	def handle_command(self, user, command, *args):
 		self.last_activity = datetime.datetime.now()

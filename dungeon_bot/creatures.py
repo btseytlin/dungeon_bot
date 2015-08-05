@@ -885,7 +885,7 @@ class Player(Creature):
 		self._experience = experience
 		self.level_up_points = level_up_points
 		self.perk_points = perk_points
-		self.userid = userid
+		self.userid = str(userid)
 
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 

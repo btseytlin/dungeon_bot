@@ -11,25 +11,25 @@ class PersistenceController(object):
 		self.players = self.load_players()
 		
 	def is_registered(self, user):
-		if user.id in self.players.keys():
+		if str(user.id) in self.players.keys():
 			return True
 		return False
 	
 	def clear_events(self):
-		for uname in self.players:
-			self.players[uname].event = None
+		for uid in self.players:
+			self.players[uid].event = None
 
 	def add_player(self, user, player):
-		self.players[user.id] = player
+		self.players[str(user.id)] = player
 
 	def get_ply(self, user):
-		#if is_registered(user.id):
-		return self.players[user.id]
+		if self.is_registered(user):
+			return self.players[str(user.id)]
 
 	def save_players(self):
 		players_to_save = {}
-		for uname in list(self.players.keys()):
-			players_to_save[uname] = json.dumps(self.players[uname].to_json())
+		for uid in list(self.players.keys()):
+			players_to_save[uid] = json.dumps(self.players[uid].to_json())
 
 		players_to_save = json.dumps(players_to_save)
 
@@ -43,8 +43,8 @@ class PersistenceController(object):
 		try:
 			with open(players_file_path, 'r') as f:
 				players_dict = json.loads(f.read())
-				for uname in list(players_dict.keys()):
-					players_dict[uname] = Player.de_json(players_dict[uname])
+				for uid in list(players_dict.keys()):
+					players_dict[uid] = Player.de_json(players_dict[uid])
 				self.players = players_dict
 				print("Players loaded")
 		except FileNotFoundError:

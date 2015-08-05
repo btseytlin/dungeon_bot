@@ -105,7 +105,7 @@ class DungeonBot(object):
 		#persistence_controller = PersistenceController.get_instance()
 		DungeonBot.events = {}
 		DungeonBot.open_lobbies = {}
-		DungeonBot.last_update_id += 1
+		#DungeonBot.last_update_id += 2
 
 	def cleanse_dead_events(self):
 		for key in list(DungeonBot.events.keys()):
@@ -156,7 +156,7 @@ class DungeonBot(object):
 			if len(args) < 1:
 				return "Specify the amount of players!"
 			argument = " ".join(args)
-			if not isdigit(argument):
+			if not argument.isditi():
 				return "Input a number!"
 			amount = int(argument)
 			lobby_uid = self.new_crawl_lobby(amount)
