@@ -880,12 +880,12 @@ class Creature(object):
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, username, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0):
+	def __init__(self, userid, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.level_up_points = level_up_points
 		self.perk_points = perk_points
-		self.username = username
+		self.userid = userid
 
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 
@@ -967,7 +967,7 @@ class Player(Creature):
 				equipment[key] = Item.de_json(eq[key])
 		data["equipment"] = equipment
 
-		ply = Player(data.get("username"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], [], data.get("_experience"), data.get("level_up_points"), data.get("perk_points"))
+		ply = Player(data.get("userid"), data.get("name"), data.get("_level"), data.get("characteristics"), stats, data.get("description"), data.get("inventory"), data.get("equipment"), data.get('tags'), [], [], [], data.get("_experience"), data.get("level_up_points"), data.get("perk_points"))
 		level_perks = [level_perks_listing[name](ply) for name in data["level_perks"]]
 		ply.level_perks = level_perks
 		ply.refresh_derived()
@@ -994,7 +994,7 @@ class Player(Creature):
 			
 	def to_json(self):
 		big_dict = super(Player, self).to_json()
-		big_dict["username"] = self.username
+		big_dict["userid"] = self.userid
 		big_dict["event"] = None
 		return big_dict
 

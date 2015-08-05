@@ -55,7 +55,7 @@ class BotEvent(object):
 
 	def remove_user(self, user):
 		for u in self.users:
-			if u.username == user.username and u.id == user.id:
+			if u.id == user.id and u.id == user.id:
 				self.users.remove(u)
 		self.on_player_leave(user)
 
@@ -264,7 +264,7 @@ class InventoryEvent(BotEvent):
 		"unequip [item]": "equips an item","uneq [item]": "unequips an item",
 		"use [item]": "uses an item (such as a potion)", "u [item]": "uses an item (such as a potion)",
 		"destroy [item]": "destroys an item","drop [item]": "destroys an item",
-		"give [item] [username/playername]": "gives an item to another player",
+		"give [item] [userid/playername]": "gives an item to another player",
 		"status": "shows where you are and what you are doing",
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "closes inventory","abort": "closes inventory","ab": "closes inventory","b": "closes inventory",
@@ -435,7 +435,7 @@ class DungeonLobbyEvent(BotEvent):
 
 	def status(self, user):
 		msg = 'You are in lobby %s.\nThere are %d out of %d players in the lobby.\n'%(self.uid, len(self.users), self.total_users)
-		msg += 'Players in lobby:%s.\n'%(", ".join([persistence_controller.get_ply(user).name+"(@"+persistence_controller.get_ply(user).username+")" for user in self.users]))
+		msg += 'Players in lobby:%s.\n'%(", ".join([persistence_controller.get_ply(user).name+"(@"+persistence_controller.get_ply(user).userid+")" for user in self.users]))
 		if self.is_enough_players():
 			msg += 'Ready to start the dungeon crawl! Input "start" to begin.\n'
 		else:
@@ -457,8 +457,8 @@ class DungeonLobbyEvent(BotEvent):
 				broadcast = []
 				broadcast.append([user, "You said:"+msg])
 				for u in self.users:
-					if user.username != u.username:
-						broadcast.append([u, "%s said:%s"%(user.username.title(), msg)])
+					if user.id != u.id:
+						broadcast.append([u, "%s said:%s"%(user.id.title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["start"]):
@@ -473,7 +473,7 @@ class DungeonLobbyEvent(BotEvent):
 	def add_user(self, user):
 		super(DungeonLobbyEvent, self).add_user(user)
 		broadcast = []
-		msg = "User %s joined the lobby"%(user.username)
+		msg = "User %s joined the lobby"%(user.id)
 
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
 		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
@@ -495,7 +495,7 @@ class DungeonLobbyEvent(BotEvent):
 		broadcast = []
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
 		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
-		msg = "User %s left the lobby.\n"%(user.username)
+		msg = "User %s left the lobby.\n"%(user.id)
 		broadcast.append([user, "You were removed from lobby %s.\n"%(self.uid)])
 		for u in self.users:
 			if u != user:
@@ -523,7 +523,7 @@ class DungeonCrawlEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, users)
 		self.greeting_message = 'You are entering %s.\n%s\n'%(dungeon.name, dungeon.description)
 		self.dungeon = dungeon
-		self.non_combat_events = {} # key: user.username, value: event.uid
+		self.non_combat_events = {} # key: user.id, value: event.uid
 		self.combat_event = None
 
 	allowed_commands = {
@@ -552,7 +552,7 @@ class DungeonCrawlEvent(BotEvent):
 			self.dungeon.players.remove(persistence_controller.get_ply(user))
 		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
-		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is.'%(user.username)
+		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is.'%(user.id)
 
 		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
 		for u in self.users:
@@ -625,16 +625,16 @@ class DungeonCrawlEvent(BotEvent):
 						del self.non_combat_events[uname]
 
 			level_up = LevelUpEvent(lvl_over_callback, user)
-			self.non_combat_events[user.username] = level_up
+			self.non_combat_events[user.id] = level_up
 			persistence_controller.get_ply(user).event = level_up
 			logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
 
 			broadcast = []
-			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).username.title())
+			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).userid.title())
 
 			broadcast.append([user, level_up.greeting_message])
 			for u in self.users:
-				if u.username != user.username:
+				if u.id != user.id:
 					broadcast.append([u, msg])
 			return(broadcast)
 		return "You don't have any perk points or characteristic points to spend."
@@ -653,23 +653,23 @@ class DungeonCrawlEvent(BotEvent):
 					break
 
 		inv = InventoryEvent(inv_over_callback, user) #Create an inventory event
-		self.non_combat_events[user.username] = inv
+		self.non_combat_events[user.id] = inv
 		persistence_controller.get_ply(user).event = inv
 		combat_logger.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
 
 		broadcast = []
-		msg = '%s is rummaging in his inventory.'%(persistence_controller.get_ply(user).username.title())
+		msg = '%s is rummaging in his inventory.'%(user.id.title())
 
 		broadcast.append([user, inv.greeting_message])
 		for u in self.users:
-			if u.username != user.username:
+			if u.id != user.id:
 				broadcast.append([u, msg])
 		return(broadcast)
 
 	def handle_command(self, user, command, *args):
 		super(DungeonCrawlEvent, self).handle_command(user, command, *args)
-		#if user.username in list(self.non_combat_events.keys()):
-		#	return self.non_combat_events[user.username].handle_command(user, command, *args)
+		#if user.id in list(self.non_combat_events.keys()):
+		#	return self.non_combat_events[user.id].handle_command(user, command, *args)
 		#elif self.combat_event:
 		#	return self.combat_event.handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
@@ -688,8 +688,8 @@ class DungeonCrawlEvent(BotEvent):
 				broadcast = []
 				broadcast.append([user, "You said:"+msg])
 				for u in self.users:
-					if user.username != u.username:
-						broadcast.append([u, "%s said:%s"%(user.username.title(), msg)])
+					if user.id != u.id:
+						broadcast.append([u, "%s said:%s"%(user.id.title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["status"]):
@@ -700,13 +700,13 @@ class DungeonCrawlEvent(BotEvent):
 				return  (persistence_controller.get_ply(user)).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args)
-				if argument=="self" or argument == user.username or argument == persistence_controller.get_ply(user).name:
+				if argument=="self" or argument == user.id or argument == persistence_controller.get_ply(user).name:
 					return (persistence_controller.get_ply(user).examine_self())
 				else:
 					target_user = None
 					for u in self.users:
 						target_ply = persistence_controller.get_ply(u)
-						if u.username == argument or persistence_controller.get_ply(u).name == argument:
+						if u.id == argument or persistence_controller.get_ply(u).name == argument:
 							target_user = u
 							return (target_ply.examine_self())
 					return "No such player or user in that dungeon"
@@ -734,7 +734,7 @@ class CombatEvent(BotEvent):
 
 		self.abilities_used = []
 
-		self.user_abilities = { #  {user.username:  {ability.name: ability}}
+		self.user_abilities = { #  {user.id:  {ability.name: ability}}
 
 		}
 
@@ -743,17 +743,17 @@ class CombatEvent(BotEvent):
 		}
 		for user in self.users:
 			for ply in self.players:
-				if ply.username == user.username:
-					self.users_to_players[user.username] = ply
+				if ply.userid == user.id:
+					self.users_to_players[user.id] = ply
 
-			if not user.username in list(self.user_abilities.keys()):
-				self.user_abilities[user.username] = {}
+			if not user.id in list(self.user_abilities.keys()):
+				self.user_abilities[user.id] = {}
 
-			ply = self.users_to_players[user.username]
+			ply = self.users_to_players[user.id]
 			for ability in ply.abilities:
-				self.user_abilities[user.username][ability.name] = ability
+				self.user_abilities[user.id][ability.name] = ability
 
-		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.username+")" for p in players]), ", ".join([e.name for e in enemies])))
+		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.userid+")" for p in players]), ", ".join([e.name for e in enemies])))
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
 		self.greeting_message += self.next_round()
@@ -765,7 +765,7 @@ class CombatEvent(BotEvent):
 		msg = 'You are fighting %s.\n'%(", ".join([enemy.name for enemy in self.enemies]))
 		msg += 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
 		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'
-		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[user.username].energy, self.users_to_players[user.username].health)
+		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[user.id].energy, self.users_to_players[user.id].health)
 		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.title())
 		return msg
 
@@ -867,11 +867,11 @@ class CombatEvent(BotEvent):
 	}
 
 	def handle_combat_command(self, user, command, *args):
-		combat_logger.info("Command from user %s: %s %s"%(user.username, command, " ".join(args)))
-		if hasattr(self.turn_qeue[self.turn],"username") and self.turn_qeue[self.turn].username == user.username: #current turn is of player who sent command
-			if command in list(self.user_abilities[user.username].keys()):
-				ability = self.user_abilities[user.username][command]
-				ability_class = self.user_abilities[user.username][command].__class__
+		combat_logger.info("Command from user %s: %s %s"%(user.id, command, " ".join(args)))
+		if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == user.id: #current turn is of player who sent command
+			if command in list(self.user_abilities[user.id].keys()):
+				ability = self.user_abilities[user.id][command]
+				ability_class = self.user_abilities[user.id][command].__class__
 				granted_by = ability.granted_by
 				argument = " ".join(args)
 				target = None
@@ -881,9 +881,9 @@ class CombatEvent(BotEvent):
 						if t.name == argument or argument.isdigit() and int(argument) == i:
 							target = t
 
-					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[user.username], target )
+					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[user.id], target )
 					if can_use:
-						use_info = ability_class.use( self.users_to_players[user.username], target, granted_by, self )
+						use_info = ability_class.use( self.users_to_players[user.id], target, granted_by, self )
 						combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
 						self.abilities_used.append(use_info)
 						msg = use_info.description 
@@ -908,31 +908,31 @@ class CombatEvent(BotEvent):
 		super(CombatEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			help_text = print_available_commands(self.allowed_commands)
-			help_text += "\n" + print_combat_abilities(self.user_abilities[user.username])
+			help_text += "\n" + print_combat_abilities(self.user_abilities[user.id])
 			return help_text
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:
-				return  (self.users_to_players[user.username]).examine_self()
+				return  (self.users_to_players[user.id]).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args)
-				if argument=="self" or argument == user.username or argument == self.users_to_players[user.username].name:
-					return (self.users_to_players[user.username].examine_self())
+				if argument=="self" or argument == user.id or argument == self.users_to_players[user.id].name:
+					return (self.users_to_players[user.id].examine_self())
 				elif argument.isdigit():
 					if int(argument) < len(self.turn_qeue):
 						return self.turn_qeue[int(argument)].examine_self()
 				else:
 					for u in self.users:
-						target_ply = self.users_to_players[u.username]
-						if u.username == argument or target_ply.name == argument:
+						target_ply = self.users_to_players[u.id]
+						if u.id == argument or target_ply.name == argument:
 							return target_ply.examine_self()
 
 					for enemy in self.enemies:
 						if enemy.name == argument:
 							return enemy.examine_self()
 
-					for key in list(self.user_abilities[user.username].keys()):
+					for key in list(self.user_abilities[user.id].keys()):
 						if key == argument:
-							return self.user_abilities[user.username][key].description
+							return self.user_abilities[user.id][key].description
 
 				return "No such player, user, enemy or ability."
 
@@ -942,20 +942,20 @@ class CombatEvent(BotEvent):
 				broadcast = []
 				broadcast.append([user, "You said:"+msg])
 				for u in self.users:
-					if user.username != u.username:
-						broadcast.append([u, "%s said:%s"%(user.username.title(), msg)])
+					if user.id != u.id:
+						broadcast.append([u, "%s said:%s"%(user.id.title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 
 		elif (command in ["turn", "t"]):
-			if hasattr(self.turn_qeue[self.turn],"username") and self.turn_qeue[self.turn].username == user.username:
+			if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == user.id:
 				
 				msg = self.next_turn()
-				msg_others = "%s ends turn.\n"%(self.users_to_players[user.username].name.title()) + msg
+				msg_others = "%s ends turn.\n"%(self.users_to_players[user.id].name.title()) + msg
 				broadcast = []
 				broadcast.append([user, msg])
 				for u in self.users:
-					if u.username != user.username:
+					if u.id != user.id:
 						broadcast.append([u, msg_others])
 				return broadcast
 			return "It's not your turn!"
@@ -965,7 +965,7 @@ class CombatEvent(BotEvent):
 			return msg
 
 		else:
-			if command in list(self.user_abilities[user.username].keys()): #is it a combat ability?
+			if command in list(self.user_abilities[user.id].keys()): #is it a combat ability?
 				return self.handle_combat_command(user, command, *args)
 			return "Unknown command, try help."
 	

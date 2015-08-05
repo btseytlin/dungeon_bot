@@ -11,7 +11,7 @@ class PersistenceController(object):
 		self.players = self.load_players()
 		
 	def is_registered(self, user):
-		if user.username in self.players.keys():
+		if user.id in self.players.keys():
 			return True
 		return False
 	
@@ -20,11 +20,11 @@ class PersistenceController(object):
 			self.players[uname].event = None
 
 	def add_player(self, user, player):
-		self.players[user.username] = player
+		self.players[user.id] = player
 
 	def get_ply(self, user):
-		#if is_registered(user.username):
-		return self.players[user.username]
+		#if is_registered(user.id):
+		return self.players[user.id]
 
 	def save_players(self):
 		players_to_save = {}

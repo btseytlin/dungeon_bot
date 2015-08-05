@@ -236,6 +236,8 @@ def get_item_by_name(name, coolity=0):
 
 item_listing = { 
 	"primary_weapon":{
+		"rapier": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","7d6"]} , "args":{"name":"rapier", "description":"Steel rapier!", "abilities_granted":["stab"]}},
+
 		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["1d6","2d6"]} , "args":{"name":"club", "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
 		"mace": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"mace", "description":"Like the club, except less bad!", "abilities_granted":["smash"]}},
 		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"sword", "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
@@ -267,26 +269,43 @@ item_listing = {
 			]}},
 	},
 	"ring":{
-		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d4", "6d6"]} , "args":{"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",
-			"modifiers_granted": [
-				{
-				"name":"fire_attack", 
-				"params":{}
-				} 
-			]
-		}},
+		"ring of fire": {"stats": {"fire_damage" : ["1d3","2d6"], "fire_chance" : ["1d4", "6d6"]}} , 
+		"args":{
+				"name":"ring of fire", "description":"Has a chance to cause fire damage on attack.",
+				"modifiers_granted": [
+					{
+					"name":"fire_attack", 
+					"params":{}
+					} 
+				]
+			}
+		},
 
 		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : [1, 3]}} , "args":{"name":"ring of more vitality", "description":"Just gives you more vit."} },
 
 		"ring of more dexterity": {"stats": {"characteristics_change": {"dexterity" : [1, 3]}} , "args":{"name":"ring of more dexterity", "description":"Just gives you more dex."} },
+
+		"ring of thievery": {
+			"stats": {
+				"stats_change": {
+					"evasion": ["1d6", "3d6"]
+				},
+					"characteristics_change": {
+				"dexterity" : [1, 2]
+				}
+			},
+			"args":{
+				"name":"ring of more thievery",
+				"description":"Gives a dex bonus and an evasion bonus."
+			}
+		 },
 
 		"ring of more strength": {"stats": {"characteristics_change": {"strength" : [1, 3]}} , "args":{"name":"ring of more strength", "description":"Just gives you more str."} },
 
 		"ring of more intelligence": {"stats": {"characteristics_change": {"intelligence" : [1, 3]}} , "args":{"name":"ring of more intelligence", "description":"Just gives you more int."} },
 
 		"ring of more hp": {"stats": {"stats_change": {"max_health" : [10, 50]}} , "args":{"name":"ring of more hp", "description":"Just gives you more max hp."}}  ,
-		"ring of not dying": {"stats": {"healing" : ["10d10", "20d20"], "healing_chance" : ["30d5", "30d5"], "defence" : ["10d5", "10d10"]} , "args":{"name":"ring of not dying", "description":"It's just OP."}},
-	},
+
 	"headwear":{
 		"helmet": {"stats": {"defence" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet."}},
 	}

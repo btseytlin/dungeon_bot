@@ -74,14 +74,14 @@ class AbilityUseInfo(object):
 
 	def __str__(self):
 		inhibitor = self.inhibitor.name
-		if hasattr(self.inhibitor, "username"):
-			inhibitor = inhibitor + "(%s)"%(self.inhibitor.username)
+		if hasattr(self.inhibitor, "userid"):
+			inhibitor = inhibitor + "(%s)"%(self.inhibitor.userid)
 		else:
 			inhibitor = inhibitor + "(%s)"%(self.inhibitor.uid)
 
 		target = self.target.name
-		if hasattr(self.target, "username"):
-			target = target + "(%s)"%(self.target.username)
+		if hasattr(self.target, "userid"):
+			target = target + "(%s)"%(self.target.userid)
 		else:
 			target = target + "(%s)"%(self.target.uid)
 

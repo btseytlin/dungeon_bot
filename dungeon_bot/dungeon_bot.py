@@ -105,6 +105,7 @@ class DungeonBot(object):
 		#persistence_controller = PersistenceController.get_instance()
 		DungeonBot.events = {}
 		DungeonBot.open_lobbies = {}
+		DungeonBot.last_update_id += 1
 
 	def cleanse_dead_events(self):
 		for key in list(DungeonBot.events.keys()):
@@ -122,7 +123,7 @@ class DungeonBot(object):
 		if (command in ["examine","ex","stats","st"]):
 			if len(args) > 1:
 				return self.reply_error(user)
-			elif len(args) == 0 or args[0]=="self" or args[0] == user.username or args[0] == persistence_controller.get_ply(user).name:
+			elif len(args) == 0 or args[0]=="self" or args[0] == user.id or args[0] == persistence_controller.get_ply(user).name:
 				return (persistence_controller.get_ply(user).examine_self())
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
@@ -145,7 +146,7 @@ class DungeonBot(object):
 			if len(args) != 0:
 				character = " ".join(args)
 				if character.lower() == persistence_controller.get_ply(user).name.lower():
-					del persistence_controller.players[user.username]
+					del persistence_controller.players[user.id]
 					persistence_controller.save_players()
 					return "Character deleted, type something to initiate registration."
 				return "Wrong character name."
@@ -154,7 +155,10 @@ class DungeonBot(object):
 		elif (command in ["create", "cr"]):
 			if len(args) < 1:
 				return "Specify the amount of players!"
-			amount = int(args[0])
+			argument = " ".join(args)
+			if not isdigit(argument):
+				return "Input a number!"
+			amount = int(argument)
 			lobby_uid = self.new_crawl_lobby(amount)
 			return self.join_lobby(user, lobby_uid)
 
@@ -170,20 +174,20 @@ class DungeonBot(object):
 		self.timer.start() #run every 10 minutes
 
 		while True:
-			if self.last_update_id:
-				updates = self.api.getUpdates(self.last_update_id)
+			if DungeonBot.last_update_id:
+				updates = self.api.getUpdates(DungeonBot.last_update_id)
 			else:
 				updates = self.api.getUpdates()
 
 			for update in updates:
 				#logger.debug("Got update with id %d"%(update.update_id))
-				self.last_update_id = update.update_id+1
+				DungeonBot.last_update_id = update.update_id+1
 				#logger.debug("Last update id is %d"%(self.last_update_id))
 
 				message = update.message
-				close_enough = self.time_started - datetime.timedelta(minutes=15)
+				close_enough = self.time_started - datetime.timedelta(minutes=5)
 				if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-					logger.info(("[MESSAGE] %s: %s")%(message.from_user.username, message.text))
+					logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
 					self.on_message(message)
 
 
@@ -195,7 +199,7 @@ class DungeonBot(object):
 
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
-			print("User %s is not registered"%(user.username))
+			print("User %s is not registered"%(user.id))
 			self.api.sendMessage(user.id, DungeonBot.intro_message)
 			self.register_player(user)
 		else:
@@ -206,24 +210,24 @@ class DungeonBot(object):
 
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
-						logger.info(("[RESPONSE] to user %s: %s")%(message[0].username, message[1]))
+						logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
 						self.api.sendMessage(message[0].id, message[1])
 				else:
-					logger.info(("[RESPONSE] to user %s: %s")%(user.username, response))
+					logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
 					self.api.sendMessage(user.id, response) #If he is, let the event handle the message
 			else:
 				#parse command on your own
 				response = self.handle_command(user, command, *args)
 				if isinstance(response, list): #it's a broadcast
 					for message in response:
-						logger.info(("[RESPONSE] to user %s: %s")%(message[0].username, message[1]))
+						logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
 						self.api.sendMessage(message[0].id, message[1])
 				else:
-					logger.info(("[RESPONSE] to user %s: %s")%(user.username, response))
+					logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
 					self.api.sendMessage(user.id, response)
 
 	def register_player(self, user):
-		new_player = Player(user.username, None) #Create an empty player object
+		new_player = Player(user.id, None) #Create an empty player object
 		persistence_controller.add_player(user, new_player) #Add him to Persistence
 		registration = RegistrationEvent(event_over_callback, user) #Create a registration event
 		self.events[registration.uid] = registration #add event to collection of events
@@ -259,7 +263,7 @@ class DungeonBot(object):
 				if not lobby.is_enough_players():
 					lobby_desc = "Lobby %s\n"%(lobby.uid)
 					lobby_desc += "%d out of %d users:"%(len(lobby.users), lobby.total_users)
-					lobby_desc += ", ".join([ u.username for u in lobby.users ]) + ".\n"
+					lobby_desc += ", ".join([ u.id for u in lobby.users ]) + ".\n"
 					lobbies.append(lobby_desc)
 		if len(lobbies) > 0:
 			lobbies.insert(0, "Currently open lobbies:")
@@ -277,7 +281,7 @@ class DungeonBot(object):
 			return "No such lobby!"
 
 		lobby = self.open_lobbies[lobby_uid]
-		logger.debug("User %s joined lobby %s"%(user.username, lobby_uid))
+		logger.debug("User %s joined lobby %s"%(user.id, lobby_uid))
 		return(lobby.add_user(user))
 
 

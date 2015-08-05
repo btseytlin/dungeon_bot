@@ -479,6 +479,51 @@ class BetaDemon(Enemy):
 """ human enemies below """
 
 
+thug_characteristics = {
+	"strength": 7, #how hard you hit
+	"vitality": 6, #how much hp you have
+	"dexterity": 4, #how fast you act, your position in turn qeue
+	"intelligence": 4, #how likely you are to strike a critical
+}
+
+class Thug(Enemy):
+	drop_table = {
+		"club" : 7,
+		"mace": 4,
+		"primary_weapon": 3,
+		"armor": 4,
+		"ring of more strength" : 5,
+		"ring of more intelligence" : 2,
+		"ring" : 3,
+		"talisman": 4,
+		"helmet": 3,
+		"headwear": 5,
+		"random": 3,
+	}
+	loot_coolity = 0.5
+	def __init__(self, level=1, name="thug", characteristics = thug_characteristics, stats=None, description="A thug, strong and massive, but quite slow.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big"],abilities=[],modifiers=[], exp_value=200):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( random.choice(["club", "sword", "mace"]), 0 )]
+		for item in items:
+			self.inventory.append(item)
+			self.equip(item)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+
+		return attack_infos
+
 peasant_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
@@ -502,7 +547,7 @@ class Peasant(Enemy):
 		"random": 3,
 	}
 	loot_coolity = 0.3
-	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -723,13 +768,35 @@ def peasant_pack(size):
 	peasants = [ Peasant(random.choice(levels)) for x in range(amount+1)]
 	if thief:
 		peasants.append(thief)
-		description+= "A beta demon.\n"
+		description+= "A thief accompanies them.\n"
 	return peasants, description
 
 def thief():
 	description = "A thief.\n"
 	thief = Thief()
 	return [thief], description
+
+def thugs(size):
+	description = "A thug.\n"
+	levels = list(range(1,5))
+	amount = 1
+	if size == "small":
+		amount = random.randint(2, 3)
+		if amount != 1:
+			description = "A small group of thugs.\n"
+	elif size == "medium":
+		description = "A group of thugs.\n"
+		amount = random.randint(3, 5)
+
+	elif size == "big":
+		description = "A hoard of thugs.\n"
+		amount = random.randint(5, 8)
+
+	elif size == "huge":
+		description = "thugs are everywhere.\n"
+		amount = random.randint(8, 15)
+	thugs = [ Thug(random.choice(levels)) for x in range(amount+1)]
+	return thugs, description
 
 enemy_tables = { # difficulty rating: (function to get enemy or enemy group, params)
 	"common": { 
@@ -764,6 +831,9 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 	},
 	"human": { 
 		"1": (peasant_pack,[] ),
+		"1": (thugs, []),
+		"5": (thugs, ["small"]),
+		"10": (thugs, ["medium"]),
 		"1": (peasant_pack,["small"] ),
 		"5": (peasant_pack, ["medium"] ),
 		"5": (thief, [] ),
