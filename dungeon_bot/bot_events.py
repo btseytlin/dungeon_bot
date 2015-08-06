@@ -92,7 +92,7 @@ class ChatEvent(BotEvent):
 	}
 
 	def status(self):
-		return 'Players in chat:\n%s'%(", ".join(["%s"%(persistence_controller.get_ply(u).name.title() for u in self.users]))
+		return 'Players in chat:\n%s'%(", ".join(["%s"%(persistence_controller.get_ply(u).name.title()) for u in self.users]))
 
 	def handle_command(self, user, command, *args):
 		super(ChatEvent, self).handle_command(user, command, *args)
