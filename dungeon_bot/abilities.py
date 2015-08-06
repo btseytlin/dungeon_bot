@@ -81,7 +81,10 @@ class AbilityUseInfo(object):
 				self.description += modifier.apply() 
 
 		if "experience_gained" in use_info and use_info["experience_gained"] > 0:
-			self.description += self.inhibitor.add_experience(use_info["experience_gained"])
+			if not hasattr(self.inhibitor, "exp_value"):
+				msg, value = self.inhibitor.on_experience_gain( value) 
+				self.description += msg
+				self.description += self.inhibitor.add_experience(value)
 		return self
 
 	def __str__(self):
@@ -229,6 +232,8 @@ class Ability(object):
 	def get_hit_description(attack_info):
 		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.name.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
 
+
+
 class Smash(Ability):
 
 	"""
@@ -275,7 +280,7 @@ class Smash(Ability):
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < Smash.get_knockdown_chance(use_info):
-			modifier = get_modifier_by_name("knockdown", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("knockdown", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -382,7 +387,7 @@ class Stab(Ability):
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < Stab.get_pain_chance(use_info):
-			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -466,7 +471,7 @@ class QuickStab(Ability):
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < QuickStab.get_pain_chance(use_info):
-			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("pain",use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -546,7 +551,7 @@ class Cut(Ability): #TODO test and adapt
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < Cut.get_bleeding_chance(use_info):
-			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("bleeding",use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -628,7 +633,7 @@ class QuickCut(Ability): #TODO test and adapt
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < QuickCut.get_bleeding_chance(use_info):
-			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -735,7 +740,7 @@ class Sweep(Ability): #TODO test and adapt
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < Sweep.get_bleeding_chance(use_info):
-			modifier = get_modifier_by_name("bleeding", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -809,7 +814,7 @@ class RodentBite(Ability):
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < RodentBite.get_pain_chance(use_info):
-			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 
@@ -890,7 +895,7 @@ class AnimalBite(Ability):
 	@staticmethod
 	def get_modifiers_applied(use_info):
 		if random.randint(0, 100) < AnimalBite.get_pain_chance(use_info):
-			modifier = get_modifier_by_name("pain", use_info.use_info["item_used"], use_info.target)
+			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
 

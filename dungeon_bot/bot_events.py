@@ -657,6 +657,14 @@ class DungeonLobbyEvent(BotEvent):
 			if self.is_enough_players():
 				return(self.start_crawl())
 			return "Not enough players to start."
+
+		if len(command.split(" "))>1:
+			if isinstance(args, tuple):
+				args = list(args)
+			args = command.split(" ")[1:] + args
+			command = command.split(" ")[0]
+			return self.handle_command(user, command, *args)
+
 		return 'Unknown command, try "help".'
 
 	def is_enough_players(self):
@@ -1107,7 +1115,7 @@ class CombatEvent(BotEvent):
 				if len(argument) > 0:
 					for i in range(len(self.turn_qeue)):
 						t = self.turn_qeue[i]
-						if t.name == argument or argument.isdigit() and int(argument) == i:
+						if t.name == argument or argument.isdigit() and int(argument)-1 == i:
 							target = t
 					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[str(user.id)], target )
 					if can_use:
@@ -1158,7 +1166,7 @@ class CombatEvent(BotEvent):
 				if argument=="self" or argument == str(user.id) or argument == self.users_to_players[str(user.id)].name:
 					return (self.users_to_players[str(user.id)].examine_self())
 				elif argument.isdigit():
-					if int(argument) < len(self.turn_qeue):
+					if int(argument-1) < len(self.turn_qeue):
 						return self.turn_qeue[int(argument)].examine_self()
 				else:
 					for u in self.users:

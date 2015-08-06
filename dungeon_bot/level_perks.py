@@ -72,8 +72,8 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 	def on_death(self, ability_info=None):
 		pass
 
-	def on_experience_gained(self, ability_info=None):
-		pass
+	def on_experience_gain(self, value):
+		return "", value
 
 	def on_energy_gained(self, amount=None):
 		pass
@@ -111,11 +111,11 @@ class Educated(LevelPerk):
 	def __init__(self, host):
 		LevelPerk.__init__(self, host)
 
-	def on_experience_gained(self, ability_info):
-		additional_gain = ability_info.use_info["experience_gained"] * 0.10
-		ability_info.use_info["experience_gained"] += additional_gain
-		ability_info.description +=  "%s gains %d additional experience due to being educated.\n"%(self.host.name.capitalize(), additional_gain)
-		return ability_info
+	def on_experience_gain(self, value):
+		additional_gain =value * 0.10
+		value = value + additional_gain
+		desc = "%s earns %d additional experience due to being educated.\n"%(self.host.name.capitalize(), additional_gain)
+		return desc, value
 
 class TeamTactics(LevelPerk):
 	name = "Team tactics"

@@ -92,8 +92,8 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_death(self, ability_info=None):
 		pass
 
-	def on_experience_gained(self, ability_info=None):
-		pass
+	def on_experience_gain(self, value):
+		return "", value
 
 	def on_level_up(self):
 		pass
@@ -204,8 +204,8 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 		msg = ""
 		if not self.host.dead:
 			dmg = diceroll("1d3")
-			self.host.damage(dmg)
 			msg += "%s looses %d hp due to bleeding.\n"%(self.host.short_desc.capitalize(), dmg)
+			msg += self.host.damage(dmg, self.granted_by)
 		msg += super(Bleeding, self).on_round()
 		return msg
 
@@ -233,8 +233,8 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 		msg = ""
 		if not self.host.dead and not "fire resistant" in self.host.tags:
 			dmg = diceroll("1d9")
-			self.host.damage(dmg)
 			msg += "%s looses %d hp due to burning!\n"%(self.host.short_desc.capitalize(), dmg)
+			msg += self.host.damage(dmg, self.granted_by)
 		msg += super(Burning, self).on_round()
 		return msg
 
@@ -311,7 +311,7 @@ class FireAttack(Modifier):
 				chance = diceroll( fire_chance )
 				if random.randint(0, 100) < chance:
 					dmg = diceroll( fire_damage )
-					attack_info.target.damage( dmg )
+					attack_info.target.damage( dmg, self.host )
 					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
 					attack_info.use_info["damage_dealt"] += dmg
 

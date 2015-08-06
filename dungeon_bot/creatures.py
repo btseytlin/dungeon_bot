@@ -70,7 +70,7 @@ class Creature(object):
 		if hasattr(self, "event"):
 			if self.event and hasattr(self.event, "turn_qeue"):
 				ind = self.event.turn_qeue.index(self)
-				msg += str(ind) + "."
+				msg += str(ind+1) + "."
 		msg += self.name
 		if not self.dead:
 			msg += "(%d)"%(self.health)+("*" if len(self.modifiers)>0 else "")
@@ -223,13 +223,19 @@ class Creature(object):
 	def level(self, value):
 		self._level = value
 
-	def damage(self, value):
+	def damage(self, value, inhibitor):
 		msg = ""
+
+		if isinstance(self, Enemy) and isinstance(inhibitor, Player):
+			exp_gained = self.exp_value * value/self.health
+			msg, value = inhibitor.on_experience_gain(value) 
+			msg += inhibitor.add_experience(exp_gained)
+
 		if not self.dead:
 			self.health = self.health - value
 			msg += self.on_health_lost(value)
 
-		killed = self.kill_if_nececary()
+		killed = self.kill_if_nececary(inhibitor)
 		return msg 
 
 	def equip(self, target_item):
@@ -424,20 +430,20 @@ class Creature(object):
 
 		return msg
 
-	def on_experience_gained(self, ability_info): #Immediately after gaining experience
-		msg = ""
+	def on_experience_gain(self, value): #Immediately after gaining experience
+		msg = "%s earns %d experience.\n"%(self.short_desc.capitalize(), value)
 		for modifier in self.modifiers:
-			ab_info = modifier.on_experience_gained(ability_info)
-			if ab_info:
-				ability_info = ab_info
+			effect, value = modifier.on_experience_gain(value)
+			if effect:
+				msg += effect
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				ab_info = perk.on_experience_gained(ability_info)
-				if ab_info:
-					ability_info = ab_info
+				effect, value = perk.on_experience_gain(value)
+				if effect:
+					msg += effect
 
-		return ability_info
+		return msg, value
 
 	def on_item_equipped(self, item):
 		msg = ""
@@ -579,7 +585,7 @@ class Creature(object):
 	def on_got_hit(self, attack_info): #attack in process of landing at self
 		msg = ""
 		if attack_info.use_info["damage_dealt"] > 0:
-			attack_info.description += self.damage(attack_info.use_info["damage_dealt"])
+			attack_info.description += self.damage(attack_info.use_info["damage_dealt"], attack_info.inhibitor)
 
 		for modifier in self.modifiers:
 			at_info = modifier.on_hit(attack_info)
@@ -611,6 +617,8 @@ class Creature(object):
 				at_info = perk.on_hit(attack_info)
 				if at_info:
 					attack_info = at_info
+
+
 
 		return attack_info
 
@@ -706,13 +714,16 @@ class Creature(object):
 
 
 	""" /EVENTS """
-	def kill_if_nececary(self):
+	def kill_if_nececary(self, killer):
 		if self.health <= 0:
-			self.die()
+			if killer:
+				self.die(killer)
+			else:
+				self.die()
 			return True
 		return False
 
-	def die(self):
+	def die(self, killer=None):
 		self.dead = True
 
 	def examine_equipment(self):
@@ -761,7 +772,7 @@ class Creature(object):
 			item = self.inventory[i]
 			if item:
 				items.append(str(i+1)+"."+item.short_desc)
-		return desc + ', '.join(items)
+		return desc + '\n'.join(items)
 
 	def refresh_tags(self):
 		self.tags = self.base_tags.copy()
@@ -948,9 +959,10 @@ class Player(Creature):
 	def add_experience(self, value):
 		cur_level = self.level
 		self.experience += value
+		msg = ""
 		if self.level > cur_level:
-			return "%s has leveled up to level %d!\n"%(self.name.capitalize(), self.level)
-		return ""
+			return msg+"%s has leveled up to level %d!\n"%(self.name.capitalize(), self.level)
+		return msg
 
 	def fits_perk_requirements(self, perk, perk_requirements):
 		own_perk_names= [p.__class__.name for p in self.level_perks]
@@ -1014,9 +1026,6 @@ class Player(Creature):
 	def on_kill(self, attack_info):
 		target = attack_info.target
 		if isinstance(target, Enemy):
-			attack_info.use_info["experience_gained"] = target.exp_value
-			attack_info.description += "%s earns %d experience.\n"%(attack_info.inhibitor.name, target.exp_value)
-			attack_info = attack_info.inhibitor.on_experience_gained(attack_info)
 			drop_table = target.__class__.drop_table
 			for item in list(drop_table.keys()):
 				prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
@@ -1025,9 +1034,10 @@ class Player(Creature):
 					item = get_item_by_name(item, target.__class__.loot_coolity)
 					attack_info.use_info["loot_dropped"].append(item)
 					if isinstance(attack_info.inhibitor, Player):
-						attack_info.inhibitor.inventory.append(item)
+						loot_goes_to = random.choice(attack_info.inhibitor.event.players)
+						loot_goes_to.inventory.append(item)
 					attack_info.use_info["loot_dropped"].append(item)
-					attack_info.description += "%s got loot: %s.\n"%(attack_info.inhibitor.name.capitalize(), item.name)
+					attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.name)
 		return super(Player, self).on_kill(attack_info)
 			
 	def to_json(self):
