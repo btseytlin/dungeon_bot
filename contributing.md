@@ -497,9 +497,9 @@ class TeamTactics(LevelPerk):
 		other_players_num = clamp( len(players)-1, 0, 3)
 		if other_players_num > 0:
 			modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"max_energy": other_players_num}, "duration": -1 })
-			self.host.add_modifier(modifier)
-
-			return "%s gains %s max energy by using team tactics.\n"%(self.host.name.title(), other_players_num)
+			mod_added = self.host.add_modifier(modifier)
+			if mod_added:
+				return "%s gains %s max energy by using team tactics.\n"%(self.host.name.title(), other_players_num)
 		return ""
 ```
 It will give a stat bonus on combat start.
