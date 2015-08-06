@@ -825,17 +825,18 @@ class Creature(object):
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for stat in list(perk.__class__.stats_change.keys()):
-					self.stats[stat] = clamp( self.stats[stat]+ perk.__class__.stats_change[stat], 0, 9999)
+					if stat != "defence" and stat != "evasion" and stat != "accuracy":
+						self.stats[stat] = clamp( self.stats[stat]+ perk.__class__.stats_change[stat], 0, 9999)
 
 		for modifier in self.modifiers:
 			for stat in list(modifier.stats_change.keys()):
-				if stat != "defence" and stat != "evasion":
+				if stat != "defence" and stat != "evasion" and stat != "accuracy":
 					self.stats[stat] = clamp( self.stats[stat] + modifier.stats_change[stat], 0, 9999)
 		
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "stats_change" in list(self.equipment[item].stats.keys()):
 				for stat in list(self.equipment[item].stats["stats_change"].keys()):
-					if stat != "defence" and stat != "evasion":
+					if stat != "defence" and stat != "evasion" and stat != "accuracy":
 						self.stats[stat] = clamp( self.stats[stat] +self.equipment[item].stats["stats_change"][stat], 0, 9999)
 
 	def refresh_derived(self):

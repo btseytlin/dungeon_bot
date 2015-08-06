@@ -92,7 +92,7 @@ class ChatEvent(BotEvent):
 	}
 
 	def status(self):
-		return 'Players in chat:\n%s'%(", ".join(["%s (%s)"%(persistence_controller.get_ply(u).name.title(), str(u.username)) for u in self.users]))
+		return 'Players in chat:\n%s'%(", ".join(["%s"%(persistence_controller.get_ply(u).name.title() for u in self.users]))
 
 	def handle_command(self, user, command, *args):
 		super(ChatEvent, self).handle_command(user, command, *args)
@@ -935,7 +935,7 @@ class CombatEvent(BotEvent):
 		if self.round == 1 and self.turn == 0:
 			for creature in self.turn_qeue:
 				msg += creature.on_combat_start()
-				
+
 		combat_logger.info("%s"%(msg))
 		msg += self.this_turn()
 		return msg
