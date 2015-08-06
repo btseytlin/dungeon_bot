@@ -29,7 +29,8 @@ class PersistenceController(object):
 	def save_players(self):
 		players_to_save = {}
 		for uid in list(self.players.keys()):
-			players_to_save[uid] = json.dumps(self.players[uid].to_json())
+			if self.players[uid] and hasattr(self.players[uid], "level_up_points"):
+				players_to_save[uid] = self.players[uid].to_json()
 
 		players_to_save = json.dumps(players_to_save)
 
@@ -44,7 +45,9 @@ class PersistenceController(object):
 			with open(players_file_path, 'r') as f:
 				players_dict = json.loads(f.read())
 				for uid in list(players_dict.keys()):
-					players_dict[uid] = Player.de_json(players_dict[uid])
+					ply = Player.de_json(players_dict[uid])
+					if ply:
+						players_dict[uid] = ply
 				self.players = players_dict
 				print("Players loaded")
 		except FileNotFoundError:

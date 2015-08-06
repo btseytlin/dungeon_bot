@@ -66,7 +66,17 @@ class Creature(object):
 
 	@property
 	def short_desc(self):
-	    return self.name+"(%d)"%(self.health)
+		msg = ""
+		if hasattr(self, "event"):
+			if self.event and hasattr(self.event, "turn_qeue"):
+				ind = self.event.turn_qeue.index(self)
+				msg += str(ind) + "."
+		msg += self.name
+		if not self.dead:
+			msg += "(%d)"%(self.health)+("*" if len(self.modifiers)>0 else "")
+		else:
+			msg += "(dead)"
+		return msg
 	
 	@property
 	def health(self):
@@ -583,7 +593,7 @@ class Creature(object):
 
 		if self.dead:
 			attack_info.use_info["did_kill"] = True
-			attack_info.description += "%s is killed by %s.\n"%(attack_info.target.name.title(), attack_info.inhibitor.name.title())
+			attack_info.description += "%s is killed by %s.\n"%(attack_info.target.short_desc.title(), attack_info.inhibitor.name.title())
 			attack_info = attack_info.inhibitor.on_kill(attack_info)
 			attack_info = attack_info.target.on_death(attack_info)
 
@@ -672,9 +682,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				at_info = perk.on_buffed(attack_info)
+				at_info = perk.on_buffed(ability_info)
 				if at_info:
-					attack_info = at_info
+					ability_info = at_info
 
 		return ability_info
 
@@ -687,9 +697,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				at_info = perk.on_buff(attack_info)
+				at_info = perk.on_buff(ability_info)
 				if at_info:
-					attack_info = at_info
+					ability_info = at_info
 
 		return ability_info
 
@@ -971,6 +981,10 @@ class Player(Creature):
 	def de_json(data):
 		if isinstance(data, str):
 			data = json.loads(data)
+
+		if not data["name"]:
+			return False
+
 		stats = None
 		if "stats" in list(data.keys()):
 			stats = data["stats"]
@@ -1036,6 +1050,7 @@ class Enemy(Creature):
 		Creature.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers)
 		self.target = None
 		self.exp_value = exp_value
+		self.event = None
 
 	def select_target(self, combat_event):
 		alive_players = [x for x in combat_event.turn_qeue if isinstance(x, Player)]

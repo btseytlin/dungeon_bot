@@ -20,6 +20,11 @@ def chat_over_callback(event):
 	logger.debug("Chat tried to shutdown, this is a bug.")
 	return ""
 
+def registration_over_callback(event):
+	if str(event.user.id) in DungeonBot.registration_events.keys():
+		del DungeonBot.registration_events[str(event.user.id)]
+	event_over_callback(event)
+	
 def event_over_callback(event):
 	persistence_controller.save_players()
 	logger.debug("Removing event %s"%(event.uid))
@@ -88,6 +93,7 @@ class DungeonBot(object):
 	instance = None
 	events = {}
 	open_lobbies = {}
+	registration_events = {}
 	last_update_id = None
 	api = None
 	#set webhook
@@ -234,9 +240,14 @@ class DungeonBot(object):
 		try:
 			#check if player is registered
 			if not persistence_controller.is_registered(user): 
-				print("User %s is not registered"%(str(user.username)+"("+str(user.id)+")"))
-				self.send_message(user, DungeonBot.intro_message)
-				self.register_player(user)
+				if str(user.id) in DungeonBot.registration_events.keys():
+					command, args = parse_command(message.text)
+					response = DungeonBot.registration_events[str(user.id)].handle_command(user, command, *args)
+					self.send_message(user, response)
+				else:
+					print("User %s is not registered"%(persistence_controller.get_ply(user).name))
+					self.send_message(user, DungeonBot.intro_message)
+					self.register_player(user)
 			else:
 				ply = persistence_controller.get_ply(user)
 				command, args = parse_command(message.text)
@@ -275,42 +286,43 @@ class DungeonBot(object):
 
 	def register_player(self, user):
 		new_player = Player(user.id, None) #Create an empty player object
-		persistence_controller.add_player(user, new_player) #Add him to Persistence
-		registration = RegistrationEvent(event_over_callback, user) #Create a registration event
-		self.events[registration.uid] = registration #add event to collection of events
+
+		registration = RegistrationEvent(registration_over_callback, new_player, user) #Create a registration event
+		DungeonBot.registration_events[str(user.id)] = registration 
+		DungeonBot.events[registration.uid] = registration #add event to collection of events
 		self.send_message(user, registration.greeting_message)
 		logger.debug("Registration event %s created"%(registration.uid))
 
 	def open_inventory(self, user):
 		inv = InventoryEvent(event_over_callback, user) #Create an inventory event
-		self.events[inv.uid] = inv #add event to collection of events
+		DungeonBot.events[inv.uid] = inv #add event to collection of events
 		logger.debug("Inventory event %s created"%(inv.uid))
 		return(inv.greeting_message)
 
 	def open_level_up(self, user):
 		if persistence_controller.get_ply(user).level_up_points > 0 or persistence_controller.get_ply(user).perk_points >0 :
 			level_up = LevelUpEvent(event_over_callback, user)
-			self.events[level_up.uid] = level_up
+			DungeonBot.events[level_up.uid] = level_up
 			logger.debug("Levelup event %s created"%(level_up.uid))
 			return(level_up.greeting_message)
 		return "You don't have any perk points or characteristic points to spend."
 
 	def new_crawl_lobby(self, total_users):
 		lobby = DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
-		self.events[lobby.uid] = lobby #add event to collection of events
-		self.open_lobbies[lobby.uid] = lobby
+		DungeonBot.events[lobby.uid] = lobby #add event to collection of events
+		DungeonBot.open_lobbies[lobby.uid] = lobby
 		logger.debug("Lobby event %s created"%(lobby.uid))
 		return(lobby.uid)
 
 	def list_lobbies(self):
 		lobbies = []
-		for key in list(self.open_lobbies.keys()):
-			if self.open_lobbies[key]:
-				lobby = self.open_lobbies[key]
+		for key in list(DungeonBot.open_lobbies.keys()):
+			if DungeonBot.open_lobbies[key]:
+				lobby = DungeonBot.open_lobbies[key]
 				if not lobby.is_enough_players():
 					lobby_desc = "Lobby %s\n"%(lobby.uid)
 					lobby_desc += "%d out of %d users:"%(len(lobby.users), lobby.total_users)
-					lobby_desc += ", ".join([ persistence_controller.get_ply(u).name +"("+str(u.username)+")" for u in lobby.users ]) + ".\n"
+					lobby_desc += ", ".join([ persistence_controller.get_ply(u).name for u in lobby.users ]) + ".\n"
 					lobbies.append(lobby_desc)
 		if len(lobbies) > 0:
 			lobbies.insert(0, "Currently open lobbies:")
@@ -320,15 +332,15 @@ class DungeonBot(object):
 
 	def join_lobby(self, user, lobby_uid=None):
 		if not lobby_uid:
-			if len(list(self.open_lobbies.keys())) > 0:
-				lobby_uid = random.choice(list(self.open_lobbies.keys()))#select random lobby
+			if len(list(DungeonBot.open_lobbies.keys())) > 0:
+				lobby_uid = random.choice(list(DungeonBot.open_lobbies.keys()))#select random lobby
 			else:
 				lobby_uid = self.new_crawl_lobby(1) 
-		if not lobby_uid in list(self.open_lobbies.keys()):
+		if not lobby_uid in list(DungeonBot.open_lobbies.keys()):
 			return "No such lobby!"
 
-		lobby = self.open_lobbies[lobby_uid]
-		logger.debug("User %s joined lobby %s"%(str(user.username)+"("+str(user.id)+")", lobby_uid))
+		lobby = DungeonBot.open_lobbies[lobby_uid]
+		logger.debug("User %s joined lobby %s"%(persistence_controller.get_ply(user).name, lobby_uid))
 		return(lobby.add_user(user))
 
 

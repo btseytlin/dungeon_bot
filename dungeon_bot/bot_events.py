@@ -33,9 +33,10 @@ class BotEvent(object):
 		if not players:
 			self.players = []
 			for user in users:
-				player = persistence_controller.get_ply(user)
-				player.event = self
-				self.players.append(player)
+				if persistence_controller.is_registered(user):
+					player = persistence_controller.get_ply(user)
+					player.event = self
+					self.players.append(player)
 		else:
 			self.players = players
 			for player in players:
@@ -52,12 +53,12 @@ class BotEvent(object):
 		self.users.append(user)
 		player = persistence_controller.get_ply(user)
 		player.event = self
-		logger.debug("User %s (%d) added to event %s (%s)."%(user.username, user.id, self.__class__.__name__, self.uid))
+		logger.debug("User (%d) added to event %s (%s)."%(user.id, self.__class__.__name__, self.uid))
 
 	def on_player_leave(self, user):
 		player = persistence_controller.get_ply(user)
 		player.event = None
-		logger.debug("User %s (%d) left event %s (%s)."%(user.username, user.id, self.__class__.__name__, self.uid))
+		logger.debug("User (%d) left event %s (%s)."%(user.id, self.__class__.__name__, self.uid))
 
 	def remove_user(self, user):
 		for u in self.users:
@@ -133,13 +134,13 @@ class ChatEvent(BotEvent):
 				return  (persistence_controller.get_ply(user)).examine_self()
 			if len(args) > 0:
 				argument = " ".join(args).lower()
-				if argument=="self" or argument == str(user.id) or argument == user.username.lower() or argument == persistence_controller.get_ply(user).name.lower():
+				if argument=="self" or argument == str(user.id)  or argument == persistence_controller.get_ply(user).name.lower():
 					return (persistence_controller.get_ply(user).examine_self())
 				else:
 					target_user = None
 					for u in self.users:
 						target_ply = persistence_controller.get_ply(u)
-						if u.username.lower() == argument or u.id == argument or persistence_controller.get_ply(u).name.lower() == argument:
+						if str(u.id) == argument or persistence_controller.get_ply(u).name.lower() == argument:
 							target_user = u
 							return (target_ply.examine_self())
 					return "No such player or user in chat."
@@ -159,7 +160,7 @@ class ChatEvent(BotEvent):
 
 		broadcast.append([user, self.greeting_message+ self.status()])
 		for u in self.users:
-			if u.username != user.username:
+			if u.id != user.id:
 				broadcast.append([u, msg])
 		return broadcast
 
@@ -170,7 +171,7 @@ class ChatEvent(BotEvent):
 
 		broadcast.append([user, "You left the chat."])
 		for u in self.users:
-			if u.username != user.username:
+			if u.id != user.id:
 				broadcast.append([u, msg])
 		return broadcast
 
@@ -180,12 +181,12 @@ class RegistrationEvent(BotEvent):
 		"name"
 	]
 
-	def __init__(self, finished_callback, user):
+	def __init__(self, finished_callback, player, user):
 		BotEvent.__init__(self, finished_callback, [user])
 		self.user = user
 		self.current_step = 0
 		self.char_points = 3
-		self.new_player = persistence_controller.get_ply(user)
+		self.new_player = player
 		self.greeting_message = 'You can restart the registration at any time by sending "restart".\nLet\'s begin.\nWhat is your name?'
 
 	def format_characteristics(self, chars):
@@ -255,7 +256,8 @@ class RegistrationEvent(BotEvent):
 				club = get_item_by_name("club")
 				self.new_player.inventory = [club]
 				self.new_player.refresh_derived()
-				logger.debug("Registered Player %s for User %s (%d)."%(self.new_player.name, user.username, user.id))
+				persistence_controller.add_player(self.user, self.new_player)
+				logger.debug("Registered Player %s for User %s (%d)."%(self.new_player.name, str(user.username), user.id))
 				self.finish()
 				return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\nAlso remember to use "status" and "help" whenever you don\'t know where you are or what to do.')
 			else:
@@ -615,7 +617,7 @@ class DungeonLobbyEvent(BotEvent):
 	def add_user(self, user):
 		super(DungeonLobbyEvent, self).add_user(user)
 		broadcast = []
-		msg = "User %s joined the lobby"%(str(user.username)+"("+str(user.id)+")")
+		msg = "User %s joined the lobby"%(persistence_controller.get_ply(user).name)
 
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
 		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
@@ -623,7 +625,7 @@ class DungeonLobbyEvent(BotEvent):
 		broadcast.append([user, "You were added to lobby %s.\n"%(self.uid)])
 		broadcast.append([user, self.greeting_message])
 		for u in self.users:
-			if u.username != user.username:
+			if u.id != user.id:
 				broadcast.append([u, msg])
 			if self.is_enough_players():
 				broadcast.append([u, msg_enough])
@@ -637,10 +639,10 @@ class DungeonLobbyEvent(BotEvent):
 		broadcast = []
 		msg_enough = 'The lobby has enough players to start, use "start" command to proceed.\n'
 		msg_not_enough = 'The lobby needs %d more players to start.\n'%( self.total_users - len(self.users) )
-		msg = "User %s left the lobby.\n"%(str(user.username)+"("+str(user.id)+")")
+		msg = "User %s left the lobby.\n"%(persistence_controller.get_ply(user).name)
 		broadcast.append([user, "You were removed from lobby %s.\n"%(self.uid)])
 		for u in self.users:
-			if u.username != user.username:
+			if u.id != user.id:
 				broadcast.append([u, msg])
 				if self.is_enough_players():
 					broadcast.append([u, msg_enough])
@@ -694,11 +696,11 @@ class DungeonCrawlEvent(BotEvent):
 			self.dungeon.players.remove(persistence_controller.get_ply(user))
 		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
-		msg = 'Pathetic looser %s ran away from the dungeon like a pussy he is.'%(str(user.username) + "(" + str(user.id)+")")
+		msg = '%s ran away from the dungeon like a pussy he is.'%(persistence_controller.get_ply(user).name.title())
 
 		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
 		for u in self.users:
-			if u.username != user.username:
+			if u.id != user.id:
 				broadcast.append([u, msg])
 
 		if len(self.users) == 0:
@@ -801,7 +803,7 @@ class DungeonCrawlEvent(BotEvent):
 		combat_logger.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
 
 		broadcast = []
-		msg = '%s is rummaging in his inventory.'%(str(user.username)+"("+str(user.id)+")".title())
+		msg = '%s is rummaging in his inventory.'%(persistence_controller.get_ply(user).name.title())
 
 		broadcast.append([user, inv.greeting_message])
 		for u in self.users:
@@ -904,9 +906,12 @@ class CombatEvent(BotEvent):
 				else:
 					self.user_abilities[str(user.id)][ability.name] = ability
 
-		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.userid+")" for p in players]), ", ".join([e.name for e in enemies])))
+		for enemy in enemies:
+			enemy.event = self
 
-		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
+		combat_logger.info("Started combat %s vs %s"%(", ".join([str(p.name) + "("+str(p.userid)+")" for p in players]), ", ".join([e.name for e in enemies])))
+
+		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([str(p.name) for p in players]), ", ".join([e.name for e in enemies]))
 
 		
 
@@ -928,7 +933,8 @@ class CombatEvent(BotEvent):
 		self.turn = 0
 		msg = "".join([c.on_round() for c in self.turn_qeue if not c.dead])
 		msg += "Round %d.\n"%(self.round)
-		self.turn_qeue = self.update_turn_qeue()
+		if self.turn_qeue == []:
+			self.turn_qeue = self.update_turn_qeue()
 
 		msg += self.get_printable_turn_qeue()
 
@@ -941,7 +947,7 @@ class CombatEvent(BotEvent):
 		return msg
 
 	def get_printable_turn_qeue(self):
-		return ", ".join([str(i)+"."+self.turn_qeue[i].short_desc for i in range(len(self.turn_qeue))])+"\n"
+		return ", ".join([self.turn_qeue[i].short_desc for i in range(len(self.turn_qeue))])+"\n"
 	
 	def check_winning_conditions(self):
 		alive_enemy = False
@@ -1006,7 +1012,7 @@ class CombatEvent(BotEvent):
 		alive_players =  list(filter(lambda c: not c.dead, self.players.copy()))
 		alive_creatures = alive_enemies + alive_players
 		qeue = sorted(alive_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
-		combat_logger.info("Combat qeue:\n"+", ".join(["["+str(i)+"]"+qeue[i].name for i in range(len(qeue))]))
+		combat_logger.info("Combat qeue:\n"+", ".join([""+str(i)+"."+qeue[i].name for i in range(len(qeue))]))
 		return qeue
 
 	def ai_turn(self):
@@ -1028,7 +1034,7 @@ class CombatEvent(BotEvent):
 	}
 
 	def handle_combat_command(self, user, command, *args):
-		combat_logger.info("Command from user %s: %s %s"%(str(user.username)+"("+str(user.id)+")", command, " ".join(args)))
+		combat_logger.info("Command from user %s: %s %s"%(user.id, command, " ".join(args)))
 		if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id): #current turn is of player who sent command
 			if command in list(self.user_abilities[str(user.id)].keys()):
 				ability = self.user_abilities[str(user.id)][command]
@@ -1065,6 +1071,7 @@ class CombatEvent(BotEvent):
 				args = command.split(" ")[1:] + args
 				command = command.split(" ")[0]
 				return self.handle_combat_command(user, command, *args)
+
 			return "No such ability!"
 		else:
 			return "It's not your turn!"
@@ -1139,6 +1146,14 @@ class CombatEvent(BotEvent):
 				args = command.split(" ")[1:] + args
 				command = command.split(" ")[0]
 				return self.handle_command(user, command, *args)
+
+		
+			if len(command.split(" ")) == 1 and len(args) == 1:
+
+				args = list(args)
+				command = command.split(" ")[0] +" "+ args[0]
+				return self.handle_command(user, command, *args)
+
 			return 'Unknown command, try "help".'
 	
 	def finish(self):

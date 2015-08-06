@@ -34,11 +34,11 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	
 	def on_applied(self):
 		return ""
-		#return "%s modifier applied to %s.\n"%(self.name.title(), self.host.name.title())
+		#return "%s modifier applied to %s.\n"%(self.name.title(), self.host.short_desc.title())
 
 	def on_lifted(self):
 		return ""
-		#return "%s modifier lifted from %s.\n"%(self.name.title(), self.host.name.title())
+		#return "%s modifier lifted from %s.\n"%(self.name.title(), self.host.short_desc.title())
 
 	def on_combat_start(self):
 		pass
@@ -138,16 +138,16 @@ class KnockedDown(Modifier): #simply adds defence, hinders evasion
 		self.stats_change = {"evasion": "-5d6", "defence": "-2d6"}
 		
 	def on_round(self):
-		msg = "%s struggles to get up from the ground.\n"%(self.host.name.title())
+		msg = "%s struggles to get up from the ground.\n"%(self.host.short_desc.title())
 		msg += super(KnockedDown, self).on_round()
 		return msg
 
 	def on_lifted(self):
-		return "%s gets up from the ground!\n"%(self.host.name.title())
+		return "%s gets up from the ground!\n"%(self.host.short_desc.title())
 
 	def on_applied(self):
 		msg = super(KnockedDown, self).on_applied()
-		msg += "%s is knocked down!\n"%(self.host.name.title())
+		msg += "%s is knocked down!\n"%(self.host.short_desc.title())
 		return msg
 
 class Vunerable(Modifier): #simply adds defence, hinders evasion
@@ -162,11 +162,11 @@ class Vunerable(Modifier): #simply adds defence, hinders evasion
 
 	def on_applied(self):
 		msg = super(Vunerable, self).on_applied()
-		msg += "%s is exposed and vunerable!\n"%(self.host.name.title())
+		msg += "%s is exposed and vunerable!\n"%(self.host.short_desc.title())
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer vunerable!\n"%(self.host.name.title())
+		return "%s is no longer vunerable!\n"%(self.host.short_desc.title())
 
 class Pain(Modifier): #simply adds defence, hinders evasion
 	priority = 0
@@ -182,11 +182,11 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 
 	def on_applied(self):
 		msg = super(Pain, self).on_applied()
-		msg += "%s is wrecked with pain!\n"%(self.host.name.title())
+		msg += "%s is wrecked with pain!\n"%(self.host.short_desc.title())
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer in pain!\n"%(self.host.name.title())
+		return "%s is no longer in pain!\n"%(self.host.short_desc.title())
 
 
 class Bleeding(Modifier): #simply adds defence, hinders evasion
@@ -205,17 +205,17 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 		if not self.host.dead:
 			dmg = diceroll("1d3")
 			self.host.damage(dmg)
-			msg += "%s looses %d hp due to bleeding.\n"%(self.host.name.title(), dmg)
+			msg += "%s looses %d hp due to bleeding.\n"%(self.host.short_desc.title(), dmg)
 		msg += super(Bleeding, self).on_round()
 		return msg
 
 	def on_applied(self):
 		msg = super(Bleeding, self).on_applied()
-		msg += "%s has a major bleeding!.\n"%(self.host.name.title())
+		msg += "%s has a major bleeding!.\n"%(self.host.short_desc.title())
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer bleeding!\n"%(self.host.name.title())
+		return "%s is no longer bleeding!\n"%(self.host.short_desc.title())
 
 
 class Burning(Modifier): #simply adds defence, hinders evasion
@@ -234,17 +234,17 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 		if not self.host.dead and not "fire resistant" in self.host.tags:
 			dmg = diceroll("1d9")
 			self.host.damage(dmg)
-			msg += "%s looses %d hp due to burning!\n"%(self.host.name.title(), dmg)
+			msg += "%s looses %d hp due to burning!\n"%(self.host.short_desc.title(), dmg)
 		msg += super(Burning, self).on_round()
 		return msg
 
 	def on_applied(self):
 		msg = super(Burning, self).on_applied()
-		msg += "%s is set on fire!.\n"%(self.host.name.title())
+		msg += "%s is set on fire!.\n"%(self.host.short_desc.title())
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer on fire!\n"%(self.host.name.title())
+		return "%s is no longer on fire!\n"%(self.host.short_desc.title())
 
 
 
@@ -260,11 +260,11 @@ class Shielded(Modifier): #simply adds defence, hinders evasion
 
 	def on_applied(self):
 		msg = super(Shielded, self).on_applied()
-		msg += "%s raises his shieldup and gains a %s defence for the next turn.\n"%(self.host.name, self.stats_change["defence"])
+		msg += "%s raises his shieldup and gains a %s defence for the next turn.\n"%(self.host.short_desc, self.stats_change["defence"])
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer protected by his shield!\n"%(self.host.name.title())
+		return "%s is no longer protected by his shield!\n"%(self.host.short_desc.title())
 
 class Bonus(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=-1, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="bonus", description="???"):
@@ -289,7 +289,7 @@ class Regeneration(Modifier): #simply adds defence, hinders evasion
 			heal = diceroll(self.healing_amount)
 			if self.host.health < self.host.stats["max_health"]: 
 				self.host.health += heal
-				msg += "%s regenerates %d hp due to %s.\n"%(self.host.name.title(), heal, self.granted_by.name)
+				msg += "%s regenerates %d hp due to %s.\n"%(self.host.short_desc.title(), heal, self.granted_by.name)
 		msg += super(Regeneration, self).on_round()
 		return msg
 
@@ -312,7 +312,7 @@ class FireAttack(Modifier):
 				if random.randint(0, 100) < chance:
 					dmg = diceroll( fire_damage )
 					attack_info.target.damage( dmg )
-					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.name.title())
+					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.short_desc.title())
 					attack_info.use_info["damage_dealt"] += dmg
 
 					chance_to_cause_burning = 1/2 * chance

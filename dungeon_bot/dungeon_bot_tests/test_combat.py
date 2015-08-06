@@ -106,21 +106,20 @@ def test_weapon_abilities():
 
 def run_tests():
 
-	#test_weapon_abilities()
+	test_weapon_abilities()
 	#controlled combat event
 	ply = Player("player1", "testply1")
 	ply1 = Player("player2", "testply2")
 
-	item = "club"
+	item = "rapier"
 	item = get_item_by_name(item)
 	item.stats["accuracy"] = "10d10"
 	ply.inventory.append(item)
 	ply.equip(item)
 	ply.level_perks.append(Sweeper(ply))
 	#ply.refresh_derived()
-	item = "ring of fire"
+	item = "dagger"
 	item = get_item_by_name(item)
-	item.stats["fire_chance"] = "6d6"
 	ply.inventory.append(item)
 	ply.equip(item)
 
