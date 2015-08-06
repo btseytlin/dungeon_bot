@@ -295,11 +295,12 @@ class Creature(object):
 			self.destroy(item)
 
 	def use(self, item):
-		if item in self.inventory:
-			use_effect = item.use(self)
-			msg = self.on_consumable_used(item)
-			self.sort_inventory()
-			return use_effect + msg
+		#if item in self.inventory:
+		#	use_effect = item.use(self)
+		#	msg = self.on_consumable_used(item)
+		#	self.sort_inventory()
+		#	return use_effect + msg
+		return "Using is not implemented yet."
 
 	def add_modifier(self, modifier):
 		for mod in self.modifiers:

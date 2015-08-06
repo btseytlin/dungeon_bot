@@ -364,12 +364,12 @@ class LevelUpEvent(BotEvent):
 							self.current_step += 1
 							if self.player.perk_points < 0:
 								msg += "Done leveling up.\n"
-								return msg + self.finish()
+								return msg + str(self.finish())
 							else:
 								if len(self.available_perks) <= 0:
 									msg += "No perks available."
 									msg += "Done leveling up.\n"
-									return msg + self.finish()
+									return msg + str(self.finish())
 								else:
 									msg += self.perk_step_msg
 							return msg
@@ -380,8 +380,9 @@ class LevelUpEvent(BotEvent):
 		elif self.current_step == 1:
 
 			if self.player.perk_points <= 0 or len(self.available_perks) <= 0:
-						msg += "Done leveling up.\n"
-						return msg + str(self.finish())
+
+				msg = "Done leveling up.\n"
+				return msg + str(self.finish())
 
 			if command.isdigit():
 				if int(command) > 0 and int(command) <= len(self.available_perks):
@@ -820,6 +821,7 @@ class DungeonCrawlEvent(BotEvent):
 				for uname in list(self.non_combat_events.keys()):
 					if self.non_combat_events[uname] == event:
 						del self.non_combat_events[uname]
+				return ""
 
 			level_up = LevelUpEvent(lvl_over_callback, user)
 			self.non_combat_events[str(user.id)] = level_up

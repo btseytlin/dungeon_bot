@@ -217,7 +217,7 @@ class Ability(object):
 					return False, "%d %s required to use this ability."%(ability_class.requirements[key], key)
 
 		if user.energy < ability_class.energy_required:
-			return False, "Not enough energy. Need %d energy to use."%(ability_class.energy_required - user.energy)
+			return False, "Not enough energy. Need %d more energy to use."%(ability_class.energy_required - user.energy)
 		return True, ""
 
 
