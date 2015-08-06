@@ -7,6 +7,7 @@ from telegram import TelegramError
 import atexit
 import logging
 
+
 from logging.handlers import TimedRotatingFileHandler
 
 api_token_path = 'data/api.token'

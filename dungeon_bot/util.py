@@ -3,6 +3,7 @@ import uuid
 import json
 import random
 import math
+import unicodedata as ud
 def get_uid():
 	return str(uuid.uuid4())[:8]
 
@@ -196,3 +197,17 @@ def max_exp_for_level(x):
 	cur_level_exp = round_to_base(prev_lvl_exp+prev_lvl_exp*0.05+math.pow(2, (x/5)))
 	level_table[str(x)] = cur_level_exp
 	return cur_level_exp
+
+
+
+latin_letters= {}
+
+def is_latin(uchr):
+	try: return latin_letters[uchr]
+	except KeyError:
+		return latin_letters.setdefault(uchr, 'LATIN' in ud.name(uchr))
+
+def only_roman_chars(unistr):
+	return all(is_latin(uchr)
+			for uchr in unistr
+			if uchr.isalpha()) # isalpha suggested by John Machin

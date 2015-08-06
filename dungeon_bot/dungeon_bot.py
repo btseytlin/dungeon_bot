@@ -8,9 +8,12 @@ from .level_perks import *
 import logging
 import datetime
 import random
-
 import gc
+
+
+
 persistence_controller = PersistenceController.get_instance()
+
 
 logger = logging.getLogger('dungeon_bot')
 def get_dungeon_bot_instance():
@@ -216,9 +219,12 @@ class DungeonBot(object):
 					message = update.message
 					close_enough = self.time_started - datetime.timedelta(minutes=5)
 					if datetime.datetime.fromtimestamp(message.date) >= close_enough:
-						logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
-						self.on_message(message)
-						
+						if not message.text or not only_roman_chars(message.text): 
+							self.api.sendMessage(message.from_user.id, "There was some error processing your message.\nPlease use English only.")
+						else:
+							self.on_message(message)
+							logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
+							
 			except (KeyboardInterrupt):
 				persistence_controller.clear_events()
 
@@ -248,8 +254,7 @@ class DungeonBot(object):
 	def on_message(self, message):
 		user = message.from_user
 
-		if not message.text: #if message text is missing or empty its an error
-			message.text = ""
+		
 		try:
 			#check if player is registered
 			if not persistence_controller.is_registered(user): 

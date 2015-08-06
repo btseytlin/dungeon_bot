@@ -61,7 +61,6 @@ class BotEvent(object):
 			self.finish()
 			logger.info("Finished %s %s for having %d minutes since last activity."%(self.__class__.__name__, self.uid, minutes_since_activity) )
 		else:
-			print("Starting new timer")
 			self.timer.cancel()
 			self.timer = threading.Timer(60, self.check_if_idle)
 			self.timer.setDaemon(True)
@@ -744,8 +743,10 @@ class DungeonCrawlEvent(BotEvent):
 		return True
 
 	def remove_user(self, user):
+		player = persistence_controller.get_ply(user)
 		if self.dungeon:
-			self.dungeon.players.remove(persistence_controller.get_ply(user))
+			if player in self.dungeon.players:
+				self.dungeon.players.remove(player)
 		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
 		msg = '%s ran away from the dungeon like a pussy he is.'%(persistence_controller.get_ply(user).name.capitalize())
