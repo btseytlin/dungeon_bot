@@ -299,7 +299,7 @@ class DungeonBot(object):
 				if not lobby.is_enough_players():
 					lobby_desc = "Lobby %s\n"%(lobby.uid)
 					lobby_desc += "%d out of %d users:"%(len(lobby.users), lobby.total_users)
-					lobby_desc += ", ".join([ u.id for u in lobby.users ]) + ".\n"
+					lobby_desc += ", ".join([ persistence_controller.get_ply(u).name +"("+str(u.username)+")" for u in lobby.users ]) + ".\n"
 					lobbies.append(lobby_desc)
 		if len(lobbies) > 0:
 			lobbies.insert(0, "Currently open lobbies:")

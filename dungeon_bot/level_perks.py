@@ -117,6 +117,33 @@ class Educated(LevelPerk):
 		ability_info.description +=  "%s gains %d additional experience due to being educated.\n"%(self.host.name.title(), additional_gain)
 		return ability_info
 
+class TeamTactics(LevelPerk):
+	name = "Team tactics"
+	description = "Get +1 max energy for each player in lobby, but not more than 3."
+	priority = 0
+	requirements = {
+		"level": 1,
+		"has_perks": [],
+		"characteristics": {
+			"intelligence": 5
+		}
+	}
+
+	def __init__(self, host):
+		LevelPerk.__init__(self, host)
+
+	def on_combat_start(self):
+		combat_event = self.host.event
+		players = combat_event.players
+		other_players_num = clamp( len(players)-1, 0, 3)
+		if other_players_num > 0:
+			modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"max_energy": other_players_num}, "duration": -1 })
+			self.host.add_modifier(modifier)
+
+			return "%s gains %s max energy by using team tactics.\n"%(self.host.name.title(), other_players_num)
+		return ""
+
+
 class Flow(LevelPerk):
 	name = "Flow"
 	description = "Get 50 percent chance to recover 2 energy on kill."
@@ -172,10 +199,9 @@ class Sweeper(LevelPerk):
 		if self.host.event:
 			combat_event = self.host.event
 			if len([c for c in combat_event.turn_qeue if c.__class__.__name__ != "Enemy"])>=4:
-				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":1, "stats_change":{"accuracy": "4d4"}})
+				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":-1, "stats_change":{"accuracy": "4d4"}})
 				msg = "%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.title())
 				self.host.add_modifier(modifier)
-				modifier.apply()
 		return msg
 
 level_perks_listing = {
@@ -183,4 +209,5 @@ level_perks_listing = {
 	"Flow": Flow,
 	"Deft": Deft,
 	"Sweeper": Sweeper,
+	"Team tactics": TeamTactics,
 }

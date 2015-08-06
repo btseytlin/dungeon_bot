@@ -22,9 +22,11 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		self.priority = priority
 
 	def apply(self):
-		self.host.add_modifier(self)
-		msg = self.on_applied() + self.host.on_modifier_applied(self)
-		return msg
+		added = self.host.add_modifier(self)
+		if not added == False:
+			msg = self.on_applied() + self.host.on_modifier_applied(self)
+			return msg
+		return ""
 
 	@property
 	def permanent(self):
@@ -216,6 +218,36 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 		return "%s is no longer bleeding!\n"%(self.host.name.title())
 
 
+class Burning(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = 2
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, duration=6, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="burning", description="Loose 1d9 hp every turn for 2-4 rounds and suffer an intelligence penalty."):
+		duration = clamp( 10 - host.characteristics["vitality"]*2, 2, 4)
+		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+
+	def on_round(self):
+		msg = ""
+		if not self.host.dead and not "fire resistant" in self.host.tags:
+			dmg = diceroll("1d9")
+			self.host.damage(dmg)
+			msg += "%s looses %d hp due to burning!\n"%(self.host.name.title(), dmg)
+		msg += super(Burning, self).on_round()
+		return msg
+
+	def on_applied(self):
+		msg = super(Burning, self).on_applied()
+		msg += "%s is set on fire!.\n"%(self.host.name.title())
+		return msg
+
+	def on_lifted(self):
+		return "%s is no longer on fire!\n"%(self.host.name.title())
+
+
+
 class Shielded(Modifier): #simply adds defence, hinders evasion
 	priority = 0
 	duration = 2
@@ -282,6 +314,11 @@ class FireAttack(Modifier):
 					attack_info.target.damage( dmg )
 					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.name.title())
 					attack_info.use_info["damage_dealt"] += dmg
+
+					chance_to_cause_burning = 1/2 * chance
+					if random.randint(0, 100) < chance_to_cause_burning:
+						modifier = get_modifier_by_name("burning", self.granted_by, attack_info.target)
+						attack_info.use_info["modifiers_applied"].append(get_modifier_by_name("burning", self.granted_by, attack_info.target))
 		return attack_info
 
 def get_modifier_by_name(modifier_name, source, target, params={}):
@@ -298,7 +335,6 @@ def get_modifier_by_name(modifier_name, source, target, params={}):
 		params["tags_granted"] = prototype.tags_granted
 	if not "priority" in params.keys():
 		params["priority"] = prototype.priority
-
 	mod = prototype(source, target, params["duration"], params["characteristics_change"], params["stats_change"], params["abilities_granted"], params["tags_granted"], params["priority"])
 	return mod
 
@@ -311,4 +347,7 @@ modifier_listing = {
 	"knockdown": KnockedDown,
 	"bleeding": Bleeding,
 	"pain": Pain, 
+	"burning": Burning,
 }
+
+item_modifiers = [] # modifiers that can be used in items.

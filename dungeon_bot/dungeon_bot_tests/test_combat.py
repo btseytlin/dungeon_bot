@@ -5,6 +5,7 @@ from .. import abilities
 from ..bot_events import *
 from ..util import *
 from ..enemies import *
+from ..level_perks import *
 logger = logging.getLogger("dungeon_bot_test_log")
 logger.debug("Test abilities loaded")
 
@@ -105,19 +106,23 @@ def test_weapon_abilities():
 
 def run_tests():
 
-	test_weapon_abilities()
+	#test_weapon_abilities()
 	#controlled combat event
 	ply = Player("player1", "testply1")
 	ply1 = Player("player2", "testply2")
-	item = "rapier"
+
+	item = "club"
 	item = get_item_by_name(item)
+	item.stats["accuracy"] = "10d10"
+	ply.inventory.append(item)
+	ply.equip(item)
+	ply.level_perks.append(TeamTactics(ply))
+	#ply.refresh_derived()
+	item = "ring of fire"
+	item = get_item_by_name(item)
+	item.stats["fire_chance"] = "6d6"
 	ply.inventory.append(item)
 	ply.equip(item)
 
-	item = "dagger"
-	item = get_item_by_name(item)
-	ply.inventory.append(item)
-	ply.equip(item)
-
-	enemies = [Dummy(100000)]
-	#controlled_combat_event([ply], enemies)
+	enemies = [Rat(1)]
+	controlled_combat_event([ply, ply1], enemies)

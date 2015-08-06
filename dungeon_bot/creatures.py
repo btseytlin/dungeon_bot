@@ -297,52 +297,63 @@ class Creature(object):
 				return False
 		self.modifiers.append(modifier)
 		self.modifiers = sorted(self.modifiers, key=lambda x: x.priority, reverse=False)
+		return True
 
 	""" EVENTS """
 	def on_combat_start(self):
 		msg = ""
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_combat_start()
+				if effect:
+					msg += effect
+		
 		for modifier in self.modifiers:
 			effect = modifier.on_combat_start()
 			if effect:
 				msg += effect
 
-		if hasattr(self, "level_perks"):
-			for perk in self.level_perks:
-				at_info = perk.on_combat_start()
-				if at_info:
-					attack_info = at_info
-
+		self.refresh_stats()
+		self.refresh_characteristics()
+		self.refresh_abilities()
+		self.refresh_tags()
 		return msg
 
 	def on_combat_over(self):
 		msg = ""
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_combat_over()
+				if effect:
+					msg += effect
+
 		for modifier in self.modifiers:
 			effect = modifier.on_combat_over()
 			if effect:
 				msg += effect
 
-		if hasattr(self, "level_perks"):
-			for perk in self.level_perks:
-				at_info = perk.on_combat_over()
-				if at_info:
-					attack_info = at_info
+		self.refresh_stats()
+		self.refresh_characteristics()
+		self.refresh_abilities()
+		self.refresh_tags()
 
 		self.energy = self.stats["max_energy"]
 		return msg
 
 	def on_round(self):
 		msg = ""
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_round()
+				if effect:
+					msg += effect
+
 		for modifier in self.modifiers:
 			effect = modifier.on_round()
 			if effect:
 				msg += effect
-
-		if hasattr(self, "level_perks"):
-			for perk in self.level_perks:
-				at_info = perk.on_round()
-				if at_info:
-					attack_info = at_info
-
 
 		if not self.dead:
 			self.energy += self.stats["energy_regen"]
@@ -358,9 +369,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				at_info = perk.on_turn()
-				if at_info:
-					attack_info = at_info
+				effect = perk.on_turn()
+				if effect:
+					msg += effect
 
 		return msg
 
@@ -373,9 +384,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				at_info = perk.on_modifier_applied(modifier)
-				if at_info:
-					attack_info = at_info
+				effect = perk.on_modifier_applied(modifier)
+				if effect:
+					msg += effect
 
 		self.refresh_characteristics()
 		self.refresh_abilities()
@@ -392,9 +403,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				at_info = perk.on_modifier_lifted(modifier)
-				if at_info:
-					attack_info = at_info
+				effect = perk.on_modifier_lifted(modifier)
+				if effect:
+					msg += effect
 
 		self.refresh_characteristics()
 		self.refresh_abilities()
@@ -426,9 +437,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				ab_info = perk.on_item_equipped(item)
-				if ab_info:
-					ability_info = ab_info
+				effect = perk.on_item_equipped(item)
+				if effect:
+					msg += effect
 
 		return msg
 
@@ -456,9 +467,9 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				ab_info = perk.on_consumable_used(item)
-				if ab_info:
-					ability_info = ab_info
+				effect = perk.on_consumable_used(item)
+				if effect:
+					msg = effect
 				
 		return msg
 

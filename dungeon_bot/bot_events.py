@@ -106,13 +106,13 @@ class ChatEvent(BotEvent):
 		elif (command in ["say", "s"]):
 			if len(args)>0:
 				msg = " ".join(args)
-				msg_others = "%s (%s) said: %s"%(persistence_controller.get_ply(user).name.title(), str(user.username), msg)
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)
 				self.log.append(msg_others)
 
 				if len(self.log) > 1000:
 					self.log = []
 				broadcast = []
-				broadcast.append([user, "You said: "+msg])
+				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
 						broadcast.append([u, msg_others])
@@ -155,7 +155,7 @@ class ChatEvent(BotEvent):
 	def add_user(self, user):
 		super(ChatEvent, self).add_user(user)
 		broadcast = []
-		msg = "%s (%s) joined the chat."%(persistence_controller.get_ply(user).name.title(), str(user.username))
+		msg = "%s joined the chat."%(persistence_controller.get_ply(user).name.title())
 
 		broadcast.append([user, self.greeting_message+ self.status()])
 		for u in self.users:
@@ -166,7 +166,7 @@ class ChatEvent(BotEvent):
 	def remove_user(self, user):
 		super(ChatEvent, self).remove_user(user)
 		broadcast = []
-		msg = "%s (%s) left the chat."%(persistence_controller.get_ply(user).name.title(), str(user.username))
+		msg = "%s left the chat."%(persistence_controller.get_ply(user).name.title())
 
 		broadcast.append([user, "You left the chat."])
 		for u in self.users:
@@ -582,19 +582,19 @@ class DungeonLobbyEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You said:"+msg])
+				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s said:%s"%(str(user.username)+"("+str(user.id)+")".title(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(u).name.title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 
 		elif (command in ["say", "s"]):
 			if len(args)>0:
 				msg = " ".join(args)
-				msg_others = "%s (%s) said: %s"%(persistence_controller.get_ply(user).name.title(), str(user.username), msg)
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)
 				broadcast = []
-				broadcast.append([user, "You said: "+msg])
+				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
 						broadcast.append([u, msg_others])
@@ -829,10 +829,10 @@ class DungeonCrawlEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You said:"+msg])
+				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s said:%s"%(str(user.username) + "("+user.id+")".title(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["status"]):
@@ -875,8 +875,7 @@ class CombatEvent(BotEvent):
 		self.players = players
 		self.enemies = enemies
 		self.turn_qeue = []
-		for creature in self.turn_qeue:
-			creature.on_combat_start()
+		
 
 		self.turn = 0
 		self.round = 0
@@ -908,6 +907,9 @@ class CombatEvent(BotEvent):
 		combat_logger.info("Started combat %s vs %s"%(", ".join([p.name + "("+p.userid+")" for p in players]), ", ".join([e.name for e in enemies])))
 
 		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([p.name for p in players]), ", ".join([e.name for e in enemies]))
+
+		
+
 		self.greeting_message += self.next_round()
 
 		#if isinstance(self.turn_qeue[self.turn], Enemy):
@@ -927,7 +929,13 @@ class CombatEvent(BotEvent):
 		msg = "".join([c.on_round() for c in self.turn_qeue if not c.dead])
 		msg += "Round %d.\n"%(self.round)
 		self.turn_qeue = self.update_turn_qeue()
+
 		msg += self.get_printable_turn_qeue()
+
+		if self.round == 1 and self.turn == 0:
+			for creature in self.turn_qeue:
+				msg += creature.on_combat_start()
+				
 		combat_logger.info("%s"%(msg))
 		msg += self.this_turn()
 		return msg
@@ -1016,6 +1024,7 @@ class CombatEvent(BotEvent):
 		"info": "shows help","help": "shows help","h": "shows help",
 		"status": "shows where you are and what you are doing",
 		"turn": "ends turn", "t": "ends turn",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 	}
 
 	def handle_combat_command(self, user, command, *args):
@@ -1032,7 +1041,6 @@ class CombatEvent(BotEvent):
 						t = self.turn_qeue[i]
 						if t.name == argument or argument.isdigit() and int(argument) == i:
 							target = t
-
 					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[str(user.id)], target )
 					if can_use:
 						use_info = ability_class.use( self.users_to_players[str(user.id)], target, granted_by, self )
@@ -1098,10 +1106,10 @@ class CombatEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You said:"+msg])
+				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s said:%s"%(str(user.username)+"("+str(user.id)+")", msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 

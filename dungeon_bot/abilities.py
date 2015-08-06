@@ -70,7 +70,6 @@ class AbilityUseInfo(object):
 				self = self.target.on_got_hit(self)
 
 				for modifier in self.prototype_class.get_modifiers_applied(self):
-					if not modifier.name in [mod.name for mod in self.target.modifiers]:
 						use_info["modifiers_applied"].append(modifier)
 
 		if self.ability_type == "buff":
@@ -253,6 +252,8 @@ class Smash(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
+		if not hasattr(target, "exp_value"):
+			return False, "Can't attack a player."
 		if not target.dead:
 			return Ability.can_use(user, Smash)
 		else:
@@ -339,6 +340,8 @@ class Stab(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
+		if not hasattr(target, "exp_value"):
+			return False, "Can't attack a player."
 		if not target.dead:
 			return Ability.can_use(user, Stab)
 		else:
@@ -422,6 +425,8 @@ class QuickStab(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
+		if not hasattr(target, "exp_value"):
+			return False, "Can't attack a player."
 		if not target.dead:
 			return Ability.can_use(user, QuickStab)
 		else:
@@ -500,6 +505,8 @@ class Cut(Ability): #TODO test and adapt
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
+		if not hasattr(target, "exp_value"):
+			return False, "Can't attack a player."
 		if not target.dead:
 			return Ability.can_use(user, Cut)
 		else:
@@ -580,6 +587,8 @@ class QuickCut(Ability): #TODO test and adapt
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
+		if not hasattr(target, "exp_value"):
+			return False, "Can't attack a player."
 		if not target.dead:
 			return Ability.can_use(user, QuickCut)
 		else:
@@ -685,6 +694,8 @@ class Sweep(Ability): #TODO test and adapt
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
+		if not hasattr(target, "exp_value"):
+			return False, "Can't attack a player."
 		if not target.dead:
 			return Ability.can_use(user, Sweep)
 		else:
