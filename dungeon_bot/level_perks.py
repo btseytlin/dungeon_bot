@@ -138,9 +138,9 @@ class TeamTactics(LevelPerk):
 		other_players_num = clamp( len(players)-1, 0, 3)
 		if other_players_num > 0:
 			modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"max_energy": other_players_num}, "duration": -1 })
-			self.host.add_modifier(modifier)
-
-			return "%s gains %s max energy by using team tactics.\n"%(self.host.name.title(), other_players_num)
+			mod_added = self.host.add_modifier(modifier)
+			if mod_added:
+				return "%s gains %s max energy by using team tactics.\n"%(self.host.name.title(), other_players_num)
 		return ""
 
 
@@ -194,14 +194,16 @@ class Sweeper(LevelPerk):
 		}
 	}
 
-	def on_turn(self):
+	def on_round(self):
 		msg = ""
 		if self.host.event:
 			combat_event = self.host.event
-			if len([c for c in combat_event.turn_qeue if c.__class__.__name__ != "Enemy"])>=4:
+			if len([c for c in combat_event.turn_qeue if c.__class__.__name__ != "Player" and not c.dead])>=4:
 				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":-1, "stats_change":{"accuracy": "4d4"}})
 				msg = "%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.title())
-				self.host.add_modifier(modifier)
+				mod_added = self.host.add_modifier(modifier)
+				if mod_added:
+					msg = "%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.title())
 		return msg
 
 level_perks_listing = {

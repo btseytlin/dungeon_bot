@@ -847,7 +847,8 @@ class Creature(object):
 		self.refresh_stats()
 
 	def examine_self(self):
-
+		if not self:
+			return "" #no idea why this is needed
 		characteristics = []
 		characteristics.append("|\t"+"Strength"+":" +str(self.characteristics["strength"]) +" ("+str(self.base_characteristics["strength"])+")" +"\n")
 		characteristics.append("|\t"+"Dexterity"+":" +str(self.characteristics["dexterity"]) +" ("+str(self.base_characteristics["dexterity"])+")" +"\n")

@@ -116,7 +116,7 @@ def run_tests():
 	item.stats["accuracy"] = "10d10"
 	ply.inventory.append(item)
 	ply.equip(item)
-	ply.level_perks.append(TeamTactics(ply))
+	ply.level_perks.append(Sweeper(ply))
 	#ply.refresh_derived()
 	item = "ring of fire"
 	item = get_item_by_name(item)
@@ -124,5 +124,5 @@ def run_tests():
 	ply.inventory.append(item)
 	ply.equip(item)
 
-	enemies = [Rat(1)]
-	controlled_combat_event([ply, ply1], enemies)
+	enemies = [Rat(1),Rat(1),Rat(1),Rat(1),Rat(1)]
+	controlled_combat_event([ply], enemies)
