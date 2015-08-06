@@ -223,7 +223,7 @@ class DungeonBot(object):
 		user = message.from_user
 
 		if not message.text: #if message text is missing or empty its an error
-			self.reply_error(user)
+			message.text = ""
 
 		#check if player is registered
 		if not persistence_controller.is_registered(user): 
