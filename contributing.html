@@ -17,7 +17,7 @@
     </section>
 
     <section class="main-content">
-      <p>This guide will walk you through creating items, modifiers, enemies, perks.</p>
+     <p>This guide will walk you through creating items, modifiers, enemies, perks.</p>
       <h3>Cloning and making pull requests</h3>
       <p>Contributing requires making pull requests so reading the <a href="https://guides.github.com/activities/contributing-to-open-source/">contributing to open source guide</a> is required if you are new.</p>
       <h2>Making an item</h2>
@@ -31,7 +31,7 @@
       <p>Open <code>items.py</code>.</p>
       <p>A rapier is quite accurate, but it doesn't deal much damage.
       Go the bottom of <code>items.py</code>, to <code>item_listing</code>.
-      Taking analogy from sword let's make a rapier entry in the "primary_weapon" category.</p>
+      Taking analogy from <code>"sword"</code> let's make a rapier entry in the <code>"primary_weapon"</code> category.</p>
       <pre><code>item_listing: {
           "primary_weapon":{
               "rapier": {
@@ -52,10 +52,10 @@
       </code></pre>
       <p>After the item has been added to the item listing, let's make it so undead soldier enemies will sometimes spawn with rapiers.</p>
       <p>Open <code>enemies.py</code> and find class <code>UndeadSoldier</code>. In the constructor of the class find line</p>
-      <pre><code>        items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace"]), 0 )]
+      <pre><code>items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace"]), 0 )]
       </code></pre>
       <p>These are the weapons an undead soldier can spawn with. Change it to:</p>
-      <pre><code>        items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "rapier"]), 0 )]
+      <pre><code>items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "rapier"]), 0 )]
       </code></pre>
       <p>Done, now let's make them drop rapiers too.</p>
       <p>Find the <code>drop_table</code> propery of the <code>UndeadSoldier</code> class.</p>
@@ -73,11 +73,11 @@
           "random": 3,
       }
       </code></pre>
-      <p>Done! Now UndeadSoldiers will drop rapiers with 5% chance!</p>
+      <p>Done! Now UndeadSoldiers will drop rapiers with 5% chance! Players will be able to equip these items and use them.</p>
       <h4>Explanation</h4>
       <p><strong>Item listing explained.</strong></p>
       <p>You can see the 5 basic prototypes for items: <em>PrimaryWeapon, SecondaryWeapon, Armor, Helmet, Ring, Talisman</em>.
-      <code>item_listing</code> contains all the parameters for items in the game.
+      <code>item_listing</code> contains all the parameters items in the game can spawn with.
       Let's take, for example, club.</p>
       <pre><code>"club": {
           "stats": {
@@ -92,7 +92,7 @@
           
       }
       </code></pre>
-      <p>That info means that if we call <code>get_item_by_name("club")</code> (that function is called every time loot is dropped and items are given to enemies on spawn) we will get a PrimaryWeapon object with <code>"damage"</code> stat somewhere between <code>"1d3"</code> and <code>"2d6"</code>. So it could be anything among <em>"1d3", "1d4, "1d5", "1d6", "2d1", "2d2", "2d3", "2d4", "2d5", "2d6"</em>.</p>
+      <p>That info means that if we call <code>get_item_by_name("club")</code> (that function is called every time loot is dropped and items are given to enemies on spawn) we will get a <code>PrimaryWeapon</code> object with <code>"damage"</code> stat somewhere between <code>"1d3"</code> and <code>"2d6"</code>. So it could be anything among <em>"1d3", "1d4, "1d5", "1d6", "2d1", "2d2", "2d3", "2d4", "2d5", "2d6"</em>.</p>
       <p>The right range boundary is considered the best possible condition.</p>
       <p>Range values can be negative, for example:
       <code>"accuracy" : ["-1d6","2d6"]</code>.</p>
@@ -100,9 +100,8 @@
       <code>"evasion": ["-3d4","-1d2"]</code></p>
       <p>Mind that absolute dice value decides if the range will be inverse or not. In the case above <em>"-3d4"</em> will be considered the absolute worst outcome, <em>"-1d2"</em> will be considered the absolute best. That's useful if you want an item that applies an evasion penalty and you want the best item to have <em>the smallest penalty</em>.</p>
       <p><code>"abilities_granted"</code> specifies names of abilities a creature will be given when it's equipped. The actual class of the available ability can be found in <code>abilities.py</code>. You can see that <code>"smash"</code> will be mapped to the <code>"Smash"</code> class.
-      Abilities are exactly the combat commands a creature will be able to use in a fight.
-      Other available options to <code>"stats"</code> are fields <code>"modifiers_granted"</code> and <code>"tags_granted"</code>.</p>
-      <p><code>"modifiers_granted"</code> work just like abilities, modifier (temporary or permanent effects, such as bleeding or getting 10% more experience every experience gain) names are specified. You can see what modifiers exist in <code>modifiers.py</code>, <code>modifier_listing</code> dictionary.</p>
+      Abilities are exactly the combat commands a creature will be able to use in a fight.</p>
+      <p><code>"modifiers_granted"</code> work just like <code>"abilities_granted"</code>, except modifier (temporary or permanent effects, such as bleeding or getting 10% more experience every experience gain) names are specified. You can see what modifiers exist in <code>modifiers.py</code>, <code>modifier_listing</code> dictionary.</p>
       <p><code>"tags_granted"</code> are just strings that will be appended to a creature's <code>.tags</code> list when the item is equipped. For example equipping <em>chainmail</em> will add the tag <code>"armor"</code>. Tags are used by various ability formulas to change effectiveness of attacks. For example <code>Smash</code> is more likely to knockdown an enemy with <code>"armor"</code> tag.</p>
       <p>An item's <code>"stats"</code> can also have various bonuses. For example:</p>
       <pre><code>"ring of thievery": {
@@ -110,19 +109,19 @@
               "stats_change": {
                   "evasion": ["1d6", "3d6"]
               },
-                  "characteristics_change": {
-              "dexterity" : [0, 2]
+              "characteristics_change": {
+                  "dexterity" : [0, 2]
               }
           },
           "args":{
-              "name":"ring of more thievery",
+              "name":"ring of thievery",
               "description":"Gives a dex bonus and an evasion bonus."
           }
        },
       </code></pre>
       <p>This item gives a bonus  <em>characteristics</em> and to <em>evasion</em>.
       Note that characteristics also come in ranges, but in regular numbers. Notation above means that the ring of thievery can have a dex bonus of 0, 1 or 2.</p>
-      <p>That's can also contain values that will be used by various modifiers. Take a look at <code>"amulet of healing"</code> or <code>"ring of fire"</code>.</p>
+      <p>That's can also contain values that will be used by modifiers given. Take a look at <code>"amulet of healing"</code> or <code>"ring of fire"</code>.</p>
       <p><strong>Drop tables explained.</strong></p>
       <p>Each key of a drop table is either an item name, item type or <code>"random"</code>. The value is the drop chance in percents.</p>
       <ul>
@@ -164,7 +163,7 @@
       <p>Go the section marked by a comment:</p>
       <pre><code>""" human enemies below """
       </code></pre>
-      <p>Taking analogy from peasant let's make a <code>Thug</code> class.
+      <p>Taking analogy from <code>Peasant</code> let's make a <code>Thug</code> class.
       Add the following:</p>
       <pre><code>thug_characteristics = {
           "strength": 7,
@@ -302,6 +301,211 @@
        "50": (ouch, ["bananas"] ),
       }
       </code></pre>
+      <h4>Seeing it in action</h4>
+      <p>Let's spawn our enemy, give him our new item and fight him. No telegram required.
+      Open <code>dungeon_bot/dungeon_bot_tests/test_combat.py</code>.
+      You will see something like:</p>
+      <pre><code>def run_tests():
+         test_abilities()
+         #controlled combat event
+         ply = Player("player1", "testply1")
+         ply1 = Player("player2", "testply2")
+         item = "club"
+         item = get_item_by_name(item)
+         ply.inventory.append(item)
+         ply.equip(item)
+         enemy = Rat()
+         controlled_combat_event([ply, ply1], [enemy])
+      </code></pre>
+      <p><code>test_abilities</code> calculates various statistic information for each ability of each extisting weapon. Useful for balance testing. But let's comment it for now.
+      <code>test_abiltiies</code> is useful can provide you with info like average damage, damage per energy spent, average chance to hit and more.
+      The code block that follows starts a combat event where you control all players involved.
+      Change it too:</p>
+      <pre><code>def run_tests():
+         test_weapon_abilities()
+         #controlled combat event
+         ply = Player("player1", "testply1")
+         ply1 = Player("player2", "testply2")
+         item = "rapier"
+         item = get_item_by_name(item)
+         ply.inventory.append(item)
+         ply.equip(item)
+         enemy = Thug()
+         controlled_combat_event([ply], [enemy])
+      </code></pre>
+      <p>Now if you run <code>dungeon_bot/run_tests.py</code> you will see:</p>
+      <pre><code>
+      Running controlled combat event.
+      Combat starts!
+      testply1 vs thug.
+      Round 1.
+      0.testply1(70), 1.thug(84)
+      It's testply1's turn.
+
+      &gt;
+      </code></pre>
+      <p>Here you can verify that everything works as you intended it too.</p>
+      <h2>Making a modifier</h2>
+      <p>Making a modifier consists of following steps:</p>
+      <ul>
+      <li>creating the modifier</li>
+      <li>adding the modifier to modifier tables</li>
+      </ul>
+      <p>Let's add the "burning" modifier that would do periodic damage akin to bleeding.</p>
+      <h4>Adding</h4>
+      <p>Open <code>modifiers.py</code>.</p>
+      <p>Right after the <code>Bleeding</code> class add:</p>
+      <pre><code>class Burning(Modifier): #simply adds defence, hinders evasion
+          priority = 0
+          duration = 2
+          characteristics_change = {}
+          stats_change =  {}
+          abilities_granted = []
+          tags_granted = []
+          def __init__(self, granted_by, host, duration=6, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="burning", description="Loose 1d9 hp every turn for 2-4 rounds and suffer an intelligence penalty."):
+              duration = clamp( 10 - host.characteristics["vitality"], 2, 4)
+              Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+
+          def on_round(self):
+              msg = ""
+              if not self.host.dead and not "fire resistant" in self.host.tags:
+                  dmg = diceroll("1d9")
+                  self.host.damage(dmg)
+                  msg += "%s looses %d hp due to burning!\n"%(self.host.name.title(), dmg)
+              msg += super(Burning, self).on_round()
+              return msg
+
+          def on_applied(self):
+              msg = super(Burning, self).on_applied()
+              msg += "%s is set on fire!.\n"%(self.host.name.title())
+              return msg
+
+          def on_lifted(self):
+              return "%s is no longer on fire!\n"%(self.host.name.title())
+
+      </code></pre>
+      <p>Now navigate to the <code>FireAttack</code> modifier.
+      Change the <code>on_hit</code> method to:</p>
+      <pre><code>    def on_hit(self, attack_info):
+              if attack_info.inhibitor == self.host:
+                  fire_chance = self.granted_by.stats["fire_chance"]
+                  fire_damage = self.granted_by.stats["fire_damage"]
+                  if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:
+                      chance = diceroll( fire_chance )
+                      if random.randint(0, 100) &lt; chance:
+                          dmg = diceroll( fire_damage )
+                          attack_info.target.damage( dmg )
+                          attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.title(), dmg, attack_info.target.name.title())
+                          attack_info.use_info["damage_dealt"] += dmg
+
+                          chance_to_cause_burning = 1/2 * chance
+                          if random.randint(0, 100) &lt; chance_to_cause_burning:
+                              modifier = get_modifier_by_name("burning", self.granted_by, attack_info.target)
+                              attack_info.use_info["modifiers_applied"].append(get_modifier_by_name("burning", self.granted_by, attack_info.target))
+      </code></pre>
+      <p>Nagivate to <code>modifier_listing</code> at the bottom of the page.
+      Add the following as the last line:</p>
+      <pre><code>burning": Burning,
+      </code></pre>
+      <p>Done! Now there is a small chance for FireAttack to set the target on fire.</p>
+      <h2>Making a level perk</h2>
+      <p>Making a perk consists of following steps:</p>
+      <ul>
+      <li>creating the perk class</li>
+      <li>creating the perk requirements</li>
+      <li>adding the perk to perk tables</li>
+      </ul>
+      <p>Let's add the "team tactics" perk that adds +1 max energy for every fellow plyaer in team, but not more than 3.</p>
+      <h4>Adding</h4>
+      <p>Open <code>level_perks.py</code>.
+      Add the new class:</p>
+      <pre><code>class TeamTactics(LevelPerk):
+          name = "Team tactics"
+          description = "Get +1 max energy for each player in lobby, but not more than 3."
+          priority = 0
+          requirements = {
+              "level": 1,
+              "has_perks": [],
+              "characteristics": {
+                  "intelligence": 5
+              }
+          }
+
+          def __init__(self, host):
+              LevelPerk.__init__(self, host)
+
+          def on_combat_start(self):
+              combat_event = self.host.event
+              players = combat_event.players
+              other_players_num = clamp( len(players)-1, 0, 3)
+              if other_players_num &gt; 0:
+                  modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"max_energy": other_players_num}, "duration": -1 })
+                  self.host.add_modifier(modifier)
+
+                  return "%s gains %s max energy by using team tactics.\n"%(self.host.name.title(), other_players_num)
+              return ""
+      </code></pre>
+      <p>It will give a stat bonus on combat start.</p>
+      <p>Now to the <code>level_perks_listing</code> at the bottom of <code>level_perks.py</code> add:</p>
+      <pre><code>"Team tactics": TeamTactics,
+      </code></pre>
+      <p>Done! The perk will be accecisble to all players to use.</p>
+      <p>##Explanation to modifiers and perks</p>
+      <p>Modifiers and perks work the same way. The difference is that perk parameters never change, they are identical for all players. Modifiers can be temporary and vary a lot.</p>
+      <p>A modifier or perk is an object that "latches" onto an event happening in the world and executes some logic.
+      For example when combat starts <code>Creature.on_combat_start</code> method is called for all creatures entering combat.
+      Let's take a look at its code:</p>
+      <pre><code>    def on_combat_start(self):
+              msg = ""
+              if hasattr(self, "level_perks"):
+                  for perk in self.level_perks:
+                      effect = perk.on_combat_start()
+                      if effect:
+                          msg += effect
+              
+              for modifier in self.modifiers:
+                  effect = modifier.on_combat_start()
+                  if effect:
+                      msg += effect
+
+              self.refresh_stats()
+              self.refresh_characteristics()
+              self.refresh_abilities()
+              self.refresh_tags()
+              return msg
+      </code></pre>
+      <p>So it basically calls every perk and modifier and if they do anything reports it.
+      This way perks and modifiers can do basically anything. The limit is your imagination.</p>
+      <p>The full list of events you can utilise in creation of perks and modifiers can be found in base <code>LevelPerk</code> and <code>Modifier</code> classes in form of empty methods.
+      The list currently is:</p>
+      <ul>
+      <li>on_combat_start</li>
+      <li>on_combat_over</li>
+      <li>on_item_equipped</li>
+      <li>on_item_unequipped</li>
+      <li>on_consumable_used</li>
+      <li>on_turn</li>
+      <li>on_round</li>
+      <li>on_level_up</li>
+      <li>on_attack</li>
+      <li>on_hit</li>
+      <li>on_got_hit</li>
+      <li>on_attacked</li>
+      <li>on_miss</li>
+      <li>on_buff</li>
+      <li>on_buffed</li>
+      <li>on_kill</li>
+      <li>on_death</li>
+      <li>on_experience_gained</li>
+      <li>on_energy_gained</li>
+      <li>on_energy_lost</li>
+      <li>on_health_gained</li>
+      <li>on_health_lost</li>
+      <li>on_loot</li>
+      <li>on_modifier_applied</li>
+      <li>on_modifier_lifted</li>
+      </ul>
+
 
 
       <footer class="site-footer">
