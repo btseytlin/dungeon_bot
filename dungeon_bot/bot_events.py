@@ -1166,7 +1166,7 @@ class CombatEvent(BotEvent):
 				if argument=="self" or argument == str(user.id) or argument == self.users_to_players[str(user.id)].name:
 					return (self.users_to_players[str(user.id)].examine_self())
 				elif argument.isdigit():
-					if int(argument-1) < len(self.turn_qeue):
+					if int(argument)-1 < len(self.turn_qeue):
 						return self.turn_qeue[int(argument)].examine_self()
 				else:
 					for u in self.users:

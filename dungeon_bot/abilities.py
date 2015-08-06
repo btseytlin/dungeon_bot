@@ -754,7 +754,7 @@ class Sweep(Ability): #TODO test and adapt
 class RodentBite(Ability):
 	name = "rodent bite"
 	description = "Rodents bite!"
-	energy_required = 2
+	energy_required = 1
 	requirements = None
 
 
@@ -927,7 +927,6 @@ class AnimalClaw(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.5
 
 		dmg = clamp( weapon_damage* strength - defence, user.characteristics["strength"]/2, 99999999 )
-		return 1
 		return dmg
 
 	@staticmethod
@@ -968,7 +967,7 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 1) < AnimalClaw.get_bleeding_chance(use_info):
+		if random.randint(0, 100) < AnimalClaw.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []

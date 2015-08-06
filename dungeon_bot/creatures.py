@@ -57,7 +57,7 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]*10 + characteristics["vitality"]*self.level*4
+		stats["max_health"] = characteristics["vitality"]*10 + (characteristics["vitality"] * (self.level * 4))
 		stats["max_energy"] = characteristics["strength"] + int(self.level / 10)
 		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 10), 2, 10)
 		stats["health"] = stats["max_health"]
@@ -312,6 +312,11 @@ class Creature(object):
 		for mod in self.modifiers:
 			if mod.name == modifier.name and mod.granted_by == modifier.granted_by:
 				return False
+
+		if not modifier.can_apply():
+			print("cant apply this modifier this that creature")
+			return False
+
 		self.modifiers.append(modifier)
 		self.modifiers = sorted(self.modifiers, key=lambda x: x.priority, reverse=False)
 		return True

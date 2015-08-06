@@ -28,6 +28,9 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 			return msg
 		return ""
 
+	def can_apply(self):
+		return True
+
 	@property
 	def permanent(self):
 		return self.duration == -1
@@ -180,6 +183,10 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
 		self.duration = Pain.duration
 
+
+	def can_apply(self):
+		return "animate" in self.host.tags
+
 	def on_applied(self):
 		msg = super(Pain, self).on_applied()
 		msg += "%s is wrecked with pain!\n"%(self.host.short_desc.capitalize())
@@ -199,6 +206,9 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 	def __init__(self, granted_by, host, duration=6, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="bleeding", description="loose 1d3 hp every turn for 6 rounds"):
 		duration = clamp( 10 - host.characteristics["vitality"], 3, 8)
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
+
+	def can_apply(self):
+		return "living" in self.host.tags
 
 	def on_round(self):
 		msg = ""
@@ -224,7 +234,7 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 	characteristics_change = {}
 	stats_change =  {}
 	abilities_granted = []
-	tags_granted = []
+	tags_granted = ["on fire"]
 	def __init__(self, granted_by, host, duration=6, characteristics_change = {}, stats_change = {}, abilities_granted = [], tags_granted = [], priority=0, name="burning", description="Loose 1d9 hp every turn for 2-4 rounds and suffer an intelligence penalty."):
 		duration = clamp( 10 - host.characteristics["vitality"]*2, 2, 4)
 		Modifier.__init__(self, granted_by, host, duration, characteristics_change, stats_change, abilities_granted, tags_granted,priority, name, description )
@@ -237,6 +247,9 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 			msg += self.host.damage(dmg, self.granted_by)
 		msg += super(Burning, self).on_round()
 		return msg
+
+	def can_apply(self):
+		return not "fire resistant" in self.host.tags
 
 	def on_applied(self):
 		msg = super(Burning, self).on_applied()

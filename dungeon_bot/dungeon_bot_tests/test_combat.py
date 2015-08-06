@@ -32,7 +32,7 @@ def test_attack_abilities(player, enemy = None):
 			dummy_pos = next((x for x in range(len(combat_event.turn_qeue)) if combat_event.turn_qeue[x] == dummy), None)
 			#ability_pos = next((x for x in range(len(player.abilities)) if player.abilities[x].name == testing_ability ), None)
 			command = testing_ability.name
-			args = [str(dummy_pos)] 
+			args = [str(dummy_pos+1)] 
 			#msg = command.strip().lower().split(' ')
 			#command, args = msg[0], msg[1:]
 			output = combat_event.handle_command(user, command, *args)
@@ -40,6 +40,7 @@ def test_attack_abilities(player, enemy = None):
 			dummy.health = dummy.stats["max_health"]
 			dummy.refresh_modifiers()
 		all_testing_ability_uses = [use_info for use_info in combat_event.abilities_used if use_info.prototype_class ==testing_ability.__class__ and use_info.inhibitor == player and use_info.ability_type == "attack"]
+		
 		if len(all_testing_ability_uses) > 0:
 			print("Ability %s used %d times."%(testing_ability.name, len(all_testing_ability_uses)))
 			print("Ability did hit  %d times."%(len([u for u in all_testing_ability_uses if u.use_info["did_hit"]])))
@@ -49,6 +50,8 @@ def test_attack_abilities(player, enemy = None):
 			print("Critical effects per energy used: %f."%(len( [u for u in all_testing_ability_uses if len(u.use_info["modifiers_applied"]) >0])/ abs(sum([ u.use_info["energy_change"] for u in all_testing_ability_uses]))))
 			print("Dmg per energy used: %f."%(sum([u.use_info["damage_dealt"] for u in all_testing_ability_uses]) /abs(sum([ u.use_info["energy_change"] for u in all_testing_ability_uses]))))
 			print("")
+		else:
+			print("abilities werent used one time.")
 	combat_event.finish()
 		
 def controlled_combat_event(players, enemies):
@@ -92,6 +95,7 @@ def test_weapon_abilities():
 	ply = Player("testman", "testply")
 	items = [x for x in list(item_listing["primary_weapon"].keys())] + [x for x in list(item_listing["secondary_weapon"].keys())]
 	dummy = Dummy(100000)
+	dummy.tags = []
 	ply.characteristics["dexterity"] = 5
 	#armor = get_item_by_name("plate armor")
 	#dummy.inventory.append(armor)
@@ -117,11 +121,14 @@ def run_tests():
 	ply.inventory.append(item)
 	ply.equip(item)
 	ply.level_perks.append(Sweeper(ply))
+
+	dummy = Dummy(1000)
+	dummy.tags = []
 	#ply.refresh_derived()
 	# item = "dagger"
 	# item = get_item_by_name(item)
 	# ply.inventory.append(item)
 	# ply.equip(item)
 
-	enemies = [Dummy(100),Rat(1),Rat(1),Rat(1),Rat(1)]
+	enemies = [dummy,Rat(100),Rat(1),Rat(1),Rat(1)]
 	controlled_combat_event([ply], enemies)

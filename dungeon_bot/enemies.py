@@ -79,7 +79,7 @@ class Rat(Enemy):
 	}
 	loot_coolity = 0.5
 
-	def __init__(self, level=1, name="rat",  characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=50):
+	def __init__(self, level=1, name="rat",  characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "living","rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=50):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("rodent_teeth", 0)
 		self.inventory.append(teeth)
@@ -117,7 +117,7 @@ class BigRat(Enemy):
 	
 	loot_coolity = 0.5
 
-	def __init__(self, level=1, name="big rat", characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=80):
+	def __init__(self, level=1, name="big rat", characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["living", "animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=80):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("rodent_teeth", 0)
 		self.inventory.append(teeth)
@@ -166,7 +166,7 @@ class Wolf(Enemy):
 
 	loot_coolity = 0.5
 
-	def __init__(self, level=1, name="wolf", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="wolf", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["living", "animate", "animal"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -210,7 +210,7 @@ class WolfLeader(Enemy):
 	}
 	loot_coolity = 0.8
 
-	def __init__(self, level=1, name="wolf pack leader", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="wolf pack leader", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["living", "animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -259,7 +259,7 @@ class Bear(Enemy):
 
 	loot_coolity = 1
 
-	def __init__(self, level=1, name="bear", characteristics = bear_characteristics, stats=None, description="An angry big bear. Very dangerous!", inventory=[], equipment=default_equipment, tags=["animate", "animal", "big"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="bear", characteristics = bear_characteristics, stats=None, description="An angry big bear. Very dangerous!", inventory=[], equipment=default_equipment, tags=["living", "animate", "animal", "big"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -287,7 +287,7 @@ class Bear(Enemy):
 """ undead enemies below """
 
 undead_soldier_characteristics = {
-	"strength": 2, #how hard you hit
+	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
@@ -313,7 +313,7 @@ class UndeadSoldier(Enemy):
 	}
 
 	loot_coolity = 0.3
-	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["living", "animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "claymore", "rapier"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -412,7 +412,7 @@ class LesserDemon(Enemy):
 	}
 
 	loot_coolity = 0.2
-	def __init__(self, level=1, name="lesser demon", characteristics = lesser_demon_characteristics, stats=None, description="A lesser demon.", inventory=[], equipment=default_equipment, tags=["animate", "demon" ],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="lesser demon", characteristics = lesser_demon_characteristics, stats=None, description="A lesser demon.", inventory=[], equipment=default_equipment, tags=["living","animate", "demon" ],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = []
 		items.append( get_item_by_name("animal_teeth", 0 ) )
@@ -457,7 +457,7 @@ class BetaDemon(Enemy):
 		"random": 3,
 	}
 	loot_coolity = 0.2
-	def __init__(self, level=1, name="beta demon", characteristics = beta_demon_characteristics, stats=None, description="An beta demon. It's huge and wields a club from a huge bone.", inventory=[], equipment=default_equipment, tags=["animate", "demon", "slow", "big"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="beta demon", characteristics = beta_demon_characteristics, stats=None, description="An beta demon. It's huge and wields a club from a huge bone.", inventory=[], equipment=default_equipment, tags=["animate", "living","demon", "slow", "big"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = []
 		items.append( get_item_by_name("club", 0 ) )
@@ -505,7 +505,7 @@ class Thug(Enemy):
 		"random": 3,
 	}
 	loot_coolity = 0.5
-	def __init__(self, level=1, name="thug", characteristics = thug_characteristics, stats=None, description="A thug, strong and massive, but quite slow.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big"],abilities=[],modifiers=[], exp_value=200):
+	def __init__(self, level=1, name="thug", characteristics = thug_characteristics, stats=None, description="A thug, strong and massive, but quite slow.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big", "human", "living"],abilities=[],modifiers=[], exp_value=200):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "sword", "mace", "claymore"]), 0 )]
 		for item in items:
@@ -552,7 +552,7 @@ class Peasant(Enemy):
 		"rapier": 3,
 	}
 	loot_coolity = 0.3
-	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
@@ -591,7 +591,7 @@ class Thief(Enemy):
 		"rapier": 5,
 	}
 	loot_coolity = 0.7
-	def __init__(self, level=1, name="thief", characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):
+	def __init__(self, level=1, name="thief", characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( "dagger", 1 )]
 		items.append( get_item_by_name( "rapier" , 0 ) ) if random.randint(0,10) > 5 else None
@@ -745,7 +745,7 @@ def lesser_demon_pack(size):
 def beta_demon():
 	description = "A beta demon.\n"
 	levels = list(range(1,10))
-	beta_demon = BetaDemon(levels)
+	beta_demon = BetaDemon(random.choice(levels))
 	return [beta_demon], description
 
 def peasant_pack(size):
