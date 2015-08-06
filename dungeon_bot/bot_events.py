@@ -57,9 +57,7 @@ class BotEvent(object):
 
 	def check_if_idle(self):
 		minutes_since_activity = divmod((datetime.datetime.now() - self.last_activity).total_seconds(), 60)[0]
-		print("Since activity of event %s: %d"%(self.__class__.__name__, minutes_since_activity))
 		if minutes_since_activity >= settings.event_cleanse_time:
-			print("Finishing")
 			self.finish()
 			logger.info("Finished %s %s for having %d minutes since last activity."%(self.__class__.__name__, self.uid, minutes_since_activity) )
 		else:
@@ -303,23 +301,22 @@ class LevelUpEvent(BotEvent):
 		self.player = persistence_controller.get_ply(user)
 		self.current_step = 0
 		self.perk_step_msg = ""
-		self.perk_step_msg = ""
 		self.greeting_message = "In this dialogue you can level up your character.\nYou get a perk every 3 turns and a characteristic point every 5 turns.\nYou can save points for later by typing 'done'.\n"
 
 		self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
 
-		if self.player.perk_points > 0 and len(available_perks) > 0:
+		if self.player.perk_points > 0 and len(self.available_perks) > 0:
 			self.perk_step_msg = "Choose a perk by typing it's number:\n"
 			self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
 			self.perk_step_msg += "\n".join([str(i+1) + ". " +self.available_perks[i].name + "-" + self.available_perks[i].description for i in range(len(self.available_perks)) ])
 
 		if self.player.level_up_points <= 0:
-			if self.player.perk_points > 0:
+			if self.player.perk_points > 0 and len(self.available_perks) >0 :
 				self.current_step = 1
 				self.greeting_message += 'You can choose %d new perks.\n'%(self.player.perk_points)
 				self.greeting_message += self.perk_step_msg
 			else:
-				self.greeting_message = "You don't have any perk points or characteristic points to spend."
+				self.greeting_message = "You don't have any perk points or available perks."
 				return self.finish() 
 		else:
 			self.greeting_message = 'You have %d characteristics points.\nLet\'s begin.\n'%(self.player.level_up_points)
@@ -370,7 +367,7 @@ class LevelUpEvent(BotEvent):
 								msg += "Done leveling up.\n"
 								return msg + self.finish()
 							else:
-								if self.available_perks and len(self.available_perks) <= 0:
+								if len(self.available_perks) <= 0:
 									msg += "No perks available."
 									msg += "Done leveling up.\n"
 									return msg + self.finish()
@@ -382,6 +379,11 @@ class LevelUpEvent(BotEvent):
 				else:
 					return "Wrong argument, try only \"+\" is allowed."
 		elif self.current_step == 1:
+
+			if self.player.perk_points <= 0 or len(self.available_perks) <= 0:
+						msg += "Done leveling up.\n"
+						return msg + str(self.finish())
+
 			if command.isdigit():
 				if int(command) > 0 and int(command) <= len(self.available_perks):
 					perk = self.available_perks[int(command)-1]

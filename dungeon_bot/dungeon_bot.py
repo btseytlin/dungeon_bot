@@ -4,6 +4,7 @@ from .creatures import Player
 from .bot_events import *
 from .util import *
 from .dungeon import *
+from .level_perks import *
 import logging
 import datetime
 import random
@@ -28,7 +29,8 @@ def registration_over_callback(event):
 def event_over_callback(event):
 	persistence_controller.save_players()
 	logger.debug("Removing event %s"%(event.uid))
-	del DungeonBot.events[event.uid] #delete event
+	if event.uid in DungeonBot.events.keys():
+		del DungeonBot.events[event.uid] #delete event
 	logger.debug("Event %s removed"%(event.uid))
 	gc.collect()
 	return ""
@@ -311,12 +313,15 @@ class DungeonBot(object):
 		return(inv.greeting_message)
 
 	def open_level_up(self, user):
-		if persistence_controller.get_ply(user).level_up_points > 0 or persistence_controller.get_ply(user).perk_points >0 :
+		player = persistence_controller.get_ply(user)
+		av_perks = [level_perks_listing[key] for key in level_perks_listing if player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
+		if player.level_up_points > 0 or player.perk_points >0 and len(av_perks)>0:
 			level_up = LevelUpEvent(event_over_callback, user)
-			DungeonBot.events[level_up.uid] = level_up
-			logger.debug("Levelup event %s created"%(level_up.uid))
-			return(level_up.greeting_message)
-		return "You don't have any perk points or characteristic points to spend."
+			if level_up:
+				DungeonBot.events[level_up.uid] = level_up
+				logger.debug("Levelup event %s created"%(level_up.uid))
+				return(level_up.greeting_message)
+		return "You don't have any perk points or perks you can take."
 
 	def new_crawl_lobby(self, total_users):
 		lobby = DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
