@@ -316,7 +316,7 @@ class LevelUpEvent(BotEvent):
 				self.greeting_message += self.perk_step_msg
 			else:
 				self.greeting_message = "You don't have any perk points or available perks."
-				return self.finish() 
+				self.finish() 
 		else:
 			self.greeting_message = 'You have %d characteristics points.\nLet\'s begin.\n'%(self.player.level_up_points)
 			self.greeting_message += "Currently your characteristics are:\n"
@@ -820,7 +820,9 @@ class DungeonCrawlEvent(BotEvent):
 
 
 	def open_level_up(self, user):
-		if persistence_controller.get_ply(user).level_up_points > 0 or persistence_controller.get_ply(user).perk_points >0 :
+		player = persistence_controller.get_ply(user)
+		av_perks = [level_perks_listing[key] for key in level_perks_listing if player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
+		if player.level_up_points > 0 or player.perk_points >0 and len(av_perks)>0:
 
 			def lvl_over_callback(event):
 				persistence_controller.save_players()
@@ -844,7 +846,7 @@ class DungeonCrawlEvent(BotEvent):
 				if u.id != user.id:
 					broadcast.append([u, msg])
 			return(broadcast)
-		return "You don't have any perk points or characteristic points to spend."
+		return "You don't have any available perks or characteristic points to spend."
 
 
 
