@@ -17,7 +17,8 @@ class PersistenceController(object):
 	
 	def clear_events(self):
 		for uid in self.players:
-			self.players[uid].event = None
+			if self.players[uid].event:
+				self.players[uid].event.finish()
 
 	def add_player(self, user, player):
 		self.players[str(user.id)] = player

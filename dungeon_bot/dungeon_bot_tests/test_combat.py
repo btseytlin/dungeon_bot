@@ -108,20 +108,20 @@ def run_tests():
 
 	test_weapon_abilities()
 	#controlled combat event
-	ply = Player("player1", "testply1")
+	ply = Player("player1", "testply1", 1000)
 	ply1 = Player("player2", "testply2")
 
-	item = "rapier"
+	item = "animal_claws"
 	item = get_item_by_name(item)
 	item.stats["accuracy"] = "10d10"
 	ply.inventory.append(item)
 	ply.equip(item)
 	ply.level_perks.append(Sweeper(ply))
 	#ply.refresh_derived()
-	item = "dagger"
-	item = get_item_by_name(item)
-	ply.inventory.append(item)
-	ply.equip(item)
+	# item = "dagger"
+	# item = get_item_by_name(item)
+	# ply.inventory.append(item)
+	# ply.equip(item)
 
-	enemies = [Rat(1),Rat(1),Rat(1),Rat(1),Rat(1)]
+	enemies = [Dummy(100),Rat(1),Rat(1),Rat(1),Rat(1)]
 	controlled_combat_event([ply], enemies)

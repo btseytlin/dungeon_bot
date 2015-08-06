@@ -58,8 +58,8 @@ class Creature(object):
 		}
 
 		stats["max_health"] = characteristics["vitality"]*10 + characteristics["vitality"]*self.level*4
-		stats["max_energy"] = characteristics["dexterity"] + int(self.level / 10)
-		stats["energy_regen"] = clamp(int(characteristics["dexterity"] / 3) + int(self.level / 10), 2, 10)
+		stats["max_energy"] = characteristics["strength"] + int(self.level / 10)
+		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 10), 2, 10)
 		stats["health"] = stats["max_health"]
 		stats["energy"] = stats["max_energy"]
 		return stats
@@ -515,7 +515,7 @@ class Creature(object):
 		return msg
 
 	def on_energy_gained(self, value):
-		#msg = "%s gains %d energy.\n"%(self.name.title(), value)
+		#msg = "%s gains %d energy.\n"%(self.name.capitalize(), value)
 		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_energy_gained(value)
@@ -531,7 +531,7 @@ class Creature(object):
 		return msg
 
 	def on_level_up(self):
-		#msg = "%s gains %d energy.\n"%(self.name.title(), value)
+		#msg = "%s gains %d energy.\n"%(self.name.capitalize(), value)
 		msg = ""
 		for modifier in self.modifiers:
 			effect = modifier.on_level_up()
@@ -593,7 +593,7 @@ class Creature(object):
 
 		if self.dead:
 			attack_info.use_info["did_kill"] = True
-			attack_info.description += "%s is killed by %s.\n"%(attack_info.target.short_desc.title(), attack_info.inhibitor.name.title())
+			attack_info.description += "%s is killed by %s.\n"%(attack_info.target.short_desc.capitalize(), attack_info.inhibitor.name.capitalize())
 			attack_info = attack_info.inhibitor.on_kill(attack_info)
 			attack_info = attack_info.target.on_death(attack_info)
 
@@ -871,7 +871,7 @@ class Creature(object):
 
 		desc = "\n".join(
 		[
-			"%s. lvl %d"%(self.name.title(), self.level),
+			"%s. lvl %d"%(self.name.capitalize(), self.level),
 			"%s"%(self.description or "----"),
 			"Characteristics:\n%s"%("".join(characteristics)),
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
@@ -948,7 +948,7 @@ class Player(Creature):
 		cur_level = self.level
 		self.experience += value
 		if self.level > cur_level:
-			return "%s has leveled up to level %d!\n"%(self.name.title(), self.level)
+			return "%s has leveled up to level %d!\n"%(self.name.capitalize(), self.level)
 		return ""
 
 	def fits_perk_requirements(self, perk, perk_requirements):
@@ -1026,7 +1026,7 @@ class Player(Creature):
 					if isinstance(attack_info.inhibitor, Player):
 						attack_info.inhibitor.inventory.append(item)
 					attack_info.use_info["loot_dropped"].append(item)
-					attack_info.description += "%s got loot: %s.\n"%(attack_info.inhibitor.name.title(), item.name)
+					attack_info.description += "%s got loot: %s.\n"%(attack_info.inhibitor.name.capitalize(), item.name)
 		return super(Player, self).on_kill(attack_info)
 			
 	def to_json(self):

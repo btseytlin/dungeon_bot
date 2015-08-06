@@ -9,7 +9,7 @@ from . import items
 from . import creatures
 from . import abilities
 from . import level_perks
-
+from . import settings
 from .persistence import PersistenceController
 from .util import *
 from .abilities import *
@@ -17,6 +17,7 @@ from .creatures import *
 from .items import *
 from .level_perks import *
 
+import threading
 
 combat_logger = logging.getLogger('dungeon_bot_combat')
 logger = logging.getLogger('dungeon_bot')
@@ -30,6 +31,11 @@ class BotEvent(object):
 		self.uid = get_uid()
 
 		self.last_activity = datetime.datetime.now()
+		self.timer = threading.Timer(60, self.check_if_idle)
+		self.timer.setDaemon(True)
+		self.timer.start() #run every minute
+
+	
 		if not players:
 			self.players = []
 			for user in users:
@@ -48,6 +54,20 @@ class BotEvent(object):
 		self.last_activity = datetime.datetime.now()
 		logger.debug("last activity of event %s (%s) updated to %s."%(self.__class__.__name__, self.uid, str(self.last_activity)))
 		return ""
+
+	def check_if_idle(self):
+		minutes_since_activity = divmod((datetime.datetime.now() - self.last_activity).total_seconds(), 60)[0]
+		print("Since activity of event %s: %d"%(self.__class__.__name__, minutes_since_activity))
+		if minutes_since_activity >= settings.event_cleanse_time:
+			print("Finishing")
+			self.finish()
+			logger.info("Finished %s %s for having %d minutes since last activity."%(self.__class__.__name__, self.uid, minutes_since_activity) )
+		else:
+			print("Starting new timer")
+			self.timer.cancel()
+			self.timer = threading.Timer(60, self.check_if_idle)
+			self.timer.setDaemon(True)
+			self.timer.start()
 
 	def add_user(self, user):
 		self.users.append(user)
@@ -72,6 +92,8 @@ class BotEvent(object):
 				self.on_player_leave(user)
 
 	def finish(self):
+		if self.timer:
+			self.timer.cancel()
 		self.finished = True
 		self.free_users()
 		return self.finished_callback(self)
@@ -80,7 +102,6 @@ class ChatEvent(BotEvent):
 	def __init__(self, finished_callback):
 		BotEvent.__init__(self, finished_callback, [])
 		self.log = []
-
 		self.greeting_message = 'You are in the chat. Use the "say" command to chat, "log" to see the message history, "examine" to examine characters.\n'
 
 	allowed_commands = {
@@ -90,15 +111,27 @@ class ChatEvent(BotEvent):
 		"back": "leaves chat","abort": "leaves chat","ab": "leaves chat","b": "leaves chat", "leave": "leaves chat",
 		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 		"status": "shows where you are and what you are doing",
+		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
+		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 	}
 
 	def status(self):
-		return 'Players in chat:\n%s'%(", ".join(["%s"%(persistence_controller.get_ply(u).name.title()) for u in self.users]))
+		return 'Players in chat:\n%s'%(", ".join(["%s"%(persistence_controller.get_ply(u).name.capitalize()) for u in self.users]))
+
+	def check_if_idle(self):
+		if self.timer:
+			self.timer.cancel()
 
 	def handle_command(self, user, command, *args):
 		super(ChatEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
+		elif (command in ["bug", "dev"]):
+			if len(args) >0:
+				msg = " ".join(args)
+				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				return "Your message has been sent to the developers! Thank you!"
+
 		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
 		elif (command in ["status"]):
@@ -106,8 +139,8 @@ class ChatEvent(BotEvent):
 			return msg
 		elif (command in ["say", "s"]):
 			if len(args)>0:
-				msg = " ".join(args)
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)
+				msg = " ".join(args).capitalize()
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)
 				self.log.append(msg_others)
 
 				if len(self.log) > 1000:
@@ -156,7 +189,7 @@ class ChatEvent(BotEvent):
 	def add_user(self, user):
 		super(ChatEvent, self).add_user(user)
 		broadcast = []
-		msg = "%s joined the chat."%(persistence_controller.get_ply(user).name.title())
+		msg = "%s joined the chat."%(persistence_controller.get_ply(user).name.capitalize())
 
 		broadcast.append([user, self.greeting_message+ self.status()])
 		for u in self.users:
@@ -167,7 +200,7 @@ class ChatEvent(BotEvent):
 	def remove_user(self, user):
 		super(ChatEvent, self).remove_user(user)
 		broadcast = []
-		msg = "%s left the chat."%(persistence_controller.get_ply(user).name.title())
+		msg = "%s left the chat."%(persistence_controller.get_ply(user).name.capitalize())
 
 		broadcast.append([user, "You left the chat."])
 		for u in self.users:
@@ -204,14 +237,14 @@ class RegistrationEvent(BotEvent):
 			return("Let's begin. What is your name?")
 
 		if self.current_step == 0:
-			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip().title()
+			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip().capitalize()
 			self.current_step+=1
 			msg = "Great. Now let's input your characteristics. Currently they are:\n"
 			msg += self.format_characteristics(self.new_player.base_characteristics)
-			msg += "Strength affects how much damage you do, how resistant you are to damage.\n"
-			msg += "Dexterity affects how fast you act and how accurate you hit.\n"
-			msg += "Vitality affects how much health you have.\n"
-			msg += "Intelligence affects how likely you are to strike a critial effect, how quickly you level up.\n"
+			msg += "Strength affects how much damage you do, how much energy you have, how much you can do each turn.\n"
+			msg += "Dexterity affects how fast you act, how accurate your hits are and how well you dodge.\n"
+			msg += "Vitality affects how much health you have, how resistant you are to damage and critical effects.\n"
+			msg += "Intelligence affects how likely you are to strike a critial effect, how accurate your hits are.\n"
 			msg += "Use commands like \"dexterity +\" or \"dex +\" to increase or lower characteristics.\n"
 			msg += "Type \"done\" once finished.\n"
 			return msg
@@ -270,11 +303,12 @@ class LevelUpEvent(BotEvent):
 		self.player = persistence_controller.get_ply(user)
 		self.current_step = 0
 		self.perk_step_msg = ""
-		self.available_perks = []
 		self.perk_step_msg = ""
 		self.greeting_message = "In this dialogue you can level up your character.\nYou get a perk every 3 turns and a characteristic point every 5 turns.\nYou can save points for later by typing 'done'.\n"
 
-		if self.player.perk_points > 0:
+		self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
+
+		if self.player.perk_points > 0 and len(available_perks) > 0:
 			self.perk_step_msg = "Choose a perk by typing it's number:\n"
 			self.available_perks = [level_perks_listing[key] for key in level_perks_listing if self.player.fits_perk_requirements(level_perks_listing[key], level_perks_listing[key].requirements)]
 			self.perk_step_msg += "\n".join([str(i+1) + ". " +self.available_perks[i].name + "-" + self.available_perks[i].description for i in range(len(self.available_perks)) ])
@@ -282,7 +316,7 @@ class LevelUpEvent(BotEvent):
 		if self.player.level_up_points <= 0:
 			if self.player.perk_points > 0:
 				self.current_step = 1
-				self.greeting_message = 'You can choose %d new perks.\n'%(self.player.perk_points)
+				self.greeting_message += 'You can choose %d new perks.\n'%(self.player.perk_points)
 				self.greeting_message += self.perk_step_msg
 			else:
 				self.greeting_message = "You don't have any perk points or characteristic points to spend."
@@ -306,7 +340,7 @@ class LevelUpEvent(BotEvent):
 
 	def handle_command(self, user, command, *args):
 		super(LevelUpEvent, self).handle_command(user, command, *args)
-		if command == "done":
+		if command in ["done", "finish", "back", "stop"]:
 			return "Done leveling up." + (self.finish() or "")
 
 		if self.current_step == 0:
@@ -391,6 +425,8 @@ class InventoryEvent(BotEvent):
 		"status": "shows where you are and what you are doing",
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "closes inventory","abort": "closes inventory","ab": "closes inventory","b": "closes inventory",
+		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
+		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 	}
 
 	def __init__(self, finished_callback, user):
@@ -465,6 +501,11 @@ class InventoryEvent(BotEvent):
 		super(InventoryEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
+		elif (command in ["bug", "dev"]):
+			if len(args) >0:
+				msg = " ".join(args)
+				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				return "Your message has been sent to the developers! Thank you."
 
 		elif (command in ["examine","ex","stats","st"]):
 			if len(args) == 0:
@@ -553,6 +594,8 @@ class DungeonLobbyEvent(BotEvent):
 		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby",
 		"status": "shows where you are and what you are doing",
 		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
+		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
+		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 
 	}
 
@@ -575,6 +618,11 @@ class DungeonLobbyEvent(BotEvent):
 		super(DungeonLobbyEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
+		elif (command in ["bug", "dev"]):
+			if len(args) >0:
+				msg = " ".join(args)
+				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				return "Your message has been sent to the developers! Thank you."
 		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
 		elif (command in ["status"]):
@@ -587,14 +635,14 @@ class DungeonLobbyEvent(BotEvent):
 				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(u).name.title(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(u).name.capitalize(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 
 		elif (command in ["say", "s"]):
 			if len(args)>0:
 				msg = " ".join(args)
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)
 				broadcast = []
 				broadcast.append([user, "You: "+msg])
 				for u in self.users:
@@ -680,6 +728,8 @@ class DungeonCrawlEvent(BotEvent):
 		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 		"level up": "opens the level up dialogue", "lvl": "opens the level up dialogue", 
 		"status": "shows where you are and what you are doing",
+		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
+		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 	}
 
 	def status(self, user=None):
@@ -696,7 +746,7 @@ class DungeonCrawlEvent(BotEvent):
 			self.dungeon.players.remove(persistence_controller.get_ply(user))
 		super(DungeonCrawlEvent, self).remove_user(user)
 		broadcast = []
-		msg = '%s ran away from the dungeon like a pussy he is.'%(persistence_controller.get_ply(user).name.title())
+		msg = '%s ran away from the dungeon like a pussy he is.'%(persistence_controller.get_ply(user).name.capitalize())
 
 		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
 		for u in self.users:
@@ -774,7 +824,7 @@ class DungeonCrawlEvent(BotEvent):
 			logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
 
 			broadcast = []
-			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).userid.title())
+			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).userid.capitalize())
 
 			broadcast.append([user, level_up.greeting_message])
 			for u in self.users:
@@ -803,7 +853,7 @@ class DungeonCrawlEvent(BotEvent):
 		combat_logger.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
 
 		broadcast = []
-		msg = '%s is rummaging in his inventory.'%(persistence_controller.get_ply(user).name.title())
+		msg = '%s is rummaging in his inventory.'%(persistence_controller.get_ply(user).name.capitalize())
 
 		broadcast.append([user, inv.greeting_message])
 		for u in self.users:
@@ -819,6 +869,11 @@ class DungeonCrawlEvent(BotEvent):
 		#	return self.combat_event.handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
+		elif (command in ["bug", "dev"]):
+			if len(args) >0:
+				msg = " ".join(args)
+				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				return "Your message has been sent to the developers! Thank you."
 		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
 		elif (command in ["advance","adv"]):
@@ -834,7 +889,7 @@ class DungeonCrawlEvent(BotEvent):
 				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["status"]):
@@ -925,7 +980,7 @@ class CombatEvent(BotEvent):
 		msg += 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
 		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'
 		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[str(user.id)].energy, self.users_to_players[str(user.id)].health)
-		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.title())
+		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.capitalize())
 		return msg
 
 	def next_round(self):
@@ -1031,6 +1086,8 @@ class CombatEvent(BotEvent):
 		"status": "shows where you are and what you are doing",
 		"turn": "ends turn", "t": "ends turn",
 		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
+		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
+		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 	}
 
 	def handle_combat_command(self, user, command, *args):
@@ -1083,6 +1140,11 @@ class CombatEvent(BotEvent):
 			help_text = print_available_commands(self.allowed_commands)
 			help_text += "\n" + print_combat_abilities(self.user_abilities[str(user.id)])
 			return help_text
+		elif (command in ["bug", "dev"]):
+			if len(args) >0:
+				msg = " ".join(args)
+				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				return "Your message has been sent to the developers! Thank you."
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:
 				return  (self.users_to_players[str(user.id)]).examine_self()
@@ -1116,7 +1178,7 @@ class CombatEvent(BotEvent):
 				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.title(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 
@@ -1124,7 +1186,7 @@ class CombatEvent(BotEvent):
 			if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id):
 				
 				msg = self.next_turn()
-				msg_others = "%s ends turn.\n"%(self.users_to_players[str(user.id)].name.title()) + msg
+				msg_others = "%s ends turn.\n"%(self.users_to_players[str(user.id)].name.capitalize()) + msg
 				broadcast = []
 				broadcast.append([user, msg])
 				for u in self.users:

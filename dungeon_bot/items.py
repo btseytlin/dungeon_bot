@@ -36,7 +36,7 @@ class Item(object):
 
 
 		desc = "\n".join([
-				"%s, %s."%(self.name.title(), self.item_type),
+				"%s, %s."%(self.name.capitalize(), self.item_type),
 				"%s"%(self.description or ""),
 				"Requirements:\n%s"%(", ".join(requirements)),
 				"Stats:\n%s"%(", ".join(stats)),
@@ -221,7 +221,7 @@ def get_item_by_name(name, coolity=0):
 	elif item_type == "secondary_weapon":
 		prototype = SecondaryWeapon
 	elif item_type == "armor":
-		prototype = Armor	
+		prototype = Armor
 	elif item_type == "talisman":
 		prototype = Talisman
 	elif item_type == "ring":

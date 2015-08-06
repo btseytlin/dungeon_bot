@@ -7,7 +7,7 @@ from .dungeon import *
 import logging
 import datetime
 import random
-import threading
+
 import gc
 persistence_controller = PersistenceController.get_instance()
 
@@ -87,7 +87,9 @@ class DungeonBot(object):
 		"create [player_amount]": "creates a lobby",
 		"cr [player_amount]": "creates a lobby",
 		"reset_character [character name]": "removes your character and starts the registration process again, can't be undone!",
-		"chat": "joins global chat"
+		"chat": "joins global chat",
+		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
+		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 	}
 
 	instance = None
@@ -98,7 +100,7 @@ class DungeonBot(object):
 	api = None
 	#set webhook
 
-	intro_message = "Welcome! DungeonBot is a text RPG. Make a character, raid a dungeon, kill monsters, loot them for shiny things! And do it with your friends too!\nThe bot is very much WIP, so beware of bugs. Please send feedback to @btseytlin.\nHappy dungeon crawling!\n"
+	intro_message = "Welcome! DungeonBot is a text RPG. Make a character, raid a dungeon, kill monsters, loot them for shiny things! And do it with your friends too!\nThe bot is very much WIP, so beware of bugs. Please send feedback using the \"dev\" command .\nHappy dungeon crawling!\n"
 	def __init__(self):
 		print('DungeonBot initialized')
 		logger.debug("DungeonBot initialized")
@@ -129,13 +131,7 @@ class DungeonBot(object):
 		DungeonBot.open_lobbies = {}
 		#DungeonBot.last_update_id += 2
 
-	def cleanse_dead_events(self):
-		for key in list(DungeonBot.events.keys()):
-			event = DungeonBot.events[key]
-			minutes_since_activity = divmod((datetime.datetime.now() - event.last_activity).total_seconds(), 60)[0]
-			if minutes_since_activity > settings.event_cleanse_time:
-				event.finish()
-				logger.info("Finished %s %s for having %d minutes since last activity."%(event.__class__.__name__, event.uid, minutes_since_activity) )
+
 
 	def status(self, user=None):
 		msg = 'You are in the main screen of DungeonBot.\nFrom here you can inspect your inventory, your stats and characteristics, create and join lobbies.\nCreate a lobby by typing "create 1" (means "create lobby for one player") and jump straight into action!\n'
@@ -160,6 +156,13 @@ class DungeonBot(object):
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
+		elif (command in ["bug", "dev"]):
+			if len(args) >0:
+				msg = " ".join(args)
+				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				return "Your message has been sent to the developers! Thank you!"
+
+			return "Input your message!"
 		elif (command in ["join"]):
 			lobby_uid = None
 			if len(args) != 0:
@@ -196,8 +199,6 @@ class DungeonBot(object):
 
 	def start_main_loop(self):
 		#start dead event collection timer
-		self.timer = threading.Timer(600, self.cleanse_dead_events)
-		self.timer.start() #run every 10 minutes
 
 		while True:
 			if DungeonBot.last_update_id:
@@ -216,8 +217,18 @@ class DungeonBot(object):
 						logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
 						self.on_message(message)
 						
-
 			except (KeyboardInterrupt):
+				persistence_controller.clear_events()
+
+				for event in list(DungeonBot.events.keys()):
+					DungeonBot.events[event].finish()
+
+				for event in list(DungeonBot.registration_events.keys()):
+					DungeonBot.registration_events[event].finish()
+
+				for event in list(DungeonBot.open_lobbies.keys()):
+					DungeonBot.open_lobbies[event].finish()
+
 				raise
 
 				#DungeonBot.resart()
@@ -245,7 +256,7 @@ class DungeonBot(object):
 					response = DungeonBot.registration_events[str(user.id)].handle_command(user, command, *args)
 					self.send_message(user, response)
 				else:
-					print("User %s is not registered"%(persistence_controller.get_ply(user).name))
+					print("User %s is not registered"%(str(user.id)))
 					self.send_message(user, DungeonBot.intro_message)
 					self.register_player(user)
 			else:
@@ -259,7 +270,7 @@ class DungeonBot(object):
 						if ply.event:
 							ply.event.finish()
 						persistence_controller.save_players()
-						response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message to @btseytlin describing what happened.\nCheers!"
+						response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message using  the \"bug\" command describing what happened.\nCheers!"
 
 					if isinstance(response, list): #it's a broadcast
 						for message in response:
@@ -281,7 +292,7 @@ class DungeonBot(object):
 						self.send_message(user, response)
 		except:
 			logger.exception("E:")
-			response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message to @btseytlin describing what happened.\nCheers!"
+			response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message using  the \"bug\" command describing what happened.\nCheers!"
 			
 
 	def register_player(self, user):

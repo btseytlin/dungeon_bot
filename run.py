@@ -13,8 +13,7 @@ api_token_path = 'data/api.token'
 
 dungeon_bot_instance = None
 def clean_up():
-	if dungeon_bot_instance and dungeon_bot_instance.timer:
-		dungeon_bot_instance.timer.cancel()
+	pass
 	# else:
 	# 	DungeonBot.get_instance().timer.cancel()
 	#DungeonBot.resart()
