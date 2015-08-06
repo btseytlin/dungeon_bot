@@ -198,17 +198,24 @@ class DungeonBot(object):
 				updates = self.api.getUpdates(DungeonBot.last_update_id)
 			else:
 				updates = self.api.getUpdates()
+			try:
+				for update in updates:
+					#logger.debug("Got update with id %d"%(update.update_id))
+					DungeonBot.last_update_id = update.update_id+1
+					#logger.debug("Last update id is %d"%(self.last_update_id))
 
-			for update in updates:
-				#logger.debug("Got update with id %d"%(update.update_id))
-				DungeonBot.last_update_id = update.update_id+1
-				#logger.debug("Last update id is %d"%(self.last_update_id))
+					message = update.message
+					close_enough = self.time_started - datetime.timedelta(minutes=5)
+					if datetime.datetime.fromtimestamp(message.date) >= close_enough:
+						logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
+						self.on_message(message)
+						
 
-				message = update.message
-				close_enough = self.time_started - datetime.timedelta(minutes=5)
-				if datetime.datetime.fromtimestamp(message.date) >= close_enough :
-					logger.info(("[MESSAGE] %s: %s")%(message.from_user.id, message.text))
-					self.on_message(message)
+			except (KeyboardInterrupt):
+				raise
+
+				#DungeonBot.resart()
+					
 
 	def send_message(self, user, message):
 		if persistence_controller.is_registered(user): 
@@ -224,43 +231,47 @@ class DungeonBot(object):
 
 		if not message.text: #if message text is missing or empty its an error
 			message.text = ""
-
-		#check if player is registered
-		if not persistence_controller.is_registered(user): 
-			print("User %s is not registered"%(str(user.username)+"("+str(user.id)+")"))
-			self.send_message(user, DungeonBot.intro_message)
-			self.register_player(user)
-		else:
-			ply = persistence_controller.get_ply(user)
-			command, args = parse_command(message.text)
-			if ply.event: #Check if player is in event
-				try:
-					response = ply.event.handle_command(user, command, *args)
-				except:
-					logger.exception("E internal event:")
-					if ply.event:
-						ply.event.finish()
-					persistence_controller.save_players()
-					response = "There has been an error.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message to @btseytlin describing what happened.\nCheers!"
-
-				if isinstance(response, list): #it's a broadcast
-					for message in response:
-						logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
-
-						self.send_message(message[0], message[1])
-				else:
-					logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-					self.send_message(user, response) #If he is, let the event handle the message
+		try:
+			#check if player is registered
+			if not persistence_controller.is_registered(user): 
+				print("User %s is not registered"%(str(user.username)+"("+str(user.id)+")"))
+				self.send_message(user, DungeonBot.intro_message)
+				self.register_player(user)
 			else:
-				#parse command on your own
-				response = self.handle_command(user, command, *args)
-				if isinstance(response, list): #it's a broadcast
-					for message in response:
-						logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
-						self.send_message(message[0], message[1])
+				ply = persistence_controller.get_ply(user)
+				command, args = parse_command(message.text)
+				if ply.event: #Check if player is in event
+					try:
+						response = ply.event.handle_command(user, command, *args)
+					except:
+						logger.exception("E internal event:")
+						if ply.event:
+							ply.event.finish()
+						persistence_controller.save_players()
+						response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message to @btseytlin describing what happened.\nCheers!"
+
+					if isinstance(response, list): #it's a broadcast
+						for message in response:
+							logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
+
+							self.send_message(message[0], message[1])
+					else:
+						logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
+						self.send_message(user, response) #If he is, let the event handle the message
 				else:
-					logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-					self.send_message(user, response)
+					#parse command on your own
+					response = self.handle_command(user, command, *args)
+					if isinstance(response, list): #it's a broadcast
+						for message in response:
+							logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
+							self.send_message(message[0], message[1])
+					else:
+						logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
+						self.send_message(user, response)
+		except:
+			logger.exception("E:")
+			response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message to @btseytlin describing what happened.\nCheers!"
+			
 
 	def register_player(self, user):
 		new_player = Player(user.id, None) #Create an empty player object

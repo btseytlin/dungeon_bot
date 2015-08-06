@@ -30,15 +30,9 @@ def start():
 		dungeon_bot_instance.api = tg
 
 		dungeon_bot_instance.start_main_loop()
-	except (KeyboardInterrupt, TelegramError):
+	except (KeyboardInterrupt):
 		logger.exception("Finished program.")
 		clean_up()
-	except:
-		clean_up()
-		logger.exception("E:")
-		#DungeonBot.resart()
-		start()
-		
 
 
 log_path = './logs/botlog.log'
