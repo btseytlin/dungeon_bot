@@ -280,23 +280,27 @@ class DungeonBot(object):
 						response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message using  the \"bug\" command describing what happened.\nCheers!"
 
 					if isinstance(response, list): #it's a broadcast
-						for message in response:
-							logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
+						for msg in response:
+							if msg:
+								logger.info(("[RESPONSE] to user %s: %s")%(msg[0].id, msg[1]))
 
-							self.send_message(message[0], message[1])
+								self.send_message(msg[0], msg[1])
 					else:
 						logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-						self.send_message(user, response) #If he is, let the event handle the message
+						if response:	
+							self.send_message(user, response) #If he is, let the event handle the message
 				else:
 					#parse command on your own
 					response = self.handle_command(user, command, *args)
 					if isinstance(response, list): #it's a broadcast
-						for message in response:
-							logger.info(("[RESPONSE] to user %s: %s")%(message[0].id, message[1]))
-							self.send_message(message[0], message[1])
+						for msg in response:
+							if msg:
+								logger.info(("[RESPONSE] to user %s: %s")%(msg[0].id, msg[1]))
+								self.send_message(msg[0], msg[1])
 					else:
 						logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-						self.send_message(user, response)
+						if response:
+							self.send_message(user, response)
 		except:
 			logger.exception("E:")
 			response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message using  the \"bug\" command describing what happened.\nCheers!"
