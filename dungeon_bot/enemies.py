@@ -231,7 +231,7 @@ class WolfLeader(Enemy):
 					if not self.target or self.target.dead:
 						break
 				if not self.target or self.target.dead:
-						break
+					break
 
 		return attack_infos
 
@@ -280,7 +280,7 @@ class Bear(Enemy):
 					if not self.target or self.target.dead:
 						break
 				if not self.target or self.target.dead:
-						break
+					break
 
 		return attack_infos
 

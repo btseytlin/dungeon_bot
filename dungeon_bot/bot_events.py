@@ -67,7 +67,12 @@ class BotEvent(object):
 			self.timer.start()
 
 	def add_user(self, user):
-		self.users.append(user)
+		for u in self.users:
+			if u.id == user.id:
+				break
+		else:
+			self.users.append(user)
+			
 		player = persistence_controller.get_ply(user)
 		player.event = self
 		logger.debug("User (%d) added to event %s (%s)."%(user.id, self.__class__.__name__, self.uid))
@@ -1168,8 +1173,8 @@ class CombatEvent(BotEvent):
 				if argument=="self" or argument == str(user.id) or argument == self.users_to_players[str(user.id)].name:
 					return (self.users_to_players[str(user.id)].examine_self())
 				elif argument.isdigit():
-					if int(argument)-1 < len(self.turn_qeue):
-						return self.turn_qeue[int(argument)].examine_self()
+					if int(argument)-1 < len(self.turn_qeue) and int(argument)>0:
+						return self.turn_qeue[int(argument)-1].examine_self()
 				else:
 					for u in self.users:
 						target_ply = self.users_to_players[str(u.id)]

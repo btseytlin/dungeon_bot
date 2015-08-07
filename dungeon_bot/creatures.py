@@ -314,7 +314,6 @@ class Creature(object):
 				return False
 
 		if not modifier.can_apply():
-			print("cant apply this modifier this that creature")
 			return False
 
 		self.modifiers.append(modifier)
@@ -1076,7 +1075,7 @@ class Enemy(Creature):
 			self.target = None
 
 	def act(self):
-		return "Base enemy has no AI"
+		return [] #base enemy has no ai
 
 	@staticmethod
 	def de_json(data):
