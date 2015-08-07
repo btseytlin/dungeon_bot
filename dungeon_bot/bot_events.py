@@ -252,7 +252,12 @@ class RegistrationEvent(BotEvent):
 			return("Let's begin. What is your name?")
 
 		if self.current_step == 0:
-			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip().capitalize()
+			name = (command + " " + " ".join([str(arg) for arg in args])).strip()
+			for uid in list(persistence_controller.players.keys()):
+				if persistence_controller.players[uid].name == name:
+					return "That name is already taken. Try something different!"
+
+			self.new_player.name = (command + " " + " ".join([str(arg) for arg in args])).strip()
 			self.current_step+=1
 			msg = "Great. Now let's input your characteristics. Currently they are:\n"
 			msg += self.format_characteristics(self.new_player.base_characteristics)
