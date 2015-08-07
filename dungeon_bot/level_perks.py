@@ -146,7 +146,7 @@ class TeamTactics(LevelPerk):
 
 class Flow(LevelPerk):
 	name = "Flow"
-	description = "Get 50 percent chance to recover 2 energy on kill."
+	description = "Get 35 percent chance to recover 1 energy on kill."
 	priority = 0
 	requirements = {
 		"level": 1,
@@ -157,7 +157,7 @@ class Flow(LevelPerk):
 	}
 
 	def on_kill(self, ability_info):
-		if ability_info.inhibitor == self.host and random.randint(0,100) < 50:
+		if ability_info.inhibitor == self.host and random.randint(0,100) < 35:
 			ability_info.inhibitor.energy += 2
 			ability_info.description += "%s recovers 2 energy!"%(self.host.name.capitalize())
 		return ability_info

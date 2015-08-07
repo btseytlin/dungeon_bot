@@ -136,6 +136,9 @@ def run_tests():
 
 	logger.info(" -- Testing loot drop.")
 	test_loot_drop()
+	
+	logger.info(" -- Testing loot drop.")
+	test_loot_drop()
 
 	logger.info(" -- Testing armor equip.")
 	test_armor_equip()

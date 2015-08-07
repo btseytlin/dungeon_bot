@@ -192,7 +192,7 @@ class Ability(object):
 			use_info.use_info["hit_chances"] = [ clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.targets[x], use_info.use_info["item_used"]), 5, int(95/(x+1))) for x in range(len(use_info.targets)) ]
 
 			for x in range(len(use_info.targets)):
-				use_info.use_info["damage_multipliers"].append(clamp(random.uniform(0.5, 1.1), 0.5, 1.1))
+				use_info.use_info["damage_multipliers"].append(clamp(1 - 0.25*(x), 0.25, 1))
 
 		elif use_info.ability_type == "attack":
 			use_info.use_info["hit_chance"] = clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"]), 5, 95)
@@ -204,6 +204,7 @@ class Ability(object):
 			#use_info.use_info["damage_dealt"] = use_info.prototype_class.get_damage(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
 				#use_info.description += use_info.prototype_class.get_hit_description(use_info)
 		else:
+			print("A buff")
 			modifiers = use_info.prototype_class.get_buff_modifiers(use_info)
 			use_info.use_info["modifiers_applied"] += modifiers
 			use_info.description += use_info.prototype_class.get_buff_description(use_info)
@@ -292,7 +293,6 @@ class Smash(Ability):
 		defence = target.defence
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
-
 		dmg = clamp( weapon_dmg * strength - defence , user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
@@ -482,8 +482,7 @@ class QuickStab(Ability):
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
-class Cut(Ability): #TODO test and adapt
-
+class Cut(Ability): 
 	"""
 	Cutting attack for swords, daggers, anything bladed.
 	Effective against unarmored oponents, mediocore against armored oponents. 
@@ -561,8 +560,7 @@ class Cut(Ability): #TODO test and adapt
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
-class QuickCut(Ability): #TODO test and adapt
-
+class QuickCut(Ability): 
 	"""
 	Exactly like cut, except takes less energy and suffers more penalties for armored opoentns.
 	Cutting attack for small bladed weapons, like daggers.
@@ -643,8 +641,7 @@ class QuickCut(Ability): #TODO test and adapt
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
-class ShieldUp(Ability): #TODO test and adapt
-
+class ShieldUp(Ability): 
 	"""
 	Raise the shield to protect yourself, gain a defence bonus and a pennalty to evasion for one turn.
 
@@ -680,8 +677,7 @@ class ShieldUp(Ability): #TODO test and adapt
 		return Ability.use(buff_info)
 
 
-class Sweep(Ability): #TODO test and adapt
-
+class Sweep(Ability): 
 	"""
 	Sweeping attack for bladed weapons.
 	Hits multiple targets, first target gets the msot damage, each next target suffers less damage than previous. 

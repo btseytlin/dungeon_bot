@@ -93,7 +93,7 @@ def test_weapon_abilities():
 
 
 	ply = Player("testman", "testply")
-	items = [x for x in list(item_listing["primary_weapon"].keys())] + [x for x in list(item_listing["secondary_weapon"].keys())]
+	items = [x for x in list(item_listing["primary weapon"].keys())] + [x for x in list(item_listing["secondary weapon"].keys())]
 	dummy = Dummy(100000)
 	dummy.tags = []
 	ply.characteristics["dexterity"] = 5
@@ -110,17 +110,21 @@ def test_weapon_abilities():
 
 def run_tests():
 
-	test_weapon_abilities()
+	#test_weapon_abilities()
 	#controlled combat event
-	ply = Player("player1", "testply1", 1000)
+	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "animal_claws"
-	item = get_item_by_name(item)
-	item.stats["accuracy"] = "10d10"
+	item = "club"
+	item = get_item_by_name(item, 1)
+
+	print(item.examine_self())
+	item.stats["accuracy"] = "100d10"
+	item.stats["damage"] = "7d1"
 	ply.inventory.append(item)
 	ply.equip(item)
 	ply.level_perks.append(Sweeper(ply))
+	ply.base_characteristics["strength"] = 4
 
 	dummy = Dummy(1000)
 	dummy.tags = []
@@ -130,5 +134,5 @@ def run_tests():
 	# ply.inventory.append(item)
 	# ply.equip(item)
 
-	enemies = [dummy,Rat(100),Rat(1),Rat(1),Rat(1)]
+	enemies = [dummy, Peasant()]
 	controlled_combat_event([ply], enemies)

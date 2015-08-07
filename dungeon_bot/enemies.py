@@ -26,8 +26,8 @@ def retrieve_enemies_for_difficulty(enemy_table, difficulty):
 
 default_equipment = {
 	"armor": None,
-	"primary_weapon": None,
-	"secondary_weapon": None,
+	"primary weapon": None,
+	"secondary weapon": None,
 	"ring": None,
 	"talisman": None,
 	"headwear": None
@@ -139,8 +139,8 @@ class BigRat(Enemy):
 """ animal enemies """
 default_equipment = {
 	"armor": None,
-	"primary_weapon": None,
-	"secondary_weapon": None,
+	"primary weapon": None,
+	"secondary weapon": None,
 	"ring": None,
 	"talisman": None,
 	"headwear": None
@@ -156,8 +156,8 @@ wolf_characteristics = {
 class Wolf(Enemy):
 	drop_table = {
 		"chainmail" : 3,
-		"primary_weapon" : 3,
-		"secondary_weapon" : 3,
+		"primary weapon" : 3,
+		"secondary weapon" : 3,
 		"ring" : 3,
 		"talisman": 4,
 		"headwear": 5,
@@ -202,8 +202,8 @@ wolf_leader_characteristics = {
 class WolfLeader(Enemy):
 	drop_table = {
 		"chainmail" : 3,
-		"primary_weapon" : 5,
-		"secondary_weapon" : 3,
+		"primary weapon" : 5,
+		"secondary weapon" : 3,
 		"ring" : 3,
 		"talisman": 4,
 		"headwear": 5,
@@ -247,11 +247,10 @@ class Bear(Enemy):
 	drop_table = {
 		"chainmail" : 3,
 		"plate armor" : 3,
-		"primary_weapon" : 3,
+		"primary weapon" : 3,
 		"sword": 4,
 		"club": 5,
-		"secondary_weapon" : 3,
-		"ring of fire" : 3,
+		"secondary weapon" : 3,
 		"ring" : 3,
 		"talisman": 4,
 		"headwear": 5,
@@ -299,13 +298,13 @@ class UndeadSoldier(Enemy):
 		"chainmail" : 3,
 		"claymore": 2,
 		"plate armor" : 1,
-		"primary_weapon" : 3,
+		"primary weapon" : 3,
 		"mace": 6,
 		"sword": 4,
 		"club": 5,
 		"dagger": 5,
-		"secondary_weapon" : 3,
-		"amulet of healing" : 3,
+		"secondary weapon" : 3,
+		"bone amulet" : 3,
 		"ring" : 3,
 		"talisman": 4,
 		"headwear": 5,
@@ -350,13 +349,13 @@ class UndeadKnight(Enemy):
 	drop_table = {
 		"chainmail" : 7,
 		"plate armor" : 4,
-		"primary_weapon" : 3,
+		"primary weapon" : 3,
 		"sword": 7,
 		"mace": 7,
 		"club": 5,
 		"dagger": 5,
-		"secondary_weapon" : 3,
-		"amulet of healing" : 3,
+		"secondary weapon" : 3,
+		"bone amulet" : 3,
 		"ring" : 3,
 		"talisman": 4,
 		"helmet": 3,
@@ -403,7 +402,6 @@ lesser_demon_characteristics = {
 
 class LesserDemon(Enemy):
 	drop_table = {
-		"ring of fire": 3,
 		"ring" : 3,
 		"talisman": 4,
 		"helmet": 3,
@@ -447,8 +445,6 @@ beta_demon_characteristics = {
 class BetaDemon(Enemy):
 	drop_table = {
 		"club" : 10,
-		"ring of fire": 3,
-		"ring of not dying" : 1,
 		"ring of more dexterity" : 3,
 		"ring of more vitality" : 6,
 		"ring" : 3,
@@ -495,7 +491,7 @@ class Thug(Enemy):
 	drop_table = {
 		"club" : 7,
 		"mace": 4,
-		"primary_weapon": 3,
+		"primary weapon": 3,
 		"armor": 4,
 		"ring of more strength" : 5,
 		"ring of more intelligence" : 2,
@@ -541,7 +537,7 @@ class Peasant(Enemy):
 		"club" : 7,
 		"dagger" : 7,
 		"mace": 4,
-		"primary_weapon": 3,
+		"primary weapon": 3,
 		"armor": 2,
 		"ring of more strength" : 5,
 		"ring of more intelligence" : 2,
@@ -596,8 +592,8 @@ class Thief(Enemy):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( "dagger", 1 )]
 		items.append( get_item_by_name( "rapier" , 0 ) ) if random.randint(0,10) > 5 else None
-		items.append( get_item_by_name( random.choice(["ring of fire", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
-		items.append( get_item_by_name( random.choice(["amulet of defence", "amulet of healing"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["ring of thievery", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["amulet of defence", "bone amulet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
 				self.equip(item)

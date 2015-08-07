@@ -144,7 +144,7 @@ class ChatEvent(BotEvent):
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)
-				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				logger.info("[DEVREQUEST] User %s %s : %s"%(str(user.username),str(user.id),msg))
 				return "Your message has been sent to the developers! Thank you!"
 
 		elif (command in ["back","abort","b", "leave", "ab"]):
@@ -306,7 +306,7 @@ class RegistrationEvent(BotEvent):
 			elif command == "done":
 				if self.char_points > 0:
 					return "You still have unspent points!\nDon't make that mistake, go invest them into something."
-				club = get_item_by_name("club")
+				club = get_item_by_name("club", 1)
 				self.new_player.inventory = [club]
 				self.new_player.refresh_derived()
 				persistence_controller.add_player(self.user, self.new_player)
@@ -469,12 +469,12 @@ class InventoryEvent(BotEvent):
 
 	def find_item(self, arg, player, inventory_only = False):
 		if not inventory_only:
-			if arg in ["primary_weapon", "pweapon", "pw"]:
+			if arg in ["primary weapon", "pweapon", "pw"]:
 				if player.primary_weapon:
 					return True, player.primary_weapon
 				else:
 					return False, "Primary weapon not equipped."
-			elif arg in ["secondary_weapon", "sweapon", "sw"]:				
+			elif arg in ["secondary weapon", "sweapon", "sw"]:				
 				if player.secondary_weapon:
 					return True, player.secondary_weapon
 				else:
@@ -529,7 +529,7 @@ class InventoryEvent(BotEvent):
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)
-				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				logger.info("[DEVREQUEST] User %s %s : %s"%(str(user.username),str(user.id),msg))
 				return "Your message has been sent to the developers! Thank you."
 
 		elif (command in ["examine","ex","stats","st"]):
@@ -647,7 +647,7 @@ class DungeonLobbyEvent(BotEvent):
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)
-				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				logger.info("[DEVREQUEST] User %s %s : %s"%(str(user.username),str(user.id),msg))
 				return "Your message has been sent to the developers! Thank you."
 		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
@@ -661,16 +661,16 @@ class DungeonLobbyEvent(BotEvent):
 				broadcast.append([user, "You: "+msg])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(u).name.capitalize(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
 				return broadcast
 			return "Specify what you want to say."
 
 		elif (command in ["say", "s"]):
 			if len(args)>0:
 				msg = " ".join(args)
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
 						broadcast.append([u, msg_others])
@@ -806,10 +806,11 @@ class DungeonCrawlEvent(BotEvent):
 			if player in self.dungeon.players:
 				self.dungeon.players.remove(player)
 		super(DungeonCrawlEvent, self).remove_user(user)
+		persistence_controller.get_ply(user).event = None
 		broadcast = []
 		msg = '%s ran away from the dungeon like a pussy he is.'%(persistence_controller.get_ply(user).name.capitalize())
 
-		broadcast.append([user, "You were removed from lobby %s."%(self.uid)])
+		broadcast.append([user, "You ran away from the dungeon. Shame on you. "])
 		for u in self.users:
 			if u.id != user.id:
 				broadcast.append([u, msg])
@@ -939,7 +940,7 @@ class DungeonCrawlEvent(BotEvent):
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)
-				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				logger.info("[DEVREQUEST] User %s %s : %s"%(str(user.username),str(user.id),msg))
 				return "Your message has been sent to the developers! Thank you."
 		elif (command in ["back","abort","b", "leave", "ab"]):
 			return(self.remove_user(user))
@@ -1211,7 +1212,7 @@ class CombatEvent(BotEvent):
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)
-				logger.info("[DEVREQUEST] User %s : %s"%(str(user.id),msg))
+				logger.info("[DEVREQUEST] User %s %s : %s"%(str(user.username),str(user.id),msg))
 				return "Your message has been sent to the developers! Thank you."
 		elif (command in ["examine", "stats", "ex", "st"]):
 			if len(args) == 0:

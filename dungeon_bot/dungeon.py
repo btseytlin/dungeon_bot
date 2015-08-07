@@ -37,7 +37,6 @@ class Dungeon(object):
 			room_type = random.choice(["combat"])
 			room = Room(room_type)
 			if room_type == "riddle":
-				#todo add riddle rooms
 				pass
 			elif room_type == "combat":
 				enemy_type = random.choice(self.enemy_types)
