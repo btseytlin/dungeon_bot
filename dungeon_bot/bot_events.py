@@ -16,7 +16,7 @@ from .abilities import *
 from .creatures import *
 from .items import *
 from .level_perks import *
-
+from .dungeon import *
 import threading
 
 combat_logger = logging.getLogger('dungeon_bot_combat')
@@ -31,9 +31,11 @@ class BotEvent(object):
 		self.uid = get_uid()
 
 		self.last_activity = datetime.datetime.now()
-		self.timer = threading.Timer(60, self.check_if_idle)
+		self.timer = threading.Timer(30, self.check_if_idle)
 		self.timer.setDaemon(True)
 		self.timer.start() #run every minute
+		self.parent_event = None
+		self.terminated_for_idle = False
 
 	
 		if not players:
@@ -50,20 +52,27 @@ class BotEvent(object):
 					player.event = self
 		logger.debug("Created event %s (%s)"%(self.__class__.__name__, self.uid))
 
-	def handle_command(self, user, command, *args):
+	def update_activity(self):
 		self.last_activity = datetime.datetime.now()
 		logger.debug("last activity of event %s (%s) updated to %s."%(self.__class__.__name__, self.uid, str(self.last_activity)))
+		if self.parent_event:
+			self.parent_event.update_activity()
+
+	def handle_command(self, user, command, *args):
+		self.update_activity()
 		return ""
 
 	def check_if_idle(self):
 		minutes_since_activity = divmod((datetime.datetime.now() - self.last_activity).total_seconds(), 60)[0]
 		if minutes_since_activity >= settings.event_cleanse_time:
-			self.finish()
+			self.terminated_for_idle = True
 			logger.info("Finished %s %s for having %d minutes since last activity."%(self.__class__.__name__, self.uid, minutes_since_activity) )
+			self.finish()
 		else:
 			self.timer.cancel()
-			self.timer = threading.Timer(60, self.check_if_idle)
+			self.timer = threading.Timer(30, self.check_if_idle)
 			self.timer.setDaemon(True)
+
 			self.timer.start()
 
 	def add_user(self, user):
@@ -79,7 +88,10 @@ class BotEvent(object):
 
 	def on_player_leave(self, user):
 		player = persistence_controller.get_ply(user)
-		player.event = None
+		if self.parent_event:
+			player.event = self.parent_event
+		else:
+			player.event = None
 		logger.debug("User (%d) left event %s (%s)."%(user.id, self.__class__.__name__, self.uid))
 
 	def remove_user(self, user):
@@ -98,6 +110,7 @@ class BotEvent(object):
 			self.timer.cancel()
 		self.finished = True
 		self.free_users()
+		self.parent_event = None
 		return self.finished_callback(self)
 
 class ChatEvent(BotEvent):
@@ -611,6 +624,7 @@ class DungeonLobbyEvent(BotEvent):
 		self.greeting_message = 'A dungeon crawl will start once there are enough players (%d). Use "abort" to leave, "start" to begin.'%(total_users)
 		self.status_message = 'There are %d out of %d players.'
 		self.total_users = total_users
+		self.crawl = None
 
 	def status(self, user=None):
 		msg = 'You are in lobby %s.\nThere are %d out of %d players in the lobby.\n'%(self.uid, len(self.users), self.total_users)
@@ -723,7 +737,32 @@ class DungeonLobbyEvent(BotEvent):
 			ply.event = dungeon_event
 
 	def start_crawl(self):
-		return self.finished_callback(self)
+
+		def crawl_event_over_callback(event):
+			persistence_controller.save_players()
+			for user in event.users:
+				ply = persistence_controller.get_ply(user)
+				ply.health = ply.stats["max_health"]
+				ply.energy = ply.stats["max_energy"]
+				ply.dead = False
+				ply.refresh_derived()
+			self.crawl = None
+			return self.status()
+
+		if len(self.users) > 0:
+			dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in self.users])
+			
+			dungeon_crawl = DungeonCrawlEvent(crawl_event_over_callback, self.users, dungeon)
+			dungeon_crawl.parent_event = self
+			self.crawl = dungeon_crawl
+
+			broadcast = []
+			msg = dungeon_crawl.greeting_message
+			for u in self.users:
+				broadcast.append([u, msg])
+			return broadcast
+		else:
+			return "error"
 
 class DungeonCrawlEvent(BotEvent):
 	def __init__(self, finished_callback, users, dungeon):
@@ -748,7 +787,7 @@ class DungeonCrawlEvent(BotEvent):
 	}
 
 	def status(self, user=None):
-		msg = 'You are in room number %d of %s.'%(self.dungeon.current_room, self.dungeon.name)
+		msg = 'You are in room number %d of %s.'%(self.dungeon.current_room+1, self.dungeon.name)
 		return msg
 
 	def check_if_can_advance(self):
@@ -780,7 +819,7 @@ class DungeonCrawlEvent(BotEvent):
 			persistence_controller.save_players()
 			alive_player = False
 			for player in players:
-				player.event = self # Free all players from event
+				#player.event = self # Free all players from event
 				if not player.dead:
 					alive_player = True
 			if not alive_player:
@@ -788,6 +827,7 @@ class DungeonCrawlEvent(BotEvent):
 			return "\nThe players have defeated the enemies and are ready to advance further.\n" + self.status()
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
+		combat.parent_event = self
 		self.combat_event = combat
 		combat_logger.debug("Combat event  %s created within dungeon %s."%(combat.uid, self.uid))
 
@@ -831,8 +871,8 @@ class DungeonCrawlEvent(BotEvent):
 
 			def lvl_over_callback(event):
 				persistence_controller.save_players()
-				player = persistence_controller.get_ply(user)
-				player.event = self # Free all players from event
+				#player = persistence_controller.get_ply(user)
+				#player.event = self # Free all players from event
 				for uname in list(self.non_combat_events.keys()):
 					if self.non_combat_events[uname] == event:
 						del self.non_combat_events[uname]
@@ -840,6 +880,7 @@ class DungeonCrawlEvent(BotEvent):
 
 			level_up = LevelUpEvent(lvl_over_callback, user)
 			self.non_combat_events[str(user.id)] = level_up
+			level_up.parent_event = self
 			persistence_controller.get_ply(user).event = level_up
 			logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
 
@@ -858,8 +899,8 @@ class DungeonCrawlEvent(BotEvent):
 	def open_inventory(self, user):
 		def inv_over_callback(event):
 			persistence_controller.save_players()
-			player = persistence_controller.get_ply(user)
-			player.event = self # Free all players from event
+			#player = persistence_controller.get_ply(user)
+			#player.event = self # Free all players from event
 
 			for uname in list(self.non_combat_events.keys()):
 				if self.non_combat_events[uname] == event:
@@ -868,6 +909,7 @@ class DungeonCrawlEvent(BotEvent):
 			return self.status()
 
 		inv = InventoryEvent(inv_over_callback, user) #Create an inventory event
+		inv.parent_event = self
 		self.non_combat_events[str(user.id)] = inv
 		persistence_controller.get_ply(user).event = inv
 		combat_logger.debug("Inventory event  %s created within dungeon %s."%(inv.uid, self.uid))
@@ -1094,9 +1136,10 @@ class CombatEvent(BotEvent):
 		use_infos = self.turn_qeue[self.turn].act(self)
 		combat_logger.info("   AI(%s) actions:"%(self.turn_qeue[self.turn].name))
 		msg = ""
-		for use_info in use_infos:
-			combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
-			msg += use_info.description
+		if use_infos:
+			for use_info in use_infos:
+				combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
+				msg += use_info.description
 		return msg
 
 	allowed_commands = {

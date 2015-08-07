@@ -63,7 +63,7 @@ class Dummy(Enemy):
 
 
 rat_characteristics = {
-		"strength": 1, #how hard you hit
+		"strength": 2, #how hard you hit
 		"vitality": 2, #how much hp you have
 		"dexterity": 5, #how fast you act, your position in turn qeue
 		"intelligence": 3, #how likely you are to strike a critical
@@ -82,8 +82,8 @@ class Rat(Enemy):
 	def __init__(self, level=1, name="rat",  characteristics = rat_characteristics, stats=None, description="An angry grey rat.", inventory=[], equipment=default_equipment, tags=["animate", "living","rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=50):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("rodent_teeth", 0)
-		self.inventory.append(teeth)
-		self.equip(teeth)
+		if self.add_to_inventory(teeth):
+			self.equip(teeth)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -99,7 +99,7 @@ class Rat(Enemy):
 
 
 big_rat_characteristics = {
-	"strength": 2, #how hard you hit
+	"strength": 3, #how hard you hit
 	"vitality": 2, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 5, #how likely you are to strike a critical
@@ -120,8 +120,8 @@ class BigRat(Enemy):
 	def __init__(self, level=1, name="big rat", characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["living", "animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=80):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("rodent_teeth", 0)
-		self.inventory.append(teeth)
-		self.equip(teeth)
+		if self.add_to_inventory(teeth):
+			self.equip(teeth)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -170,10 +170,11 @@ class Wolf(Enemy):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
-		self.inventory.append(teeth)
-		self.inventory.append(claws)
-		self.equip(teeth)
-		self.equip(claws)
+		if self.add_to_inventory(teeth):
+			self.equip(teeth)
+		if self.add_to_inventory(claws):
+			self.equip(claws)
+
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -214,10 +215,10 @@ class WolfLeader(Enemy):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
-		self.inventory.append(teeth)
-		self.inventory.append(claws)
-		self.equip(teeth)
-		self.equip(claws)
+		if self.add_to_inventory(teeth):
+			self.equip(teeth)
+		if self.add_to_inventory(claws):
+			self.equip(claws)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -263,10 +264,10 @@ class Bear(Enemy):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
-		self.inventory.append(teeth)
-		self.inventory.append(claws)
-		self.equip(teeth)
-		self.equip(claws)
+		if self.add_to_inventory(teeth):
+			self.equip(teeth)
+		if self.add_to_inventory(claws):
+			self.equip(claws)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -319,8 +320,8 @@ class UndeadSoldier(Enemy):
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
-			self.inventory.append(item)
-			self.equip(item)
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -334,7 +335,7 @@ class UndeadSoldier(Enemy):
 					if not self.target or self.target.dead:
 						break
 				if not self.target or self.target.dead:
-						break
+					break
 		return attack_infos
 
 
@@ -371,9 +372,9 @@ class UndeadKnight(Enemy):
 		items.append( get_item_by_name( "shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( "chainmail" , 0 ) ) if random.randint(0,10) > 2 else items.append( get_item_by_name( "plate armor" , 0 ) )
 		items.append( get_item_by_name( "helmet" , 0 ) ) if random.randint(0,10) > 2 else None
-		for item in items: 
-			self.inventory.append(item)
-			self.equip(item)
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -394,7 +395,7 @@ class UndeadKnight(Enemy):
 """ demon enemies bewow """
 
 lesser_demon_characteristics = {
-	"strength": 2, #how hard you hit
+	"strength": 3, #how hard you hit
 	"vitality": 2, #how much hp you have
 	"dexterity": 5, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
@@ -418,8 +419,8 @@ class LesserDemon(Enemy):
 		items.append( get_item_by_name("animal_teeth", 0 ) )
 		items.append( get_item_by_name("animal_claws", 0 ) )
 		for item in items:
-			self.inventory.append(item)
-			self.equip(item)
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -463,8 +464,8 @@ class BetaDemon(Enemy):
 		items.append( get_item_by_name("club", 0 ) )
 		items.append( get_item_by_name("animal_claws", 0 ) )
 		for item in items:
-			self.inventory.append(item)
-			self.equip(item)
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -509,8 +510,8 @@ class Thug(Enemy):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "sword", "mace", "claymore"]), 0 )]
 		for item in items:
-			self.inventory.append(item)
-			self.equip(item)
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -558,8 +559,8 @@ class Peasant(Enemy):
 		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
-			self.inventory.append(item)
-			self.equip(item)
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -598,8 +599,8 @@ class Thief(Enemy):
 		items.append( get_item_by_name( random.choice(["ring of fire", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		items.append( get_item_by_name( random.choice(["amulet of defence", "amulet of healing"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
-			self.inventory.append(item)
-			self.equip(item)
+			if self.add_to_inventory(item):
+				self.equip(item)
 
 	def act(self, combat_event):
 		attack_infos = []

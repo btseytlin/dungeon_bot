@@ -80,11 +80,11 @@ class AbilityUseInfo(object):
 			for modifier in use_info["modifiers_applied"]:
 				self.description += modifier.apply() 
 
-		if "experience_gained" in use_info and use_info["experience_gained"] > 0:
-			if not hasattr(self.inhibitor, "exp_value"):
-				msg, value = self.inhibitor.on_experience_gain( value) 
-				self.description += msg
-				self.description += self.inhibitor.add_experience(value)
+		#if "experience_gained" in use_info and use_info["experience_gained"] > 0:
+		#	if not hasattr(self.inhibitor, "exp_value"):
+		#		msg, value = self.inhibitor.on_experience_gain( use_info["experience_gained"] ) 
+		#		self.description += msg
+		#		self.description += self.inhibitor.add_experience(value)
 		return self
 
 	def __str__(self):

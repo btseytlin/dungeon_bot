@@ -227,16 +227,26 @@ class Creature(object):
 		msg = ""
 
 		if isinstance(self, Enemy) and isinstance(inhibitor, Player):
-			exp_gained = self.exp_value * value/self.health
-			msg, value = inhibitor.on_experience_gain(value) 
+			exp_gained = self.exp_value * clamp(value/self.stats["max_health"], 0, 1)
+			msg, exp_gained = inhibitor.on_experience_gain(exp_gained) 
 			msg += inhibitor.add_experience(exp_gained)
 
+		
+
 		if not self.dead:
+		
 			self.health = self.health - value
 			msg += self.on_health_lost(value)
 
 		killed = self.kill_if_nececary(inhibitor)
 		return msg 
+
+	def add_to_inventory(self, item):
+		if len(self.inventory) < settings.inventory_size:
+			self.inventory.append(item)
+			return True
+		else:
+			return False
 
 	def equip(self, target_item):
 		if target_item.item_type == "consumable":
@@ -275,12 +285,14 @@ class Creature(object):
 		if target_item.item_type == "consumable":
 			return "Can't unequip %s."%(target_item.name)
 		if self.equipment[target_item.item_type] == target_item:
-			self.equipment[target_item.item_type] = None
-			self.inventory.append(target_item)
-			self.sort_inventory()
-			self.refresh_derived()
-			msg = self.on_item_unequipped(target_item)
-			return msg + "Succesfully unequipped %s."%(target_item.name)
+			if self.add_to_inventory(target_item):
+				self.equipment[target_item.item_type] = None
+				self.sort_inventory()
+				self.refresh_derived()
+				msg = self.on_item_unequipped(target_item)
+				return msg + "Succesfully unequipped %s."%(target_item.name)
+			else:
+				return "Not enough space in inventory."
 		return "Not equipped!"
 
 	def strip(self):
@@ -770,7 +782,7 @@ class Creature(object):
 	def examine_inventory(self):
 		#desc = "%s's inventory:\n"%(self.name)
 		self.sort_inventory()
-		desc = ""
+		desc = "[%d/%d] items.\n"%(len(self.inventory), settings.inventory_size)
 		items = []
 		for i in range(len(self.inventory)):
 			item = self.inventory[i]
@@ -1039,9 +1051,11 @@ class Player(Creature):
 					attack_info.use_info["loot_dropped"].append(item)
 					if isinstance(attack_info.inhibitor, Player):
 						loot_goes_to = random.choice(attack_info.inhibitor.event.players)
-						loot_goes_to.inventory.append(item)
+						if loot_goes_to.add_to_inventory(item):
+							attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.name)
+						else:
+							attack_info.description += "%s got loot: %s, but didn't have enough space in inventory.\n"%(loot_goes_to.name.capitalize(), item.name)
 					attack_info.use_info["loot_dropped"].append(item)
-					attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.name)
 		return super(Player, self).on_kill(attack_info)
 			
 	def to_json(self):

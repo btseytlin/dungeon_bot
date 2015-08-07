@@ -3,7 +3,6 @@ from .persistence import PersistenceController
 from .creatures import Player
 from .bot_events import *
 from .util import *
-from .dungeon import *
 from .level_perks import *
 import logging
 import datetime
@@ -30,6 +29,9 @@ def registration_over_callback(event):
 	event_over_callback(event)
 	
 def event_over_callback(event):
+	if event.terminated_for_idle:
+		for user in event.users:
+			DungeonBot.instance.send_message(user, "Event was finished for inactivity.")
 	persistence_controller.save_players()
 	logger.debug("Removing event %s"%(event.uid))
 	if event.uid in DungeonBot.events.keys():
@@ -39,33 +41,14 @@ def event_over_callback(event):
 	return ""
 	
 
-def crawl_event_over_callback(event):
-	persistence_controller.save_players()
-	for user in event.users:
-		ply = persistence_controller.get_ply(user)
-		ply.health = ply.stats["max_health"]
-		ply.energy = ply.stats["max_energy"]
-		ply.dead = False
-		ply.refresh_derived()
-	event_over_callback(event)
-	return DungeonBot.instance.status()
+
 
 def lobby_event_lover_callback(lobby):
 	logger.debug("Removing lobby %s"%(lobby.uid))
-	if lobby.uid in DungeonBot.open_lobbies:
-		del DungeonBot.open_lobbies[lobby.uid]
+	if lobby.uid in DungeonBot.lobbies:
+		del DungeonBot.lobbies[lobby.uid]
 	event_over_callback(lobby)
-	if len(lobby.users) > 0:
-		dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in lobby.users])
-		
-		dungeon_crawl = DungeonCrawlEvent(crawl_event_over_callback, lobby.users, dungeon)
-		DungeonBot.events[dungeon_crawl.uid] = dungeon_crawl
 
-		broadcast = []
-		msg = dungeon_crawl.greeting_message
-		for u in lobby.users:
-			broadcast.append([u, msg])
-		return broadcast
 	return DungeonBot.instance.status()
 
 
@@ -99,7 +82,7 @@ class DungeonBot(object):
 
 	instance = None
 	events = {}
-	open_lobbies = {}
+	lobbies = {}
 	registration_events = {}
 	last_update_id = None
 	api = None
@@ -133,7 +116,7 @@ class DungeonBot(object):
 		#PersistenceController.instance = None
 		#persistence_controller = PersistenceController.get_instance()
 		DungeonBot.events = {}
-		DungeonBot.open_lobbies = {}
+		DungeonBot.lobbies = {}
 		#DungeonBot.last_update_id += 2
 
 
@@ -234,8 +217,8 @@ class DungeonBot(object):
 				for event in list(DungeonBot.registration_events.keys()):
 					DungeonBot.registration_events[event].finish()
 
-				for event in list(DungeonBot.open_lobbies.keys()):
-					DungeonBot.open_lobbies[event].finish()
+				for event in list(DungeonBot.lobbies.keys()):
+					DungeonBot.lobbies[event].finish()
 
 				raise
 
@@ -335,16 +318,16 @@ class DungeonBot(object):
 	def new_crawl_lobby(self, total_users):
 		lobby = DungeonLobbyEvent(lobby_event_lover_callback, total_users) #Create a dungeon lobby event
 		DungeonBot.events[lobby.uid] = lobby #add event to collection of events
-		DungeonBot.open_lobbies[lobby.uid] = lobby
+		DungeonBot.lobbies[lobby.uid] = lobby
 		logger.debug("Lobby event %s created"%(lobby.uid))
 		return(lobby.uid)
 
 	def list_lobbies(self):
 		lobbies = []
-		for key in list(DungeonBot.open_lobbies.keys()):
-			if DungeonBot.open_lobbies[key]:
-				lobby = DungeonBot.open_lobbies[key]
-				if not lobby.is_enough_players():
+		for key in list(DungeonBot.lobbies.keys()):
+			if DungeonBot.lobbies[key]:
+				lobby = DungeonBot.lobbies[key]
+				if not lobby.is_enough_players() and not lobby.crawl:
 					lobby_desc = "Lobby %s\n"%(lobby.uid)
 					lobby_desc += "%d out of %d users:"%(len(lobby.users), lobby.total_users)
 					lobby_desc += ", ".join([ persistence_controller.get_ply(u).name for u in lobby.users ]) + ".\n"
@@ -357,16 +340,19 @@ class DungeonBot(object):
 
 	def join_lobby(self, user, lobby_uid=None):
 		if not lobby_uid:
-			if len(list(DungeonBot.open_lobbies.keys())) > 0:
-				lobby_uid = random.choice(list(DungeonBot.open_lobbies.keys()))#select random lobby
+			if len(list(DungeonBot.lobbies.keys())) > 0:
+				lobby_uid = random.choice([lobby for lobby in list(DungeonBot.lobbies.keys()) if not DungeonBot.lobbies[lobby].is_enough_players() and not DungeonBot.lobbies[lobby].crawl])#select random lobby
 			else:
 				lobby_uid = self.new_crawl_lobby(1) 
-		if not lobby_uid in list(DungeonBot.open_lobbies.keys()):
+		if not lobby_uid in list(DungeonBot.lobbies.keys()):
 			return "No such lobby!"
 
-		lobby = DungeonBot.open_lobbies[lobby_uid]
+		lobby = DungeonBot.lobbies[lobby_uid]
 		logger.debug("User %s joined lobby %s"%(persistence_controller.get_ply(user).name, lobby_uid))
-		return(lobby.add_user(user))
+		if not lobby.is_enough_players() and not lobby.crawl:
+			return(lobby.add_user(user))
+		else:
+			return "The lobby is full or the game already started."
 
 
 

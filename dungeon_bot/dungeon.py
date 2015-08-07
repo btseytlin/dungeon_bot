@@ -2,6 +2,7 @@
 import random
 from .util import *
 from .enemies import *
+from . import settings
 
 class Dungeon(object):
 	def __init__(self, name, description, players, enemy_types, rooms = [], current_room = 0, difficulty=None):
@@ -27,7 +28,7 @@ class Dungeon(object):
 		dungeon_enemy_types = dungeons[dungeon_name]["enemy_types"]
 		dungeon_players = players 
 		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players, dungeon_enemy_types)
-		dungeon.generate_rooms(random.randint(3, 10))
+		dungeon.generate_rooms(random.randint(settings.dungeon_room_amounts[0], settings.dungeon_room_amounts[1]))
 		return dungeon
 
 	def generate_rooms(self, amount):
