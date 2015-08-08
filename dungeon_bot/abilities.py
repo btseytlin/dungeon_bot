@@ -103,7 +103,7 @@ class AbilityUseInfo(object):
 			target = target + "(%s)"%(self.target.uid)
 
 		msg_lines = []
-		msg_lines.append("Inhibitor %s uses %s(%s) of item %s on target %s."%(inhibitor, self.ability_type, self.prototype_class, self.use_info["item_used"].name, target))
+		msg_lines.append("Inhibitor %s uses %s(%s) of item %s on target %s."%(inhibitor, self.ability_type, self.prototype_class, self.use_info["item_used"].name if self.use_info["item_used"] else str(None), target))
 		msg_lines.append("Energy change: %d"%(self.use_info["energy_change"]))
 		if self.ability_type == "aoe_attack":
 			msg = "AOE attack %s by %s."%(self.prototype_class.name, self.inhibitor.name)
@@ -678,6 +678,46 @@ class ShieldUp(Ability):
 		return Ability.use(buff_info)
 
 
+class Revive(Ability): 
+	"""
+	Revive a creature
+
+	"""
+	name = "revive"
+	description = "Revive a creature."
+	energy_required = 5
+	requirements = None
+
+	@staticmethod
+	def can_use(user, target=None):
+		return Ability.can_use(user, Revive)
+
+	@staticmethod
+	def get_buff_modifiers(use_info):
+		#defence_bonus = use_info.use_info["item_used"].stats["defence"]
+		#modifier_params = {"stats_change": {"defence":defence_bonus}}
+		#modifier = get_modifier_by_name("shielded", use_info.use_info["item_used"], use_info.target, modifier_params)
+		return []
+		#return [modifier]
+
+	@staticmethod
+	def get_buff_description(use_info):
+		return ""
+
+	@staticmethod
+	def use(user, target, weapon, combat_event):
+		buff_info = BuffInfo(user, Revive, target, combat_event)
+		buff_info.use_info["item_used"] = None
+
+		if buff_info.target.dead:
+			buff_info.target.dead = False
+			buff_info.target.health = buff_info.target.stats["max_health"] 
+			buff_info.target.refresh_derived()
+
+		buff_info.description += "%s revives %s.\n"%(user.name.capitalize(),target.name.capitalize())
+		return Ability.use(buff_info)
+
+
 class Sweep(Ability): 
 	"""
 	Sweeping attack for bladed weapons.
@@ -983,8 +1023,14 @@ abilities = {
 	"quick cut": QuickCut,
 	"quick stab": QuickStab,
 	"sweep": Sweep,
+
+	#strict non player abilities below
+	"revive": Revive,
+
 	# animal abilities below
 	"rodent bite": RodentBite,
 	"animal bite": AnimalBite,
 	"animal claw": AnimalClaw,
+
+
 }
