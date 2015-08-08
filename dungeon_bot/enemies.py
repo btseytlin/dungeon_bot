@@ -710,7 +710,7 @@ enemy_list = { #name to enemy
 
 """ Common enemy spawn functions """
 
-def rat_pack(size):
+def rat_pack(size=None):
 	description = "A rat.\n"
 	rat_levels = list(range(1, 5))
 	amount = 1
@@ -732,7 +732,7 @@ def rat_pack(size):
 
 """ Animal enemy spawn functions """
 
-def wolf_leader(size):
+def wolf_leader(size=None):
 	if size == "strong":
 		leader_levels = list(range(10, 20))
 		leader = WolfLeader(random.choice(leader_levels))
@@ -747,7 +747,7 @@ def wolf_leader(size):
 		description = "A young wolf pack leader.\n"
 	return [leader], description
 
-def wolf_pack(size, special_enemy=None):
+def wolf_pack(size=None, special_enemy=None):
 	wolf_levels = list(range(1, 4))
 	description = "A wolf.\n"
 	amount = 1
@@ -800,7 +800,7 @@ def bear(size = None):
 	return [bear], description
 
 """ Undead enemy spawn functions """
-def undead_soldier_pack(size, special_enemy=None):
+def undead_soldier_pack(size=None, special_enemy=None):
 	description = "An undead soldier.\n"
 	amount = 1
 	if size == "small":
@@ -868,7 +868,7 @@ def lich(size = None):
 	return enemies, description
 
 """ Demon enemy spawn functions """
-def lesser_demon_pack(size, special_enemy = None):
+def lesser_demon_pack(size=None, special_enemy = None):
 	description = "A lesser demon.\n"
 	levels = list(range(1,5))
 	amount = 1
@@ -895,6 +895,7 @@ def lesser_demon_pack(size, special_enemy = None):
 
 	demons = [ LesserDemon(random.choice(levels)) for x in range(amount+1)]
 	desc = ""
+	beta_demon = []
 	if special_enemy:
 		if special_enemy == "beta demon":
 			if size == "medium" and random.randint(0, 10) > 4:
@@ -925,7 +926,7 @@ def beta_demon(size = None):
 
 """ Human enemy spawn functions """
 
-def peasant_pack(size, special_enemy = None):
+def peasant_pack(size=None, special_enemy = None):
 	description = "A peasant.\n"
 	levels = list(range(1,5))
 	amount = 1

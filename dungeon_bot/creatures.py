@@ -225,7 +225,7 @@ class Creature(object):
 			
 			dmg = int(value * clamp( (value - defence)/value, 0.1, 1 ))
 
-			msg += "%s negates %d damage because of his defence.\n"%(self.name.capitalize(), value - dmg)
+			msg += "%s negates %d damage because of his defence.\n"%(self.short_desc.capitalize(), value - dmg)
 		else:
 			dmg = value
 

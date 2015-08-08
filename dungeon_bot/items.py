@@ -19,7 +19,7 @@ class Item(object):
 
 	@property
 	def name(self):
-	    return self._name + "".join(["*" for modifier in self.modifiers_granted])
+		return self._name + "".join(["*" for modifier in self.modifiers_granted])
 
 	@property
 	def full_name(self):
@@ -67,6 +67,7 @@ class Item(object):
 		big_dict["abilities_granted"] = self.abilities_granted
 		big_dict["stats"] = self.stats
 		big_dict["modifiers_granted"] = self.modifiers_granted
+		big_dict["name"] = self._name
 		return big_dict
 
 	@staticmethod
