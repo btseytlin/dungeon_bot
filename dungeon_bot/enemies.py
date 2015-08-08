@@ -855,14 +855,6 @@ def wolf_pack(size, special_enemy=None):
 		description = "A big pack of fearsome wolves.\n"
 		wolf_levels = list(range(35, 50))
 		amount = random.randint(10, 20)
-<<<<<<< HEAD
-		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 3 else None
-
-	wolves = [ Wolf(random.choice(wolf_levels)) for x in range(amount+1)]
-	if wolf_leader:
-		wolves.append(wolf_leader)
-=======
-
 	desc = ""
 	leader = []
 	if special_enemy:
@@ -876,7 +868,6 @@ def wolf_pack(size, special_enemy=None):
 
 	wolves = [ Wolf(random.choice(wolf_levels)) for x in range(amount+1)] + leader
 	description += desc
->>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 	return wolves, description
 
 def bear(size = None):
@@ -1066,7 +1057,6 @@ def peasant_pack(size, special_enemy = None):
 	description += desc
 	return peasants, description
 
-<<<<<<< HEAD
 '''def mages():
 	description = "A mage."
 	levels = list(range(5,10))
@@ -1091,8 +1081,6 @@ def peasant_pack(size, special_enemy = None):
 	return mages, description
 '''
 
-def thugs(size):
-=======
 def thief(size = None):
 	if size == "strong":
 		thief_levels = list(range(10, 20))
@@ -1109,7 +1097,6 @@ def thief(size = None):
 	return [thief_enemy], description
 
 def thugs(size = None):
->>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 	description = "A thug.\n"
 	levels = list(range(1,5))
 	amount = 1
@@ -1129,7 +1116,7 @@ def thugs(size = None):
 	thugs = [ Thug(random.choice(levels)) for x in range(amount+1)]
 	return thugs, description
 
-def ogres():
+def ogres(size = None):
 	description = "An ogre."
 	levels = list(range(5,15))
 	amount = 1
@@ -1172,12 +1159,7 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"50": (wolf_pack, ["huge", "wolf leader"] ),
 		"50": (bear, ["very strong"] ),
 	},
-<<<<<<< HEAD
 	"undead": {
-=======
-	"undead": {
-
->>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 		"1": (undead_soldier_pack,[] ),
 		"1": (undead_soldier_pack,["small"] ),
 		"5": (undead_soldier_pack, ["medium"] ),
@@ -1205,20 +1187,6 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 	},
 	"human": {
 		"1": (peasant_pack,[] ),
-<<<<<<< HEAD
-		"1": (thugs, []),
-		"5": (thugs, ["small"]),
-		"10": (thugs, ["medium"]),
-		"1": (peasant_pack,["small"] ),
-		"5": (peasant_pack, ["medium"] ),
-		"5": (thief, [] ),
-		"10": (peasant_pack, ["big"] ),
-		"30": (peasant_pack, ["huge"] )
-		#"5": (mages, ["small"]),
-		#"15": (mages, ["medium"]),
-		#"25": (mages, ["big"]),
-		#"35": (mages, ["huge"])
-=======
 		"5": (peasant_pack,["small"] ),
 		"5": (thugs, []),
 		"10": (thief, [] ),
@@ -1234,8 +1202,6 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"40": (peasant_pack,["huge"] ),
 		"50": (peasant_pack,["huge", "thugs"] ),
 		"50": (peasant_pack,["huge", "thief"] ),
-
->>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 	},
 	"ogre": {
 		"8": (ogres,[] ),
