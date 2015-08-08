@@ -47,6 +47,8 @@ class Creature(object):
 
 
 
+
+
 	def get_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
 			"health": 0,
@@ -56,7 +58,7 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]*10 + (characteristics["vitality"] * (self.level * 3))
+		stats["max_health"] =  get_health_for_level(characteristics["vitality"], self.level)
 		stats["max_energy"] = characteristics["strength"] + int(self.level / 10)
 		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 10), 2, 10)
 		stats["health"] = stats["max_health"]
@@ -932,7 +934,6 @@ class Creature(object):
 			"Equipment:\n%s"%(self.examine_equipment()),
 		])
 
-		print(desc)
 		return desc
 
 	def to_json(self):
