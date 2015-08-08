@@ -37,7 +37,7 @@ class BotEvent(object):
 		self.parent_event = None
 		self.terminated_for_idle = False
 
-
+	
 		if not players:
 			self.players = []
 			for user in users:
@@ -81,7 +81,7 @@ class BotEvent(object):
 				break
 		else:
 			self.users.append(user)
-
+			
 		player = persistence_controller.get_ply(user)
 		player.event = self
 		logger.debug("User (%d) added to event %s (%s)."%(user.id, self.__class__.__name__, self.uid))
@@ -124,7 +124,7 @@ class ChatEvent(BotEvent):
 		"examine [character]": "shows a chracter's stats", "ex [character]": "shows a chracter's stats", "stats [character]": "shows a chracter's stats","st [character]": "shows a chracter's stats",
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "leaves chat","abort": "leaves chat","ab": "leaves chat","b": "leaves chat", "leave": "leaves chat",
-		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 		"status": "shows where you are and what you are doing",
 		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
 		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
@@ -286,7 +286,7 @@ class RegistrationEvent(BotEvent):
 				if argument == "+":
 					if self.char_points > 0:
 						self.new_player.base_characteristics[characteristic] += 1
-						self.char_points -= 1
+						self.char_points -= 1 
 						msg = "You have %d points left.\n"%(self.char_points)
 						msg += self.format_characteristics(self.new_player.base_characteristics)
 						return msg
@@ -295,7 +295,7 @@ class RegistrationEvent(BotEvent):
 				elif argument == "-":
 					if self.new_player.base_characteristics[characteristic] > 1:
 						self.new_player.base_characteristics[characteristic] -= 1
-						self.char_points += 1
+						self.char_points += 1 
 						msg = "You have %d points left.\n"%(self.char_points)
 						msg += self.format_characteristics(self.new_player.base_characteristics)
 						return msg
@@ -315,7 +315,7 @@ class RegistrationEvent(BotEvent):
 				return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\nAlso remember to use "status" and "help" whenever you don\'t know where you are or what to do.')
 			else:
 				return "Unknown command."
-
+			
 class LevelUpEvent(BotEvent):
 	def __init__(self, finished_callback, user):
 		BotEvent.__init__(self, finished_callback, [user])
@@ -339,7 +339,7 @@ class LevelUpEvent(BotEvent):
 				self.greeting_message += self.perk_step_msg
 			else:
 				self.greeting_message = "You don't have any perk points or available perks."
-				self.finish()
+				self.finish() 
 		else:
 			self.greeting_message = 'You have %d characteristics points.\nLet\'s begin.\n'%(self.player.level_up_points)
 			self.greeting_message += "Currently your characteristics are:\n"
@@ -378,8 +378,8 @@ class LevelUpEvent(BotEvent):
 				if argument == "+":
 					if self.player.level_up_points > 0:
 						self.player.base_characteristics[characteristic] += 1
-						self.player.level_up_points -= 1
-
+						self.player.level_up_points -= 1 
+						
 						msg = self.format_characteristics(self.player.base_characteristics)
 
 						if self.player.level_up_points <= 0:
@@ -425,7 +425,7 @@ class LevelUpEvent(BotEvent):
 
 					msg += "You still have %d perk points to spend.\n"%(self.player.perk_points)
 					self.perk_step_msg = "Choose a perk by typing it's number:\n"
-
+					
 					self.perk_step_msg += "\n".join([str(i+1) + ". " +self.available_perks[i].name + "-" + self.available_perks[i].description for i in range(len(self.available_perks)) ])
 					msg += self.perk_step_msg
 					return msg
@@ -439,14 +439,13 @@ class InventoryEvent(BotEvent):
 	allowed_commands = {
 		"examine": "shows your stats and inventory","ex": "shows your stats and inventory","stats": "shows your stats and inventory",
 		"list": "lists your inventory","l": "lists your inventory",
-		"examine [item]": "shows an item's stats", "ex [item]": "shows an item's stats",
+		"examine [item]": "shows an item's stats", "ex [item]": "shows an item's stats", 
 		"examine [r/pw/sw/a/h/t]": "examine an equipped item",
 		"ex [r/pw/sw/a/h/t]": "examine an equipped item",
 		"equip [item]": "equips an item","eq [item]": "equips an item",
 		"unequip [item]": "equips an item","uneq [item]": "unequips an item",
 		"use [item]": "uses an item (such as a potion)", "u [item]": "uses an item (such as a potion)",
 		"destroy [item]": "destroys an item","drop [item]": "destroys an item",
-		"destroyall": "destroys everything in inventory","dropall": "destroys everything in inventory",
 		"give [item] [userid/playername]": "gives an item to another player",
 		"status": "shows where you are and what you are doing",
 		"info": "shows help","help": "shows help","h": "shows help",
@@ -475,27 +474,27 @@ class InventoryEvent(BotEvent):
 					return True, player.primary_weapon
 				else:
 					return False, "Primary weapon not equipped."
-			elif arg in ["secondary weapon", "sweapon", "sw"]:
+			elif arg in ["secondary weapon", "sweapon", "sw"]:				
 				if player.secondary_weapon:
 					return True, player.secondary_weapon
 				else:
 					return False, "Secondary weapon not equipped."
-			elif arg in ["armor", "a"]:
+			elif arg in ["armor", "a"]:				
 				if player.armor:
 					return True, player.armor
 				else:
 					return False, "Armor not equipped."
-			elif arg in ["ring", "r"]:
+			elif arg in ["ring", "r"]:				
 				if player.ring:
 					return True, player.ring
 				else:
 					return False, "Ring not equipped."
-			elif arg in ["headwear", "h"]:
+			elif arg in ["headwear", "h"]:				
 				if player.headwear:
 					return True, player.headwear
 				else:
 					return False, "Headwear not equipped."
-			elif arg in ["talisman", "t"]:
+			elif arg in ["talisman", "t"]:				
 				if player.talisman:
 					return True, player.talisman
 				else:
@@ -594,9 +593,6 @@ class InventoryEvent(BotEvent):
 					return(msg)
 				else:
 					return item
-		elif (command in ['destroyall', 'dropall']):
-			persistence_controller.get_ply(user).clear_inventory()
-			return "All items have been destroyed from your inventory."
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
@@ -622,7 +618,7 @@ class DungeonLobbyEvent(BotEvent):
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "leaves lobby","abort": "leaves lobby","ab": "leaves lobby","b": "leaves lobby", "leave": "leaves lobby",
 		"status": "shows where you are and what you are doing",
-		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
 		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 
@@ -643,7 +639,7 @@ class DungeonLobbyEvent(BotEvent):
 		else:
 			msg += 'Not enough players to start the dungeon crawl yet.\n'
 		return msg
-
+	
 	def handle_command(self, user, command, *args):
 		super(DungeonLobbyEvent, self).handle_command(user, command, *args)
 		if (command in ["help","info","h"]):
@@ -697,7 +693,7 @@ class DungeonLobbyEvent(BotEvent):
 
 	def is_enough_players(self):
 		if len(self.users) < self.total_users:
-			return False
+			return False	
 		return True
 
 	def add_user(self, user):
@@ -760,7 +756,7 @@ class DungeonLobbyEvent(BotEvent):
 
 		if len(self.users) > 0:
 			dungeon = Dungeon.new_dungeon([persistence_controller.get_ply(u) for u in self.users])
-
+			
 			dungeon_crawl = DungeonCrawlEvent(crawl_event_over_callback, self.users, dungeon)
 			dungeon_crawl.parent_event = self
 			self.crawl = dungeon_crawl
@@ -788,8 +784,8 @@ class DungeonCrawlEvent(BotEvent):
 		"examine [character]": "shows a chracter's stats", "ex [character]": "shows a chracter's stats", "stats [character]": "shows a chracter's stats","st [character]": "shows a chracter's stats",
 		"info": "shows help","help": "shows help","h": "shows help",
 		"back": "leaves dungeon crawl","abort": "leaves dungeon crawl","ab": "leaves dungeon crawl","b": "leaves dungeon crawl", "leave": "leaves dungeon crawl",
-		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers",
-		"level up": "opens the level up dialogue", "lvl": "opens the level up dialogue",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
+		"level up": "opens the level up dialogue", "lvl": "opens the level up dialogue", 
 		"status": "shows where you are and what you are doing",
 		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
 		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
@@ -833,7 +829,7 @@ class DungeonCrawlEvent(BotEvent):
 				if not player.dead:
 					alive_player = True
 			if not alive_player:
-				return "\nThe players perished in the dungeon.\n" +self.finish()
+				return "\nThe players perished in the dungeon.\n" +self.finish() 
 			return "\nThe players have defeated the enemies and are ready to advance further.\n" + self.status()
 
 		combat = CombatEvent(combat_over_callback, players, self.users, enemies) #Create an inventory event
@@ -1004,7 +1000,7 @@ class CombatEvent(BotEvent):
 		self.players = players
 		self.enemies = enemies
 		self.turn_qeue = []
-
+		
 
 		self.turn = 0
 		self.round = 0
@@ -1040,7 +1036,7 @@ class CombatEvent(BotEvent):
 
 		self.greeting_message = 'Combat starts!\n'
 
-
+		
 
 		self.greeting_message += self.next_round()
 
@@ -1074,7 +1070,7 @@ class CombatEvent(BotEvent):
 
 	def get_printable_turn_qeue(self):
 		return ", ".join([self.turn_qeue[i].short_desc for i in range(len(self.turn_qeue))])+"\n"
-
+	
 	def check_winning_conditions(self):
 		alive_enemy = False
 		alive_player = False
@@ -1107,7 +1103,7 @@ class CombatEvent(BotEvent):
 			return self.next_turn()
 
 		if isinstance(self.turn_qeue[self.turn], Enemy):
-			#print( "%s's turn"%(self.turn_qeue[self.turn]) )
+			#print( "%s's turn"%(self.turn_qeue[self.turn]) ) 
 			msg += self.ai_turn()
 			return msg + self.next_turn()
 		else:
@@ -1153,11 +1149,11 @@ class CombatEvent(BotEvent):
 
 	allowed_commands = {
 		"examine": "shows your stats","ex": "shows your stats","stats": "shows your stats",
-		"examine [creature]": "shows a creature's stats", "ex [creature]": "shows a creature's stats",
+		"examine [creature]": "shows a creature's stats", "ex [creature]": "shows a creature's stats", 
 		"info": "shows help","help": "shows help","h": "shows help",
 		"status": "shows where you are and what you are doing",
 		"turn": "ends turn", "t": "ends turn",
-		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers",
+		"say [message]": "sends a message to your fellow dungeon crawlers", "s [message]": "sends a message to your fellow dungeon crawlers", 
 		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
 		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
 	}
@@ -1181,7 +1177,7 @@ class CombatEvent(BotEvent):
 						use_info = ability_class.use( self.users_to_players[str(user.id)], target, granted_by, self )
 						combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
 						self.abilities_used.append(use_info)
-						msg = use_info.description
+						msg = use_info.description 
 						broadcast = []
 						for u in self.users:
 							broadcast.append([u, msg])
@@ -1256,7 +1252,7 @@ class CombatEvent(BotEvent):
 
 		elif (command in ["turn", "t"]):
 			if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id):
-
+				
 				msg = self.next_turn()
 				msg_others = "%s ends turn.\n"%(self.users_to_players[str(user.id)].name.capitalize()) + msg
 				broadcast = []
@@ -1281,7 +1277,7 @@ class CombatEvent(BotEvent):
 				command = command.split(" ")[0]
 				return self.handle_command(user, command, *args)
 
-
+		
 			if len(command.split(" ")) == 1 and len(args) == 1:
 
 				args = list(args)
@@ -1289,7 +1285,7 @@ class CombatEvent(BotEvent):
 				return self.handle_command(user, command, *args)
 
 			return 'Unknown command, try "help".'
-
+	
 	def finish(self):
 		msg = ""
 		for creature in self.turn_qeue:
@@ -1298,3 +1294,5 @@ class CombatEvent(BotEvent):
 		msg += super(CombatEvent, self).finish()
 
 		return msg
+
+
