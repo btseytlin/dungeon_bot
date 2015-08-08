@@ -125,7 +125,7 @@ class SecondaryWeapon(Item):
 		if "accuracy" in list(self.stats.keys()):
 			return sh_dsc+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"])
 		else:
-			return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
+			return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
 
 	@staticmethod
 	def de_json(data):
@@ -139,7 +139,7 @@ class Armor(Item):
 	@property
 	def short_desc(self):
 		sh_dsc = super(Armor, self).short_desc
-		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
+		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
 
 	@staticmethod
 	def de_json(data):
@@ -179,7 +179,7 @@ class Headwear(Item):
 	@property
 	def short_desc(self):
 		sh_dsc = super(Headwear, self).short_desc
-		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
+		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
 
 	@staticmethod
 	def de_json(data):
@@ -278,17 +278,17 @@ item_listing = {
 	},
 	"secondary weapon":{
 		"dagger": {"stats": { "damage" : ["1d3","1d6"], "accuracy" : ["-1d6","2d6"]} ,"random_effects": True, "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quick stab", "quick cut"]}},
-		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
+		"shield": {"stats": {"defense" : ["1d3","5d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
 
 		# enemy equipment below
 		"animal_claws": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
-		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defence" : ["2d6","5d6"],"random_effects": True, "evasion" : ["-5d6","-1d6"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defence" : ["3d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
+		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defense" : ["2d6","5d6"],"random_effects": True, "evasion" : ["-5d6","-1d6"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
+		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defense" : ["3d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
 	},
 	"talisman":{
-		"amulet of defence": {"stats": {"defence" : ["1d6","2d6"]} , "args":{"name":"amulet of defence", "description":"The most boring talisman, it just protects you."}},
+		"amulet of defense": {"stats": {"defense" : ["1d6","2d6"]} , "args":{"name":"amulet of defense", "description":"The most boring talisman, it just protects you."}},
 
 		"bone amulet": {"stats":{}, "args":{"name":"bone amulet", "description":"A amulet cut from a bone. A human bone.", "random_effects": True}},
 	},
@@ -323,7 +323,7 @@ item_listing = {
 	},
 
 	"headwear":{
-		"helmet": {"stats": {"defence" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet.", "random_effects": True}
+		"helmet": {"stats": {"defense" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet.", "random_effects": True}
 		},
 	}
 }

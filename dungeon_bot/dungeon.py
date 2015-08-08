@@ -69,9 +69,5 @@ dungeons = {
 	"Bandit den" : {
 		"description": "All kinds of scum find shelter in these caves.",
 		"enemy_types":["common", "human"]
-	},
-	"Ogre cave" : {
-		"description": "A place where humans feel like ants.",
-		"enemy_types":["common", "ogre"]
-	},
+	}
 }

@@ -73,7 +73,7 @@ def test_loot_drop():
 		logger.info("Ply inventory:\n%s"%(ply.examine_inventory()))
 		logger.info("Item:\n%s"%(ply.inventory[0].examine_self()))
 
-""" Test equipping armor: defence change, evasion change, granting tags, modifiers and abiltiies """
+""" Test equipping armor: defense change, evasion change, granting tags, modifiers and abiltiies """
 def test_armor_equip():
 	item = "plate armor"
 	armor = get_item_by_name(item, 1)
@@ -81,26 +81,26 @@ def test_armor_equip():
 	logger.info("Retrieved item:\n%s"%(armor.examine_self()))
 	ply = Player("testman", "test")
 	logger.info("Retrieved player:\n%s\n%s"%(ply.examine_self(), ply.examine_inventory()))
-	defences = [ply.defence for x in range(10000)]
+	defenses = [ply.defense for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
-	logger.info("Defence, Evasion without armor:\n%f, %f"%(ply.defence, ply.evasion))
-	logger.info("Average defence, evasion without armor:\n%f, %f"%(sum(defences)/len(defences), sum(evasions)/len(evasions)))
+	logger.info("defense, Evasion without armor:\n%f, %f"%(ply.defense, ply.evasion))
+	logger.info("Average defense, evasion without armor:\n%f, %f"%(sum(defenses)/len(defenses), sum(evasions)/len(evasions)))
 	ply.inventory.append(armor)
 	logger.info("Gave player the item:\n%s"%(ply.examine_inventory()))
 	ply.equip(armor)
 	assert ("armor" or "heavy armor" in ply.tags)
 	logger.info("Player equipped the item:%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
-	defences = [ply.defence for x in range(10000)]
+	defenses = [ply.defense for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
-	logger.info("Average defence, evasion with armor:\n%f, %f"%(sum(defences)/len(defences), sum(evasions)/len(evasions)))
+	logger.info("Average defense, evasion with armor:\n%f, %f"%(sum(defenses)/len(defenses), sum(evasions)/len(evasions)))
 	
 	ply.unequip(armor)
 	
 	assert (not "armor" in ply.tags)
 	logger.info("Player unequipped the item:\n%s\n%s"%(ply.examine_self(), ply.examine_equipment()))
-	defences = [ply.defence for x in range(10000)]
+	defenses = [ply.defense for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
-	logger.info("Average defence, evasion without armor:\n%f, %f"%(sum(defences)/len(defences), sum(evasions)/len(evasions)))
+	logger.info("Average defense, evasion without armor:\n%f, %f"%(sum(defenses)/len(defenses), sum(evasions)/len(evasions)))
 
 def test_char_and_stat_changes():
 	logger.info("Testing char changes.\n\n")

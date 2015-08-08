@@ -9,7 +9,7 @@ import random
 default_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
-	"dexterity": 5, #how much energy you have, your position in turn qeue
+	"dexterity": 5, #how much energy you have, your position in turn queue
 	"intelligence": 5, #how likely you are to cause critical effects when attacking
 }
 
@@ -56,7 +56,7 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]*10 + (characteristics["vitality"] * (self.level * 4))
+		stats["max_health"] = characteristics["vitality"]*10 + (characteristics["vitality"] * (self.level * 3))
 		stats["max_energy"] = characteristics["strength"] + int(self.level / 10)
 		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 10), 2, 10)
 		stats["health"] = stats["max_health"]
@@ -67,8 +67,8 @@ class Creature(object):
 	def short_desc(self):
 		msg = ""
 		if hasattr(self, "event"):
-			if self.event and hasattr(self.event, "turn_qeue"):
-				ind = self.event.turn_qeue.index(self)
+			if self.event and hasattr(self.event, "turn_queue"):
+				ind = self.event.turn_queue.index(self)
 				msg += str(ind+1) + "."
 		msg += self.name
 		if not self.dead:
@@ -171,23 +171,23 @@ class Creature(object):
 		return clamp(accuracy, 0, 9999)
 
 	@property
-	def defence(self):
+	def defense(self):
 		base_def = diceroll("1d1")
-		defence = base_def
+		defense = base_def
 		for key in list(self.equipment.keys()):
-			if self.equipment[key] and "defence" in list(self.equipment[key].stats.keys()):
-				defence += diceroll(self.equipment[key].stats["defence"])
+			if self.equipment[key] and "defense" in list(self.equipment[key].stats.keys()):
+				defense += diceroll(self.equipment[key].stats["defense"])
 
 		if hasattr(self, "level_perks"):
 			for level_perk in self.level_perks:
-				if "defence" in level_perk.stats_change.keys():
-					defence += diceroll(level_perk.stats_change["defence"])
+				if "defense" in level_perk.stats_change.keys():
+					defense += diceroll(level_perk.stats_change["defense"])
 
 		for modifier in self.modifiers:
-			if "defence" in modifier.stats["stats_change"]:
-				defence += diceroll(modifier.stats["stats_change"]["defence"])
+			if "defense" in modifier.stats["stats_change"]:
+				defense += diceroll(modifier.stats["stats_change"]["defense"])
 
-		return clamp(defence, 0, 9999)
+		return clamp(defense, 0, 9999)
 
 	@property
 	def evasion(self):
@@ -199,8 +199,8 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for level_perk in self.level_perks:
-				if "defence" in level_perk.stats_change.keys():
-					defence += diceroll(level_perk.stats_change["defence"])
+				if "defense" in level_perk.stats_change.keys():
+					defense += diceroll(level_perk.stats_change["defense"])
 
 
 		for modifier in self.modifiers:
@@ -221,11 +221,11 @@ class Creature(object):
 		msg = ""
 		if not bypass:
 
-			defence = self.defence
+			defense = self.defense
 
-			dmg = int(value * clamp( (value - defence)/value, 0.1, 1 ))
-
-			msg += "%s negates %d damage because of his defence.\n"%(self.short_desc.capitalize(), value - dmg)
+			dmg = int(value * clamp( (value - defense)/value, 0.1, 1 ))
+			if (value - dmg) > 0:
+				msg += "%d damage negated by defense.\n"%(value - dmg)
 		else:
 			dmg = value
 
@@ -875,18 +875,18 @@ class Creature(object):
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for stat in list(perk.__class__.stats_change.keys()):
-					if stat != "defence" and stat != "evasion" and stat != "accuracy":
+					if stat != "defense" and stat != "evasion" and stat != "accuracy":
 						self.stats[stat] = clamp( self.stats[stat]+ perk.__class__.stats_change[stat], 0, 9999)
 
 		for modifier in self.modifiers:
 			for stat in list(modifier.stats["stats_change"].keys()):
-				if stat != "defence" and stat != "evasion" and stat != "accuracy":
+				if stat != "defense" and stat != "evasion" and stat != "accuracy":
 					self.stats[stat] = clamp( self.stats[stat] + modifier.stats["stats_change"][stat], 0, 9999)
 
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "stats_change" in list(self.equipment[item].stats.keys()):
 				for stat in list(self.equipment[item].stats["stats_change"].keys()):
-					if stat != "defence" and stat != "evasion" and stat != "accuracy":
+					if stat != "defense" and stat != "evasion" and stat != "accuracy":
 						self.stats[stat] = clamp( self.stats[stat] +self.equipment[item].stats["stats_change"][stat], 0, 9999)
 
 	def refresh_derived(self):
@@ -905,7 +905,7 @@ class Creature(object):
 		characteristics.append("|\t"+"Vitality"+":" +str(self.characteristics["vitality"]) +" ("+str(self.base_characteristics["vitality"])+")" +"\n")
 		characteristics.append("|\t"+"Intelligence"+":" +str(self.characteristics["intelligence"]) +" ("+str(self.base_characteristics["intelligence"])+")" +"\n")
 
-		avg_defence = sum([self.defence for x in range(501)])/500
+		avg_defense = sum([self.defense for x in range(501)])/500
 		avg_evasion = sum([self.evasion for x in range(501)])/500
 		avg_accuracy = sum([self.get_accuracy() for x in range(501)])/500
 
@@ -925,7 +925,7 @@ class Creature(object):
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
 			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]),
 			"Exp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
-			"Average defence, evasion, accuracy:\n|\t%d, %d, %d"%(avg_defence, avg_evasion, avg_accuracy),
+			"Average defense, evasion, accuracy:\n|\t%d, %d, %d"%(avg_defense, avg_evasion, avg_accuracy),
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
 			"Modifiers:\n%s"%("\n".join(["|\t%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
 			"Abilities:\n|\t%s"%(", ".join(abilities)),
@@ -1105,7 +1105,7 @@ class Enemy(Creature):
 		self.event = None
 
 	def select_target(self, combat_event):
-		alive_players = [x for x in combat_event.turn_qeue if isinstance(x, Player)]
+		alive_players = [x for x in combat_event.turn_queue if isinstance(x, Player)]
 		if len(alive_players) > 0:
 			self.target = random.choice(alive_players)
 		else:

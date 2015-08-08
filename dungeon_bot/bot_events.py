@@ -154,14 +154,14 @@ class ChatEvent(BotEvent):
 			return msg
 		elif (command in ["say", "s"]):
 			if len(args)>0:
-				msg = " ".join(args).capitalize()
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)
+				msg = " ".join(args)
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())
 				self.log.append(msg_others)
 
 				if len(self.log) > 1000:
 					self.log = []
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
 						broadcast.append([u, msg_others])
@@ -658,25 +658,12 @@ class DungeonLobbyEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
-				for u in self.users:
-					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
-				return broadcast
-			return "Specify what you want to say."
-
-		elif (command in ["say", "s"]):
-			if len(args)>0:
-				msg = " ".join(args)
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())
-				broadcast = []
 				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, msg_others])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())])
 				return broadcast
 			return "Specify what you want to say."
-
 		elif (command in ["start"]):
 			if self.is_enough_players():
 				return(self.start_crawl())
@@ -891,7 +878,7 @@ class DungeonCrawlEvent(BotEvent):
 			logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
 
 			broadcast = []
-			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).userid.capitalize())
+			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).name.capitalize())
 
 			broadcast.append([user, level_up.greeting_message])
 			for u in self.users:
@@ -954,10 +941,10 @@ class DungeonCrawlEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["status"]):
@@ -999,7 +986,7 @@ class CombatEvent(BotEvent):
 		BotEvent.__init__(self, finished_callback, users, players)
 		self.players = players
 		self.enemies = enemies
-		self.turn_qeue = []
+		self.turn_queue = []
 		
 
 		self.turn = 0
@@ -1040,36 +1027,36 @@ class CombatEvent(BotEvent):
 
 		self.greeting_message += self.next_round()
 
-		#if isinstance(self.turn_qeue[self.turn], Enemy):
+		#if isinstance(self.turn_queue[self.turn], Enemy):
 		#	self.greeting_message += self.ai_turn()
 
 	def status(self, user=None):
-		msg = 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
+		msg = 'The turn queue:\n%s'%(self.get_printable_turn_queue())
+		msg += '|\tYou have %d energy and %d health.\n'%(self.users_to_players[str(user.id)].energy, self.users_to_players[str(user.id)].health)
+		msg += "|\tIt's %s's turn.\n"%(self.turn_queue[self.turn].name.capitalize())
 		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'
-		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[str(user.id)].energy, self.users_to_players[str(user.id)].health)
-		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.capitalize())
 		return msg
 
 	def next_round(self):
 		self.round += 1
 		self.turn = 0
-		msg = "".join([c.on_round() for c in self.turn_qeue if not c.dead])
+		msg = "".join([c.on_round() for c in self.turn_queue if not c.dead])
 		msg += "Round %d.\n"%(self.round)
-		if self.turn_qeue == []:
-			self.turn_qeue = self.update_turn_qeue()
+		if self.turn_queue == []:
+			self.turn_queue = self.update_turn_queue()
 
-		msg += self.get_printable_turn_qeue()
+		msg += self.get_printable_turn_queue()
 
 		if self.round == 1 and self.turn == 0:
-			for creature in self.turn_qeue:
+			for creature in self.turn_queue:
 				msg += creature.on_combat_start()
 
 		combat_logger.info("%s"%(msg))
 		msg += self.this_turn()
 		return msg
 
-	def get_printable_turn_qeue(self):
-		return ", ".join([self.turn_qeue[i].short_desc for i in range(len(self.turn_qeue))])+"\n"
+	def get_printable_turn_queue(self):
+		return "---\n"+"\n".join(["|\t"+self.turn_queue[i].short_desc for i in range(len(self.turn_queue))])+"\n" + "---\n"
 	
 	def check_winning_conditions(self):
 		alive_enemy = False
@@ -1099,15 +1086,15 @@ class CombatEvent(BotEvent):
 
 	def this_turn(self):
 		msg = ""
-		if (self.turn_qeue[self.turn].dead):
+		if (self.turn_queue[self.turn].dead):
 			return self.next_turn()
 
-		if isinstance(self.turn_qeue[self.turn], Enemy):
-			#print( "%s's turn"%(self.turn_qeue[self.turn]) ) 
+		if isinstance(self.turn_queue[self.turn], Enemy):
+			#print( "%s's turn"%(self.turn_queue[self.turn]) ) 
 			msg += self.ai_turn()
 			return msg + self.next_turn()
 		else:
-			return "It's %s's turn.\n"%(self.turn_qeue[self.turn].name)
+			return "|\tIt's %s's turn.\n"%(self.turn_queue[self.turn].name)
 
 	def next_turn(self):
 		msg = ""
@@ -1118,28 +1105,28 @@ class CombatEvent(BotEvent):
 			return msg + self.finish()
 
 		self.turn += 1
-		if self.turn > len(self.turn_qeue)-1:
+		if self.turn > len(self.turn_queue)-1:
 			return msg + self.next_round()
 
-		if (self.turn_qeue[self.turn].dead):
+		if (self.turn_queue[self.turn].dead):
 			return self.next_turn()
 
-		for creature in self.turn_qeue:
+		for creature in self.turn_queue:
 			if not creature.dead:
 				msg += creature.on_turn()
 		return msg + self.this_turn()
 
-	def update_turn_qeue(self):
+	def update_turn_queue(self):
 		alive_enemies =  list(filter(lambda c: not c.dead, self.enemies.copy()))
 		alive_players =  list(filter(lambda c: not c.dead, self.players.copy()))
 		alive_creatures = alive_enemies + alive_players
-		qeue = sorted(alive_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
-		combat_logger.info("Combat qeue:\n"+", ".join([""+str(i)+"."+qeue[i].name for i in range(len(qeue))]))
-		return qeue
+		queue = sorted(alive_creatures, key=lambda x: x.characteristics["dexterity"], reverse=True)
+		combat_logger.info("Combat queue:\n"+", ".join([""+str(i)+"."+queue[i].name for i in range(len(queue))]))
+		return queue
 
 	def ai_turn(self):
-		use_infos = self.turn_qeue[self.turn].act(self)
-		combat_logger.info("   AI(%s) actions:"%(self.turn_qeue[self.turn].name))
+		use_infos = self.turn_queue[self.turn].act(self)
+		combat_logger.info("   AI(%s) actions:"%(self.turn_queue[self.turn].name))
 		msg = ""
 		if use_infos:
 			for use_info in use_infos:
@@ -1160,7 +1147,7 @@ class CombatEvent(BotEvent):
 
 	def handle_combat_command(self, user, command, *args):
 		combat_logger.info("Command from user %s: %s %s"%(user.id, command, " ".join(args)))
-		if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id): #current turn is of player who sent command
+		if hasattr(self.turn_queue[self.turn],"userid") and self.turn_queue[self.turn].userid == str(user.id): #current turn is of player who sent command
 			if command in list(self.user_abilities[str(user.id)].keys()):
 				ability = self.user_abilities[str(user.id)][command]
 				ability_class = self.user_abilities[str(user.id)][command].__class__
@@ -1168,8 +1155,8 @@ class CombatEvent(BotEvent):
 				argument = " ".join(args).lower()
 				target = None
 				if len(argument) > 0:
-					for i in range(len(self.turn_qeue)):
-						t = self.turn_qeue[i]
+					for i in range(len(self.turn_queue)):
+						t = self.turn_queue[i]
 						if t.name == argument or argument.isdigit() and int(argument)-1 == i:
 							target = t
 					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[str(user.id)], target )
@@ -1186,7 +1173,7 @@ class CombatEvent(BotEvent):
 					else:
 						return cant_use_msg
 
-					return "No such target in turn qeue"
+					return "No such target in turn queue"
 				else:
 					return "Specify your target"
 
@@ -1221,8 +1208,8 @@ class CombatEvent(BotEvent):
 				if argument=="self" or argument == str(user.id) or argument == self.users_to_players[str(user.id)].name:
 					return (self.users_to_players[str(user.id)].examine_self())
 				elif argument.isdigit():
-					if int(argument)-1 < len(self.turn_qeue) and int(argument)>0:
-						return self.turn_qeue[int(argument)-1].examine_self()
+					if int(argument)-1 < len(self.turn_queue) and int(argument)>0:
+						return self.turn_queue[int(argument)-1].examine_self()
 				else:
 					for u in self.users:
 						target_ply = self.users_to_players[str(u.id)]
@@ -1243,15 +1230,15 @@ class CombatEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())])
 				return broadcast
 			return "Specify what you want to say."
 
 		elif (command in ["turn", "t"]):
-			if hasattr(self.turn_qeue[self.turn],"userid") and self.turn_qeue[self.turn].userid == str(user.id):
+			if hasattr(self.turn_queue[self.turn],"userid") and self.turn_queue[self.turn].userid == str(user.id):
 				
 				msg = self.next_turn()
 				msg_others = "%s ends turn.\n"%(self.users_to_players[str(user.id)].name.capitalize()) + msg
@@ -1288,7 +1275,7 @@ class CombatEvent(BotEvent):
 	
 	def finish(self):
 		msg = ""
-		for creature in self.turn_qeue:
+		for creature in self.turn_queue:
 			msg += creature.on_combat_over()
 
 		msg += super(CombatEvent, self).finish()

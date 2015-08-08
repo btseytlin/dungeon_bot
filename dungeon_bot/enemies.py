@@ -39,7 +39,7 @@ default_equipment = {
 dummy_characteristics = {
 			"strength": 5, #how hard you hit
 			"vitality": 5, #how much hp you have
-			"dexterity": 5, #how fast you act, your position in turn qeue
+			"dexterity": 5, #how fast you act, your position in turn queue
 			"intelligence": 5, #how likely you are to strike a critical
 		}
 
@@ -65,7 +65,7 @@ class Dummy(Enemy):
 rat_characteristics = {
 		"strength": 2, #how hard you hit
 		"vitality": 2, #how much hp you have
-		"dexterity": 5, #how fast you act, your position in turn qeue
+		"dexterity": 5, #how fast you act, your position in turn queue
 		"intelligence": 3, #how likely you are to strike a critical
 	}
 
@@ -101,7 +101,7 @@ class Rat(Enemy):
 big_rat_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 2, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -149,7 +149,7 @@ default_equipment = {
 wolf_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -195,19 +195,20 @@ class Wolf(Enemy):
 wolf_leader_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 4, #how much hp you have
-	"dexterity": 6, #how fast you act, your position in turn qeue
+	"dexterity": 6, #how fast you act, your position in turn queue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class WolfLeader(Enemy):
 	drop_table = {
-		"chainmail" : 3,
+		"armor" : 5,
 		"primary weapon" : 5,
-		"secondary weapon" : 3,
-		"ring" : 3,
-		"talisman": 4,
+		"secondary weapon" : 5,
+		"ring" : 5,
+		"talisman": 5,
 		"headwear": 5,
-		"random": 3,
+		"random": 5,
+		"bone ring" : 3,
 	}
 	loot_coolity = 0.8
 
@@ -239,7 +240,7 @@ class WolfLeader(Enemy):
 bear_characteristics = {
 	"strength": 7, #how hard you hit
 	"vitality": 7, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -255,6 +256,7 @@ class Bear(Enemy):
 		"talisman": 4,
 		"headwear": 5,
 		"random": 3,
+		"bone ring" : 3,
 	}
 
 	loot_coolity = 1
@@ -289,7 +291,7 @@ class Bear(Enemy):
 undead_soldier_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 
@@ -310,6 +312,7 @@ class UndeadSoldier(Enemy):
 		"headwear": 5,
 		"random": 3,
 		"rapier": 3,
+		"bone ring" : 3,
 	}
 
 	loot_coolity = 0.3
@@ -341,7 +344,7 @@ class UndeadSoldier(Enemy):
 undead_knight_characteristics = {
 	"strength": 4, #how hard you hit
 	"vitality": 4, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 
@@ -359,6 +362,7 @@ class UndeadKnight(Enemy):
 		"ring" : 3,
 		"talisman": 4,
 		"helmet": 3,
+		"bone ring" : 3,
 		"headwear": 5,
 		"random": 3,
 		"claymore": 4,
@@ -395,27 +399,20 @@ class UndeadKnight(Enemy):
 lich_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 7, #how likely you are to strike a critical
 }
 
 class Lich(Enemy):
 	drop_table = {
-		"chainmail" : 7,
-		"plate armor" : 4,
-		"primary weapon" : 3,
-		"sword": 7,
-		"mace": 7,
-		"club": 5,
+		"primary weapon" : 5,
 		"dagger": 5,
-		"secondary weapon" : 3,
-		"bone amulet" : 3,
-		"ring" : 3,
-		"talisman": 4,
-		"helmet": 3,
+		"bone amulet" : 5,
+		"bone ring" : 5,
+		"ring" : 5,
+		"talisman": 5,
 		"headwear": 5,
 		"random": 3,
-		"claymore": 4,
 	}
 
 	loot_coolity = 0.8
@@ -448,7 +445,7 @@ class Lich(Enemy):
 crystaline_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 10, #how much hp you have
-	"dexterity": 1, #how fast you act, your position in turn qeue
+	"dexterity": 1, #how fast you act, your position in turn queue
 	"intelligence": 5, #how likely you are to strike a critical
 }
 
@@ -475,7 +472,7 @@ class LichCrystaline(Enemy):
 lesser_demon_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 2, #how much hp you have
-	"dexterity": 5, #how fast you act, your position in turn qeue
+	"dexterity": 5, #how fast you act, your position in turn queue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 
@@ -518,7 +515,7 @@ class LesserDemon(Enemy):
 beta_demon_characteristics = {
 	"strength": 6, #how hard you hit
 	"vitality": 5, #how much hp you have
-	"dexterity": 4, #how fast you act, your position in turn qeue
+	"dexterity": 4, #how fast you act, your position in turn queue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 class BetaDemon(Enemy):
@@ -562,7 +559,7 @@ class BetaDemon(Enemy):
 thug_characteristics = {
 	"strength": 7, #how hard you hit
 	"vitality": 6, #how much hp you have
-	"dexterity": 4, #how fast you act, your position in turn qeue
+	"dexterity": 4, #how fast you act, your position in turn queue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 
@@ -607,7 +604,7 @@ class Thug(Enemy):
 peasant_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 4, #how fast you act, your position in turn qeue
+	"dexterity": 4, #how fast you act, your position in turn queue
 	"intelligence": 4, #how likely you are to strike a critical
 }
 
@@ -656,7 +653,7 @@ class Peasant(Enemy):
 thief_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 8, #how fast you act, your position in turn qeue
+	"dexterity": 8, #how fast you act, your position in turn queue
 	"intelligence": 8, #how likely you are to strike a critical
 }
 
@@ -672,7 +669,7 @@ class Thief(Enemy):
 		items = [get_item_by_name( "dagger", 1 )]
 		items.append( get_item_by_name( "rapier" , 0 ) ) if random.randint(0,10) > 5 else None
 		items.append( get_item_by_name( random.choice(["ring of thievery", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
-		items.append( get_item_by_name( random.choice(["amulet of defence", "bone amulet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["amulet of defense", "bone amulet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
 				self.equip(item)
@@ -696,7 +693,7 @@ class Thief(Enemy):
 mage_characteristics = {
 	"strength": 2, #how hard you hit
 	"vitality": 2, #how much hp you have
-	"dexterity": 4, #how fast you act, your position in turn qeue
+	"dexterity": 4, #how fast you act, your position in turn queue
 	"intelligence": 6, #how likely you are to strike a critical
 }
 
@@ -737,8 +734,8 @@ class Mage(Enemy):
 
 ogre_characteristics = {
 	"strength": 9, #how hard you hit
-	"vitality": 2, #how much hp you have
-	"dexterity": 4, #how fast you act, your position in turn qeue
+	"vitality": 8, #how much hp you have
+	"dexterity": 4, #how fast you act, your position in turn queue
 	"intelligence": 2, #how likely you are to strike a critical
 }
 
@@ -754,7 +751,7 @@ class Ogre(Enemy):
 		"random": 3,
 	}
 	loot_coolity = 0.7
-	def __init__(self, level=1, name="ogre", characteristics = ogre_characteristics, stats=None, description="A slow hulking ogre. It looks hungry for you.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big", "human", "living"],abilities=[],modifiers=[], exp_value=500):
+	def __init__(self, level=1, name="ogre", characteristics = ogre_characteristics, stats=None, description="A slow hulking ogre. It looks hungry for you.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big", "humanoid", "living"],abilities=[],modifiers=[], exp_value=400):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "mace"]), 0 )]
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
@@ -884,6 +881,29 @@ def bear(size = None):
 		bear = Bear(random.choice(bear_levels))
 		description = "A young bear.\n"
 	return [bear], description
+
+def ogres(size = None):
+	description = "An ogre."
+	levels = list(range(5,15))
+	amount = 1
+	if size == "small":
+		amount = random.randint(1, 2)
+		if amount != 1:
+			description = "A couple young ogres.\n"
+	elif size == "medium":
+		description = "Mature ogres.\n"
+		levels = list(range(10,20))
+		amount = random.randint(1, 3)
+	elif size == "big":
+		description = "Dangerous ogres.\n"
+		levels = list(range(20,35))
+		amount = random.randint(2, 4)
+	elif size == "huge":
+		description = "Very dangerous ogres.\n"
+		levels = list(range(35,50))
+		amount = random.randint(2, 5)
+	ogres = [ Ogre(random.choice(levels)) for x in range(amount+1)]
+	return ogres, description
 
 """ Undead enemy spawn functions """
 def undead_soldier_pack(size=None, special_enemy=None):
@@ -1117,28 +1137,6 @@ def thugs(size = None):
 	thugs = [ Thug(random.choice(levels)) for x in range(amount+1)]
 	return thugs, description
 
-def ogres(size = None):
-	description = "An ogre."
-	levels = list(range(5,15))
-	amount = 1
-	if size == "small":
-		amount = random.randint(1, 3)
-		if amount != 1:
-			description = "Bridge trolls.\n"
-	elif size == "medium":
-		description = "Town destroyers.\n"
-		levels = list(range(10,20))
-		amount = random.randint(3, 6)
-	elif size == "big":
-		description = "City destroyers.\n"
-		levels = list(range(25-35))
-		amount = random.randint(4, 7)
-	elif size == "huge":
-		description = "Goliaths.\n"
-		levels = list(range(40,50))
-		amount = random.randint(2, 5)
-	ogres = [ Ogre(random.choice(levels)) for x in range(amount+1)]
-	return ogres, description
 
 enemy_tables = { # difficulty rating: (function to get enemy or enemy group, params)
 	"common": {
@@ -1150,13 +1148,18 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 	"animal": {
 		"1": (wolf_pack,[] ),
 		"5": (wolf_pack,["small"] ),
+		"5": (ogres,[] ),
 		"10": (wolf_pack, ["medium"] ),
 		"15": (wolf_pack, ["medium", "wolf leader"] ),
+		"15": (ogres,["small"] ),
 		"10": (bear, [] ),
 		"20": (wolf_pack, ["big"] ),
+		"20": (ogres, ["medium"] ),
 		"25": (wolf_pack, ["big", "wolf leader"] ),
 		"30": (bear, ["strong"] ),
+		"30": (ogres, ["big"] ),
 		"40": (wolf_pack, ["huge"] ),
+		"40": (ogres, ["huge"] ),
 		"50": (wolf_pack, ["huge", "wolf leader"] ),
 		"50": (bear, ["very strong"] ),
 	},
@@ -1203,13 +1206,6 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"40": (peasant_pack,["huge"] ),
 		"50": (peasant_pack,["huge", "thugs"] ),
 		"50": (peasant_pack,["huge", "thief"] ),
-	},
-	"ogre": {
-		"8": (ogres,[] ),
-		"15": (ogres,["small"] ),
-		"20": (ogres, ["medium"] ),
-		"30": (ogres, ["big"] ),
-		"40": (ogres, ["huge"] )
 	},
 
 }

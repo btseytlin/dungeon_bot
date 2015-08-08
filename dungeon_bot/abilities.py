@@ -146,9 +146,9 @@ class AoeAttackInfo(AbilityUseInfo):
 		for i in range(max_targets):
 			cr = None
 			if hasattr(inhibitor, "exp_value"):
-				cr = random.choice([ c for c in combat_event.turn_qeue if not c.dead and not hasattr(c, "exp_value")])
+				cr = random.choice([ c for c in combat_event.turn_queue if not c.dead and not hasattr(c, "exp_value")])
 			else:
-				cr = random.choice([ c for c in combat_event.turn_qeue if not c.dead and hasattr(c, "exp_value")])
+				cr = random.choice([ c for c in combat_event.turn_queue if not c.dead and hasattr(c, "exp_value")])
 
 			if cr and not cr in self.targets:
 				self.targets.append( cr )
@@ -241,7 +241,7 @@ class Smash(Ability):
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength - is_armored * defence * 2 - is_heavy_armored * defence * 3
+	dmg = weapon_dmg * strength - is_armored * defense * 2 - is_heavy_armored * defense * 3
 
 	avg chance to hit = 45
 
@@ -291,7 +291,7 @@ class Smash(Ability):
 
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
 		dmg = clamp( weapon_dmg * strength , user.characteristics["strength"]/2, 99999999 )
@@ -328,7 +328,7 @@ class Stab(Ability):
 
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength)  * 1.5 - is_armored * defence * 3 - is_heavy_armored * defence * 4
+	dmg = weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength)  * 1.5 - is_armored * defense * 3 - is_heavy_armored * defense * 4
 
 	avg chance to hit = 55
 
@@ -357,7 +357,7 @@ class Stab(Ability):
 	def get_damage(user, target, weapon):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence * 1.5
+		defense = target.defense * 1.5
 		is_armored = int("armor" in target.tags) * 0.5
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
@@ -442,7 +442,7 @@ class QuickStab(Ability):
 	def get_damage(user, target, weapon):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence * 1.5
+		defense = target.defense * 1.5
 		is_armored = int("armor" in target.tags) * 0.6
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
@@ -492,7 +492,7 @@ class Cut(Ability):
 
 	chance to hit = accuracy * dexterity  - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength * 1.5 - is_armored * defence * 2 - is_heavy_armored * defence * 3
+	dmg = weapon_dmg * strength * 1.5 - is_armored * defense * 2 - is_heavy_armored * defense * 3
 
 	avg chance to hit = 55
 
@@ -521,7 +521,7 @@ class Cut(Ability):
 	def get_damage(user, target, weapon):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.4
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.7
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
@@ -571,7 +571,7 @@ class QuickCut(Ability):
 
 	chance to hit = accuracy * dexterity  - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength - is_armored * defence * 3 - is_heavy_armored * defence * 4
+	dmg = weapon_dmg * strength - is_armored * defense * 3 - is_heavy_armored * defense * 4
 
 	avg chance to hit = 55
 
@@ -602,7 +602,7 @@ class QuickCut(Ability):
 	def get_damage(user, target, weapon):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.6
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
@@ -644,9 +644,9 @@ class QuickCut(Ability):
 
 class ShieldUp(Ability): 
 	"""
-	Raise the shield to protect yourself, gain a defence bonus and a pennalty to evasion for one turn.
+	Raise the shield to protect yourself, gain a defense bonus and a pennalty to evasion for one turn.
 
-	defence_gained = ?
+	defense_gained = ?
 	evasion_lost = ?
 
 	"""
@@ -661,8 +661,8 @@ class ShieldUp(Ability):
 
 	@staticmethod
 	def get_buff_modifiers(use_info):
-		defence_bonus = use_info.use_info["item_used"].stats["defence"]
-		modifier_params = {"stats_change": {"defence":defence_bonus}}
+		defense_bonus = use_info.use_info["item_used"].stats["defense"]
+		modifier_params = {"stats_change": {"defense":defense_bonus}}
 		modifier = get_modifier_by_name("shielded", use_info.use_info["item_used"], use_info.target, modifier_params)
 		return [modifier]
 
@@ -694,8 +694,8 @@ class Revive(Ability):
 
 	@staticmethod
 	def get_buff_modifiers(use_info):
-		#defence_bonus = use_info.use_info["item_used"].stats["defence"]
-		#modifier_params = {"stats_change": {"defence":defence_bonus}}
+		#defense_bonus = use_info.use_info["item_used"].stats["defense"]
+		#modifier_params = {"stats_change": {"defense":defense_bonus}}
 		#modifier = get_modifier_by_name("shielded", use_info.use_info["item_used"], use_info.target, modifier_params)
 		return []
 		#return [modifier]
@@ -747,7 +747,7 @@ class Sweep(Ability):
 	def get_damage(user, target, weapon):
 		weapon_dmg = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.4
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.7
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
@@ -798,7 +798,7 @@ class RodentBite(Ability):
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
 
-	dmg = base_damage * strength  - is_armored * defence * 3 - is_heavy_armored * defence * 5
+	dmg = base_damage * strength  - is_armored * defense * 3 - is_heavy_armored * defense * 5
 
 	avg chance to hit = 55
 
@@ -812,7 +812,7 @@ class RodentBite(Ability):
 	def get_damage(user, target, weapon):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.5
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 
@@ -886,7 +886,7 @@ class AnimalBite(Ability):
 	def get_damage(user, target, weapon):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
 
@@ -950,7 +950,7 @@ class AnimalClaw(Ability):
 	requirements = None
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
-	dmg = base_damage * strength  - is_armored * defence * 4 - is_heavy_armored * defence * 5
+	dmg = base_damage * strength  - is_armored * defense * 4 - is_heavy_armored * defense * 5
 	avg chance to hit = 55
 	avg damage = 5
 	chance to cause "bleeding" = ?
@@ -959,7 +959,7 @@ class AnimalClaw(Ability):
 	def get_damage(user, target, weapon):
 		weapon_damage = diceroll(weapon.stats["damage"])
 		strength = user.characteristics["strength"]
-		defence = target.defence
+		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.5
 

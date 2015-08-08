@@ -156,24 +156,24 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		return self.on_lifted() + self.host.on_modifier_lifted(self)
 
 
-class KnockedDown(Modifier): #simply adds defence, hinders evasion
+class KnockedDown(Modifier):
 	priority = 0
 	duration = 0
-	characteristics_change = {"dexterity": 2}
-	stats_change = {"evasion": "-5d6", "defence": "-2d6"}
+	characteristics_change = {}
+	stats_change = {}
 	abilities_granted = []
 	tags_granted = []
 
-	def __init__(self, granted_by, host, stats = {}, name="knockdown", description="Loose 5d6 evasion, 2d6 your defence, and half your dexterity.") :
+	def __init__(self, granted_by, host, stats = {}, name="knockdown", description="Loose 5d6 evasion, 2d6 your defense, and half your dexterity.") :
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
-		self.characteristics_change = {"dexterity": -host.characteristics["dexterity"]}
-		self.stats["tags_granted"]
+		self.stats["characteristics_change"] = {"dexterity": -host.characteristics["dexterity"]}
 		self.stats["duration"] = clamp( 10 - host.characteristics["dexterity"], 2, 4)
-		self.stats_change = {"evasion": "-5d6", "defence": "-2d6"}
+		self.stats["stats_change"] = {"evasion": "-5d6", "defense": "-3d6"}
 		
 	def on_round(self):
 		msg = "%s struggles to get up from the ground.\n"%(self.host.short_desc.capitalize())
 		msg += super(KnockedDown, self).on_round()
+		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
@@ -182,27 +182,31 @@ class KnockedDown(Modifier): #simply adds defence, hinders evasion
 	def on_applied(self):
 		msg = super(KnockedDown, self).on_applied()
 		msg += "%s is knocked down!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
 		return msg
 
-class Vunerable(Modifier): #simply adds defence, hinders evasion
+class Vunerable(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = 2
 	characteristics_change = {}
-	stats_change =  {"defence": "-3d6"}
+	stats_change =  {"defense": "-3d6"}
 	abilities_granted = []
 	tags_granted = []
-	def __init__(self, granted_by, host, stats = {}, name="vunerable", description="Loose 3d6 defence for a turn."):
+	def __init__(self, granted_by, host, stats = {}, name="vunerable", description="Loose 3d6 defense for a turn."):
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
 
 	def on_applied(self):
 		msg = super(Vunerable, self).on_applied()
 		msg += "%s is exposed and vunerable!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer vunerable!\n"%(self.host.short_desc.capitalize())
+		msg = "%s is no longer vunerable!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
 
-class Pain(Modifier): #simply adds defence, hinders evasion
+class Pain(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = 2
 	characteristics_change = {"dexterity":-3, "strength":-3, "intelligence":-3}
@@ -210,9 +214,8 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 	abilities_granted = []
 	tags_granted = []
 	def __init__(self, granted_by, host, stats = {}, name="pain", description="Loose 3 dexterity, strength and intelligence for a turn.") :
-		characteristics_change = {"dexterity":-3, "strength":-3, "intelligence":-3}
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
-		self.stats["tags_granted"]
+		self.stats["characteristics_change"] = {"dexterity":-1, "strength":-2, "intelligence":-3}
 		self.stats["duration"] = Pain.duration
 
 
@@ -222,13 +225,16 @@ class Pain(Modifier): #simply adds defence, hinders evasion
 	def on_applied(self):
 		msg = super(Pain, self).on_applied()
 		msg += "%s is wrecked with pain!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer in pain!\n"%(self.host.short_desc.capitalize())
+		msg = "%s is no longer in pain!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
 
 
-class Bleeding(Modifier): #simply adds defence, hinders evasion
+class Bleeding(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = 2
 	characteristics_change = {}
@@ -245,22 +251,26 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 	def on_round(self):
 		msg = ""
 		if not self.host.dead:
-			dmg = diceroll("1d3")
-			msg += "%s looses %d hp due to bleeding.\n"%(self.host.short_desc.capitalize(), dmg)
+			dmg = diceroll(str(int(self.host.characteristics["vitality"]/2))+"d"+str(self.host.characteristics["vitality"]))
+			msg += "!!\t%s looses %d hp due to bleeding.\n"%(self.host.short_desc.capitalize(), dmg)
 			msg += self.host.damage(dmg, self.granted_by, True)
 		msg += super(Bleeding, self).on_round()
+		
 		return msg
 
 	def on_applied(self):
 		msg = super(Bleeding, self).on_applied()
 		msg += "%s has a major bleeding!.\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer bleeding!\n"%(self.host.short_desc.capitalize())
+		msg = "%s is no longer bleeding!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
 
 
-class Burning(Modifier): #simply adds defence, hinders evasion
+class Burning(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = 2
 	characteristics_change = {}
@@ -275,7 +285,7 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 		msg = ""
 		if not self.host.dead and not "fire resistant" in self.host.tags:
 			dmg = diceroll("1d9")
-			msg += "%s looses %d hp due to burning!\n"%(self.host.short_desc.capitalize(), dmg)
+			msg += "!!\t%s looses %d hp due to burning!\n"%(self.host.short_desc.capitalize(), dmg)
 			msg += self.host.damage(dmg, self.granted_by, True)
 		msg += super(Burning, self).on_round()
 		return msg
@@ -286,38 +296,44 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 	def on_applied(self):
 		msg = super(Burning, self).on_applied()
 		msg += "%s is set on fire!.\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer on fire!\n"%(self.host.short_desc.capitalize())
+		msg = "%s is no longer on fire!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
 
 
 
-class Shielded(Modifier): #simply adds defence, hinders evasion
+class Shielded(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = 1
 	characteristics_change = {}
 	stats_change =  {}
 	abilities_granted = []
 	tags_granted = []
-	def __init__(self, granted_by, host, stats = {}, name="shielded", description="grants defence") :
+	def __init__(self, granted_by, host, stats = {}, name="shielded", description="grants defense") :
 		Modifier.__init__(self, granted_by, host, stats, name, description)
-		self.stats["stats_change"]["defence"] = self.granted_by.stats["defence"]
+		self.stats["stats_change"]["defense"] = self.granted_by.stats["defense"]
 		self.stats["stats_change"]["evasion"] = self.granted_by.stats["evasion"]
 
 	def on_applied(self):
 		msg = super(Shielded, self).on_applied()
-		msg += "%s raises his shieldup and gains a %s defence and %s evasion penalty for the next round.\n"%(self.host.short_desc, self.stats["stats_change"]["defence"], self.stats["stats_change"]["evasion"])
+		msg += "%s raises his shieldup and gains a %s defense and %s evasion penalty for the next round.\n"%(self.host.short_desc, self.stats["stats_change"]["defense"], self.stats["stats_change"]["evasion"])
+		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
-		return "%s is no longer protected by his shield!\n"%(self.host.short_desc.capitalize())
+		msg = "%s is no longer protected by his shield!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
 
-class Bonus(Modifier): #simply adds defence, hinders evasion
+class Bonus(Modifier): #simply adds defense, hinders evasion
 	def __init__(self, granted_by, host, stats = {}, name="bonus", description="???"):
 		Modifier.__init__(self, granted_by, host, stats, name, description)
 
-class Regeneration(Modifier): #simply adds defence, hinders evasion
+class Regeneration(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = -1
 	characteristics_change = {}
@@ -334,7 +350,7 @@ class Regeneration(Modifier): #simply adds defence, hinders evasion
 			heal = diceroll(self.stats["healing amount"])
 			if self.host.health < self.host.stats["max_health"]: 
 				self.host.health += heal
-				msg += "%s regenerates %d hp due to %s.\n"%(self.host.short_desc.capitalize(), heal, self.granted_by.name)
+				msg += "!!\t%s regenerates %d hp due to %s.\n"%(self.host.short_desc.capitalize(), heal, self.granted_by.name)
 		msg += super(Regeneration, self).on_round()
 		return msg
 
@@ -348,7 +364,7 @@ class Regeneration(Modifier): #simply adds defence, hinders evasion
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
 		return {"name":"regeneration", "stats":stats} 
 
-class Sickness(Modifier): #simply adds defence, hinders evasion
+class Sickness(Modifier): #simply adds defense, hinders evasion
 	priority = 0
 	duration = -1
 	characteristics_change = {}
@@ -365,7 +381,7 @@ class Sickness(Modifier): #simply adds defence, hinders evasion
 			loss = diceroll(self.stats["sickness amount"])
 
 			self.host.damage(loss, self, True)
-			msg += "%s looses %d hp due to %s.\n"%(self.host.short_desc.capitalize(), loss, self.granted_by.name)
+			msg += "!!\t%s looses %d hp due to %s.\n"%(self.host.short_desc.capitalize(), loss, self.granted_by.name)
 		msg += super(Regeneration, self).on_round()
 		return msg
 
@@ -398,7 +414,7 @@ class FireAttack(Modifier):
 				if random.randint(0, 100) < chance:
 					dmg = diceroll(fire_damage)
 					attack_info.target.damage(dmg, self.host, True)
-					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
+					attack_info.description += "!!\t%s causes %d fire damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
 
 					chance_to_cause_burning = 1/2 * chance
 					if random.randint(0, 100) < chance_to_cause_burning:
@@ -435,7 +451,7 @@ class ElectricityAttack(Modifier):
 				if random.randint(0, 100) < chance:
 					dmg = diceroll( electricity_damage )
 					attack_info.target.damage(dmg, self.host, True)
-					attack_info.description += "%s causes %d electricity damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
+					attack_info.description += "!!\t%s causes %d electricity damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
 
 					chance_to_cause_pain = 1/2 * chance
 					if random.randint(0, 100) < chance_to_cause_pain:
@@ -471,7 +487,7 @@ class Energy(Modifier):
 		msg = ""
 		if random.randint(0, 100) < chance:
 			self.host.energy += amount
-			msg += "%s provides %s with %d energy.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize(), amount)
+			msg += "!!\t%s provides %s with %d energy.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize(), amount)
 
 		msg += super(Energy, self).on_round()
 		return msg
@@ -500,7 +516,7 @@ class Weakness(Modifier):
 		msg = ""
 		if random.randint(0, 100) < chance:
 			self.host.energy += amount
-			msg += "%s drains %d energy from %s.\n"%(self.granted_by.name.capitalize(), amount, self.host.name.capitalize())
+			msg += "!!\t%s drains %d energy from %s.\n"%(self.granted_by.name.capitalize(), amount, self.host.name.capitalize())
 
 		msg += super(Weakness, self).on_round()
 		return msg
@@ -530,7 +546,7 @@ class Wisdom(Modifier):
 		if random.randint(0, 100) < chance:
 			additional_gain = int(value * diceroll(self.stats["wisdom amount"] )/100)
 			value = value + additional_gain
-			desc = "%s earns %d additional experience due to %s.\n"%(self.host.name.capitalize(), additional_gain, self.granted_by.name)
+			desc = "!!\t%s earns %d additional experience due to %s.\n"%(self.host.name.capitalize(), additional_gain, self.granted_by.name)
 		return desc, value
 
 	@staticmethod
@@ -558,7 +574,7 @@ class Stupidity(Modifier):
 		if random.randint(0, 100) < chance:
 			exp_loss = int(value * diceroll(self.stats["stupidity amount"] )/100)
 			value = value - exp_loss
-			desc = "%s looses %d experience due to %s.\n"%(self.host.name.capitalize(), exp_loss, self.granted_by.name)
+			desc = "!!\t%s looses %d experience due to %s.\n"%(self.host.name.capitalize(), exp_loss, self.granted_by.name)
 		return desc, value
 
 	@staticmethod
@@ -586,7 +602,7 @@ class Suffering(Modifier):
 		if random.randint(0, 100) < chance:
 			modifier = get_modifier_by_name("pain", self.granted_by, self.host)
 			self.host.add_modifier(modifier)
-			msg += "%s causes extreme pain to %s.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize())
+			msg += "!!\t%s causes extreme pain to %s.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize())
 
 		msg += super(Suffering, self).on_round()
 		return msg
@@ -614,12 +630,12 @@ class Judgement(Modifier):
 		chance = diceroll(self.stats["judgement chance"])
 		judgement_damage = self.stats["judgement damage"]
 		if random.randint(0, 100) < chance:
-			if self.host.event and hasattr(self.host.event, "turn_qeue") and len(self.host.event.turn_qeue)>1:
-				alive_creatues = [c for c in self.host.event.turn_qeue if not c.dead]
+			if self.host.event and hasattr(self.host.event, "turn_queue") and len(self.host.event.turn_queue)>1:
+				alive_creatues = [c for c in self.host.event.turn_queue if not c.dead]
 				if len(alive_creatues)>0:
 					target = random.choice(alive_creatues)
 					dmg = diceroll( judgement_damage )
-					msg += "A lightning erupts from %s and hits %s for %d damage.\nThe judgement has been made.\n"%(self.granted_by.name.capitalize(), target.name.capitalize(), dmg)
+					msg += "!!\tA lightning erupts from %s and hits %s for %d damage.\nThe judgement has been made.\n"%(self.granted_by.name.capitalize(), target.name.capitalize(), dmg)
 					msg += target.damage( dmg, self )
 
 		msg += super(Judgement, self).on_round()
@@ -650,7 +666,7 @@ class Greed(Modifier):
 		chance = diceroll(self.stats["greed chance"])
 		if random.randint(0, 100) < chance:
 			self.host.inventory.remove(item_gained)
-			msg = "%s destroys %s.\n"%(self.granted_by.name.capitalize, item_gained.name)
+			msg = "!!\t%s destroys %s.\n"%(self.granted_by.name.capitalize, item_gained.name)
 		return msg
 
 	@staticmethod
@@ -684,7 +700,7 @@ class Greed(Modifier):
 # 				demons.append(demon(lvl))
 # 			msg += "%d demons invade the world.\n"%(demons_amount)
 # 		self.host.event.enemies = self.host.event.enemies + demons
-# 		self.host.event.update_turn_qeue()
+# 		self.host.event.update_turn_queue()
 # 		msg += super(Demons, self).on_round()
 # 		return msg
 
@@ -713,7 +729,7 @@ class HurtUndead(Modifier):
 			additional_damage =int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["additional damage to undead"])/100)
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "undead" in attack_info.target.tags:
 				attack_info.target.damage(additional_damage, self.host, True)
-				attack_info.description += "%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
+				attack_info.description += "!!\t%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
 		return attack_info
 
 	@staticmethod
@@ -740,7 +756,7 @@ class HurtDemons(Modifier):
 			additional_damage = int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["additional damage to demons"])/100)
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "demon" in attack_info.target.tags:
 				attack_info.target.damage(additional_damage, self.host, True)
-				attack_info.description += "%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
+				attack_info.description += "!!\t%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
 		return attack_info
 
 	@staticmethod
@@ -766,7 +782,7 @@ class Vampirism(Modifier):
 		if attack_info.inhibitor == self.host and self.host.health < self.host.stats["max_health"]:
 			regen = int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["vampirism amount"])/100)
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "living" in attack_info.target.tags:
-				attack_info.description += "%s regenerates %d healh because of %s.\n"%(self.host.name.capitalize(), regen, self.granted_by.name)
+				attack_info.description += "!!\t%s regenerates %d healh because of %s.\n"%(self.host.name.capitalize(), regen, self.granted_by.name)
 				self.host.health += regen
 		return attack_info
 

@@ -114,7 +114,7 @@ class Educated(LevelPerk):
 	def on_experience_gain(self, value):
 		additional_gain =value * 0.10
 		value = value + additional_gain
-		desc = "%s earns %d additional experience due to being educated.\n"%(self.host.name.capitalize(), additional_gain)
+		desc = "!!\t%s earns %d additional experience due to being educated.\n"%(self.host.name.capitalize(), additional_gain)
 		return desc, value
 
 class TeamTactics(LevelPerk):
@@ -140,13 +140,13 @@ class TeamTactics(LevelPerk):
 			modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"max_energy": other_players_num}, "duration": -1 })
 			mod_added = self.host.add_modifier(modifier)
 			if mod_added:
-				return "%s gains %s max energy by using team tactics.\n"%(self.host.name.capitalize(), other_players_num)
+				return "!!\t%s gains %s max energy by using team tactics.\n"%(self.host.name.capitalize(), other_players_num)
 		return ""
 
 
 class Flow(LevelPerk):
 	name = "Flow"
-	description = "Get 35 percent chance to recover 1 energy on kill."
+	description = "Get 35 percent chance to recover 2 energy on kill."
 	priority = 0
 	requirements = {
 		"level": 1,
@@ -159,7 +159,7 @@ class Flow(LevelPerk):
 	def on_kill(self, ability_info):
 		if ability_info.inhibitor == self.host and random.randint(0,100) < 35:
 			ability_info.inhibitor.energy += 2
-			ability_info.description += "%s recovers 2 energy!"%(self.host.name.capitalize())
+			ability_info.description += "!!\t%s recovers 2 energy!"%(self.host.name.capitalize())
 		return ability_info
 
 class Deft(LevelPerk):
@@ -178,7 +178,7 @@ class Deft(LevelPerk):
 		if ability_info.use_info["energy_change"] < -1:
 			if random.randint(0, 100) < 30:
 				ability_info.inhibitor.energy += 1
-				ability_info.description += "%s recovers 1 energy!"%(ability_info.inhibitor.name.capitalize())
+				ability_info.description += "!!\t%s recovers 1 energy!\n"%(ability_info.inhibitor.name.capitalize())
 				return ability_info
 		return ability_info
 
@@ -200,10 +200,9 @@ class Sweeper(LevelPerk):
 			combat_event = self.host.event
 			if len([c for c in combat_event.turn_qeue if c.__class__.__name__ != "Player" and not c.dead])>=4:
 				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":-1, "stats_change":{"accuracy": "4d4"}})
-				msg = "%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.capitalize())
 				mod_added = self.host.add_modifier(modifier)
 				if mod_added:
-					msg = "%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.capitalize())
+					msg = "!!\t%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.capitalize())
 		return msg
 
 level_perks_listing = {
