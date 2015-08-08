@@ -41,18 +41,19 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 
 		real_stats = stats.copy()
 		for key in list(stats.keys()):
-			if isinstance(stats[key], list) and len(stats[key])>0: #is a dice range
-				if isinstance( stats[key][0], str):
-					real_stats[key] = get_dice_in_range(stats[key], coolity)
-				if isinstance( stats[key][0], int):
-					real_stats[key] = get_number_in_range(stats[key], coolity)
-			if isinstance(stats[key], dict):
-				for stat in stats[key]:
-					if isinstance(stats[key][stat], list) and len(stats[key][stat])>0:
-						if isinstance( stats[key][stat][0], str):
-							real_stats[key][stat] = get_dice_in_range(stats[key][stat], coolity)
-						if isinstance( stats[key][stat][0], int):
-							real_stats[key][stat] = get_number_in_range(stats[key][stat], coolity)
+			if not key in ["tags_granted", "modifiers_granted", "abilities_granted"]:
+				if isinstance(stats[key], list) and len(stats[key])>0: #is a dice range
+					if isinstance( stats[key][0], str):
+						real_stats[key] = get_dice_in_range(stats[key], coolity)
+					if isinstance( stats[key][0], int):
+						real_stats[key] = get_number_in_range(stats[key], coolity)
+				if isinstance(stats[key], dict):
+					for stat in stats[key]:
+						if isinstance(stats[key][stat], list) and len(stats[key][stat])>0:
+							if isinstance( stats[key][stat][0], str):
+								real_stats[key][stat] = get_dice_in_range(stats[key][stat], coolity)
+							if isinstance( stats[key][stat][0], int):
+								real_stats[key][stat] = get_number_in_range(stats[key][stat], coolity)
 		return real_stats
 
 
@@ -246,7 +247,7 @@ class Bleeding(Modifier): #simply adds defence, hinders evasion
 		if not self.host.dead:
 			dmg = diceroll("1d3")
 			msg += "%s looses %d hp due to bleeding.\n"%(self.host.short_desc.capitalize(), dmg)
-			msg += self.host.damage(dmg, self.granted_by)
+			msg += self.host.damage(dmg, self.granted_by, True)
 		msg += super(Bleeding, self).on_round()
 		return msg
 
@@ -266,7 +267,7 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 	stats_change =  {}
 	abilities_granted = []
 	tags_granted = ["on fire"]
-	def __init__(self, granted_by, host, duration=6,stats = {}, name="burning", description="Loose 1d9 hp every turn for 2-4 rounds and suffer an intelligence penalty."):
+	def __init__(self, granted_by, host, stats = {}, name="burning", description="Loose 1d9 hp every turn for 2-4 rounds and suffer an intelligence penalty."):
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
 		self.stats["duration"] = clamp( 10 - host.characteristics["vitality"]*2, 2, 4)
 
@@ -275,7 +276,7 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 		if not self.host.dead and not "fire resistant" in self.host.tags:
 			dmg = diceroll("1d9")
 			msg += "%s looses %d hp due to burning!\n"%(self.host.short_desc.capitalize(), dmg)
-			msg += self.host.damage(dmg, self.granted_by)
+			msg += self.host.damage(dmg, self.granted_by, True)
 		msg += super(Burning, self).on_round()
 		return msg
 
@@ -294,17 +295,19 @@ class Burning(Modifier): #simply adds defence, hinders evasion
 
 class Shielded(Modifier): #simply adds defence, hinders evasion
 	priority = 0
-	duration = 2
+	duration = 1
 	characteristics_change = {}
-	stats_change =  {"defence":"3d6"}
+	stats_change =  {}
 	abilities_granted = []
 	tags_granted = []
 	def __init__(self, granted_by, host, stats = {}, name="shielded", description="grants defence") :
-		Modifier.__init__(self, granted_by, host,  stats, name, description)
+		Modifier.__init__(self, granted_by, host, stats, name, description)
+		self.stats["stats_change"]["defence"] = self.granted_by.stats["defence"]
+		self.stats["stats_change"]["evasion"] = self.granted_by.stats["evasion"]
 
 	def on_applied(self):
 		msg = super(Shielded, self).on_applied()
-		msg += "%s raises his shieldup and gains a %s defence for the next turn.\n"%(self.host.short_desc, self.stats_change["defence"])
+		msg += "%s raises his shieldup and gains a %s defence and %s evasion penalty for the next round.\n"%(self.host.short_desc, self.stats["stats_change"]["defence"], self.stats["stats_change"]["evasion"])
 		return msg
 
 	def on_lifted(self):
@@ -345,7 +348,36 @@ class Regeneration(Modifier): #simply adds defence, hinders evasion
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
 		return {"name":"regeneration", "stats":stats} 
 
+class Sickness(Modifier): #simply adds defence, hinders evasion
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host,  stats= {}, name="sickness", description="Sometimes takes away health.") :
+		Modifier.__init__(self, granted_by, host,  stats, name, description )
 
+	def on_round(self):
+		chance = diceroll(self.stats["sickness chance"])
+		msg = ""
+		if random.randint(0, 100) < chance:
+			loss = diceroll(self.stats["sickness amount"])
+
+			self.host.damage(loss, self, True)
+			msg += "%s looses %d hp due to %s.\n"%(self.host.short_desc.capitalize(), loss, self.granted_by.name)
+		msg += super(Regeneration, self).on_round()
+		return msg
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Regeneration
+		stats = {}
+		stats["sickness amount"] = ["4d6", "1d4"]
+		stats["sickness chance"] = ["4d6", "1d4"]
+
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"sickness", "stats":stats} 
 
 class FireAttack(Modifier):
 	priority = 0
@@ -354,7 +386,7 @@ class FireAttack(Modifier):
 	stats_change =  {}
 	abilities_granted = []
 	tags_granted = []
-	def __init__(self, granted_by, host, stats = {}, name="fire attack",  description="Has a chance to cause fire additional damage every attack by host."):
+	def __init__(self, granted_by, host, stats = {}, name="fire attack",  description="Has a chance to cause fire  damage every attack by host."):
 		Modifier.__init__(self, granted_by, host,  stats, name, description)
 
 	def on_hit(self, attack_info):
@@ -364,10 +396,9 @@ class FireAttack(Modifier):
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:
 				chance = diceroll( fire_chance )
 				if random.randint(0, 100) < chance:
-					dmg = diceroll( fire_damage )
-					attack_info.target.damage( dmg, self.host )
+					dmg = diceroll(fire_damage)
+					attack_info.target.damage(dmg, self.host, True)
 					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
-					attack_info.use_info["damage_dealt"] += dmg
 
 					chance_to_cause_burning = 1/2 * chance
 					if random.randint(0, 100) < chance_to_cause_burning:
@@ -384,6 +415,160 @@ class FireAttack(Modifier):
 
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
 		return {"name":"fire attack", "stats":stats} 
+
+class ElectricityAttack(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="electricity attack",  description="Has a chance to cause electrical damage every attack by host."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_hit(self, attack_info):
+		if attack_info.inhibitor == self.host:
+			electricity_chance = self.stats["electricity chance"]
+			electricity_damage = self.stats["electricity damage"]
+			if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "electricity resistant" in attack_info.target.tags:
+				chance = diceroll( electricity_chance )
+				if random.randint(0, 100) < chance:
+					dmg = diceroll( electricity_damage )
+					attack_info.target.damage(dmg, self.host, True)
+					attack_info.description += "%s causes %d electricity damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
+
+					chance_to_cause_pain = 1/2 * chance
+					if random.randint(0, 100) < chance_to_cause_pain:
+						modifier = get_modifier_by_name("pain", self.granted_by, attack_info.target)
+						attack_info.use_info["modifiers_applied"].append(modifier)
+		return attack_info
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Regeneration
+		stats = {}
+		stats["electricity damage"] = ["1d3", "2d6"]
+		stats["electricity chance"] = ["1d3", "2d6"]
+
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"electricity attack", "stats":stats} 
+
+
+
+class Energy(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="energy",  description="Sometimes gives additional energy."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_round(self):
+		chance = diceroll(self.stats["energy chance"])
+		amount = diceroll(self.stats["energy amount"])
+		msg = ""
+		if random.randint(0, 100) < chance:
+			self.host.energy += amount
+			msg += "%s provides %s with %d energy.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize(), amount)
+
+		msg += super(Energy, self).on_round()
+		return msg
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Energy
+		stats = {}
+		stats["energy chance"] = ["1d3", "4d6"]
+		stats["energy amount"] = ["1d1", "1d3"]
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"energy", "stats":stats} 
+
+class Weakness(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="weakness",  description="Sometimes drains energy of host."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+	def on_round(self):
+		chance = diceroll(self.stats["weakness chance"])
+		amount = diceroll(self.stats["weakness amount"])
+		msg = ""
+		if random.randint(0, 100) < chance:
+			self.host.energy += amount
+			msg += "%s drains %d energy from %s.\n"%(self.granted_by.name.capitalize(), amount, self.host.name.capitalize())
+
+		msg += super(Weakness, self).on_round()
+		return msg
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Weakness
+		stats = {}
+		stats["weakness chance"] = ["4d6", "1d3"]
+		stats["weakness amount"] = ["1d3", "1d1"]
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"weakness", "stats":stats} 
+
+class Wisdom(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="wisdom",  description="Sometimes gives additional experience."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_experience_gain(self, value):
+		chance = diceroll(self.stats["wisdom chance"])
+		desc = ""
+		if random.randint(0, 100) < chance:
+			additional_gain = int(value * diceroll(self.stats["wisdom amount"] )/100)
+			value = value + additional_gain
+			desc = "%s earns %d additional experience due to %s.\n"%(self.host.name.capitalize(), additional_gain, self.granted_by.name)
+		return desc, value
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Wisdom
+		stats = {}
+		stats["wisdom chance"] = ["1d3", "3d6"]
+		stats["wisdom amount"] = ["1d5", "1d15"] #percentage
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"wisdom", "stats":stats} 
+
+class Stupidity(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="stupidity",  description="Sometimes takes away experience."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_experience_gain(self, value):
+		chance = diceroll(self.stats["stupidity chance"])
+		desc = ""
+		if random.randint(0, 100) < chance:
+			exp_loss = int(value * diceroll(self.stats["stupidity amount"] )/100)
+			value = value - exp_loss
+			desc = "%s looses %d experience due to %s.\n"%(self.host.name.capitalize(), exp_loss, self.granted_by.name)
+		return desc, value
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Stupidity
+		stats = {}
+		stats["stupidity chance"] = ["3d6", "1d3"]
+		stats["stupidity amount"] = ["1d15", "1d5"] #percentage
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"stupidity", "stats":stats} 
 
 class Suffering(Modifier):
 	priority = 0
@@ -449,22 +634,167 @@ class Judgement(Modifier):
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
 		return {"name":"judgement", "stats":stats} 
 
+class Greed(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="greed",  description="Sometimes destroys dropped loot."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	
+	def on_loot(self, item_gained):
+		msg = ""
+		chance = diceroll(self.stats["greed chance"])
+		if random.randint(0, 100) < chance:
+			self.host.inventory.remove(item_gained)
+			msg = "%s destroys %s.\n"%(self.granted_by.name.capitalize, item_gained.name)
+		return msg
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Greed
+		stats = {}
+		stats["greed chance"] = ["8d6", "1d6"]
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"greed", "stats":stats} 
+
+# class Demons(Modifier):
+# 	priority = 0
+# 	duration = -1
+# 	characteristics_change = {}
+# 	stats_change =  {}
+# 	abilities_granted = []
+# 	tags_granted = []
+# 	def __init__(self, granted_by, host, stats = {}, name="demons",  description="Causes demons to invade the world at unpredictable times."):
+# 		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+# 	def on_round(self):
+# 		msg = ""
+# 		chance = diceroll(self.stats["demons chance"])
+# 		demons_amount = diceroll(self.stats["demons amount"])
+# 		possible_demons = ["lesser demon"]
+# 		if random.randint(0, 100) < chance:
+# 			demon = enemy_list[random.choice(possible_demons)]
+# 			demons = []
+# 			for x in range(1, demons_amount):
+# 				lvl = random.randint(1, clamp(int(self.host.lvl/3), 1, 20))
+# 				demons.append(demon(lvl))
+# 			msg += "%d demons invade the world.\n"%(demons_amount)
+# 		self.host.event.enemies = self.host.event.enemies + demons
+# 		self.host.event.update_turn_qeue()
+# 		msg += super(Demons, self).on_round()
+# 		return msg
+
+	# @staticmethod
+	# def get_randomized_params_for_coolity(coolity):
+	# 	self_class = Demons
+	# 	stats = {}
+	# 	stats["demons chance"] = ["1d6", "1d2"]
+	# 	stats["demons amount"] = ["1d3", "1d1"]
+	# 	stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+	# 	return {"name":"demons", "stats":stats} 
+
+
+class HurtUndead(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="hurt undead",  description="More damage against undead."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_hit(self, attack_info):
+		if attack_info.inhibitor == self.host:
+			additional_damage =int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["additional damage to undead"])/100)
+			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "undead" in attack_info.target.tags:
+				attack_info.target.damage(additional_damage, self.host, True)
+				attack_info.description += "%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
+		return attack_info
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = HurtUndead
+		stats = {}
+		stats["additional damage to undead"] = ["1d5", "10d5"]
+
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"hurt undead", "stats":stats} 
+
+class HurtDemons(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="hurt demons",  description="More damage against demons."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_hit(self, attack_info):
+		if attack_info.inhibitor == self.host:
+			additional_damage = int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["additional damage to demons"])/100)
+			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "demon" in attack_info.target.tags:
+				attack_info.target.damage(additional_damage, self.host, True)
+				attack_info.description += "%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
+		return attack_info
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = HurtDemons
+		stats = {}
+		stats["additional damage to demons"] = ["1d5", "10d5"]
+
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"hurt demons", "stats":stats} 
+
+class Vampirism(Modifier):
+	priority = 0
+	duration = -1
+	characteristics_change = {}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="vampirism",  description="Returns some of the damage dealt as health."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description)
+
+	def on_hit(self, attack_info):
+		if attack_info.inhibitor == self.host and self.host.health < self.host.stats["max_health"]:
+			regen = int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["vampirism amount"])/100)
+			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "living" in attack_info.target.tags:
+				attack_info.description += "%s regenerates %d healh because of %s.\n"%(self.host.name.capitalize(), regen, self.granted_by.name)
+				self.host.health += regen
+		return attack_info
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		self_class = Vampirism
+		stats = {}
+		stats["vampirism amount"] = ["1d5", "10d5"]
+
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		return {"name":"vampirism", "stats":stats} 
+
 def get_modifier_by_name(modifier_name, source, target, stats={}):
 	prototype = modifier_listing[modifier_name]
 
 	if not "duration" in stats.keys():
 		stats["duration"] = prototype.duration
 	if not "characteristics_change" in stats.keys():
-		stats["characteristics_change"] = prototype.characteristics_change
+		stats["characteristics_change"] = prototype.characteristics_change.copy()
 	if not "stats_change" in stats.keys():
-		stats["stats_change"] = prototype.stats_change
+		stats["stats_change"] = prototype.stats_change.copy()
 	if not "abilities_granted" in stats.keys():
-		stats["abilities_granted"] = prototype.abilities_granted
+		stats["abilities_granted"] = prototype.abilities_granted.copy()
 	if not "tags_granted" in stats.keys():
-		stats["tags_granted"] = prototype.tags_granted
+		stats["tags_granted"] = prototype.tags_granted.copy()
 	if not "priority" in stats.keys():
 		stats["priority"] = prototype.priority
-
+	
 	mod = prototype(source, target, stats)
 	return mod
 
@@ -483,22 +813,15 @@ def get_random_modifiers_for_coolity(coolity):
 
 		max_modifiers = 3
 		if drop_type <= bad_limit:
-			amount_of_modifiers = get_number_in_range([max_modifiers, 1], coolity)
-
 			modifiers_type = "bad"
 			#got bad
-
-		elif bad_limit < drop_type <= average_limit:
-			amount_of_modifiers = get_number_in_range([1, max_modifiers], coolity)
-			#got good + bad
-
 		elif drop_type > average_limit:
-			amount_of_modifiers = get_number_in_range([1, max_modifiers], coolity)
 			modifiers_type = "good"
 			#got only good
 
+		amount_of_modifiers = get_number_in_range([1, max_modifiers], 0)
 		if modifiers_type == "good":
-				modifier_pool = good_item_modifiers
+			modifier_pool = good_item_modifiers
 		elif modifiers_type == "bad":
 			modifier_pool = bad_item_modifiers
 		else:
@@ -528,8 +851,20 @@ modifier_listing = {
 	"suffering": Suffering,
 	"judgement": Judgement,
 	"fire attack" : FireAttack,
+	"electricity attack": ElectricityAttack,
 	"regeneration": Regeneration,
+	"sickness":Sickness,
+	# "demons": Demons,
+	"greed": Greed,
+	"wisdom": Wisdom,
+	"stupidity": Stupidity,
+	"energy": Energy,
+	"weakness": Weakness,
+	"hurt undead": HurtUndead,
+	"hurt demons": HurtDemons,
+	"vampirism": Vampirism,
+
 }
 
-good_item_modifiers = ["fire attack", "regeneration"]
-bad_item_modifiers = ["judgement", "suffering"]
+good_item_modifiers = ["fire attack", "electricity attack", "regeneration", "wisdom", "energy", "hurt undead", "hurt demons", "vampirism"]
+bad_item_modifiers = ["judgement", "suffering", "greed", "stupidity", "weakness"]

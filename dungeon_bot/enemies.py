@@ -437,7 +437,7 @@ class LesserDemon(Enemy):
 		return attack_infos
 
 beta_demon_characteristics = {
-	"strength": 6, #how hard you hit
+	"strength": 7, #how hard you hit
 	"vitality": 5, #how much hp you have
 	"dexterity": 4, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
@@ -526,8 +526,8 @@ class Thug(Enemy):
 		return attack_infos
 
 peasant_characteristics = {
-	"strength": 3, #how hard you hit
-	"vitality": 3, #how much hp you have
+	"strength": 5, #how hard you hit
+	"vitality": 4, #how much hp you have
 	"dexterity": 4, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
 }
@@ -575,7 +575,7 @@ class Peasant(Enemy):
 		return attack_infos
 
 thief_characteristics = {
-	"strength": 3, #how hard you hit
+	"strength": 6, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 8, #how fast you act, your position in turn qeue
 	"intelligence": 8, #how likely you are to strike a critical

@@ -16,6 +16,8 @@ Tags:
 	quick - Harder to hit and dodge
 	slow - Easier to hit and dodge
 	physical ressitant - Resistant to physical damage
+	fire resistant - self explanatory
+	electricity resistant - self explanatory
 	magic ressitant - Resistant to magic damage
 
 	undead - Undead creatures
@@ -43,7 +45,7 @@ class AbilityUseInfo(object):
 			self.description += self.inhibitor.on_energy_lost(use_info["energy_change"])
 
 		if self.ability_type == "aoe_attack":
-			self = self.inhibitor.on_attack(self)
+			#self = self.inhibitor.on_attack(self)
 			#print(self.targets)
 			for i in range(len(self.targets)):
 				target = self.targets[i]
@@ -70,13 +72,13 @@ class AbilityUseInfo(object):
 				self = self.target.on_got_hit(self)
 
 				for modifier in self.prototype_class.get_modifiers_applied(self):
-						use_info["modifiers_applied"].append(modifier)
+					use_info["modifiers_applied"].append(modifier)
 
 		if self.ability_type == "buff":
 			self = self.inhibitor.on_buff(self)
 			self = self.inhibitor.on_buffed(self)
 
-		if "did_kill" in use_info.keys() and not use_info["did_kill"]:
+		if "modifiers_applied" in self.use_info.keys():
 			for modifier in use_info["modifiers_applied"]:
 				self.description += modifier.apply() 
 
@@ -204,7 +206,6 @@ class Ability(object):
 			#use_info.use_info["damage_dealt"] = use_info.prototype_class.get_damage(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
 				#use_info.description += use_info.prototype_class.get_hit_description(use_info)
 		else:
-			print("A buff")
 			modifiers = use_info.prototype_class.get_buff_modifiers(use_info)
 			use_info.use_info["modifiers_applied"] += modifiers
 			use_info.description += use_info.prototype_class.get_buff_description(use_info)
@@ -240,7 +241,7 @@ class Smash(Ability):
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength - defence - is_armored * defence * 2 - is_heavy_armored * defence * 3
+	dmg = weapon_dmg * strength - is_armored * defence * 2 - is_heavy_armored * defence * 3
 
 	avg chance to hit = 45
 
@@ -293,7 +294,7 @@ class Smash(Ability):
 		defence = target.defence
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
-		dmg = clamp( weapon_dmg * strength - defence , user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * strength , user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -327,7 +328,7 @@ class Stab(Ability):
 
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength) - defence * 1.5 - is_armored * defence * 3 - is_heavy_armored * defence * 4
+	dmg = weapon_dmg * strength + not_armored * 0.3 *(weapon_dmg * strength)  * 1.5 - is_armored * defence * 3 - is_heavy_armored * defence * 4
 
 	avg chance to hit = 55
 
@@ -361,7 +362,7 @@ class Stab(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.05 *(weapon_dmg * strength) - defence, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * strength + not_armored * 0.05 *(weapon_dmg * strength) , user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -446,7 +447,7 @@ class QuickStab(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * (strength/2) - defence *1.4, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * (strength/2)  *1.4, user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -491,7 +492,7 @@ class Cut(Ability):
 
 	chance to hit = accuracy * dexterity  - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength - defence * 1.5 - is_armored * defence * 2 - is_heavy_armored * defence * 3
+	dmg = weapon_dmg * strength * 1.5 - is_armored * defence * 2 - is_heavy_armored * defence * 3
 
 	avg chance to hit = 55
 
@@ -525,7 +526,7 @@ class Cut(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.7
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength + not_armored * 0.05 *(weapon_dmg * strength) - defence *1.15, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * strength + not_armored * 0.05 *(weapon_dmg * strength)  *1.15, user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -570,7 +571,7 @@ class QuickCut(Ability):
 
 	chance to hit = accuracy * dexterity  - target_evasion - is_small * target_evasion * 2 - is_quick * target_evasion * 2 + is_big * target_evasion * 2 + is_slow * target_evasion * 2
 
-	dmg = weapon_dmg * strength - defence - is_armored * defence * 3 - is_heavy_armored * defence * 4
+	dmg = weapon_dmg * strength - is_armored * defence * 3 - is_heavy_armored * defence * 4
 
 	avg chance to hit = 55
 
@@ -606,7 +607,7 @@ class QuickCut(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.9
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * (strength/2)  - defence*1.4, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * (strength/2), user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -667,7 +668,7 @@ class ShieldUp(Ability):
 
 	@staticmethod
 	def get_buff_description(use_info):
-		return "%s put his shieldup and gained a defence bonus.\n"%(use_info.inhibitor.name.capitalize())
+		return ""
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
@@ -711,7 +712,7 @@ class Sweep(Ability):
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.7
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
-		dmg = clamp( weapon_dmg * strength - defence, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * strength, user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -757,7 +758,7 @@ class RodentBite(Ability):
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
 
-	dmg = base_damage * strength - defence - is_armored * defence * 3 - is_heavy_armored * defence * 5
+	dmg = base_damage * strength  - is_armored * defence * 3 - is_heavy_armored * defence * 5
 
 	avg chance to hit = 55
 
@@ -775,7 +776,7 @@ class RodentBite(Ability):
 		is_armored = int("armor" in target.tags) * 0.5
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.8
 
-		dmg = clamp( weapon_damage* strength - defence, user.characteristics["strength"], 99999999 )
+		dmg = clamp( weapon_damage* strength , user.characteristics["strength"], 99999999 )
 		return dmg
 
 	@staticmethod
@@ -849,7 +850,7 @@ class AnimalBite(Ability):
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
 
-		dmg = clamp( weapon_damage*strength - defence, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_damage*strength , user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -909,7 +910,7 @@ class AnimalClaw(Ability):
 	requirements = None
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
-	dmg = base_damage * strength - defence - is_armored * defence * 4 - is_heavy_armored * defence * 5
+	dmg = base_damage * strength  - is_armored * defence * 4 - is_heavy_armored * defence * 5
 	avg chance to hit = 55
 	avg damage = 5
 	chance to cause "bleeding" = ?
@@ -922,7 +923,7 @@ class AnimalClaw(Ability):
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.5
 
-		dmg = clamp( weapon_damage* strength - defence, user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_damage* strength , user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod

@@ -2,7 +2,6 @@
 import json
 from .items import *
 from .util import *
-from .modifiers import *
 from .abilities import *
 from .level_perks import *
 from . import settings
@@ -218,20 +217,27 @@ class Creature(object):
 	def level(self, value):
 		self._level = value
 
-	def damage(self, value, inhibitor):
+	def damage(self, value, inhibitor, bypass=False):
 		msg = ""
+		if not bypass:
+			
+			defence = self.defence 
+			
+			dmg = int(value * clamp( (value - defence)/value, 0.1, 1 ))
+
+			msg += "%s negates %d damage because of his defence.\n"%(self.name.capitalize(), value - dmg)
+		else:
+			dmg = value
 
 		if isinstance(self, Enemy) and isinstance(inhibitor, Player):
-			exp_gained = self.exp_value * clamp(value/self.stats["max_health"], 0, 1)
-			msg, exp_gained = inhibitor.on_experience_gain(exp_gained) 
+			exp_gained = self.exp_value * clamp(dmg/self.stats["max_health"], 0, 1)
+			mes, exp_gained = inhibitor.on_experience_gain(exp_gained) 
+			msg += mes
 			msg += inhibitor.add_experience(exp_gained)
 
-		
-
 		if not self.dead:
-
-			self.health = self.health - value
-			msg += self.on_health_lost(value)
+			self.health = self.health - dmg
+			msg += self.on_health_lost(dmg)
 
 		killed = self.kill_if_nececary(inhibitor)
 		return msg 
@@ -590,13 +596,12 @@ class Creature(object):
 					attack_info = at_info
 		return attack_info
 
-	def on_got_hit(self, attack_info): #attack in process of landing at self
+	def on_got_hit(self, attack_info, bypass = False): #attack in process of landing at self
 		msg = ""
-		if attack_info.use_info["damage_dealt"] > 0:
-			attack_info.description += self.damage(attack_info.use_info["damage_dealt"], attack_info.inhibitor)
+		
 
 		for modifier in self.modifiers:
-			at_info = modifier.on_hit(attack_info)
+			at_info = modifier.on_got_hit(attack_info)
 			if at_info:
 				attack_info = at_info
 
@@ -605,6 +610,9 @@ class Creature(object):
 				at_info = perk.on_got_hit(attack_info)
 				if at_info:
 					attack_info = at_info
+
+		if attack_info.use_info["damage_dealt"] > 0:
+			attack_info.description += self.damage(attack_info.use_info["damage_dealt"], attack_info.inhibitor)
 
 		if self.dead:
 			attack_info.use_info["did_kill"] = True
@@ -625,9 +633,6 @@ class Creature(object):
 				at_info = perk.on_hit(attack_info)
 				if at_info:
 					attack_info = at_info
-
-
-
 		return attack_info
 
 	def on_attack(self, attack_info): #immediately before attack is launched at target
@@ -719,6 +724,21 @@ class Creature(object):
 					ability_info = at_info
 
 		return ability_info
+
+	def on_loot(self, item):
+		msg = ""
+		for modifier in self.modifiers:
+			effect = modifier.on_loot(item)
+			if effect:
+				msg += effect
+
+		if hasattr(self, "level_perks"):
+			for perk in self.level_perks:
+				effect = perk.on_buff(item)
+				if effect:
+					msg += effect
+
+		return msg
 
 
 	""" /EVENTS """
@@ -821,7 +841,7 @@ class Creature(object):
 					self.abilities.append(prototype(ability, perk))
 
 		for modifier in self.modifiers:
-			for ability in modifier.stats["tags_granted"]:
+			for ability in modifier.stats["abilities_granted"]:
 				prototype = abilities[ability]
 				self.abilities.append(prototype(ability, modifier))
 
@@ -1043,7 +1063,8 @@ class Player(Creature):
 					if isinstance(attack_info.inhibitor, Player):
 						loot_goes_to = random.choice(attack_info.inhibitor.event.players)
 						if loot_goes_to.add_to_inventory(item):
-							attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.name)
+							attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.full_name.capitalize(), item.name)
+							attack_info.description += loot_goes_to.on_loot(item)
 						else:
 							attack_info.description += "%s got loot: %s, but didn't have enough space in inventory.\n"%(loot_goes_to.name.capitalize(), item.name)
 					attack_info.use_info["loot_dropped"].append(item)

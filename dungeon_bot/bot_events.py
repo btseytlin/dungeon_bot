@@ -1034,7 +1034,7 @@ class CombatEvent(BotEvent):
 
 		combat_logger.info("Started combat %s vs %s"%(", ".join([str(p.name) + "("+str(p.userid)+")" for p in players]), ", ".join([e.name for e in enemies])))
 
-		self.greeting_message = 'Combat starts!\n %s vs %s.\n'%(", ".join([str(p.name) for p in players]), ", ".join([e.name for e in enemies]))
+		self.greeting_message = 'Combat starts!\n'
 
 		
 
@@ -1044,8 +1044,7 @@ class CombatEvent(BotEvent):
 		#	self.greeting_message += self.ai_turn()
 
 	def status(self, user=None):
-		msg = 'You are fighting %s.\n'%(", ".join([enemy.name for enemy in self.enemies]))
-		msg += 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
+		msg = 'The turn qeue:%s\n'%(self.get_printable_turn_qeue())
 		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'
 		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[str(user.id)].energy, self.users_to_players[str(user.id)].health)
 		msg += "It's %s's turn.\n"%(self.turn_qeue[self.turn].name.capitalize())

@@ -3,7 +3,7 @@ from .util import *
 from .modifiers import *
 class Item(object):
 	def __init__(self, name, description, item_type,  stats = {},  abilities_granted = [], modifiers_granted = [], requirements = None, tags_granted = []):
-		self.name = name
+		self._name = name
 		self.description = description
 		self.requirements = requirements.copy()
 		self.item_type = item_type
@@ -15,8 +15,15 @@ class Item(object):
 
 	@property
 	def short_desc(self):
-	    return self.name
-	
+	    return self.full_name
+
+	@property
+	def name(self):
+	    return self._name + "".join(["*" for modifier in self.modifiers_granted])
+
+	@property
+	def full_name(self):
+	    return self._name + (" of " if len(self.modifiers_granted)>0 else "")+ " and ".join([modifier["name"] for modifier in self.modifiers_granted])
 
 	def use(self, user, target ):
 		return "Can't use %s."%(self.name)
@@ -44,12 +51,12 @@ class Item(object):
 				stats.append("|\t"+stat+":" + ("+" if modifier["stats"]["stats_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"]))
 
 		desc = "\n".join([
-				"%s, %s."%(self.name.capitalize(), self.item_type),
+				"%s, %s."%(self.full_name.capitalize(), self.item_type),
 				"%s"%(self.description or ""),
 				"Requirements:\n%s"%(", ".join(requirements)),
 				"Stats:\n%s"%("\n".join(stats)),
 				"Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted)),
-				"Modifiers granted:\n|\t%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
+				#"Modifiers granted:\n|\t%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
 				"Tags granted:\n|\t%s"%(", ".join(self.tags_granted)),
 			])
 		return desc
@@ -98,7 +105,8 @@ class PrimaryWeapon(Item):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 	@property
 	def short_desc(self):
-		return self.name+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"]) + ("!" if len(self.modifiers_granted)>0 else "")
+		sh_dsc = super(PrimaryWeapon, self).short_desc 
+		return sh_dsc+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"])
 
 
 	@staticmethod
@@ -112,11 +120,11 @@ class SecondaryWeapon(Item):
 
 	@property
 	def short_desc(self):
+		sh_dsc = super(SecondaryWeapon, self).short_desc 
 		if "accuracy" in list(self.stats.keys()):
-			return self.name+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"]) + ("!" if len(self.modifiers_granted)>0 else "")
+			return sh_dsc+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"])
 		else:
-			return self.name+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"]) + ("!" if len(self.modifiers_granted)>0 else "")
-		
+			return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
 
 	@staticmethod
 	def de_json(data):
@@ -129,7 +137,8 @@ class Armor(Item):
 
 	@property
 	def short_desc(self):
-		return self.name+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"]) + ("!" if len(self.modifiers_granted)>0 else "")
+		sh_dsc = super(Armor, self).short_desc 
+		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
 
 	@staticmethod
 	def de_json(data):
@@ -141,7 +150,8 @@ class Talisman(Item):
 
 	@property
 	def short_desc(self):
-		return self.name+("!" if len(self.modifiers_granted)>0 else "")
+		sh_dsc = super(Talisman, self).short_desc
+		return sh_dsc
 
 	@staticmethod
 	def de_json(data):
@@ -153,7 +163,8 @@ class Ring(Item):
 
 	@property
 	def short_desc(self):
-		return self.name+("!" if len(self.modifiers_granted)>0 else "")
+		sh_dsc = super(Ring, self).short_desc
+		return sh_dsc
 
 	@staticmethod
 	def de_json(data):
@@ -166,7 +177,8 @@ class Headwear(Item):
 
 	@property
 	def short_desc(self):
-		return self.name+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"]) + ("!" if len(self.modifiers_granted)>0 else "")
+		sh_dsc = super(Headwear, self).short_desc
+		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
 
 	@staticmethod
 	def de_json(data):
@@ -204,8 +216,6 @@ def get_randomized_item(prototype, coolity, stats, item_args):
 			item_args["abilities_granted"] = []
 		if not "tags_granted" in item_args.keys():
 			item_args["tags_granted"] = []
-		if len(item_args["modifiers_granted"])> 0:
-			item_args["name"] = item_args["name"] + " of "+ " and ".join([obj["name"] for obj in item_args["modifiers_granted"]])
 
 		#print("And in the end", item_args["modifiers_granted"])
 		return prototype(item_args["name"], item_args["description"], item_args["item_type"], real_stats, item_args["abilities_granted"], item_args["modifiers_granted"], item_args["requirements"], item_args["tags_granted"])
@@ -267,14 +277,14 @@ item_listing = {
 	},
 	"secondary weapon":{
 		"dagger": {"stats": { "damage" : ["1d3","1d6"], "accuracy" : ["-1d6","2d6"]} ,"random_effects": True, "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quick stab", "quick cut"]}},
-		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-2d6","-1d3"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
+		"shield": {"stats": {"defence" : ["1d3","5d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
 
 		# enemy equipment below
 		"animal_claws": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
-		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defence" : ["2d6","5d6"],"random_effects": True, "evasion" : ["-4d6","-1d3"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defence" : ["3d6","7d6"], "evasion" : ["-7d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
+		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defence" : ["2d6","5d6"],"random_effects": True, "evasion" : ["-5d6","-1d6"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
+		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defence" : ["3d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
 	},
 	"talisman":{
 		"amulet of defence": {"stats": {"defence" : ["1d6","2d6"]} , "args":{"name":"amulet of defence", "description":"The most boring talisman, it just protects you."}},

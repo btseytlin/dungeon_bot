@@ -115,24 +115,26 @@ def run_tests():
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "club"
+	item = "shield"
 	item = get_item_by_name(item, 1)
 
 	print(item.examine_self())
-	item.stats["accuracy"] = "100d10"
-	item.stats["damage"] = "7d1"
+	#item.stats["accuracy"] = "100d10"
+	#item.stats["damage"] = "7d1"
 	ply.inventory.append(item)
 	ply.equip(item)
 	ply.level_perks.append(Sweeper(ply))
-	ply.base_characteristics["strength"] = 4
+	ply.base_characteristics["strength"] = 5
 
+	
 	dummy = Dummy(1000)
-	dummy.tags = []
+
 	#ply.refresh_derived()
-	# item = "dagger"
-	# item = get_item_by_name(item)
-	# ply.inventory.append(item)
-	# ply.equip(item)
+	item = "chainmail"
+	item = get_item_by_name(item)
+	dummy.tags = []
+	dummy.add_to_inventory(item)
+	dummy.equip(item)
 
 	enemies = [dummy, Peasant()]
 	controlled_combat_event([ply], enemies)

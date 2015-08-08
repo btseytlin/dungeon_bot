@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-dungeon_room_amounts= [1, 6]
+dungeon_room_amounts= [3, 6]
 
 loot_probability_multiplier = 2
 
