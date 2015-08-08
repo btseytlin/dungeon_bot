@@ -10,7 +10,7 @@ class Dungeon(object):
 		self.name = name
 		self.enemy_types = enemy_types
 		self.description = description
-		self.rooms = rooms		
+		self.rooms = rooms
 		self.players = players
 		self.current_room = current_room
 
@@ -18,7 +18,7 @@ class Dungeon(object):
 			self.difficulty = sum([p.level for p in players])/len(self.players)
 		else:
 			self.difficulty = difficulty
-			
+
 		print("Dungeon difficulty = %d"%(self.difficulty))
 
 	@staticmethod
@@ -26,7 +26,7 @@ class Dungeon(object):
 		dungeon_name = random.choice(list(dungeons.keys()))
 		dungeon_description = dungeons[dungeon_name]["description"]
 		dungeon_enemy_types = dungeons[dungeon_name]["enemy_types"]
-		dungeon_players = players 
+		dungeon_players = players
 		dungeon = Dungeon(dungeon_name, dungeon_description, dungeon_players, dungeon_enemy_types)
 		dungeon.generate_rooms(random.randint(settings.dungeon_room_amounts[0], settings.dungeon_room_amounts[1]))
 		return dungeon
@@ -55,19 +55,23 @@ class Room(object):
 
 dungeons = {
 	"Crypt of undead lords" : {
-		"description": "It's said the crypt was built to contain a royal family turned undead.", 
+		"description": "It's said the crypt was built to contain a royal family turned undead.",
 		"enemy_types":["common", "undead"]
 	},
 	"Underground forest" : {
-		"description": "A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.", 
+		"description": "A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.",
 		"enemy_types":["common", "animal"]
 	},
 	"Tunnel of dimensions" : {
-		"description": "A series of wormholes between worlds. The horrors that don't belong to any world infest it.", 
+		"description": "A series of wormholes between worlds. The horrors that don't belong to any world infest it.",
 		"enemy_types":["common", "undead", "demon"]
 	},
 	"Bandit den" : {
-		"description": "All kinds of scum find shelter in these caves.", 
+		"description": "All kinds of scum find shelter in these caves.",
 		"enemy_types":["common", "human"]
+	},
+	"Ogre cave" : {
+		"description": "A place where humans feel like ants.",
+		"enemy_types":["common", "ogre"]
 	},
 }

@@ -35,7 +35,7 @@ class Creature(object):
 
 		self.modifiers = modifiers.copy()
 		self.base_characteristics = characteristics.copy()
-		
+
 		self.base_tags = tags.copy()
 		self.base_abilities = abilities
 
@@ -45,7 +45,7 @@ class Creature(object):
 		self.refresh_derived()
 		self.dead = False
 
-		
+
 
 	def get_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
@@ -76,7 +76,7 @@ class Creature(object):
 		else:
 			msg += "(dead)"
 		return msg
-	
+
 	@property
 	def health(self):
 		return self.stats["health"]
@@ -220,9 +220,9 @@ class Creature(object):
 	def damage(self, value, inhibitor, bypass=False):
 		msg = ""
 		if not bypass:
-			
-			defence = self.defence 
-			
+
+			defence = self.defence
+
 			dmg = int(value * clamp( (value - defence)/value, 0.1, 1 ))
 
 			msg += "%s negates %d damage because of his defence.\n"%(self.name.capitalize(), value - dmg)
@@ -231,7 +231,7 @@ class Creature(object):
 
 		if isinstance(self, Enemy) and isinstance(inhibitor, Player):
 			exp_gained = self.exp_value * clamp(dmg/self.stats["max_health"], 0, 1)
-			mes, exp_gained = inhibitor.on_experience_gain(exp_gained) 
+			mes, exp_gained = inhibitor.on_experience_gain(exp_gained)
 			msg += mes
 			msg += inhibitor.add_experience(exp_gained)
 
@@ -240,7 +240,7 @@ class Creature(object):
 			msg += self.on_health_lost(dmg)
 
 		killed = self.kill_if_nececary(inhibitor)
-		return msg 
+		return msg
 
 	def add_to_inventory(self, item):
 		if len(self.inventory) < settings.inventory_size:
@@ -341,7 +341,7 @@ class Creature(object):
 				effect = perk.on_combat_start()
 				if effect:
 					msg += effect
-		
+
 		for modifier in self.modifiers:
 			effect = modifier.on_combat_start()
 			if effect:
@@ -501,7 +501,7 @@ class Creature(object):
 				effect = perk.on_consumable_used(item)
 				if effect:
 					msg = effect
-				
+
 		return msg
 
 
@@ -598,7 +598,7 @@ class Creature(object):
 
 	def on_got_hit(self, attack_info, bypass = False): #attack in process of landing at self
 		msg = ""
-		
+
 
 		for modifier in self.modifiers:
 			at_info = modifier.on_got_hit(attack_info)
@@ -662,7 +662,7 @@ class Creature(object):
 				at_info = perk.on_kill(attack_info)
 				if at_info:
 					attack_info = at_info
-		
+
 		return attack_info
 
 	def on_death(self, attack_info):
@@ -862,13 +862,13 @@ class Creature(object):
 		for modifier in self.modifiers:
 			for characteristic in list(modifier.stats["characteristics_change"].keys()):
 					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] +modifier.stats["characteristics_change"][characteristic], 1, 20)
-		
+
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "characteristics_change" in list(self.equipment[item].stats.keys()):
 				for characteristic in list(self.equipment[item].stats["characteristics_change"].keys()):
 					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] + self.equipment[item].stats["characteristics_change"][characteristic], 1, 20)
 
-		
+
 	def refresh_stats(self):
 		self.stats = self.get_stats_from_characteristics(self.characteristics)
 		#refresh stats
@@ -882,7 +882,7 @@ class Creature(object):
 			for stat in list(modifier.stats["stats_change"].keys()):
 				if stat != "defence" and stat != "evasion" and stat != "accuracy":
 					self.stats[stat] = clamp( self.stats[stat] + modifier.stats["stats_change"][stat], 0, 9999)
-		
+
 		for item in list(self.equipment.keys()):
 			if self.equipment[item] and "stats_change" in list(self.equipment[item].stats.keys()):
 				for stat in list(self.equipment[item].stats["stats_change"].keys()):
@@ -904,7 +904,7 @@ class Creature(object):
 		characteristics.append("|\t"+"Dexterity"+":" +str(self.characteristics["dexterity"]) +" ("+str(self.base_characteristics["dexterity"])+")" +"\n")
 		characteristics.append("|\t"+"Vitality"+":" +str(self.characteristics["vitality"]) +" ("+str(self.base_characteristics["vitality"])+")" +"\n")
 		characteristics.append("|\t"+"Intelligence"+":" +str(self.characteristics["intelligence"]) +" ("+str(self.base_characteristics["intelligence"])+")" +"\n")
-		
+
 		avg_defence = sum([self.defence for x in range(501)])/500
 		avg_evasion = sum([self.evasion for x in range(501)])/500
 		avg_accuracy = sum([self.get_accuracy() for x in range(501)])/500
@@ -974,7 +974,7 @@ class Player(Creature):
 	@property
 	def max_experience(self):
 	    return max_exp_for_level(self.level)
-	
+
 	@property
 	def level(self):
 		return self._level
@@ -1012,8 +1012,8 @@ class Player(Creature):
 
 	def level_up(self):
 		self.level = self.level + 1
-		self.level_up_points += ( int(self.level % 5) == 0 ) * 1 
-		self.perk_points += ( int(self.level % 3) == 0 ) * 1 
+		self.level_up_points += ( int(self.level % 5) == 0 ) * 1
+		self.perk_points += ( int(self.level % 3) == 0 ) * 1
 		msg = self.on_level_up()
 		return msg
 
@@ -1056,20 +1056,20 @@ class Player(Creature):
 			drop_table = target.__class__.drop_table
 			for item in list(drop_table.keys()):
 				prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
-				got_item = random.randint(0, 100) <= prob 
+				got_item = random.randint(0, 100) <= prob
 				if got_item:
 					item = get_item_by_name(item, target.__class__.loot_coolity)
 					attack_info.use_info["loot_dropped"].append(item)
 					if isinstance(attack_info.inhibitor, Player):
 						loot_goes_to = random.choice(attack_info.inhibitor.event.players)
 						if loot_goes_to.add_to_inventory(item):
-							attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.full_name.capitalize(), item.name)
+							attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.full_name)
 							attack_info.description += loot_goes_to.on_loot(item)
 						else:
 							attack_info.description += "%s got loot: %s, but didn't have enough space in inventory.\n"%(loot_goes_to.name.capitalize(), item.name)
 					attack_info.use_info["loot_dropped"].append(item)
 		return super(Player, self).on_kill(attack_info)
-			
+
 	def to_json(self):
 		big_dict = super(Player, self).to_json()
 		big_dict["userid"] = self.userid
@@ -1111,7 +1111,7 @@ class Enemy(Creature):
 		if "stats" in list(data.keys()):
 			data["stats"] = json.loads(data["stats"])
 			stats = data["stats"]
-					
+
 		for i in range(len(data["inventory"])):
 			data["inventory"][i] = Item.de_json(data["inventory"][i])
 
@@ -1124,4 +1124,3 @@ class Enemy(Creature):
 
 		en =  Enemy(data.get("name"), data.get("level"), data.get("characteristics"), stats, data.get("description"), inventory, equipment, data.get('tags'), [], [])
 		return en
-

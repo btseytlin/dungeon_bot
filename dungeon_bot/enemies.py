@@ -2,7 +2,7 @@
 from .creatures import Enemy, Player
 from .abilities import *
 from .items import *
-from .util import * 
+from .util import *
 import random
 def retrieve_enemies_for_difficulty(enemy_table, difficulty):
 	total_len = 100
@@ -15,12 +15,12 @@ def retrieve_enemies_for_difficulty(enemy_table, difficulty):
 		left = 0
 		temp_list = sorted([int(x) for x in list(enemy_tables[enemy_table].keys()) if right >= int(x) > left] )
 
-	
+
 	random_float = random_in_range_for_coolity(0, len(temp_list), 0.8)
 	random_enemy = temp_list[int(math.floor(random_float))]
 
 
-	enemies = enemy_tables[enemy_table][str(random_enemy)]	
+	enemies = enemy_tables[enemy_table][str(random_enemy)]
 
 	return enemies[0](*enemies[1])
 
@@ -114,7 +114,7 @@ class BigRat(Enemy):
 		"headwear": 5,
 		"random": 5,
 	}
-	
+
 	loot_coolity = 0.5
 
 	def __init__(self, level=1, name="big rat", characteristics = big_rat_characteristics, stats=None, description="A big angry grey rat.", inventory=[], equipment=default_equipment, tags=["living", "animate", "rodent", "animal", "small"],abilities=[],modifiers=[], exp_value=80):
@@ -437,7 +437,7 @@ class LesserDemon(Enemy):
 		return attack_infos
 
 beta_demon_characteristics = {
-	"strength": 7, #how hard you hit
+	"strength": 6, #how hard you hit
 	"vitality": 5, #how much hp you have
 	"dexterity": 4, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
@@ -526,8 +526,8 @@ class Thug(Enemy):
 		return attack_infos
 
 peasant_characteristics = {
-	"strength": 5, #how hard you hit
-	"vitality": 4, #how much hp you have
+	"strength": 3, #how hard you hit
+	"vitality": 3, #how much hp you have
 	"dexterity": 4, #how fast you act, your position in turn qeue
 	"intelligence": 4, #how likely you are to strike a critical
 }
@@ -575,7 +575,7 @@ class Peasant(Enemy):
 		return attack_infos
 
 thief_characteristics = {
-	"strength": 6, #how hard you hit
+	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
 	"dexterity": 8, #how fast you act, your position in turn qeue
 	"intelligence": 8, #how likely you are to strike a critical
@@ -613,6 +613,91 @@ class Thief(Enemy):
 						break
 
 		return attack_infos
+'''
+mage_characteristics = {
+	"strength": 2, #how hard you hit
+	"vitality": 2, #how much hp you have
+	"dexterity": 4, #how fast you act, your position in turn qeue
+	"intelligence": 6, #how likely you are to strike a critical
+}
+
+class Mage(Enemy):
+	drop_table = {
+		"club" : 7,
+		"dagger" : 7,
+		"mace": 4,
+		"ring of more intelligence" : 2,
+		"ring" : 3,
+		"talisman": 4,
+		"random": 3,
+	}
+	loot_coolity = 0.3
+	def __init__(self, level=1, name="mage", characteristics = mage_characteristics, stats=None, description="A magical peasant.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
+		items.append( get_item_by_name( random.choice(["chainmail", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+
+		return attack_infos'''
+
+ogre_characteristics = {
+	"strength": 9, #how hard you hit
+	"vitality": 2, #how much hp you have
+	"dexterity": 4, #how fast you act, your position in turn qeue
+	"intelligence": 2, #how likely you are to strike a critical
+}
+
+class Ogre(Enemy):
+	drop_table = {
+		"club" : 6,
+		"mace": 5,
+		"primary weapon": 3,
+		"armor": 4,
+		"ring of more strength" : 5,
+		"helmet": 3,
+		"headwear": 5,
+		"random": 3,
+	}
+	loot_coolity = 0.7
+	def __init__(self, level=1, name="ogre", characteristics = ogre_characteristics, stats=None, description="A slow hulking ogre. It looks hungry for you.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big", "human", "living"],abilities=[],modifiers=[], exp_value=500):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( random.choice(["club", "mace"]), 0 )]
+		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+
+		return attack_infos
 
 """ enemy group functions below """
 enemy_list = { #name to enemy
@@ -627,6 +712,8 @@ enemy_list = { #name to enemy
 	"beta demon": BetaDemon,
 	"peasant": Peasant,
 	"thief": Thief,
+	#"mage": Mage,
+	"ogre": Ogre,
 }
 
 def rat_pack(size):
@@ -671,7 +758,7 @@ def wolf_pack(size):
 		description = "Wolves circle around you in a hoarde.\n"
 		amount = random.randint(10, 20)
 		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 3 else None
-	
+
 	wolves = [ Wolf(random.choice(wolf_levels)) for x in range(amount+1)]
 	if wolf_leader:
 		wolves.append(wolf_leader)
@@ -781,6 +868,30 @@ def thief():
 	thief = Thief()
 	return [thief], description
 
+'''def mages():
+	description = "A mage."
+	levels = list(range(5,10))
+	amount = 1
+	if size == "small":
+		amount = random.randint(1, 3)
+		if amount != 1:
+			description = "Novice mages.\n"
+	elif size == "medium":
+		description = "Average mages.\n"
+		levels = list(range(10,20))
+		amount = random.randint(3, 6)
+	elif size == "big":
+		description = "Mage overseers.\n"
+		levels = list(range(15-25))
+		amount = random.randint(4, 7)
+	elif size == "huge":
+		description = "Grandmaster Mages.\n"
+		levels = list(range(40,50))
+		amount = random.randint(3, 5)
+	mages = [ Mage(random.choice(levels)) for x in range(amount+1)]
+	return mages, description
+'''
+
 def thugs(size):
 	description = "A thug.\n"
 	levels = list(range(1,5))
@@ -803,15 +914,38 @@ def thugs(size):
 	thugs = [ Thug(random.choice(levels)) for x in range(amount+1)]
 	return thugs, description
 
+def ogres():
+	description = "An ogre."
+	levels = list(range(5,15))
+	amount = 1
+	if size == "small":
+		amount = random.randint(1, 3)
+		if amount != 1:
+			description = "Bridge trolls.\n"
+	elif size == "medium":
+		description = "Town destroyers.\n"
+		levels = list(range(10,20))
+		amount = random.randint(3, 6)
+	elif size == "big":
+		description = "City destroyers.\n"
+		levels = list(range(25-35))
+		amount = random.randint(4, 7)
+	elif size == "huge":
+		description = "Goliaths.\n"
+		levels = list(range(40,50))
+		amount = random.randint(2, 5)
+	ogres = [ Ogre(random.choice(levels)) for x in range(amount+1)]
+	return ogres, description
+
 enemy_tables = { # difficulty rating: (function to get enemy or enemy group, params)
-	"common": { 
+	"common": {
 		"1": (rat_pack, [] ),
 		"1": (rat_pack,["small"] ),
 		"5": (rat_pack, ["medium"] ),
 		"10": (rat_pack, ["big"] ),
 		"30": (rat_pack, ["huge"] )
 	},
-	"animal": { 
+	"animal": {
 		"1": (wolf_pack,[] ),
 		"1": (wolf_pack,["small"] ),
 		"10": (wolf_pack, ["medium"] ),
@@ -819,14 +953,14 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"30": (wolf_pack, ["big"] ),
 		"50": (wolf_pack, ["huge"] )
 	},
-	"undead": { 
+	"undead": {
 		"1": (undead_soldier_pack,[] ),
 		"1": (undead_soldier_pack,["small"] ),
 		"2": (undead_soldier_pack, ["medium"] ),
 		"10": (undead_soldier_pack, ["big"] ),
 		"30": (undead_soldier_pack, ["huge"] )
 	},
-	"demon": { 
+	"demon": {
 		"1": (lesser_demon_pack,[] ),
 		"1": (lesser_demon_pack,["small"] ),
 		"3": (lesser_demon_pack, ["medium"] ),
@@ -834,7 +968,7 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"20": (lesser_demon_pack, ["big"] ),
 		"30": (lesser_demon_pack, ["huge"] )
 	},
-	"human": { 
+	"human": {
 		"1": (peasant_pack,[] ),
 		"1": (thugs, []),
 		"5": (thugs, ["small"]),
@@ -844,5 +978,17 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"5": (thief, [] ),
 		"10": (peasant_pack, ["big"] ),
 		"30": (peasant_pack, ["huge"] )
+		#"5": (mages, ["small"]),
+		#"15": (mages, ["medium"]),
+		#"25": (mages, ["big"]),
+		#"35": (mages, ["huge"])
 	},
+	"ogre": {
+		"8": (ogres,[] ),
+		"15": (ogres,["small"] ),
+		"20": (ogres, ["medium"] ),
+		"30": (ogres, ["big"] ),
+		"40": (ogres, ["huge"] )
+	},
+
 }
