@@ -115,7 +115,7 @@ def run_tests():
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "shield"
+	item = "sword"
 	item = get_item_by_name(item, 1)
 
 	print(item.examine_self())
@@ -136,5 +136,6 @@ def run_tests():
 	dummy.add_to_inventory(item)
 	dummy.equip(item)
 
-	enemies = [dummy, Peasant()]
+	#enemies = [dummy, Peasant()]
+	enemies, desc = lich()
 	controlled_combat_event([ply], enemies)

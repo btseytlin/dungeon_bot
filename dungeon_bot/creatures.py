@@ -909,19 +909,30 @@ class Creature(object):
 		avg_evasion = sum([self.evasion for x in range(501)])/500
 		avg_accuracy = sum([self.get_accuracy() for x in range(501)])/500
 
+		abilities = []
+		for ability in self.abilities:
+			name = ability.name
+			granted_by = ""
+			if ability.granted_by:
+				granted_by = "(%s)"%(ability.granted_by.name)
+
+			abilities.append("%s%s"%(name, granted_by))
 		desc = "\n".join(
 		[
 			"%s. lvl %d"%(self.name.capitalize(), self.level),
 			"%s"%(self.description or "----"),
 			"Characteristics:\n%s"%("".join(characteristics)),
 			"Health:\n|\t%d/%d"%(self.health, self.stats["max_health"]),
-			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]) + "\nExp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
+			"Energy:\n|\t%d/%d, regen per turn: %d"%(self.energy, self.stats["max_energy"],self.stats["energy_regen"]),
+			"Exp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
 			"Average defence, evasion, accuracy:\n|\t%d, %d, %d"%(avg_defence, avg_evasion, avg_accuracy),
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
 			"Modifiers:\n%s"%("\n".join(["|\t%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
-			"Abilities:\n|\t%s"%(", ".join(["%s(%s)"%(abiility.name, abiility.granted_by.name) for abiility in self.abilities])),
+			"Abilities:\n|\t%s"%(", ".join(abilities)),
 			"Equipment:\n%s"%(self.examine_equipment()),
 		])
+
+		print(desc)
 		return desc
 
 	def to_json(self):

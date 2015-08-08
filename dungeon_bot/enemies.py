@@ -391,6 +391,85 @@ class UndeadKnight(Enemy):
 
 		return attack_infos
 
+
+lich_characteristics = {
+	"strength": 5, #how hard you hit
+	"vitality": 5, #how much hp you have
+	"dexterity": 5, #how fast you act, your position in turn qeue
+	"intelligence": 7, #how likely you are to strike a critical
+}
+
+class Lich(Enemy):
+	drop_table = {
+		"chainmail" : 7,
+		"plate armor" : 4,
+		"primary weapon" : 3,
+		"sword": 7,
+		"mace": 7,
+		"club": 5,
+		"dagger": 5,
+		"secondary weapon" : 3,
+		"bone amulet" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"helmet": 3,
+		"headwear": 5,
+		"random": 3,
+		"claymore": 4,
+	}
+
+	loot_coolity = 0.8
+	def __init__(self, level=1, name="lich", characteristics = lich_characteristics, stats=None, description="A lich.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead"],abilities=[],modifiers=[], exp_value=100):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( random.choice(["sword", "rapier", "mace"]), 0 )]
+		items.append( get_item_by_name( "shield", 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( "chainmail" , 0 ) ) if random.randint(0,10) > 2 else None
+		items.append( get_item_by_name( "helmet" , 0 ) ) if random.randint(0,10) > 2 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+
+		return attack_infos
+
+crystaline_characteristics = {
+	"strength": 5, #how hard you hit
+	"vitality": 10, #how much hp you have
+	"dexterity": 1, #how fast you act, your position in turn qeue
+	"intelligence": 5, #how likely you are to strike a critical
+}
+
+class LichCrystaline(Enemy):
+	drop_table = {
+		"random": 10,
+	}
+
+	loot_coolity = 0.8
+	def __init__(self, level=1, name="crystaline", characteristics = crystaline_characteristics, stats=None, description="A huge crystal, it glows with various colors.", inventory=[], equipment=default_equipment, tags=[],abilities=[],modifiers=[], exp_value=400):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		self.base_abilities.append(Revive("revive", None))
+
+	def act(self, combat_event):
+		attack_infos = []
+		print(self.abilities)
+		if self.lich:
+			if self.lich.dead:
+				attack_infos.append(self.abilities[0].__class__.use(self, self.lich, None, combat_event))
+		return attack_infos
+
 """ demon enemies bewow """
 
 lesser_demon_characteristics = {
@@ -716,158 +795,278 @@ enemy_list = { #name to enemy
 	"ogre": Ogre,
 }
 
+""" Common enemy spawn functions """
+
 def rat_pack(size):
 	description = "A rat.\n"
-	rat_levels = list(range(1, 3))
+	rat_levels = list(range(1, 5))
 	amount = 1
 	if size == "small":
+		rat_levels = list(range(1, 10))
 		amount = random.randint(1, 3)
 		if amount > 1:
 			description = "A small pack of rats.\n"
 	elif size == "medium":
+		rat_levels = list(range(5, 15))
 		description = "A pack of rats.\n"
-		amount = random.randint(3, 6)
+		amount = random.randint(2, 4)
 	elif size == "big":
+		rat_levels = list(range(15, 25))
 		description = "A hoard of rats.\n"
-		amount = random.randint(6, 10)
-	elif size == "huge":
-		description = "RATS ARE EVERYWHERE.\n"
-		amount = random.randint(10, 20)
+		amount = random.randint(4, 5)
 	rats = [ Rat(random.choice(rat_levels)) if random.randint(0, 10) < 7 else BigRat(random.choice(rat_levels)) for x in range(amount+1)]
 	return rats, description
 
-def wolf_pack(size):
-	wolf_leader = None
+""" Animal enemy spawn functions """
+
+def wolf_leader(size):
+	if size == "strong":
+		leader_levels = list(range(10, 20))
+		leader = WolfLeader(random.choice(leader_levels))
+		description = "A mature wolf pack leader.\n"
+	elif size == "very strong":
+		leader_levels = list(range(20, 35))
+		leader = WolfLeader(random.choice(leader_levels))
+		description = "A fearsome wolf pack leader.\n"
+	else:
+		leader_levels = list(range(5, 10))
+		leader = WolfLeader(random.choice(leader_levels))
+		description = "A young wolf pack leader.\n"
+	return [leader], description
+
+def wolf_pack(size, special_enemy=None):
 	wolf_levels = list(range(1, 4))
-	wolf_leader_levels = list(range(1, 4))
 	description = "A wolf.\n"
 	amount = 1
 	if size == "small":
-		amount = random.randint(1, 3)
+		wolf_levels = list(range(1, 5))
+		amount = random.randint(1, 2)
 		if amount > 1:
 			description = "A small pack of wolves.\n"
 	elif size == "medium":
 		description = "A pack of wolves.\n"
-		amount = random.randint(3, 5)
-		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 9 else None
+		wolf_levels = list(range(5, 15))
+		amount = random.randint(2, 4)
 	elif size == "big":
-		description = "A big pack of wolves!\n"
-		amount = random.randint(5, 10)
-		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 6 else None
+		description = "A big pack of mature wolves.\n"
+		wolf_levels = list(range(15, 35))
+		amount = random.randint(3, 5)
 	elif size == "huge":
-		description = "Wolves circle around you in a hoarde.\n"
+		description = "A big pack of fearsome wolves.\n"
+		wolf_levels = list(range(35, 50))
 		amount = random.randint(10, 20)
+<<<<<<< HEAD
 		wolf_leader = WolfLeader(random.choice(wolf_leader_levels)) if random.randint(0, 10) > 3 else None
 
 	wolves = [ Wolf(random.choice(wolf_levels)) for x in range(amount+1)]
 	if wolf_leader:
 		wolves.append(wolf_leader)
+=======
+
+	desc = ""
+	leader = []
+	if special_enemy:
+		if special_enemy == "wolf leader":
+			if size == "medium" and random.randint(0, 10) > 4:
+				leader, desc = wolf_leader()
+			elif size == "big" and random.randint(0, 10) > 4:
+				leader, desc = wolf_leader("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				leader, desc = wolf_leader("very strong")
+
+	wolves = [ Wolf(random.choice(wolf_levels)) for x in range(amount+1)] + leader
+	description += desc
+>>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 	return wolves, description
 
-def bear():
-	description = "A bear.\n"
-	levels = list(range(1, 3))
-	return [Bear(random.choice(levels))], description
+def bear(size = None):
+	if size == "strong":
+		bear_levels = list(range(10, 20))
+		bear = Bear(random.choice(bear_levels))
+		description = "A mature bear.\n"
+	elif size == "very strong":
+		bear_levels = list(range(20, 35))
+		bear = Bear(random.choice(bear_levels))
+		description = "A fearsome bear.\n"
+	else:
+		bear_levels = list(range(5, 10))
+		bear = Bear(random.choice(bear_levels))
+		description = "A young bear.\n"
+	return [bear], description
 
-def undead_soldier_pack(size):
+""" Undead enemy spawn functions """
+def undead_soldier_pack(size, special_enemy=None):
 	description = "An undead soldier.\n"
-	levels = list(range(1,10))
 	amount = 1
 	if size == "small":
-		amount = random.randint(1, 3)
-		if amount != 1:
+		levels = list(range(1,6))
+		amount = random.randint(1, 2)
+		if amount > 1:
 			description = "A small group of undead soldiers.\n"
 	elif size == "medium":
+		levels = list(range(6,15))
 		description = "A group of undead soldiers.\n"
-		amount = random.randint(3, 6)
+		amount = random.randint(2, 3)
 	elif size == "big":
-		description = "A squad of undead soldiers.\n"
-		amount = random.randint(6, 10)
+		levels = list(range(15,35))
+		description = "A big group of undead soldiers.\n"
+		amount = random.randint(3, 5)
 	elif size == "huge":
-		description = "An army of undead soldiers.\n"
-		amount = random.randint(10, 20)
-	soldiers = [ UndeadSoldier(random.choice(levels)) if random.randint(0, 10) < 7 else UndeadKnight(random.choice(levels)) for x in range(amount+1)]
+		levels = list(range(25,50))
+		description = "A unit of undead soldiers.\n"
+		amount = random.randint(4, 6)
+
+	desc = ""
+	lich_group = []
+	if special_enemy:
+		if special_enemy == "lich":
+			if size == "big" and random.randint(0, 10) > 6:
+				lich_group, desc = lich("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				lich_group, desc = lich("very strong")
+			elif random.randint(0, 10) > 8:
+				lich_group, desc = lich()
+
+	description += desc
+	soldiers = [ UndeadSoldier(random.choice(levels)) if random.randint(0, 10) < 7 else UndeadKnight(random.choice(levels)) for x in range(amount+1)] + lich_group
+
 	return soldiers, description
 
-def lesser_demon_pack(size):
+def lich(size = None):
+	if not size:
+		description = "A lich.\n"
+		levels = list(range(5,10))
+		lich = Lich(random.choice(levels))
+		crystaline = LichCrystaline(random.choice(levels))
+		crystaline.lich = lich
+		enemies = [ lich, crystaline ]
+
+	elif size == "strong":
+		description = "A strong lich.\n"
+		levels = list(range(10,20))
+		lich = Lich(random.choice(levels))
+		crystaline = LichCrystaline(random.choice(levels))
+		crystaline.lich = lich
+		enemies = [ lich, crystaline ]
+
+	elif size == "very strong":
+		description = "Two very strong liches.\n"
+		levels = list(range(10,20))
+		lich = Lich(random.choice(levels))
+		lich1 = Lich(random.choice(levels))
+		crystaline = LichCrystaline(random.choice(levels))
+		crystaline1 = LichCrystaline(random.choice(levels))
+		crystaline.lich = lich
+		crystaline1.lich = lich1
+		enemies = [lich, lich1, crystaline, crystaline1]
+
+	return enemies, description
+
+""" Demon enemy spawn functions """
+def lesser_demon_pack(size, special_enemy = None):
 	description = "A lesser demon.\n"
-	beta_demon = None
-	levels = list(range(1,10))
-	beta_levels = list(range(1,10))
+	levels = list(range(1,5))
 	amount = 1
 	if size == "small":
-		amount = random.randint(1, 3)
+		amount = random.randint(1, 2)
+		levels = list(range(5,15))
 		if amount != 1:
 			description = "A small group of lesser demons.\n"
-	elif size == "medium":
-		description = "A group of lesser demons.\n"
-		amount = random.randint(3, 6)
 
-		if random.randint(0, 10) > 9:
-			beta_demon = BetaDemon(random.choice(beta_levels))
+	elif size == "medium":
+		levels = list(range(10,25))
+		description = "A group of lesser demons.\n"
+		amount = random.randint(3, 4)
 
 	elif size == "big":
-		description = "A hoard of lesser demons.\n"
-		amount = random.randint(6, 10)
-
-		if random.randint(0, 10) > 6:
-			beta_demon = BetaDemon(random.choice(beta_levels))
+		levels = list(range(20,40))
+		description = "A group of hardened lesser demons.\n"
+		amount = random.randint(4, 5)
 
 	elif size == "huge":
-		description = "Lesser demons are everywhere.\n"
-		amount = random.randint(10, 20)
-
-		if random.randint(0, 10) > 3:
-			beta_demon = BetaDemon(random.choice(beta_levels))
+		levels = list(range(30,60))
+		description = "A group of horrible lesser demons.\n"
+		amount = random.randint(4, 5)
 
 	demons = [ LesserDemon(random.choice(levels)) for x in range(amount+1)]
-	if beta_demon:
-		demons.append(beta_demon)
-		description+= "A beta demon.\n"
+	desc = ""
+	if special_enemy:
+		if special_enemy == "beta demon":
+			if size == "medium" and random.randint(0, 10) > 4:
+				beta_demon, desc = beta_demon()
+			elif size == "big" and random.randint(0, 10) > 4:
+				beta_demon, desc = beta_demon("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				beta_demon, desc = beta_demon("very strong")
+
+	demons += beta_demon
+	description += desc
 	return demons, description
 
-def beta_demon():
-	description = "A beta demon.\n"
-	levels = list(range(1,10))
-	beta_demon = BetaDemon(random.choice(levels))
-	return [beta_demon], description
+def beta_demon(size = None):
+	if size == "strong":
+		demon_levels = list(range(10, 20))
+		demon = BetaDemon(random.choice(demon_levels))
+		description = "A strong beta demon.\n"
+	elif size == "very strong":
+		demon_levels = list(range(20, 35))
+		demon = BetaDemon(random.choice(demon_levels))
+		description = "A fearsome beta demon.\n"
+	else:
+		demon_levels = list(range(5, 10))
+		demon = BetaDemon(random.choice(demon_levels))
+		description = "A beta demon.\n"
+	return [demon], description
 
-def peasant_pack(size):
+""" Human enemy spawn functions """
+
+def peasant_pack(size, special_enemy = None):
 	description = "A peasant.\n"
-	levels = list(range(1,10))
-	thief = None
+	levels = list(range(1,5))
 	amount = 1
 	if size == "small":
-		amount = random.randint(1, 3)
+		amount = random.randint(1, 2)
+		levels = list(range(5,15))
 		if amount != 1:
-			description = "A small group of Peasants.\n"
+			description = "A small group of peasants.\n"
 	elif size == "medium":
-		description = "A group of Peasants.\n"
-		amount = random.randint(3, 6)
-
-		if random.randint(0, 10) > 9:
-			thief = Thief(random.choice(levels))
+		levels = list(range(10,25))
+		description = "A group of peasants.\n"
+		amount = random.randint(3, 4)
 	elif size == "big":
-		description = "A hoard of Peasants.\n"
-		amount = random.randint(6, 10)
-		if random.randint(0, 10) > 6:
-			thief = Thief(random.choice(levels))
+		levels = list(range(20,40))
+		description = "A group of experienced peasants.\n"
+		amount = random.randint(4, 5)
 	elif size == "huge":
-		description = "Peasants are everywhere.\n"
-		amount = random.randint(10, 20)
-		if random.randint(0, 10) > 3:
-			thief = Thief(random.choice(levels))
+		levels = list(range(30,60))
+		description = "A group of armed to the teeth peasants.\n"
+		amount = random.randint(4, 5)
 	peasants = [ Peasant(random.choice(levels)) for x in range(amount+1)]
-	if thief:
-		peasants.append(thief)
-		description+= "A thief accompanies them.\n"
+
+	thieves = []
+	thug_enemies = []
+	desc = ""
+	if special_enemy:
+		if special_enemy == "thief":
+			if size == "medium" and random.randint(0, 10) > 4:
+				thieves, desc = thief()
+			elif size == "big" and random.randint(0, 10) > 4:
+				thieves, desc = thief("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				thieves, desc = thief("very strong")
+		elif special_enemy == "thugs":
+			if size == "medium" and random.randint(0, 10) > 4:
+				thug_enemies, desc = thugs()
+			elif size == "big" and random.randint(0, 10) > 4:
+				thug_enemies, desc = thugs("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				thug_enemies, desc = thugs("very strong")
+	peasants += thieves
+	peasants += thug_enemies
+	description += desc
 	return peasants, description
 
-def thief():
-	description = "A thief.\n"
-	thief = Thief()
-	return [thief], description
-
+<<<<<<< HEAD
 '''def mages():
 	description = "A mage."
 	levels = list(range(5,10))
@@ -893,24 +1092,40 @@ def thief():
 '''
 
 def thugs(size):
+=======
+def thief(size = None):
+	if size == "strong":
+		thief_levels = list(range(10, 20))
+		thief_enemy = Thief(random.choice(thief_levels))
+		description = "An professional thief.\n"
+	elif size == "very strong":
+		thief_levels = list(range(20, 35))
+		thief_enemy = Thief(random.choice(thief_levels))
+		description = "A legendary thief.\n"
+	else:
+		thief_levels = list(range(5, 10))
+		thief_enemy = Thief(random.choice(thief_levels))
+		description = "A thief.\n"
+	return [thief_enemy], description
+
+def thugs(size = None):
+>>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 	description = "A thug.\n"
 	levels = list(range(1,5))
 	amount = 1
-	if size == "small":
+	if size == "strong":
 		amount = random.randint(2, 3)
-		if amount != 1:
-			description = "A small group of thugs.\n"
-	elif size == "medium":
-		description = "A group of thugs.\n"
-		amount = random.randint(3, 5)
+		levels = list(range(10,20))
+		description = "A couple of tough thugs.\n"
+	elif size == "very strong":
+		levels = list(range(20,40))
+		description = "A group of professional thugs.\n"
+		amount = random.randint(2, 3)
+	else:
+		description = "A thug.\n"
+		levels = list(range(5,10))
+		amount = 1
 
-	elif size == "big":
-		description = "A hoard of thugs.\n"
-		amount = random.randint(5, 8)
-
-	elif size == "huge":
-		description = "thugs are everywhere.\n"
-		amount = random.randint(8, 15)
 	thugs = [ Thug(random.choice(levels)) for x in range(amount+1)]
 	return thugs, description
 
@@ -940,36 +1155,57 @@ def ogres():
 enemy_tables = { # difficulty rating: (function to get enemy or enemy group, params)
 	"common": {
 		"1": (rat_pack, [] ),
-		"1": (rat_pack,["small"] ),
-		"5": (rat_pack, ["medium"] ),
-		"10": (rat_pack, ["big"] ),
-		"30": (rat_pack, ["huge"] )
+		"5": (rat_pack,["small"] ),
+		"15": (rat_pack, ["medium"] ),
+		"30": (rat_pack, ["big"] ),
 	},
 	"animal": {
 		"1": (wolf_pack,[] ),
-		"1": (wolf_pack,["small"] ),
+		"5": (wolf_pack,["small"] ),
 		"10": (wolf_pack, ["medium"] ),
+		"15": (wolf_pack, ["medium", "wolf leader"] ),
 		"10": (bear, [] ),
-		"30": (wolf_pack, ["big"] ),
-		"50": (wolf_pack, ["huge"] )
+		"20": (wolf_pack, ["big"] ),
+		"25": (wolf_pack, ["big", "wolf leader"] ),
+		"30": (bear, ["strong"] ),
+		"40": (wolf_pack, ["huge"] ),
+		"50": (wolf_pack, ["huge", "wolf leader"] ),
+		"50": (bear, ["very strong"] ),
 	},
+<<<<<<< HEAD
 	"undead": {
+=======
+	"undead": {
+
+>>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 		"1": (undead_soldier_pack,[] ),
 		"1": (undead_soldier_pack,["small"] ),
-		"2": (undead_soldier_pack, ["medium"] ),
-		"10": (undead_soldier_pack, ["big"] ),
-		"30": (undead_soldier_pack, ["huge"] )
+		"5": (undead_soldier_pack, ["medium"] ),
+		"10": (lich, []),
+		"10": (undead_soldier_pack, ["big" ] ),
+		"15": (undead_soldier_pack, ["big", "lich"] ),
+		"30": (lich, ["strong"]),
+		"30": (undead_soldier_pack, ["huge"] ),
+		"60": (undead_soldier_pack, ["huge", "lich"] ),
+		"50": (lich, ["very strong"]),
 	},
 	"demon": {
 		"1": (lesser_demon_pack,[] ),
-		"1": (lesser_demon_pack,["small"] ),
-		"3": (lesser_demon_pack, ["medium"] ),
+		"5": (lesser_demon_pack,["small"] ),
+		"10": (lesser_demon_pack, ["medium"] ),
+		"15": (lesser_demon_pack, ["medium", "beta demon"] ),
 		"10": (beta_demon, [] ),
 		"20": (lesser_demon_pack, ["big"] ),
-		"30": (lesser_demon_pack, ["huge"] )
+		"20": (beta_demon, ["strong"] ),
+		"25": (lesser_demon_pack, ["big", "beta_demon"] ),
+
+		"40": (lesser_demon_pack, ["huge"] ),
+		"40": (beta_demon, ["very strong"] ),
+		"50": (lesser_demon_pack, ["huge", "beta demon"] ),
 	},
 	"human": {
 		"1": (peasant_pack,[] ),
+<<<<<<< HEAD
 		"1": (thugs, []),
 		"5": (thugs, ["small"]),
 		"10": (thugs, ["medium"]),
@@ -982,6 +1218,24 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		#"15": (mages, ["medium"]),
 		#"25": (mages, ["big"]),
 		#"35": (mages, ["huge"])
+=======
+		"5": (peasant_pack,["small"] ),
+		"5": (thugs, []),
+		"10": (thief, [] ),
+		"10": (peasant_pack,["medium"] ),
+		"10": (peasant_pack,["medium", "thief"] ),
+		"15": (peasant_pack,["medium", "thugs"] ),
+		"15": (thugs, ["strong"]),
+		"15": (thief, ["strong"]),
+		"20": (peasant_pack,["big", "thugs"] ),
+		"20": (peasant_pack,["big", "thief"] ),
+		"30": (thief, ["very strong"] ),
+		"30": (thugs, ["very strong"] ),
+		"40": (peasant_pack,["huge"] ),
+		"50": (peasant_pack,["huge", "thugs"] ),
+		"50": (peasant_pack,["huge", "thief"] ),
+
+>>>>>>> 434c8189152f9f4827c3b6f2910a5b83a67e6830
 	},
 	"ogre": {
 		"8": (ogres,[] ),

@@ -31,22 +31,22 @@ class Item(object):
 	def examine_self(self):
 		requirements = []
 		for x in list(self.requirements.keys()):
-				requirements.append("|\t"+x+":" +str(self.requirements[x])) 
+				requirements.append("|\t"+x+":" +str(self.requirements[x]))
 
 		stats = []
 
 		for x in list(self.stats.keys()):
 			if isinstance(self.stats[x], dict):
 				for stat in list(self.stats[x].keys()):
-					stats.append("|\t"+str(stat)+":" +str(self.stats[x][stat])) 
+					stats.append("|\t"+str(stat)+":" +str(self.stats[x][stat]))
 			else:
-				stats.append("|\t"+x+":" +str(self.stats[x])) 
+				stats.append("|\t"+x+":" +str(self.stats[x]))
 
 		for modifier in self.modifiers_granted:
 			for key in [stat for stat in list(modifier["stats"].keys()) if not stat in ["duration", "priority", "characteristics_change", "stats_change", "abilities_granted", "tags_granted"] ]:
-				stats.append("|\t"+key+":" +str(modifier["stats"][key])) 
+				stats.append("|\t"+key+":" +str(modifier["stats"][key]))
 			for characteristic in list(modifier["stats"]["characteristics_change"].keys()):
-				stats.append("|\t"+characteristic+":" + ("+" if modifier["stats"]["characteristics_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"])) 
+				stats.append("|\t"+characteristic+":" + ("+" if modifier["stats"]["characteristics_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"]))
 			for stat in list(modifier["stats"]["stats_change"].keys()):
 				stats.append("|\t"+stat+":" + ("+" if modifier["stats"]["stats_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"]))
 
@@ -93,11 +93,11 @@ default_weapon_stats= {
 }
 
 default_weapon_requirements = {
-	"strength": 0, 
-	"vitality": 0, 
+	"strength": 0,
+	"vitality": 0,
 	"dexterity": 0,
-	"intelligence": 0, 
-}	
+	"intelligence": 0,
+}
 
 default_weapon_abilities = []
 class PrimaryWeapon(Item):
@@ -105,7 +105,7 @@ class PrimaryWeapon(Item):
 		Item.__init__(self, name, description, item_type, stats, abilities_granted, modifiers_granted, requirements, tags_granted)
 	@property
 	def short_desc(self):
-		sh_dsc = super(PrimaryWeapon, self).short_desc 
+		sh_dsc = super(PrimaryWeapon, self).short_desc
 		return sh_dsc+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"])
 
 
@@ -120,7 +120,7 @@ class SecondaryWeapon(Item):
 
 	@property
 	def short_desc(self):
-		sh_dsc = super(SecondaryWeapon, self).short_desc 
+		sh_dsc = super(SecondaryWeapon, self).short_desc
 		if "accuracy" in list(self.stats.keys()):
 			return sh_dsc+" |acc:%s/dmg:%s|"%(self.stats["accuracy"], self.stats["damage"])
 		else:
@@ -137,7 +137,7 @@ class Armor(Item):
 
 	@property
 	def short_desc(self):
-		sh_dsc = super(Armor, self).short_desc 
+		sh_dsc = super(Armor, self).short_desc
 		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defence"], self.stats["evasion"])
 
 	@staticmethod
@@ -260,7 +260,7 @@ def get_item_by_name(name, coolity=0):
 		return get_randomized_item(prototype, coolity, item_stats, item_args)
 	return "Unknown item"
 
-item_listing = { 
+item_listing = {
 	"primary weapon":{
 		"rapier": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","7d6"]} , "args":{"name":"rapier", "description":"Steel rapier!","random_effects": True, "abilities_granted":["stab", "quick stab"]}},
 
