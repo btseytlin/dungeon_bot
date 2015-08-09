@@ -198,7 +198,7 @@ class Sweeper(LevelPerk):
 		msg = ""
 		if self.host.event:
 			combat_event = self.host.event
-			if len([c for c in combat_event.turn_qeue if c.__class__.__name__ != "Player" and not c.dead])>=4:
+			if len([c for c in combat_event.turn_queue if c.__class__.__name__ != "Player" and not c.dead])>=4:
 				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":-1, "stats_change":{"accuracy": "4d4"}})
 				mod_added = self.host.add_modifier(modifier)
 				if mod_added:

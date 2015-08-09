@@ -277,15 +277,15 @@ item_listing = {
 
 	},
 	"secondary weapon":{
-		"dagger": {"stats": { "damage" : ["1d3","1d6"], "accuracy" : ["-1d6","2d6"]} ,"random_effects": True, "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quick stab", "quick cut"]}},
-		"shield": {"stats": {"defense" : ["1d3","5d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
+		"dagger": {"stats": { "damage" : ["1d3","3d5"], "accuracy" : ["-1d6","2d6"]} ,"random_effects": True, "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quick stab", "quick cut"]}},
+		"shield": {"stats": {"defense" : ["1d3","2d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
 
 		# enemy equipment below
 		"animal_claws": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
-		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defense" : ["2d6","5d6"],"random_effects": True, "evasion" : ["-5d6","-1d6"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defense" : ["3d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
+		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defense" : ["1d6","5d6"],"random_effects": True, "evasion" : ["-5d6","-1d6"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
+		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defense" : ["2d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
 	},
 	"talisman":{
 		"amulet of defense": {"stats": {"defense" : ["1d6","2d6"]} , "args":{"name":"amulet of defense", "description":"The most boring talisman, it just protects you."}},

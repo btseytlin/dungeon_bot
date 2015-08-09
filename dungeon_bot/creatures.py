@@ -825,12 +825,15 @@ class Creature(object):
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for modifier in perk.__class__.modifiers_granted:
+
 					modifier_object = get_modifier_by_name( modifier["name"], perk, self, modifier["stats"] )
 					modifier_object.apply()
 
 		for key in self.equipment.keys():
 			if self.equipment[key]:
 				for modifier in self.equipment[key].modifiers_granted:
+					if "params" in modifier.keys():
+						modifier["stats"] = modifier["params"]
 					modifier_object = get_modifier_by_name( modifier["name"], self.equipment[key], self, modifier["stats"] )
 					modifier_object.apply()
 

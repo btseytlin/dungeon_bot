@@ -268,7 +268,7 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s swings %s at %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.use_info['item_used'].short_desc, attack_info.target.short_desc)
+		return "%s swings %s at %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.target.short_desc)
 
 	@staticmethod
 	def get_hit_description(attack_info):

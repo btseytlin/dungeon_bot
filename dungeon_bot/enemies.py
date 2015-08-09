@@ -1001,17 +1001,17 @@ def lesser_demon_pack(size=None, special_enemy = None):
 
 	demons = [ LesserDemon(random.choice(levels)) for x in range(amount+1)]
 	desc = ""
-	beta_demon = []
+	beta_demons = []
 	if special_enemy:
 		if special_enemy == "beta demon":
 			if size == "medium" and random.randint(0, 10) > 4:
-				beta_demon, desc = beta_demon()
+				beta_demons, desc = beta_demon()
 			elif size == "big" and random.randint(0, 10) > 4:
-				beta_demon, desc = beta_demon("strong")
+				beta_demons, desc = beta_demon("strong")
 			elif size == "huge" and random.randint(0, 10) > 4:
-				beta_demon, desc = beta_demon("very strong")
+				beta_demons, desc = beta_demon("very strong")
 
-	demons += beta_demon
+	demons += beta_demons
 	description += desc
 	return demons, description
 
