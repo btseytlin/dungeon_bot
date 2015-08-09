@@ -271,6 +271,7 @@ class DungeonBot(object):
 		return markup
 
 	def send_message(self, user, message):
+		reply_markup = ReplyKeyboardHide(True)
 		if persistence_controller.is_registered(user): 
 			ply = persistence_controller.get_ply(user)
 			for notification in self.notifications:
@@ -279,7 +280,7 @@ class DungeonBot(object):
 					message += "\n"+notification["text"]
 
 			reply_markup = self.get_reply_markup(user)
-		from telegram import Emoji
+
 		self.api.sendMessage(user.id, message, None, None, reply_markup)
 
 	def on_message(self, message):
