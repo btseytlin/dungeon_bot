@@ -6,6 +6,8 @@ from .abilities import *
 from .level_perks import *
 from . import settings
 import random
+
+from telegram import Emoji
 default_characteristics = {
 	"strength": 5, #how hard you hit
 	"vitality": 5, #how much hp you have
@@ -618,7 +620,8 @@ class Creature(object):
 
 		if self.dead:
 			attack_info.use_info["did_kill"] = True
-			attack_info.description += "%s is killed by %s.\n"%(attack_info.target.short_desc.capitalize(), attack_info.inhibitor.name.capitalize())
+
+			attack_info.description += "**\t%s is killed by %s\t**\n"%(attack_info.target.short_desc.capitalize(), attack_info.inhibitor.short_desc.capitalize())
 			attack_info = attack_info.inhibitor.on_kill(attack_info)
 			attack_info = attack_info.target.on_death(attack_info)
 

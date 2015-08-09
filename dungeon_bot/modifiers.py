@@ -635,7 +635,7 @@ class Judgement(Modifier):
 				if len(alive_creatues)>0:
 					target = random.choice(alive_creatues)
 					dmg = diceroll( judgement_damage )
-					msg += "!!\tA lightning erupts from %s and hits %s for %d damage.\nThe judgement has been made.\n"%(self.granted_by.name.capitalize(), target.name.capitalize(), dmg)
+					msg += "!!\tA lightning erupts from %s and hits %s for %d damage.\nThe judgement has been made.\n"%(self.granted_by.name.capitalize(), target.short_desc.capitalize(), dmg)
 					msg += target.damage( dmg, self )
 
 		msg += super(Judgement, self).on_round()
@@ -729,7 +729,7 @@ class HurtUndead(Modifier):
 			additional_damage =int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["additional damage to undead"])/100)
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "undead" in attack_info.target.tags:
 				attack_info.target.damage(additional_damage, self.host, True)
-				attack_info.description += "!!\t%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
+				attack_info.description += "!!\t%s takes additional %d damage because of %s.\n"%(attack_info.target.short_desc.capitalize(), additional_damage, self.granted_by.name)
 		return attack_info
 
 	@staticmethod
@@ -756,7 +756,7 @@ class HurtDemons(Modifier):
 			additional_damage = int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["additional damage to demons"])/100)
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "demon" in attack_info.target.tags:
 				attack_info.target.damage(additional_damage, self.host, True)
-				attack_info.description += "!!\t%s takes additional %d damage because of %s.\n"%(attack_info.target.name.capitalize(), additional_damage, self.granted_by.name)
+				attack_info.description += "!!\t%s takes additional %d damage because of %s.\n"%(attack_info.target.short_desc.capitalize(), additional_damage, self.granted_by.name)
 		return attack_info
 
 	@staticmethod

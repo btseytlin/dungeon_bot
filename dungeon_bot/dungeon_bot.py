@@ -279,6 +279,7 @@ class DungeonBot(object):
 					message += "\n"+notification["text"]
 
 			reply_markup = self.get_reply_markup(user)
+		from telegram import Emoji
 		self.api.sendMessage(user.id, message, None, None, reply_markup)
 
 	def on_message(self, message):

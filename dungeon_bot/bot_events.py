@@ -1149,7 +1149,7 @@ class CombatEvent(BotEvent):
 							if self.user_abilities[str(user.id)][ability_name].__class__.requires_target == "friendly":
 								line.append(ability_name + " %d.%s"%(i+1, c.name))
 
-			line.append("examine %d.%s"%(i, c.name))
+			line.append("examine %d.%s"%(i+1, c.name))
 			keyboard.append(line)
 		return keyboard
 
