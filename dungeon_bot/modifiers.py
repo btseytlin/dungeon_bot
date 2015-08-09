@@ -330,7 +330,7 @@ class Regeneration(Modifier): #simply adds defence, hinders evasion
 	def on_round(self):
 		chance = diceroll(self.stats["healing chance"])
 		msg = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			heal = diceroll(self.stats["healing amount"])
 			if self.host.health < self.host.stats["max_health"]: 
 				self.host.health += heal
@@ -361,7 +361,7 @@ class Sickness(Modifier): #simply adds defence, hinders evasion
 	def on_round(self):
 		chance = diceroll(self.stats["sickness chance"])
 		msg = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			loss = diceroll(self.stats["sickness amount"])
 
 			self.host.damage(loss, self, True)
@@ -395,13 +395,13 @@ class FireAttack(Modifier):
 			fire_damage = self.stats["fire damage"]
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "fire resistant" in attack_info.target.tags:
 				chance = diceroll( fire_chance )
-				if random.randint(0, 100) < chance:
+				if random.randint(1, 100) <= chance:
 					dmg = diceroll(fire_damage)
 					attack_info.target.damage(dmg, self.host, True)
 					attack_info.description += "%s causes %d fire damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
 
 					chance_to_cause_burning = 1/2 * chance
-					if random.randint(0, 100) < chance_to_cause_burning:
+					if random.randint(1, 100) <= chance_to_cause_burning:
 						modifier = get_modifier_by_name("burning", self.granted_by, attack_info.target)
 						attack_info.use_info["modifiers_applied"].append(modifier)
 		return attack_info
@@ -432,13 +432,13 @@ class ElectricityAttack(Modifier):
 			electricity_damage = self.stats["electricity damage"]
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and not "electricity resistant" in attack_info.target.tags:
 				chance = diceroll( electricity_chance )
-				if random.randint(0, 100) < chance:
+				if random.randint(1, 100) <= chance:
 					dmg = diceroll( electricity_damage )
 					attack_info.target.damage(dmg, self.host, True)
 					attack_info.description += "%s causes %d electricity damage to %s.\n"%(self.granted_by.name.capitalize(), dmg, attack_info.target.short_desc.capitalize())
 
 					chance_to_cause_pain = 1/2 * chance
-					if random.randint(0, 100) < chance_to_cause_pain:
+					if random.randint(1, 100) <= chance_to_cause_pain:
 						modifier = get_modifier_by_name("pain", self.granted_by, attack_info.target)
 						attack_info.use_info["modifiers_applied"].append(modifier)
 		return attack_info
@@ -469,7 +469,7 @@ class Energy(Modifier):
 		chance = diceroll(self.stats["energy chance"])
 		amount = diceroll(self.stats["energy amount"])
 		msg = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			self.host.energy += amount
 			msg += "%s provides %s with %d energy.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize(), amount)
 
@@ -498,7 +498,7 @@ class Weakness(Modifier):
 		chance = diceroll(self.stats["weakness chance"])
 		amount = diceroll(self.stats["weakness amount"])
 		msg = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			self.host.energy += amount
 			msg += "%s drains %d energy from %s.\n"%(self.granted_by.name.capitalize(), amount, self.host.name.capitalize())
 
@@ -527,7 +527,7 @@ class Wisdom(Modifier):
 	def on_experience_gain(self, value):
 		chance = diceroll(self.stats["wisdom chance"])
 		desc = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			additional_gain = int(value * diceroll(self.stats["wisdom amount"] )/100)
 			value = value + additional_gain
 			desc = "%s earns %d additional experience due to %s.\n"%(self.host.name.capitalize(), additional_gain, self.granted_by.name)
@@ -555,7 +555,7 @@ class Stupidity(Modifier):
 	def on_experience_gain(self, value):
 		chance = diceroll(self.stats["stupidity chance"])
 		desc = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			exp_loss = int(value * diceroll(self.stats["stupidity amount"] )/100)
 			value = value - exp_loss
 			desc = "%s looses %d experience due to %s.\n"%(self.host.name.capitalize(), exp_loss, self.granted_by.name)
@@ -583,7 +583,7 @@ class Suffering(Modifier):
 	def on_round(self):
 		chance = diceroll(self.stats["pain chance"])
 		msg = ""
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			modifier = get_modifier_by_name("pain", self.granted_by, self.host)
 			self.host.add_modifier(modifier)
 			msg += "%s causes extreme pain to %s.\n"%(self.granted_by.name.capitalize(), self.host.name.capitalize())
@@ -613,7 +613,7 @@ class Judgement(Modifier):
 		msg = ""
 		chance = diceroll(self.stats["judgement chance"])
 		judgement_damage = self.stats["judgement damage"]
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			if self.host.event and hasattr(self.host.event, "turn_qeue") and len(self.host.event.turn_qeue)>1:
 				alive_creatues = [c for c in self.host.event.turn_qeue if not c.dead]
 				if len(alive_creatues)>0:
@@ -648,7 +648,7 @@ class Greed(Modifier):
 	def on_loot(self, item_gained):
 		msg = ""
 		chance = diceroll(self.stats["greed chance"])
-		if random.randint(0, 100) < chance:
+		if random.randint(1, 100) <= chance:
 			self.host.inventory.remove(item_gained)
 			msg = "%s destroys %s.\n"%(self.granted_by.name.capitalize, item_gained.name)
 		return msg
@@ -676,7 +676,7 @@ class Greed(Modifier):
 # 		chance = diceroll(self.stats["demons chance"])
 # 		demons_amount = diceroll(self.stats["demons amount"])
 # 		possible_demons = ["lesser demon"]
-# 		if random.randint(0, 100) < chance:
+# 		if random.randint(1, 100) <= chance:
 # 			demon = enemy_list[random.choice(possible_demons)]
 # 			demons = []
 # 			for x in range(1, demons_amount):

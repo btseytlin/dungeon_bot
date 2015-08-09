@@ -61,7 +61,7 @@ class AbilityUseInfo(object):
 		if self.ability_type == "attack":
 			self = self.inhibitor.on_attack(self)
 			self = self.target.on_attacked(self)
-			if random.randint(0, 100) > use_info["hit_chance"]:
+			if random.randint(1, 100) > use_info["hit_chance"]:
 				self.description += self.prototype_class.get_miss_description(self) 
 				self = self.inhibitor.on_miss(self)
 			else:
@@ -199,7 +199,7 @@ class Ability(object):
 		elif use_info.ability_type == "attack":
 			use_info.use_info["hit_chance"] = clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"]), 5, 95)
 
-		#	if random.randint(0, 100) > use_info.use_info["hit_chance"]:
+		#	if random.randint(1, 100) > use_info.use_info["hit_chance"]:
 				#use_info.description += use_info.prototype_class.get_miss_description(use_info) 
 			#else:
 			#	use_info.use_info["did_hit"] = True
@@ -281,7 +281,7 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Smash.get_knockdown_chance(use_info):
+		if random.randint(1, 100) <= Smash.get_knockdown_chance(use_info):
 			modifier = get_modifier_by_name("knockdown", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -387,7 +387,7 @@ class Stab(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Stab.get_pain_chance(use_info):
+		if random.randint(1, 100) <= Stab.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -471,7 +471,7 @@ class QuickStab(Ability):
 		return chance
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < QuickStab.get_pain_chance(use_info):
+		if random.randint(1, 100) <= QuickStab.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain",use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -550,7 +550,7 @@ class Cut(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Cut.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= Cut.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding",use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -631,7 +631,7 @@ class QuickCut(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < QuickCut.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= QuickCut.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -776,7 +776,7 @@ class Sweep(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Sweep.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= Sweep.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -850,7 +850,7 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < RodentBite.get_pain_chance(use_info):
+		if random.randint(1, 100) <= RodentBite.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -931,7 +931,7 @@ class AnimalBite(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < AnimalBite.get_pain_chance(use_info):
+		if random.randint(1, 100) <= AnimalBite.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -1004,7 +1004,7 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < AnimalClaw.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= AnimalClaw.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []

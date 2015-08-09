@@ -1067,7 +1067,7 @@ class Player(Creature):
 			drop_table = target.__class__.drop_table
 			for item in list(drop_table.keys()):
 				prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
-				got_item = random.randint(0, 100) <= prob
+				got_item = random.randint(1, 100) <= prob
 				if got_item:
 					item = get_item_by_name(item, target.__class__.loot_coolity)
 					attack_info.use_info["loot_dropped"].append(item)
