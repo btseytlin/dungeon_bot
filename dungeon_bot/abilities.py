@@ -228,11 +228,11 @@ class Ability(object):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.name.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name)
+		return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name)
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.name.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
+		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
 
 
 
@@ -273,7 +273,7 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s swings %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.short_desc.capitalize())
+		return "%s swings %s and deals %d damage to %s.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_knockdown_chance(use_info):		
@@ -721,7 +721,7 @@ class Revive(Ability):
 			buff_info.target.health = buff_info.target.stats["max_health"] 
 			buff_info.target.refresh_derived()
 
-		buff_info.description += "%s revives %s.\n"%(user.name.capitalize(),target.name.capitalize())
+		buff_info.description += "%s revives %s.\n"%(user.short_desc.capitalize(),target.short_desc.capitalize())
 		return Ability.use(buff_info)
 
 
@@ -868,11 +868,11 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize())
+		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
+		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
@@ -929,11 +929,11 @@ class AnimalBite(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize())
+		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
+		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
 	def get_pain_chance(use_info):
@@ -1003,11 +1003,11 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s tries to claw %s but misses.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize())
+		return "%s tries to claw %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
+		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
 	def get_bleeding_chance(use_info):

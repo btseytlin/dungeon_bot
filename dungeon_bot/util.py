@@ -7,6 +7,9 @@ import unicodedata as ud
 def get_uid():
 	return str(uuid.uuid4())[:8]
 
+def get_health_for_level(vit, level):
+		return int(vit*10 + ((vit + level) * math.log(clamp(vit, 1.5, 10))*5))
+
 def clamp(value, range_min, range_max):
 	# if isinstance(range_min, float) or isinstance(range_max, float):
 	# 	if value > range_max:

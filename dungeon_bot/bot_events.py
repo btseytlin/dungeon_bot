@@ -161,14 +161,14 @@ class ChatEvent(BotEvent):
 
 		elif (command in ["say", "s"]):
 			if len(args)>0:
-				msg = " ".join(args).capitalize()
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)
+				msg = " ".join(args)
+				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())
 				self.log.append(msg_others)
 
 				if len(self.log) > 1000:
 					self.log = []
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
 						broadcast.append([u, msg_others])
@@ -731,12 +731,11 @@ class DungeonLobbyEvent(BotEvent):
 		elif (command in ["say", "s"]):
 			if len(args)>0:
 				msg = " ".join(args)
-				msg_others = "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())
 				broadcast = []
 				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, msg_others])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())])
 				return broadcast
 			return "Specify what you want to say."
 
@@ -963,7 +962,7 @@ class DungeonCrawlEvent(BotEvent):
 			logger.debug("Levelup event %s created within dungeon %s."%(level_up.uid, self.uid))
 
 			broadcast = []
-			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).userid.capitalize())
+			msg = '%s is leveling up.'%(persistence_controller.get_ply(user).name.capitalize())
 
 			broadcast.append([user, level_up.greeting_message])
 			for u in self.users:
@@ -1026,10 +1025,10 @@ class DungeonCrawlEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())])
 				return broadcast
 			return "Specify what you want to say."
 		elif (command in ["status"]):
@@ -1364,10 +1363,10 @@ class CombatEvent(BotEvent):
 			if len(args)>0:
 				msg = " ".join(args)
 				broadcast = []
-				broadcast.append([user, "You: "+msg])
+				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
 					if user.id != u.id:
-						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg)])
+						broadcast.append([u, "%s: %s"%(persistence_controller.get_ply(user).name.capitalize(), msg.capitalize())])
 				return broadcast
 			return "Specify what you want to say."
 
