@@ -83,7 +83,7 @@ def test_armor_equip():
 	logger.info("Retrieved player:\n%s\n%s"%(ply.examine_self(), ply.examine_inventory()))
 	defenses = [ply.defense for x in range(10000)]
 	evasions = [ply.evasion for x in range(10000)]
-	logger.info("defense, Evasion without armor:\n%f, %f"%(ply.defense, ply.evasion))
+	logger.info("Defence, Evasion without armor:\n%f, %f"%(ply.defense, ply.evasion))
 	logger.info("Average defense, evasion without armor:\n%f, %f"%(sum(defenses)/len(defenses), sum(evasions)/len(evasions)))
 	ply.inventory.append(armor)
 	logger.info("Gave player the item:\n%s"%(ply.examine_inventory()))

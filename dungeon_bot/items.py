@@ -72,6 +72,8 @@ class Item(object):
 
 	@staticmethod
 	def de_json(data):
+		if "_name" in data and not "name" in data:
+			data["name"] = data["_name"]
 		if data.get("item_type") == "primary weapon":
 			return PrimaryWeapon.de_json(data)
 		if data.get("item_type") == "secondary weapon":
@@ -279,6 +281,7 @@ item_listing = {
 	"secondary weapon":{
 		"dagger": {"stats": { "damage" : ["1d3","3d5"], "accuracy" : ["-1d6","2d6"]} ,"random_effects": True, "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quick stab", "quick cut"]}},
 		"shield": {"stats": {"defense" : ["1d3","2d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
+
 
 		# enemy equipment below
 		"animal_claws": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},

@@ -4,6 +4,7 @@ from .creatures import Player
 from .bot_events import *
 from .util import *
 from .level_perks import *
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardHide
 import logging
 import datetime
 import random
@@ -65,7 +66,7 @@ class DungeonBot(object):
 		"h": "shows help",
 		"inventory": "shows your inventory",
 		"inv": "shows your inventory",
-		"levelup": "opens the level up dialogue",
+		"level up": "opens the level up dialogue",
 		"lvl": "opens the level up dialogue",
 		"status": "shows where you are and what you are doing",
 		"lobbies": "shows active lobbies with free slots",
@@ -78,6 +79,10 @@ class DungeonBot(object):
 		"chat": "joins global chat",
 		"dev [message]": "sends a message to the developers, use in case of errors or bugs",
 		"bug [message]": "sends a message to the developers, use in case of errors or bugs",
+		"close keyboard": "closes custom keyboard", "open keyboard": "opens custom keyboard", 
+	}
+
+	custom_keyboard_status = { #"userid": "show"/"close"/"never show"
 	}
 
 	instance = None
@@ -133,7 +138,7 @@ class DungeonBot(object):
 				return (persistence_controller.get_ply(user).examine_self())
 		elif (command in ["inventory", "inv"]):
 			return self.open_inventory(user)
-		elif (command in ["levelup","lvl"]):
+		elif (command in ["level up","lvl"]) or command == "level" and " ".join(args) == "up":
 			return(self.open_level_up(user))
 		elif (command in ["help","info","h"]):
 			return(print_available_commands(self.allowed_commands))
@@ -144,6 +149,12 @@ class DungeonBot(object):
 		elif (command in ["status"]):
 			msg = self.status(user)
 			return msg
+		elif command in ["close"] and " ".join(args) == "keyboard":
+			DungeonBot.custom_keyboard_status[str(user.id)] = "close"
+			return "Keybroad closed."
+		elif command in ["open"] and " ".join(args) == "keyboard":
+			DungeonBot.custom_keyboard_status[str(user.id)] = "show"
+			return "Keybroad opened."
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)
@@ -223,7 +234,41 @@ class DungeonBot(object):
 				raise
 
 				#DungeonBot.resart()
-					
+	def get_keyboard(self, user):
+		keyboard = [
+			["help", "status", "chat"],
+			["lobbies", "join", "create 1"],
+			["examine self", "inventory", "level up"],
+			["close keyboard"],
+		]
+		return keyboard
+
+	def get_reply_markup(self, user):
+		action = "show"
+		ply = persistence_controller.get_ply(user)
+		if user and str(user.id):
+			if ply.event:
+				if str(user.id) in ply.event.custom_keyboard_status.keys():
+					if ply.event.custom_keyboard_status[str(user.id)] == "close" or ply.event.custom_keyboard_status[str(user.id)] == "never show":
+						action = "close"
+			else:
+				if str(user.id) in DungeonBot.custom_keyboard_status.keys():
+					if DungeonBot.custom_keyboard_status[str(user.id)] == "close" or DungeonBot.custom_keyboard_status[str(user.id)] == "never show":
+						action = "close"
+
+		markup = None
+		keyboard = None
+		if action == "show":
+			if ply.event:
+				keyboard = ply.event.get_keyboard(user)
+			else:
+				keyboard = self.get_keyboard(user)
+			
+		if keyboard:
+			markup = ReplyKeyboardMarkup(keyboard)
+		else:
+			markup = ReplyKeyboardHide(True)
+		return markup
 
 	def send_message(self, user, message):
 		if persistence_controller.is_registered(user): 
@@ -232,12 +277,12 @@ class DungeonBot(object):
 				if ply.last_read_notification_id < notification["id"]:
 					ply.last_read_notification_id = notification["id"]
 					message += "\n"+notification["text"]
-		self.api.sendMessage(user.id, message)
+
+			reply_markup = self.get_reply_markup(user)
+		self.api.sendMessage(user.id, message, None, None, reply_markup)
 
 	def on_message(self, message):
 		user = message.from_user
-
-		
 		try:
 			#check if player is registered
 			if not persistence_controller.is_registered(user): 

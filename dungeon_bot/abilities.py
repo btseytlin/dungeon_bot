@@ -61,7 +61,7 @@ class AbilityUseInfo(object):
 		if self.ability_type == "attack":
 			self = self.inhibitor.on_attack(self)
 			self = self.target.on_attacked(self)
-			if random.randint(0, 100) > use_info["hit_chance"]:
+			if random.randint(1, 100) > use_info["hit_chance"]:
 				self.description += self.prototype_class.get_miss_description(self) 
 				self = self.inhibitor.on_miss(self)
 			else:
@@ -199,7 +199,7 @@ class Ability(object):
 		elif use_info.ability_type == "attack":
 			use_info.use_info["hit_chance"] = clamp( use_info.prototype_class.get_chance_to_hit(use_info.inhibitor, use_info.target, use_info.use_info["item_used"]), 5, 95)
 
-		#	if random.randint(0, 100) > use_info.use_info["hit_chance"]:
+		#	if random.randint(1, 100) > use_info.use_info["hit_chance"]:
 				#use_info.description += use_info.prototype_class.get_miss_description(use_info) 
 			#else:
 			#	use_info.use_info["did_hit"] = True
@@ -228,11 +228,11 @@ class Ability(object):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name)
+		return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.name.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name)
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
+		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.name.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
 
 
 
@@ -254,6 +254,7 @@ class Smash(Ability):
 	description = "Smash your weapon and hope you hit something!"
 	energy_required = 2
 	requirements = None
+	requires_target = "enemy"
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -272,7 +273,7 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s swings %s and deals %d damage to %s.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.short_desc.capitalize())
+		return "%s swings %s and deals %d damage to %s.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"], attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_knockdown_chance(use_info):		
@@ -281,7 +282,7 @@ class Smash(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Smash.get_knockdown_chance(use_info):
+		if random.randint(1, 100) <= Smash.get_knockdown_chance(use_info):
 			modifier = get_modifier_by_name("knockdown", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -341,6 +342,7 @@ class Stab(Ability):
 	description = "Stab in the gut!"
 	energy_required = 2
 	requirements = None
+	requires_target = "enemy"
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -387,7 +389,7 @@ class Stab(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Stab.get_pain_chance(use_info):
+		if random.randint(1, 100) <= Stab.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -426,6 +428,7 @@ class QuickStab(Ability):
 	description = "Quick stab in the gut!"
 	energy_required = 1
 	requirements = None
+	requires_target = "enemy"
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -471,7 +474,7 @@ class QuickStab(Ability):
 		return chance
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < QuickStab.get_pain_chance(use_info):
+		if random.randint(1, 100) <= QuickStab.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain",use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -505,6 +508,7 @@ class Cut(Ability):
 	description = "Cut em up!"
 	energy_required = 2
 	requirements = None
+	requires_target = "enemy"
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -550,7 +554,7 @@ class Cut(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Cut.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= Cut.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding",use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -586,6 +590,7 @@ class QuickCut(Ability):
 	description = "Cut em up!"
 	energy_required = 1
 	requirements = None
+	requires_target = "enemy"
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -631,7 +636,7 @@ class QuickCut(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < QuickCut.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= QuickCut.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -654,6 +659,7 @@ class ShieldUp(Ability):
 	description = "Hide behind your steel."
 	energy_required = 3
 	requirements = None
+	requires_target = None
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -687,6 +693,7 @@ class Revive(Ability):
 	description = "Revive a creature."
 	energy_required = 5
 	requirements = None
+	requires_target = "friendly"
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -714,7 +721,7 @@ class Revive(Ability):
 			buff_info.target.health = buff_info.target.stats["max_health"] 
 			buff_info.target.refresh_derived()
 
-		buff_info.description += "%s revives %s.\n"%(user.short_desc.capitalize(),target.short_desc.capitalize())
+		buff_info.description += "%s revives %s.\n"%(user.name.capitalize(),target.name.capitalize())
 		return Ability.use(buff_info)
 
 
@@ -731,6 +738,8 @@ class Sweep(Ability):
 	description = "Swippity sweep."
 	energy_required = 4
 	requirements = None
+	requires_target = "enemy"
+
 
 	@staticmethod
 	def can_use(user, target=None):
@@ -776,7 +785,7 @@ class Sweep(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < Sweep.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= Sweep.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -793,6 +802,7 @@ class RodentBite(Ability):
 	description = "Rodents bite!"
 	energy_required = 1
 	requirements = None
+	requires_target = "enemy"
 
 
 	"""
@@ -850,7 +860,7 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < RodentBite.get_pain_chance(use_info):
+		if random.randint(1, 100) <= RodentBite.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -858,11 +868,11 @@ class RodentBite(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize())
+		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
+		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
@@ -876,6 +886,7 @@ class AnimalBite(Ability):
 	description = "Animals bite, bad!"
 	energy_required = 3
 	requirements = None
+	requires_target = "enemy"
 	"""
 	chance to hit = ?
 	avg chance to hit = ?
@@ -918,11 +929,11 @@ class AnimalBite(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize())
+		return "%s tries to bite %s but misses.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
+		return "%s bites %s and deals %d damage.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
 	def get_pain_chance(use_info):
@@ -931,7 +942,7 @@ class AnimalBite(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < AnimalBite.get_pain_chance(use_info):
+		if random.randint(1, 100) <= AnimalBite.get_pain_chance(use_info):
 			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -948,6 +959,7 @@ class AnimalClaw(Ability):
 	description = "Animals claw, bad!"
 	energy_required = 2
 	requirements = None
+	requires_target = "enemy"
 	"""
 	chance to hit = accuracy * dexterity - target_evasion - is_small * target_evasion - is_quick * target_evasion
 	dmg = base_damage * strength  - is_armored * defense * 4 - is_heavy_armored * defense * 5
@@ -991,11 +1003,11 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s tries to claw %s but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize())
+		return "%s tries to claw %s but misses.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize())
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
+		return "%s claws %s and deals %d damage.\n"%(attack_info.inhibitor.name.capitalize(), attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"])
 
 	@staticmethod
 	def get_bleeding_chance(use_info):
@@ -1004,7 +1016,7 @@ class AnimalClaw(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(0, 100) < AnimalClaw.get_bleeding_chance(use_info):
+		if random.randint(1, 100) <= AnimalClaw.get_bleeding_chance(use_info):
 			modifier = get_modifier_by_name("bleeding", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
