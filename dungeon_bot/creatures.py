@@ -47,6 +47,8 @@ class Creature(object):
 
 
 
+
+
 	def get_stats_from_characteristics(self, characteristics): #stats are completely derived from characteristics
 		stats =  {
 			"health": 0,
@@ -56,7 +58,7 @@ class Creature(object):
 			"energy_regen": 0
 		}
 
-		stats["max_health"] = characteristics["vitality"]*10 + (characteristics["vitality"] * (self.level * 4))
+		stats["max_health"] =  get_health_for_level(characteristics["vitality"], self.level)
 		stats["max_energy"] = characteristics["strength"] + int(self.level / 10)
 		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 10), 2, 10)
 		stats["health"] = stats["max_health"]
@@ -224,8 +226,8 @@ class Creature(object):
 			defense = self.defense
 
 			dmg = int(value * clamp( (value - defense)/value, 0.1, 1 ))
-
-			msg += "%s negates %d damage because of his defense.\n"%(self.name.capitalize(), value - dmg)
+			if (value - dmg) > 0:
+				msg += "%d damage negated by defense.\n"%(value - dmg)
 		else:
 			dmg = value
 
@@ -935,7 +937,6 @@ class Creature(object):
 			"Equipment:\n%s"%(self.examine_equipment()),
 		])
 
-		print(desc)
 		return desc
 
 	def to_json(self):
@@ -1070,7 +1071,7 @@ class Player(Creature):
 			drop_table = target.__class__.drop_table
 			for item in list(drop_table.keys()):
 				prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
-				got_item = random.randint(1, 100) <= prob
+				got_item = random.randint(0, 100) <= prob
 				if got_item:
 					item = get_item_by_name(item, target.__class__.loot_coolity)
 					attack_info.use_info["loot_dropped"].append(item)

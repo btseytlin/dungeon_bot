@@ -1134,7 +1134,7 @@ class CombatEvent(BotEvent):
 			for ability_name in list(self.user_abilities[str(user.id)].keys()):
 				if not self.user_abilities[str(user.id)][ability_name].__class__.requires_target:
 					non_target_abs.append(ability_name)
-
+		keyboard.append(non_target_abs)
 		for i in range(len(self.turn_queue)):
 			c = self.turn_queue[i]
 			line = []
@@ -1143,22 +1143,22 @@ class CombatEvent(BotEvent):
 					if str(user.id) in self.user_abilities.keys():
 						for ability_name in list(self.user_abilities[str(user.id)].keys()):
 							if self.user_abilities[str(user.id)][ability_name].__class__.requires_target == "enemy":
-										line.append(ability_name + " %d.%s"%(i+1, c.name))
-					if isinstance(c, Player):
-						if str(user.id) in self.user_abilities.keys():
-							for ability_name in list(self.user_abilities[str(user.id)].keys()):
-								if self.user_abilities[str(user.id)][ability_name].__class__.requires_target == "friendly":
-											line.append(ability_name + " %d.%s"%(i+1, c.name))
+								line.append(ability_name + " %d.%s"%(i+1, c.name))
+				if isinstance(c, Player):
+					if str(user.id) in self.user_abilities.keys():
+						for ability_name in list(self.user_abilities[str(user.id)].keys()):
+							if self.user_abilities[str(user.id)][ability_name].__class__.requires_target == "friendly":
+								line.append(ability_name + " %d.%s"%(i+1, c.name))
 
 			line.append("examine %d.%s"%(i, c.name))
 			keyboard.append(line)
 		return keyboard
 
 	def status(self, user=None):
-		msg = 'The turn queue:%s\n'%(self.get_printable_turn_queue())
+		msg = 'The turn queue:\n%s'%(self.get_printable_turn_queue())
+		msg += '|\tYou have %d energy and %d health.\n'%(self.users_to_players[str(user.id)].energy, self.users_to_players[str(user.id)].health)
+		msg += "|\tIt's %s's turn.\n"%(self.turn_queue[self.turn].name.capitalize())
 		msg += 'You can use creature numbers as arguemnts for commands, for example "smash 1".\n'
-		msg += 'You have %d energy and %d health.\n'%(self.users_to_players[str(user.id)].energy, self.users_to_players[str(user.id)].health)
-		msg += "It's %s's turn.\n"%(self.turn_queue[self.turn].name.capitalize())
 		return msg
 
 	def next_round(self):
@@ -1180,7 +1180,7 @@ class CombatEvent(BotEvent):
 		return msg
 
 	def get_printable_turn_queue(self):
-		return ", ".join([self.turn_queue[i].short_desc for i in range(len(self.turn_queue))])+"\n"
+		return "---\n"+"\n".join(["|\t"+self.turn_queue[i].short_desc for i in range(len(self.turn_queue))])+"\n" + "---\n"
 
 	def check_winning_conditions(self):
 		alive_enemy = False
@@ -1218,7 +1218,7 @@ class CombatEvent(BotEvent):
 			msg += self.ai_turn()
 			return msg + self.next_turn()
 		else:
-			return "It's %s's turn.\n"%(self.turn_queue[self.turn].name)
+			return "|\tIt's %s's turn.\n"%(self.turn_queue[self.turn].name)
 
 	def next_turn(self):
 		msg = ""
