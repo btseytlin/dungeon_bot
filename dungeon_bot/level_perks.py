@@ -157,7 +157,7 @@ class Flow(LevelPerk):
 	}
 
 	def on_kill(self, ability_info):
-		if ability_info.inhibitor == self.host and random.randint(0,100) < 35:
+		if ability_info.inhibitor == self.host and random.randint(1,100) <= 35:
 			ability_info.inhibitor.energy += 2
 			ability_info.description += "%s recovers 2 energy!"%(self.host.name.capitalize())
 		return ability_info
@@ -176,7 +176,7 @@ class Deft(LevelPerk):
 
 	def on_miss(self, ability_info):
 		if ability_info.use_info["energy_change"] < -1:
-			if random.randint(0, 100) < 30:
+			if random.randint(1, 100) <= 30:
 				ability_info.inhibitor.energy += 1
 				ability_info.description += "%s recovers 1 energy!"%(ability_info.inhibitor.name.capitalize())
 				return ability_info
