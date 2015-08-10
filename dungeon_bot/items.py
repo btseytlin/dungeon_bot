@@ -18,8 +18,12 @@ class Item(object):
 	    return self.full_name
 
 	@property
+	def short_name(self):
+		return self._name
+
+	@property
 	def name(self):
-		return self._name + "".join(["*" for modifier in self.modifiers_granted])
+		return self._name+ "".join(["*" for modifier in self.modifiers_granted])
 
 	@property
 	def full_name(self):

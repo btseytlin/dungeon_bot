@@ -131,9 +131,8 @@ def run_tests():
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "steel halberd"
+	item = "rapier"
 	item = get_item_by_name(item, 1)
-
 	logger.info(item.examine_self())
 	#item.stats["accuracy"] = "100d10"
 	#item.stats["damage"] = "7d1"
@@ -146,12 +145,11 @@ def run_tests():
 	dummy = Dummy(1000)
 
 	#ply.refresh_derived()
-	item = "chainmail"
+	item = "dagger"
 	item = get_item_by_name(item)
-	dummy.tags = []
-	dummy.add_to_inventory(item)
-	dummy.equip(item)
+	ply.add_to_inventory(item)
+	ply.equip(item)
 
 	#enemies = [dummy,(1),Mercenary(1), ]
-	enemies, desc = merc_mages("medium")
+	enemies, desc = undead_soldier_pack("medium")
 	controlled_combat_event([ply], enemies)

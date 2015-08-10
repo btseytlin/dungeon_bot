@@ -142,7 +142,6 @@ class Looter(LevelPerk):
 		description = ""
 		chance = 40
 		if random.randint(1, 100) < chance:
-			print("hey?")
 			new_items = source.drop_loot()
 			if len(new_items)> 0:
 				item = random.choice(new_items)

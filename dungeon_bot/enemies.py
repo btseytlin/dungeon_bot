@@ -17,6 +17,7 @@ def retrieve_enemies_for_difficulty(enemy_table, difficulty):
 
 
 	random_float = random_in_range_for_coolity(0, len(temp_list), 0.8)
+
 	random_enemy = temp_list[int(math.floor(random_float))]
 
 

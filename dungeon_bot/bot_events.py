@@ -1123,7 +1123,7 @@ class CombatEvent(BotEvent):
 			ply = self.users_to_players[str(user.id)]
 			for ability in ply.abilities:
 				if ability.name in [ab for ab in self.user_abilities[str(user.id)] ]:# ability with that name already exists
-					self.user_abilities[str(user.id)][ability.granted_by.name + " " +ability.name] = ability
+					self.user_abilities[str(user.id)][ability.granted_by.short_name + " " +ability.name] = ability
 				else:
 					self.user_abilities[str(user.id)][ability.name] = ability
 

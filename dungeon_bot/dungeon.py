@@ -56,18 +56,18 @@ class Room(object):
 dungeons = {
 	"Crypt of undead lords" : {
 		"description": "It's said the crypt was built to contain a royal family turned undead.",
-		"enemy_types":["common", "undead"]
+		"enemy_types":["undead"]
 	},
 	"Underground forest" : {
 		"description": "A series of caves. Rich vegetation grows everywhere, as if it was a real forest. The fauna is also rich. And hostile.",
-		"enemy_types":["common", "animal"]
+		"enemy_types":["animal"]
 	},
 	"Tunnel of dimensions" : {
 		"description": "A series of wormholes between worlds. The horrors that don't belong to any world infest it.",
-		"enemy_types":["common", "undead", "demon"]
+		"enemy_types":["undead", "demon"]
 	},
 	"Bandit den" : {
 		"description": "All kinds of scum find shelter in these caves.",
-		"enemy_types":["common", "human"]
+		"enemy_types":["human"]
 	},
 }
