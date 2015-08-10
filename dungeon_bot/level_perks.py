@@ -87,8 +87,8 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 	def on_health_lost(self, amount=None):
 		pass
 
-	def on_loot(self, item_gained):
-		pass
+	def on_loot(self, item_gained, source):
+		return ""
 
 	def on_modifier_applied(self, modifier):
 		pass
@@ -96,30 +96,11 @@ class LevelPerk(object): #LevelPerks always affect only the host that carries th
 	def on_modifier_lifted(self, modifier):
 		pass
 
-class Educated(LevelPerk):
-	name = "Educated"
-	description = "Get 10 percent additional experience."
-	priority = 0
-	requirements = {
-		"level": 1,
-		"has_perks": [],
-		"characteristics": {
-			"intelligence": 5
-		}
-	}
 
-	def __init__(self, host):
-		LevelPerk.__init__(self, host)
-
-	def on_experience_gain(self, value):
-		additional_gain =value * 0.10
-		value = value + additional_gain
-		desc = "!!\t%s earns %d additional experience due to being educated.\n"%(self.host.name.capitalize(), additional_gain)
-		return desc, value
-
+""" General tree """
 class TeamTactics(LevelPerk):
 	name = "Team tactics"
-	description = "Get +1 max energy for each player in lobby, but not more than 3."
+	description = "Get +1 energy regen for each player in lobby, but not more than 3."
 	priority = 0
 	requirements = {
 		"level": 1,
@@ -137,57 +118,123 @@ class TeamTactics(LevelPerk):
 		players = combat_event.players
 		other_players_num = clamp( len(players)-1, 0, 3)
 		if other_players_num > 0:
-			modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"max_energy": other_players_num}, "duration": -1 })
+			modifier = get_modifier_by_name("bonus", self, self.host, {"stats_change": {"energy_regen": other_players_num}, "duration": -1 })
 			mod_added = self.host.add_modifier(modifier)
 			if mod_added:
 				return "!!\t%s gains %s max energy by using team tactics.\n"%(self.host.name.capitalize(), other_players_num)
 		return ""
 
-
-class Flow(LevelPerk):
-	name = "Flow"
-	description = "Get 35 percent chance to recover 2 energy on kill."
+class Looter(LevelPerk):
+	name = "Looter"
+	description = "Get 40 percent more loot."
 	priority = 0
 	requirements = {
-		"level": 1,
+		"level": 10,
 		"has_perks": [],
 		"characteristics": {
-			"dexterity": 6
 		}
 	}
 
-	def on_kill(self, ability_info):
-		if ability_info.inhibitor == self.host and random.randint(0,100) < 35:
-			ability_info.inhibitor.energy += 2
-			ability_info.description += "!!\t%s recovers 2 energy!"%(self.host.name.capitalize())
-		return ability_info
+	def __init__(self, host):
+		LevelPerk.__init__(self, host)
 
-class Deft(LevelPerk):
-	name = "Deft"
-	description = "Get a 30 percent chance to recover 1 energy after a miss."
+	def on_loot(self, item, source):
+		chance = 40
+		if random.randint(1, 100) < 30:
+			new_items = source.drop_loot()
+			item = random.choice(new_items)
+			self.host.add_to_inventory(item)
+
+			if self.host.add_to_inventory(item):
+				description += "!!\t%s got additional loot as a skilled looter: %s.\n"%(self.host.name.capitalize(), item.full_name)
+			else:
+				description += "!!\t%s got additional loot: %s, but didn't have enough space in inventory.\n"%(self.host.name.capitalize(), item.name)
+			return description
+
+
+""" Tank tree """
+class Legionaire(LevelPerk):
+	name = "Legionaire"
+	description = "Get twice more defence when putting your shield up."
 	priority = 0
 	requirements = {
-		"level": 1,
+		"level": 5,
 		"has_perks": [],
 		"characteristics": {
-			"intelligence": 6,
+			"vitality": 6,
 		}
 	}
 
-	def on_miss(self, ability_info):
-		if ability_info.use_info["energy_change"] < -1:
-			if random.randint(0, 100) < 30:
-				ability_info.inhibitor.energy += 1
-				ability_info.description += "!!\t%s recovers 1 energy!\n"%(ability_info.inhibitor.name.capitalize())
-				return ability_info
-		return ability_info
+	def on_modifier_applied(self, modifier):
+		msg = ""
+		if modifier.name == "shielded"
+			modifier.stats["stats_change"]["defense"] = str(int(stats["stats_change"]["defense"].split('d')[0])*2) + 'd' + str(int(stats["stats_change"]["defense"].split('d')[1])*2)
+			msg = "!!\t The defense bonus is two times stronger!!"
+		return msg
 
+class Knight(LevelPerk):
+	name = "Knight"
+	description = "Take only half the dexterity penalties when wearing armor."
+	priority = 0
+	requirements = {
+		"level": 10,
+		"has_perks": ["legionaire"],
+		"characteristics": {
+			"vitality": 6,
+		}
+	}
+
+	def __init__(self, host):
+		LevelPerk.__init__(self, host)
+		self.bonus = None
+		self.item = None
+
+	def on_combat_start(self):
+		if not self.bonus and self.host.armor:
+			self.on_item_equipped(self.host.armor)
+
+	def on_item_equipped(self, item):
+		if item.item_type == "armor":
+			if "characteristics_change" in item.stats.keys() and "dexterity" in item.stats["characteristics_change"].keys() and item.stats["characteristics_change"]["dexterity"]<-1:
+				modifier = get_modifier_by_name("bonus",self, self.host, {"duration":-1, "characteristics_change":{"dexterity": abs(int(item.stats["characteristics_change"]["dexterity"]/2))}})
+				self.bonus = modifier
+				self.item = item
+				mod_added = self.host.add_modifier(modifier)
+
+	def on_item_unequipped(self, item):
+		if item == self.item:
+			if self.bonus:
+				self.bonus.lift()
+
+
+class Berserk(LevelPerk):
+	name = "Berserk"
+	description = "Chance to get enraged when taking damage, gaining a bonus to strength and dexterity."
+	priority = 0
+	requirements = {
+		"level": 10,
+		"has_perks": ["legionaire"],
+		"characteristics": {
+			"vitality": 6,
+		}
+	}
+
+	def on_health_lost(self, value):
+		chance = clamp((value / self.host.stats["max_health"]) * 100, 0, 95)
+		if random.randint(1, 100) < chance:
+			modifier = get_modifier_by_name("bonus", self, self.host, {"duration":2, "characteristics_change":{"strength": 2, "dexterity": 2}})
+			mod_added = self.host.add_modifier(modifier)
+			if mod_added:
+				msg = "!!\t%s is enraged!\n"%(self.host.name.capitalize())
+
+
+""" Damage Dealer tree """
 class Sweeper(LevelPerk):
 	name = "Sweeper"
-	description = "Get an accuracy bonus when surrounded by 4 or more enemies"
+	description = "Get an accuracy bonus when surrounded by 4 or more enemies. It's the first step to become a master killer."
 	priority = 0
 	requirements = {
-		"level": 1,
+		"level": 5,
 		"has_perks": [],
 		"characteristics": {
 			"strength": 6,
@@ -199,11 +246,101 @@ class Sweeper(LevelPerk):
 		if self.host.event:
 			combat_event = self.host.event
 			if len([c for c in combat_event.turn_queue if c.__class__.__name__ != "Player" and not c.dead])>=4:
-				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":-1, "stats_change":{"accuracy": "4d4"}})
+				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":1, "stats_change":{"accuracy": "3d6"}})
 				mod_added = self.host.add_modifier(modifier)
 				if mod_added:
 					msg = "!!\t%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.capitalize())
 		return msg
+
+class Flow(LevelPerk):
+	name = "Flow"
+	description = "Get 35 percent chance to recover 2 energy on kill."
+	priority = 0
+	requirements = {
+		"level": 10,
+		"has_perks": ["sweeper"],
+		"characteristics": {
+			"strength": 6
+		}
+	}
+
+	def on_kill(self, ability_info):
+		if ability_info.inhibitor == self.host and random.randint(0,100) < 35:
+			ability_info.inhibitor.energy += 2
+			ability_info.description += "!!\t%s recovers 2 energy!\n"%(self.host.name.capitalize())
+		return ability_info
+
+class Deft(LevelPerk):
+	name = "Deft"
+	description = "Get a 30 percent chance to recover 1 energy after a miss."
+	priority = 0
+	requirements = {
+		"level": 10,
+		"has_perks": ["sweeper"],
+		"characteristics": {
+			"strength": 6,
+		}
+	}
+
+	def on_miss(self, ability_info):
+		if ability_info.use_info["energy_change"] < -1:
+			if random.randint(0, 100) < 30:
+				ability_info.inhibitor.energy += 1
+				ability_info.description += "!!\t%s recovers 1 energy!\n"%(ability_info.inhibitor.name.capitalize())
+				return ability_info
+		return ability_info
+
+
+
+""" Mage tree """
+class Educated(LevelPerk):
+	name = "Educated"
+	description = "Get 10 percent additional experience. Being educated is the first step to mastering to magic arts."
+	priority = 0
+	requirements = {
+		"level": 5,
+		"has_perks": [],
+		"characteristics": {
+			"intelligence": 5
+		}
+	}
+
+	def __init__(self, host):
+		LevelPerk.__init__(self, host)
+
+	def on_experience_gain(self, value):
+		additional_gain =value * 0.10
+		value = value + additional_gain
+		desc = "!!\t%s earns %d additional experience due to being educated.\n"%(self.host.name.capitalize(), additional_gain)
+		return desc, value
+
+class Mage(LevelPerk):
+	name = "Mage"
+	description = "Get spells: heal, fireball, lightning."
+	priority = 0
+	requirements = {
+		"level": 10,
+		"has_perks": ["educated"],
+		"characteristics": {
+			"intelligence": 6,
+		}
+	}
+
+	abilities_granted = [ "heal", "fireball", "lightning" ]
+
+class Necromancer(LevelPerk):
+	name = "Necromancer"
+	description = "Get spells: fireball, fear scream, mass pain."
+	priority = 0
+	requirements = {
+		"level": 10,
+		"has_perks": ["educated"],
+		"characteristics": {
+			"intelligence": 6,
+		}
+	}
+
+	abilities_granted = [ "fear scream", "fireball", "mass pain" ]
 
 level_perks_listing = {
 	"Educated":Educated,

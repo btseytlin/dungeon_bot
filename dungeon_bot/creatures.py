@@ -39,7 +39,7 @@ class Creature(object):
 		self.base_characteristics = characteristics.copy()
 
 		self.base_tags = tags.copy()
-		self.base_abilities = abilities
+		self.base_abilities = abilities.copy()
 
 		self.inventory = inventory.copy()
 		self.equipment = equipment.copy()
@@ -61,8 +61,8 @@ class Creature(object):
 		}
 
 		stats["max_health"] =  get_health_for_level(characteristics["vitality"], self.level)
-		stats["max_energy"] = characteristics["strength"] + int(self.level / 10)
-		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 10), 2, 10)
+		stats["max_energy"] = characteristics["strength"] + int(self.level / 20)
+		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 20), 2, 10)
 		stats["health"] = stats["max_health"]
 		stats["energy"] = stats["max_energy"]
 		return stats
@@ -253,19 +253,20 @@ class Creature(object):
 		else:
 			return False
 
-	def equip(self, target_item):
+	def equip(self, target_item, force_equip = False):
 		if target_item.item_type == "consumable":
 			return "Can't equip %s."%(target_item.name)
 
-		if target_item.requirements:
-			for key in list(target_item.requirements.keys()):
-				if key == "characteristics":
-					for characteristic in target_item.requirements[key]:
-						if self.characteristics[characteristic] < target_item.requirements[key][characteristic]:
-							return "%d %s required to use this item."%(target_item.requirements[key][characteristic], key)
-				if key == "two handed" and target_item.requirements[key]:
-					if self.secondary_weapon:
-						return "Can't equip two handed %s because %s is equipped."%(target_item.short_desc, self.secondary_weapon.short_desc)
+		if not force_equip: #forceequip allows to bypass requirements checks
+			if target_item.requirements:
+				for key in list(target_item.requirements.keys()):
+					if key == "characteristics":
+						for characteristic in target_item.requirements[key]:
+							if self.characteristics[characteristic] < target_item.requirements[key][characteristic]:
+								return "%d %s required to use this item."%(target_item.requirements[key][characteristic], key)
+					if key == "two handed" and target_item.requirements[key]:
+						if self.secondary_weapon:
+							return "Can't equip two handed %s because %s is equipped."%(target_item.short_desc, self.secondary_weapon.short_desc)
 
 		if self.equipment[target_item.item_type] == target_item:
 			return "Already equipped %s."%(target_item.name)
@@ -739,7 +740,7 @@ class Creature(object):
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				effect = perk.on_buff(item)
+				effect = perk.on_loot(item)
 				if effect:
 					msg += effect
 
@@ -1030,8 +1031,8 @@ class Player(Creature):
 
 	def level_up(self):
 		self.level = self.level + 1
-		self.level_up_points += ( int(self.level % 5) == 0 ) * 1
-		self.perk_points += ( int(self.level % 3) == 0 ) * 1
+		self.level_up_points += ( int(self.level % 10) == 0 ) * 1
+		self.perk_points += ( int(self.level % 5) == 0 ) * 1
 		msg = self.on_level_up()
 		return msg
 
@@ -1068,24 +1069,21 @@ class Player(Creature):
 		ply.refresh_derived()
 		return ply
 
+
+
 	def on_kill(self, attack_info):
 		target = attack_info.target
 		if isinstance(target, Enemy):
-			drop_table = target.__class__.drop_table
-			for item in list(drop_table.keys()):
-				prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
-				got_item = random.randint(0, 100) <= prob
-				if got_item:
-					item = get_item_by_name(item, target.__class__.loot_coolity)
-					attack_info.use_info["loot_dropped"].append(item)
-					if isinstance(attack_info.inhibitor, Player):
-						loot_goes_to = random.choice(attack_info.inhibitor.event.players)
-						if loot_goes_to.add_to_inventory(item):
-							attack_info.description += "%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.full_name)
-							attack_info.description += loot_goes_to.on_loot(item)
-						else:
-							attack_info.description += "%s got loot: %s, but didn't have enough space in inventory.\n"%(loot_goes_to.name.capitalize(), item.name)
-					attack_info.use_info["loot_dropped"].append(item)
+			dropped_items = target.drop_loot()
+			for item in dropped_items
+				if isinstance(attack_info.inhibitor, Player):
+					loot_goes_to = random.choice(attack_info.inhibitor.event.players)
+					if loot_goes_to.add_to_inventory(item):
+						attack_info.description += "!!\t%s got loot: %s.\n"%(loot_goes_to.name.capitalize(), item.full_name)
+						attack_info.description += loot_goes_to.on_loot(item, attack_info.target)
+					else:
+						attack_info.description += "!!\t%s got loot: %s, but didn't have enough space in inventory.\n"%(loot_goes_to.name.capitalize(), item.name)
+				attack_info.use_info["loot_dropped"].append(item)
 		return super(Player, self).on_kill(attack_info)
 
 	def to_json(self):
@@ -1120,6 +1118,17 @@ class Enemy(Creature):
 
 	def act(self):
 		return [] #base enemy has no ai
+
+	def drop_loot(self):
+		items = []
+		drop_table = self.__class__.drop_table
+		for item in list(drop_table.keys()):
+			prob = int(int(drop_table[item]) * settings.loot_probability_multiplier)
+			got_item = random.randint(1, 100) <= prob
+			if got_item:
+				item = get_item_by_name(item, self.__class__.loot_coolity)
+				items.append(item)
+		return items
 
 	@staticmethod
 	def de_json(data):

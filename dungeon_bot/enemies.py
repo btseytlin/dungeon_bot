@@ -74,7 +74,7 @@ class Rat(Enemy):
 		"club" : 5,
 		"dagger" : 5,
 		"ring" : 5,
-		"helmet": 3,
+		"iron helmet": 3,
 		"random": 2,
 	}
 	loot_coolity = 0.5
@@ -155,7 +155,7 @@ wolf_characteristics = {
 
 class Wolf(Enemy):
 	drop_table = {
-		"chainmail" : 3,
+		"armor" : 3,
 		"primary weapon" : 3,
 		"secondary weapon" : 3,
 		"ring" : 3,
@@ -193,7 +193,7 @@ class Wolf(Enemy):
 		return attack_infos
 
 wolf_leader_characteristics = {
-	"strength": 5, #how hard you hit
+	"strength": 6, #how hard you hit
 	"vitality": 4, #how much hp you have
 	"dexterity": 6, #how fast you act, your position in turn queue
 	"intelligence": 5, #how likely you are to strike a critical
@@ -207,12 +207,12 @@ class WolfLeader(Enemy):
 		"ring" : 5,
 		"talisman": 5,
 		"headwear": 5,
-		"random": 5,
+		"random": 15,
 		"bone ring" : 3,
 	}
 	loot_coolity = 0.8
 
-	def __init__(self, level=1, name="wolf pack leader", characteristics = wolf_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["living", "animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
+	def __init__(self, level=1, name="wolf pack leader", characteristics = wolf_leader_characteristics, stats=None, description="An angry grey wolf.", inventory=[], equipment=default_equipment, tags=["living", "animate", "animal", "quick"],abilities=[],modifiers=[], exp_value=300):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		teeth = get_item_by_name("animal_teeth", 0)
 		claws = get_item_by_name("animal_claws", 0)
@@ -255,7 +255,7 @@ class Bear(Enemy):
 		"ring" : 3,
 		"talisman": 4,
 		"headwear": 5,
-		"random": 3,
+		"random": 15,
 		"bone ring" : 3,
 	}
 
@@ -316,14 +316,14 @@ class UndeadSoldier(Enemy):
 	}
 
 	loot_coolity = 0.3
-	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["living", "animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
+	def __init__(self, level=1, name="undead soldier",  characteristics = undead_soldier_characteristics, stats=None, description="An undead soldier.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "claymore", "rapier"]), 0 )]
-		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
-		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name("targe shield", 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -340,6 +340,152 @@ class UndeadSoldier(Enemy):
 					break
 		return attack_infos
 
+
+undead_siren_characteristics = {
+	"strength": 2, #how hard you hit
+	"vitality": 2, #how much hp you have
+	"dexterity": 3, #how fast you act, your position in turn queue
+	"intelligence": 7, #how likely you are to strike a critical
+}
+
+class UndeadSiren(Enemy):
+	drop_table = {
+		"random": 10,
+		"bone ring" : 3,
+		"bronze cworn": 5,
+		"petrified eye": 5,
+		"crowned skull": 5,
+	}
+
+	loot_coolity = 0.3
+	def __init__(self, level=1, name="undead siren",  characteristics = undead_siren_characteristics, stats=None, description="A horribly misfigured woman. It seems to be abducted by something evil.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		self.base_abilities.append(FearScream("fear scream", None))
+		#items = [get_item_by_name( random.choice(["club", "sword", "dagger", "mace", "claymore", "rapier"]), 0 )]
+		#items.append( get_item_by_name("targe shield", 0 ) ) if random.randint(0,10) > 7 else None
+		#items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		#for item in items:
+		#	if self.add_to_inventory(item):
+		#		self.equip(item, True)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+					break
+		return attack_infos
+
+
+undead_legionaire_characteristics = {
+	"strength": 5, #how hard you hit
+	"vitality": 5, #how much hp you have
+	"dexterity": 6, #how fast you act, your position in turn queue
+	"intelligence": 5, #how likely you are to strike a critical
+}
+
+class UndeadLegionaire(Enemy):
+	drop_table = {
+		"chainmail" : 3,
+		"plate armor" : 1,
+		"primary weapon" : 3,
+		"steel spear": 6,
+		"halberd": 6,
+		"targe shield": 4,
+		"secondary weapon" : 3,
+		"bone amulet" : 3,
+		"ring" : 3,
+		"talisman": 4,
+		"headwear": 5,
+		"random": 3,
+		"rapier": 3,
+		"bone ring" : 3,
+		"petrified eye" : 3,
+	}
+
+	loot_coolity = 0.5
+	def __init__(self, level=1, name="undead legionaire",  characteristics = undead_legionaire_characteristics, stats=None, description="An undead legionaire.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=200):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( random.choice(["steel spear", "halberd"]), 0 )]
+		items.append( get_item_by_name(random.choice(["targe shield", "tower shield"]), 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item, True)
+
+	def act(self, combat_event):
+		attack_infos = []
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+					break
+		return attack_infos
+
+undead_warleader_characteristics = {
+	"strength": 7, #how hard you hit
+	"vitality": 7, #how much hp you have
+	"dexterity": 6, #how fast you act, your position in turn queue
+	"intelligence": 6, #how likely you are to strike a critical
+}
+
+class UndeadWarleader(Enemy):
+	drop_table = {
+		"chainmail" : 3,
+		"plate armor" : 3,
+		"primary weapon" : 10,
+		"steel spear": 6,
+		"halberd": 6,
+		"targe shield": 4,
+		"secondary weapon" : 10,
+		"bone amulet" : 10,
+		"ring" : 3,
+		"talisman": 10,
+		"headwear": 5,
+		"random": 10,
+		"rapier": 3,
+		"bone ring" : 10,
+		"petrified eye" : 15,
+		"crowned skull" : 15,
+	}
+
+	loot_coolity = 0.5
+	def __init__(self, level=1, name="undead war leader",  characteristics = undead_warleader_characteristics, stats=None, description="A two and half meters high undead soldier. He carries a torn banner that has long lost it's colors. He seems sentinent and sane. His will to to dismember you is logically calculated.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "big"],abilities=[], modifiers=[], exp_value=500):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( random.choice(["sword", "claymore", "rapier", "mace", "steel spear", "stone maul", "halberd"]), 0 )]
+		items.append( get_item_by_name(random.choice(["targe shield", "dagger"]), 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( random.choice(["ritual cloak", "golden crown"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item, True)
+
+		self.base_abilities.append(FearScream("fear scream", None))
+
+	def act(self, combat_event):
+		attack_infos = []
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+					break
+		return attack_infos
 
 undead_knight_characteristics = {
 	"strength": 4, #how hard you hit
@@ -361,7 +507,7 @@ class UndeadKnight(Enemy):
 		"bone amulet" : 3,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 3,
+		"iron helmet": 3,
 		"bone ring" : 3,
 		"headwear": 5,
 		"random": 3,
@@ -372,12 +518,12 @@ class UndeadKnight(Enemy):
 	def __init__(self, level=1, name="undead knight", characteristics = undead_knight_characteristics, stats=None, description="An undead knight.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["sword", "mace", "claymore"]), 0 )]
-		items.append( get_item_by_name( "shield", 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( "targe shield", 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( "chainmail" , 0 ) ) if random.randint(0,10) > 2 else items.append( get_item_by_name( "plate armor" , 0 ) )
-		items.append( get_item_by_name( "helmet" , 0 ) ) if random.randint(0,10) > 2 else None
+		items.append( get_item_by_name( random.choice(["iron helmet", "bronze crown"]), 0) ) if random.randint(0,10) > 2 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -418,13 +564,13 @@ class Lich(Enemy):
 	loot_coolity = 0.8
 	def __init__(self, level=1, name="lich", characteristics = lich_characteristics, stats=None, description="A lich.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["sword", "rapier", "mace"]), 0 )]
-		items.append( get_item_by_name( "shield", 0 ) ) if random.randint(0,10) > 7 else None
-		items.append( get_item_by_name( "chainmail" , 0 ) ) if random.randint(0,10) > 2 else None
-		items.append( get_item_by_name( "helmet" , 0 ) ) if random.randint(0,10) > 2 else None
+		items = [get_item_by_name( "primary weapon", 0 )]
+		items.append( get_item_by_name( "targe shield", 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( "armor" , 0 ) ) if random.randint(0,10) > 2 else None
+		items.append( get_item_by_name( "headwear", 0) ) if random.randint(0,10) > 2 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -480,7 +626,7 @@ class LesserDemon(Enemy):
 	drop_table = {
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 3,
+		"iron helmet": 3,
 		"headwear": 5,
 		"random": 3,
 		"claymore": 2,
@@ -494,7 +640,7 @@ class LesserDemon(Enemy):
 		items.append( get_item_by_name("animal_claws", 0 ) )
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -521,11 +667,10 @@ beta_demon_characteristics = {
 class BetaDemon(Enemy):
 	drop_table = {
 		"club" : 10,
-		"ring of more dexterity" : 3,
-		"ring of more vitality" : 6,
+		"mace" : 5,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 3,
+		"iron helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -537,7 +682,7 @@ class BetaDemon(Enemy):
 		items.append( get_item_by_name("animal_claws", 0 ) )
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -552,6 +697,7 @@ class BetaDemon(Enemy):
 						break
 				if not self.target or self.target.dead:
 						break
+		return attack_infos
 
 """ human enemies below """
 
@@ -569,11 +715,9 @@ class Thug(Enemy):
 		"mace": 4,
 		"primary weapon": 3,
 		"armor": 4,
-		"ring of more strength" : 5,
-		"ring of more intelligence" : 2,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 3,
+		"iron helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -583,7 +727,7 @@ class Thug(Enemy):
 		items = [get_item_by_name( random.choice(["club", "sword", "mace", "claymore"]), 0 )]
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -604,8 +748,8 @@ class Thug(Enemy):
 peasant_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
-	"dexterity": 4, #how fast you act, your position in turn queue
-	"intelligence": 4, #how likely you are to strike a critical
+	"dexterity": 5, #how fast you act, your position in turn queue
+	"intelligence": 5, #how likely you are to strike a critical
 }
 
 class Peasant(Enemy):
@@ -615,11 +759,9 @@ class Peasant(Enemy):
 		"mace": 4,
 		"primary weapon": 3,
 		"armor": 2,
-		"ring of more strength" : 5,
-		"ring of more intelligence" : 2,
 		"ring" : 3,
 		"talisman": 4,
-		"helmet": 3,
+		"iron helmet": 3,
 		"headwear": 5,
 		"random": 3,
 		"rapier": 3,
@@ -627,12 +769,12 @@ class Peasant(Enemy):
 	loot_coolity = 0.3
 	def __init__(self, level=1, name="peasant", characteristics = peasant_characteristics, stats=None, description="A peasant turned bandit.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=100):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
-		items.append( get_item_by_name("shield", 0 ) ) if random.randint(0,10) > 7 else None
-		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items = [get_item_by_name( random.choice(["club", "dagger", "mace", "quaterstaff"]), 0 )]
+		items.append( get_item_by_name("targe shield", 0 ) ) if random.randint(0,10) > 7 else None
+		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -650,6 +792,133 @@ class Peasant(Enemy):
 
 		return attack_infos
 
+mercenary_characteristics = {
+	"strength": 5, #how hard you hit
+	"vitality": 5, #how much hp you have
+	"dexterity": 5, #how fast you act, your position in turn queue
+	"intelligence": 5, #how likely you are to strike a critical
+}
+
+class Mercenary(Enemy):
+	drop_table = {
+		"primary weapon": 5,
+		"secondary weapon": 5,
+		"armor": 5,
+		"ring" : 5,
+		"headwear": 5,
+		"random": 3,
+	}
+	loot_coolity = 0.5
+	def __init__(self, level=1, name="mercenary", characteristics = mercenary_characteristics, stats=None, description="Sword for hire. Somewhat professional, quite experienced. Usually hired as canon foder and not really relied on.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( "primary weapon", 0 )]
+		items.append( get_item_by_name("secondary weapon", 0 ) ) if random.randint(0,10) > 3 else None
+		items.append( get_item_by_name( random.choice(["leather armor", "chainmail", "plate armor"]) , 0 ) ) if random.randint(0,10) > 3 else None
+		items.append( get_item_by_name( random.choice(["headwear"]) , 0 ) ) if random.randint(0,10) > 3 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item, True)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+		return attack_infos
+
+mercenary_spearman_characteristics = {
+	"strength": 5, #how hard you hit
+	"vitality": 5, #how much hp you have
+	"dexterity": 7, #how fast you act, your position in turn queue
+	"intelligence": 5, #how likely you are to strike a critical
+}
+
+class MercenarySpearman(Enemy):
+	drop_table = {
+		"steel spear": 10,
+		"primary weapon": 5,
+		"secondary weapon": 5,
+		"armor": 5,
+		"ring" : 5,
+		"headwear": 5,
+		"random": 3,
+	}
+	loot_coolity = 0.5
+	def __init__(self, level=1, name="mercenary spearman", characteristics = mercenary_spearman_characteristics, stats=None, description="The backbone of mercenary armies, a spearman. He is well trianed and experienced.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( "steel spear", 0 )]
+		items.append( get_item_by_name( random.choice(["leather armor", "chainmail", "plate armor"]) , 0 ) ) if random.randint(0,10) > 3 else None
+		items.append( get_item_by_name( random.choice(["iron helmet"]) , 0 ) ) if random.randint(0,10) > 3 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item, True)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+		return attack_infos
+
+mercenary_leader_characteristics = {
+	"strength": 6, #how hard you hit
+	"vitality": 6, #how much hp you have
+	"dexterity": 6, #how fast you act, your position in turn queue
+	"intelligence": 7, #how likely you are to strike a critical
+}
+
+class MercenaryLeader(Enemy):
+	drop_table = {
+		"primary weapon": 10,
+		"secondary weapon": 10,
+		"armor": 5,
+		"ring" : 5,
+		"headwear": 5,
+		"random": 15,
+	}
+	loot_coolity = 0.9
+	def __init__(self, level=1, name="mercenary leader", characteristics = mercenary_leader_characteristics, stats=None, description="A leader of mercenaries. Hardened veteran of unfair fights.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=400):
+		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
+		items = [get_item_by_name( "primary weapon", 0 )]
+		items.append( get_item_by_name( "secondary weapon", 0 ) ) if random.randint(0,10) > 3 else None
+		items.append( get_item_by_name( random.choice(["leather armor", "chainmail", "plate armor"]) , 0 ) ) if random.randint(0,10) > 2 else None
+		items.append( get_item_by_name( random.choice(["headwear"]) , 0 ) ) if random.randint(0,10) > 3 else None
+		for item in items:
+			if self.add_to_inventory(item):
+				self.equip(item, True)
+
+	def act(self, combat_event):
+		attack_infos = []
+
+		if not self.target or self.target.dead:
+			self.select_target(combat_event)
+		if self.target and not self.target.dead:
+			for ability in self.abilities:
+				while self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if not self.target or self.target.dead:
+						break
+				if not self.target or self.target.dead:
+						break
+		return attack_infos
+
+
 thief_characteristics = {
 	"strength": 3, #how hard you hit
 	"vitality": 3, #how much hp you have
@@ -661,18 +930,17 @@ class Thief(Enemy):
 	drop_table = {
 		"random": 20,
 		"dagger": 10,
-		"rapier": 5,
 	}
 	loot_coolity = 0.7
 	def __init__(self, level=1, name="thief", characteristics = thief_characteristics, stats=None, description="A professional thief.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid", "quick"],abilities=[],modifiers=[], exp_value=400):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( "dagger", 1 )]
 		items.append( get_item_by_name( "rapier" , 0 ) ) if random.randint(0,10) > 5 else None
-		items.append( get_item_by_name( random.choice(["ring of thievery", "ring of more vitality"]) , 0 ) ) if random.randint(0,10) > 8 else None
-		items.append( get_item_by_name( random.choice(["amulet of defense", "bone amulet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["steel ring", "golden ring", "ring"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["bone amulet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -711,10 +979,10 @@ class Mage(Enemy):
 	def __init__(self, level=1, name="mage", characteristics = mage_characteristics, stats=None, description="A magical peasant.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
-		items.append( get_item_by_name( random.choice(["chainmail", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["chainmail", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -745,8 +1013,7 @@ class Ogre(Enemy):
 		"mace": 5,
 		"primary weapon": 3,
 		"armor": 4,
-		"ring of more strength" : 5,
-		"helmet": 3,
+		"iron helmet": 3,
 		"headwear": 5,
 		"random": 3,
 	}
@@ -754,10 +1021,10 @@ class Ogre(Enemy):
 	def __init__(self, level=1, name="ogre", characteristics = ogre_characteristics, stats=None, description="A slow hulking ogre. It looks hungry for you.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "slow", "big", "humanoid", "living"],abilities=[],modifiers=[], exp_value=400):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
 		items = [get_item_by_name( random.choice(["club", "mace"]), 0 )]
-		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
 			if self.add_to_inventory(item):
-				self.equip(item)
+				self.equip(item, True)
 
 	def act(self, combat_event):
 		attack_infos = []
@@ -784,12 +1051,25 @@ enemy_list = { #name to enemy
 	"bear": Bear,
 	"undead soldier": UndeadSoldier,
 	"undead knight": UndeadKnight,
+	"undead legionaire": UndeadLegionaire,
+	"undead warleader": UndeadWarleader,
+	"undead siren": UndeadSiren,
+
+	"lich": Lich,
+	"crystaline": LichCrystaline,
+
 	"lesser demon": LesserDemon,
 	"beta demon": BetaDemon,
 	"peasant": Peasant,
+	"mercenary": Mercenary,
+	"mercenary spearman": MercenarySpearman,
+	"mercenary leader": MercenaryLeader,
 	"thief": Thief,
+
+	
 	#"mage": Mage,
 	"ogre": Ogre,
+
 }
 
 """ Common enemy spawn functions """
@@ -928,7 +1208,9 @@ def undead_soldier_pack(size=None, special_enemy=None):
 		amount = random.randint(4, 6)
 
 	desc = ""
+	special_enemies= []
 	lich_group = []
+	siren_group = []
 	if special_enemy:
 		if special_enemy == "lich":
 			if size == "big" and random.randint(0, 10) > 6:
@@ -937,11 +1219,115 @@ def undead_soldier_pack(size=None, special_enemy=None):
 				lich_group, desc = lich("very strong")
 			elif random.randint(0, 10) > 8:
 				lich_group, desc = lich()
-
+		if special_enemy == "siren":
+			if size == "big" and random.randint(0, 10) > 6:
+				siren_group, desc = undead_siren("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				siren_group, desc = undead_siren("very strong")
+			elif random.randint(0, 10) > 8:
+				siren_group, desc = undead_siren()
+	special_enemies += lich_group + siren_group
 	description += desc
-	soldiers = [ UndeadSoldier(random.choice(levels)) if random.randint(0, 10) < 7 else UndeadKnight(random.choice(levels)) for x in range(amount+1)] + lich_group
+	soldiers = [ UndeadSoldier(random.choice(levels)) if random.randint(0, 10) < 7 else UndeadKnight(random.choice(levels)) for x in range(amount+1)] + special_enemies
 
 	return soldiers, description
+
+def undead_legionaire_pack(size=None, special_enemy=None):
+	description = "An undead soldier.\n"
+	amount = 1
+	if size == "small":
+		levels = list(range(1,6))
+		amount = random.randint(1, 2)
+		if amount > 1:
+			description = "A small group of undead legionaires.\n"
+	elif size == "medium":
+		levels = list(range(6,15))
+		description = "A group of undead legionaires.\n"
+		amount = random.randint(2, 3)
+	elif size == "big":
+		levels = list(range(15,35))
+		description = "A big group of undead legionaires.\n"
+		amount = random.randint(3, 5)
+	elif size == "huge":
+		levels = list(range(25,50))
+		description = "A unit of undead legionaires.\n"
+		amount = random.randint(4, 6)
+
+	desc = ""
+	special_enemies = []
+	lich_group = []
+	siren_group = []
+	if special_enemy:
+		if special_enemy == "lich":
+			if size == "big" and random.randint(0, 10) > 6:
+				lich_group, desc = lich("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				lich_group, desc = lich("very strong")
+			elif random.randint(0, 10) > 8:
+				lich_group, desc = lich()
+		if special_enemy == "siren":
+			if size == "big" and random.randint(0, 10) > 6:
+				siren_group, desc = undead_siren("strong")
+			elif size == "huge" and random.randint(0, 10) > 4:
+				siren_group, desc = undead_siren("very strong")
+			elif random.randint(0, 10) > 8:
+				siren_group, desc = undead_siren()
+	special_enemies += lich_group + siren_group
+	description += desc
+	soldiers = [ UndeadLegionaire(random.choice(levels)) if random.randint(0, 10) < 7 else UndeadKnight(random.choice(levels)) for x in range(amount+1)] + siren_group
+
+	return soldiers, description
+
+def undead_siren(size = None):
+	if not size:
+		description = "A siren.\n"
+		levels = list(range(5,10))
+		siren = UndeadSiren(random.choice(levels))
+		enemies = [ siren ]
+
+	elif size == "strong":
+		description = "A strong siren.\n"
+		levels = list(range(10,20))
+		siren = UndeadSiren(random.choice(levels))
+		enemies = [ siren ]
+
+	elif size == "very strong":
+		description = "Two very strong sirens.\n"
+		levels = list(range(10,20))
+		siren = UndeadSiren(random.choice(levels))
+		siren1 = UndeadSiren(random.choice(levels))
+		enemies = [ siren, siren1 ]
+	return enemies, description
+
+def undead_warleader(size = None):
+	if not size:
+		description = "An undead warleader.\n"
+		levels = list(range(5,10))
+		lich = Lich(random.choice(levels))
+		crystaline = LichCrystaline(random.choice(levels))
+		crystaline.lich = lich
+		enemies = [ lich, crystaline ]
+
+	elif size == "strong":
+		description = "A honored undead warleader.\n"
+		levels = list(range(10,20))
+		lich = Lich(random.choice(levels))
+		crystaline = LichCrystaline(random.choice(levels))
+		crystaline.lich = lich
+		enemies = [ lich, crystaline ]
+
+	elif size == "very strong":
+		description = "A legendary undead warleader.\n"
+		levels = list(range(10,20))
+		lich = Lich(random.choice(levels))
+		lich1 = Lich(random.choice(levels))
+		crystaline = LichCrystaline(random.choice(levels))
+		crystaline1 = LichCrystaline(random.choice(levels))
+		crystaline.lich = lich
+		crystaline1.lich = lich1
+		enemies = [lich, lich1, crystaline, crystaline1]
+
+	return enemies, description
 
 def lich(size = None):
 	if not size:
@@ -1140,10 +1526,10 @@ def thugs(size = None):
 
 enemy_tables = { # difficulty rating: (function to get enemy or enemy group, params)
 	"common": {
-		"1": (rat_pack, [] ),
-		"5": (rat_pack,["small"] ),
-		"15": (rat_pack, ["medium"] ),
-		"30": (rat_pack, ["big"] ),
+		#"1": (rat_pack, [] ),
+		#"5": (rat_pack,["small"] ),
+		#"15": (rat_pack, ["medium"] ),
+		#"30": (rat_pack, ["big"] ),
 	},
 	"animal": {
 		"1": (wolf_pack,[] ),
@@ -1167,13 +1553,24 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"1": (undead_soldier_pack,[] ),
 		"1": (undead_soldier_pack,["small"] ),
 		"5": (undead_soldier_pack, ["medium"] ),
+		"5": (undead_legionaire_pack, []),
+		"10": (undead_siren, []),
+		"10": (undead_legionaire_pack, ["small", "siren"]),
 		"10": (lich, []),
 		"10": (undead_soldier_pack, ["big" ] ),
+		"10": (undead_legionaire_pack, ["medium"]),
 		"15": (undead_soldier_pack, ["big", "lich"] ),
+		"15": (undead_soldier_pack, ["big", "siren"] ),
+		"20": (undead_legionaire_pack, ["medium", "lich"]),
+		"20": (undead_legionaire_pack, ["medium", "siren"]),
 		"30": (lich, ["strong"]),
 		"30": (undead_soldier_pack, ["huge"] ),
-		"60": (undead_soldier_pack, ["huge", "lich"] ),
+		"40": (undead_warleader, []),
 		"50": (lich, ["very strong"]),
+		"60": (undead_soldier_pack, ["huge", "lich"] ),
+		"60": (undead_soldier_pack, ["huge", "siren"] ),
+		"60": (undead_warleader, ["strong"]),
+		"80": (undead_warleader, ["very strong"]),
 	},
 	"demon": {
 		"1": (lesser_demon_pack,[] ),

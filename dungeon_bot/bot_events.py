@@ -167,6 +167,7 @@ class ChatEvent(BotEvent):
 
 				if len(self.log) > 1000:
 					self.log = []
+
 				broadcast = []
 				broadcast.append([user, "You: "+msg.capitalize()])
 				for u in self.users:
@@ -1134,9 +1135,11 @@ class CombatEvent(BotEvent):
 				if not self.user_abilities[str(user.id)][ability_name].__class__.requires_target:
 					non_target_abs.append(ability_name)
 		keyboard.append(non_target_abs)
+		examine_line = []
 		for i in range(len(self.turn_queue)):
 			c = self.turn_queue[i]
 			line = []
+			examine_line.append("examine %d.%s"%(i+1, c.name))
 			if not c.dead:
 				if isinstance(c, Enemy):
 					if str(user.id) in self.user_abilities.keys():
@@ -1149,8 +1152,8 @@ class CombatEvent(BotEvent):
 							if self.user_abilities[str(user.id)][ability_name].__class__.requires_target == "friendly":
 								line.append(ability_name + " %d.%s"%(i+1, c.name))
 
-			line.append("examine %d.%s"%(i+1, c.name))
 			keyboard.append(line)
+		keyboard.append(examine_line)
 		return keyboard
 
 	def status(self, user=None):

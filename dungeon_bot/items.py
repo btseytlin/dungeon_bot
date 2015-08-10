@@ -31,7 +31,14 @@ class Item(object):
 	def examine_self(self):
 		requirements = []
 		for x in list(self.requirements.keys()):
-				requirements.append("|\t"+x+":" +str(self.requirements[x]))
+			if isinstance(self.requirements[x], dict):
+				for req in list(self.requirements[x].keys()):
+					requirements.append("|\t"+req+":" +str(self.requirements[x][req]))
+			else:
+				if self.requirements[x] == False or self.requirements[x] == True:
+					requirements.append("|\t"+x)
+				else:
+					requirements.append("|\t"+x+":" +str(self.requirements[x]))
 
 		stats = []
 
@@ -50,15 +57,14 @@ class Item(object):
 			for stat in list(modifier["stats"]["stats_change"].keys()):
 				stats.append("|\t"+stat+":" + ("+" if modifier["stats"]["stats_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"]))
 
-		desc = "\n".join([
-				"%s, %s."%(self.full_name.capitalize(), self.item_type),
-				"%s"%(self.description or ""),
-				"Requirements:\n%s"%(", ".join(requirements)),
-				"Stats:\n%s"%("\n".join(stats)),
-				"Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted)),
-				#"Modifiers granted:\n|\t%s"%(", ".join([modifier["name"] for modifier in self.modifiers_granted])),
-				"Tags granted:\n|\t%s"%(", ".join(self.tags_granted)),
-			])
+		lines = []
+		lines.append("%s, %s."%(self.full_name.capitalize(), self.item_type))
+		lines.append("%s"%(self.description)) if self.description != "" else None
+		lines.append("Requirements:\n%s"%("\n".join(requirements))) if requirements != [] else None
+		lines.append("Stats:\n%s"%("\n".join(stats)))
+		lines.append("Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted))) if self.abilities_granted != [] else None
+		lines.append("Tags granted:\n|\t%s"%(", ".join(self.tags_granted))) if self.tags_granted != [] else None
+		desc = "\n".join(lines)
 		return desc
 
 	def to_json(self):
@@ -265,13 +271,23 @@ def get_item_by_name(name, coolity=0):
 
 item_listing = {
 	"primary weapon":{
-		"rapier": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","7d6"]} , "args":{"name":"rapier", "description":"Steel rapier!","random_effects": True, "abilities_granted":["stab", "quick stab"]}},
+		"rapier": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"rapier", "description":"A rapier is fast and deadly to unarmed oponents. It requires some skill to use efficiently.","random_effects": True, "abilities_granted":["stab", "quick stab"], "requirements": {"dexterity": 7}}},
 
-		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["1d6","2d6"]} , "args":{"name":"club","random_effects": True, "description":"A rough wooden club, good enough to break a skull!", "abilities_granted":["smash"]}},
+		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["1d6","2d6"]} , "args":{"name":"club","random_effects": True, "description":"A rough wooden club, good enough to break a skull! An unarmed, untrained, weak skull.", "abilities_granted":["smash"]}},
 
-		"mace": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"mace","random_effects": True, "description":"Like the club, except less bad!", "abilities_granted":["smash"]}},
-		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"sword","random_effects": True, "description":"Steel sword!", "abilities_granted":["cut", "stab"]}},
-		"claymore": {"stats": {"damage" : ["2d6","4d6"], "accuracy" : ["1d6","4d6"]} , "args":{"name":"claymore","random_effects": True, "description":"A two handed sword that allows for sweeping attacks damaging many enemies at once.", "abilities_granted":["sweep", "stab"], "requirements": {"two handed": True}}},
+		"mace": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"mace","random_effects": True, "description":"Like the club, except less bad!", "abilities_granted":["smash"], "requirements":{"strength":6}}},
+
+		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"sword","random_effects": True, "description":"Steel sword!", "abilities_granted":["cut", "stab"],"requirements":{"strength":5, "dexterity": 5}}},
+
+		"quaterstaff": {"stats": {"characteristics_change":{"intelligence":[0, 3]}, "damage" : ["1d3","2d5"], "accuracy" : ["1d6","7d6"]} , "args":{"name":"steel spear","random_effects": True, "description":"Quite easy to use, hard to master. It doesn't deal much damage, but in the hands of a strong fighter it's a deadly weapon.", "abilities_granted":["smack"], "requirements": { "two handed": True }}},
+
+		"steel spear": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"steel spear","random_effects": True, "description":"A spear is the simpliest weapon. It doesn't make it any less effective. It's main selling point is that it requires little to no skills to use one. Anyone can hit stuff with a spear.", "abilities_granted":["stab"], "requirements": {"two handed": True, "characteristics":{"strength":4} }}},
+
+		"steel halberd": {"stats": {"damage" : ["1d6","4d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"steel halberd","random_effects": True, "description":"A halberd is a deadly weapon, but it requires a lot of finese to use.", "abilities_granted":["sweep", "crush"], "requirements": {"two handed": True, "characteristics":{"strength":7, "dexterity": 6} }}},
+
+		"claymore": {"stats": {"damage" : ["2d6","3d6"], "accuracy" : ["1d6","4d6"]} , "args":{"name":"claymore","random_effects": True, "description":"A two handed sword that allows for sweeping attacks damaging many enemies at once.", "abilities_granted":["sweep", "stab"], "requirements": {"two handed": True, "characteristics":{"strength":8} }}},
+
+		"stone maul": {"stats": {"damage" : ["2d6","4d6"], "accuracy" : ["1d6","2d6"]} , "args":{"name":"stone maul","random_effects": True, "description":"A huge two handed stone hammer allows to strike many enemies at once.", "abilities_granted":["swing", "crush"], "requirements": {"two handed": True, "characteristics":{"strength":8} }}},
 
 		# enemy equipment below
 		"rodent_teeth": {"stats": {"damage" : ["1d3","2d3"], "accuracy" : ["4d6", "6d6"]} , "args":{"name":"rodent teeth", "description":"Slightly sharp teeth.", "abilities_granted":["rodent bite"]}},
@@ -279,54 +295,90 @@ item_listing = {
 
 	},
 	"secondary weapon":{
-		"dagger": {"stats": { "damage" : ["1d3","3d5"], "accuracy" : ["-1d6","2d6"]} ,"random_effects": True, "args":{"name":"dagger", "description":"Stabby stab!", "abilities_granted":["quick stab", "quick cut"]}},
-		"shield": {"stats": {"defense" : ["1d3","2d6"], "evasion" : ["-4d6","-1d6"]} ,"random_effects": True, "args":{"name":"shield", "description":"A shield.", "abilities_granted":["shield up"]}},
+		"dagger": {"stats": { "damage" : ["1d3","3d5"], "accuracy" : ["-1d6","2d6"]} , "args":{"name":"dagger", "description":"Stabby stab!", "random_effects": True, "abilities_granted":["quick stab", "quick cut"]}},
+
+		"knife": {"stats": { "damage" : ["1d3","1d10"], "accuracy" : ["-1d6","2d6"]} , "args":{"name":"knife", "description":"Dare bring a knife to a magic fight.","random_effects": True,  "abilities_granted":["quick stab"]}},
+
+		"buckler": {"stats": {"defense" : ["1d1","1d5"], "evasion" : ["0d6","1d3"]} ,"args":{"random_effects": True, "name":"buckler", "description":"Tiny shield strapped to your arm. Offers little protection, but allows for a bashing attack.", "abilities_granted":["bash"]}},
+
+		"targe shield": {"stats": {"defense" : ["1d6","2d6"], "evasion" : ["-4d6","-1d6"]} , "args":{"name":"targe shield","random_effects": True, "description":"Big round shield, protects you from hip to neck.", "abilities_granted":["shield up"]}},
+
+		"tower shield": {"stats": {"characteristics_change":{"dexterity":[-3, -1]}, "defense" : ["2d6","4d6"], "evasion" : ["-8d6","-3d6"]} ,"args":{"random_effects": True, "name":"tower shield", "description":"Huge shield covers nearly all of your body at the expense of being extremely heavy.", "abilities_granted":["shield up"]}},
 
 
 		# enemy equipment below
 		"animal_claws": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["2d6","6d6"]} , "args":{"name":"animal claws", "description":"Sharp claws.", "abilities_granted":["animal claw"]}},
 	},
 	"armor":{
-		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 1]}, "defense" : ["1d6","5d6"],"random_effects": True, "evasion" : ["-5d6","-1d6"]} , "args":{"name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -1]}, "defense" : ["2d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
+
+		"hermit cloak": {"stats": { "characteristics_change":{"intelligence":[0, 4]}, "defense" : ["0d6","1d3"]} , "args":{"random_effects": True, "name":"hermit cloak", "description":"Makes you appear like a stray philosopher. Seems to speed up growth of grey hairs.", "tags_granted":[]}},
+
+		"ritual cloak": {"stats": { "characteristics_change":{"intelligence":[0, 6]}, "defense" : ["0d6","1d3"]}, "args":{"random_effects": True, "name":"ritual cloak", "description":"It's quite hard to wear because, but it's worth it. The voices say it's worth it.", "tags_granted":[]}},
+
+		"leather armor": {"stats": { "characteristics_change":{"dexterity":[-2, 1]}, "defense" : ["1d6","3d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"random_effects": True, "name":"leather armor", "description":"Very light armor.", "tags_granted":["armor"]}},
+
+		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 0]}, "defense" : ["1d6","5d6"], "evasion" : ["-5d6","-1d6"]} , "args":{"random_effects": True, "name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
+		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -2]}, "defense" : ["2d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
 	},
 	"talisman":{
 		"amulet of defense": {"stats": {"defense" : ["1d6","2d6"]} , "args":{"name":"amulet of defense", "description":"The most boring talisman, it just protects you."}},
 
 		"bone amulet": {"stats":{}, "args":{"name":"bone amulet", "description":"A amulet cut from a bone. A human bone.", "random_effects": True}},
+
+		"pyramid talisman": {"stats":{}, "args":{"name":"pyramid talisman", "description":"A strange thing.", "random_effects": True}},
+
+		"petrified eye": {"stats":{}, "args":{"name":"petrified eye", "description":"A very strange thing.", "random_effects": True}},
+
+		"ancient coin": {"stats":{}, "args":{"name":"ancient coin", "description":"Not worth much as money this stone coin looks scary and kinda hipstery.", "random_effects": True}},
+
+		"crowned skull": {"stats":{}, "args":{"name":"ptrified eye", "description":"A skull in a crown. Somehow you can't remove the crown from the skull no matter how you try.", "random_effects": True}},
 	},
 	"ring":{
 
 		"bone ring": {"stats":{}, "args":{"name":"bone ring", "description":"A ring cut from a bone. A human bone.", "random_effects": True}},
 
-		"ring of more vitality": {"stats": {"characteristics_change": {"vitality" : [1, 3]}} , "args":{"name":"ring of more vitality", "description":"Just gives you more vit."} },
+		"steel ring": {"stats":{}, "args":{"name":"steel ring", "description":"A solid steel ring. Metal as hell.", "random_effects": True}},
 
-		"ring of more dexterity": {"stats": {"characteristics_change": {"dexterity" : [1, 3]}} , "args":{"name":"ring of more dexterity", "description":"Just gives you more dex."} },
+		"wooden ring": {"stats":{}, "args":{"name":"wooden ring", "description":"A ring cut from a birch.", "random_effects": True}},
 
-		"ring of thievery": {
-			"stats": {
-				"stats_change": {
-					"evasion": ["1d6", "3d6"]
-				},
-				"characteristics_change": {
-					"dexterity" : [1, 2]
-				}
-			},
-			"args":{
-				"name":"ring of thievery",
-				"description":"Gives a dex bonus and an evasion bonus."
-			}
-		 },
+		"golden ring": {"stats":{}, "args":{"name":"golden ring", "description":"For the times when you need to look fabulous in the dungeons.", "random_effects": True}},
+		# "ring of more vitality": {"stats": {"characteristics_change": {"vitality" : [1, 3]}} , "args":{"name":"ring of more vitality", "description":"Just gives you more vit."} },
 
-		"ring of more strength": {"stats": {"characteristics_change": {"strength" : [1, 3]}} , "args":{"name":"ring of more strength", "description":"Just gives you more str."} },
+		# "ring of more dexterity": {"stats": {"characteristics_change": {"dexterity" : [1, 3]}} , "args":{"name":"ring of more dexterity", "description":"Just gives you more dex."} },
 
-		"ring of more intelligence": {"stats": {"characteristics_change": {"intelligence" : [1, 3]}} , "args":{"name":"ring of more intelligence", "description":"Just gives you more int."} },
+		# "ring of thievery": {
+		# 	"stats": {
+		# 		"stats_change": {
+		# 			"evasion": ["1d6", "3d6"]
+		# 		},
+		# 		"characteristics_change": {
+		# 			"dexterity" : [1, 2]
+		# 		}
+		# 	},
+		# 	"args":{
+		# 		"name":"ring of thievery",
+		# 		"description":"Gives a dex bonus and an evasion bonus."
+		# 	}
+		#  },
 
-		"ring of more hp": {"stats": {"stats_change": {"max_health" : [10, 50]}} , "args":{"name":"ring of more hp", "description":"Just gives you more max hp."}},
+		# "ring of more strength": {"stats": {"characteristics_change": {"strength" : [1, 3]}} , "args":{"name":"ring of more strength", "description":"Just gives you more str."} },
+
+		# "ring of more intelligence": {"stats": {"characteristics_change": {"intelligence" : [1, 3]}} , "args":{"name":"ring of more intelligence", "description":"Just gives you more int."} },
+
+		# "ring of more hp": {"stats": {"stats_change": {"max_health" : [10, 50]}} , "args":{"name":"ring of more hp", "description":"Just gives you more max hp."}},
 	},
 
 	"headwear":{
-		"helmet": {"stats": {"defense" : ["1d4","3d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"helmet", "description":"Helmet, boring helmet.", "random_effects": True}
+		"iron helmet": {"stats": {"defense" : ["1d4","2d6"], "evasion" : ["-3d4","-1d2"]} , "args":{"name":"iron helmet", "description":"Helmet, boring helmet. Makes you look like certain someone from Skyrim though.", "random_effects": True}
 		},
+
+		"bronze crown": {"stats":{} , "args":{"name":"bronze crown", "description":"Fancy crown.", "random_effects": True}
+		},
+
+		"golden crown": {
+			 "args":{"name":"golden crown", "description":"Fancier crown.", "tags_granted":["fabulous"],"random_effects": True
+			 }
+		},
+		
 	}
 }

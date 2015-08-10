@@ -167,9 +167,12 @@ class KnockedDown(Modifier):
 	def __init__(self, granted_by, host, stats = {}, name="knockdown", description="Loose 5d6 evasion, 2d6 your defense, and half your dexterity.") :
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
 		self.stats["characteristics_change"] = {"dexterity": -host.characteristics["dexterity"]}
-		self.stats["duration"] = clamp( 10 - host.characteristics["dexterity"], 2, 4)
-		self.stats["stats_change"] = {"evasion": "-5d6", "defense": "-3d6"}
-		
+		self.stats["duration"] = clamp( 10 - host.characteristics["dexterity"], 1, 2)
+		self.stats["stats_change"] = {"defense": "-2d6"}
+	
+	def can_apply(self):
+		return "animate" in self.host.tags
+
 	def on_round(self):
 		msg = "%s struggles to get up from the ground.\n"%(self.host.short_desc.capitalize())
 		msg += super(KnockedDown, self).on_round()
@@ -194,6 +197,9 @@ class Vunerable(Modifier): #simply adds defense, hinders evasion
 	tags_granted = []
 	def __init__(self, granted_by, host, stats = {}, name="vunerable", description="Loose 3d6 defense for a turn."):
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
+
+	def can_apply(self):
+		return "animate" in self.host.tags
 
 	def on_applied(self):
 		msg = super(Vunerable, self).on_applied()
@@ -233,6 +239,31 @@ class Pain(Modifier): #simply adds defense, hinders evasion
 		msg = "!!\t" + msg
 		return msg
 
+class Fear(Modifier):
+	priority = 0
+	duration = 2
+	characteristics_change = {"dexterity":-2, "intelligence":-2}
+	stats_change =  {}
+	abilities_granted = []
+	tags_granted = []
+	def __init__(self, granted_by, host, stats = {}, name="fear", description="Loose 2 dexterity and intelligence."):
+		Modifier.__init__(self, granted_by, host,  stats, name, description )
+		self.stats["characteristics_change"] = {"dexterity":-2, "intelligence":-2}
+		self.stats["duration"] = clamp( 10 - host.characteristics["intelligence"], 1, 3)
+
+	def can_apply(self):
+		return "animate" in self.host.tags and "living" in self.host.tags
+
+	def on_applied(self):
+		msg = super(Fear, self).on_applied()
+		msg += "%s's blood runs cold of fear!\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
+
+	def on_lifted(self):
+		msg = "%s regains control over his emotions and is no longer in fear.\n"%(self.host.short_desc.capitalize())
+		msg = "!!\t" + msg
+		return msg
 
 class Bleeding(Modifier): #simply adds defense, hinders evasion
 	priority = 0
@@ -332,6 +363,60 @@ class Shielded(Modifier): #simply adds defense, hinders evasion
 class Bonus(Modifier): #simply adds defense, hinders evasion
 	def __init__(self, granted_by, host, stats = {}, name="bonus", description="???"):
 		Modifier.__init__(self, granted_by, host, stats, name, description)
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		name = ""
+		self_class = Bonus
+
+		possible_chars = ["strength", "dexterity", "vitality", "intelligence"]
+		possible_stats = ["max_health", "max_energy"]
+		pool = possible_chars
+		stats = {}
+
+		chars_or_stats = "characteristics change"
+		if random.randint(0, 1) == 1:
+			chars_or_stats = "stats_change"
+			pool = possible_stats
+
+		stat_range = [1, 4]
+		if chars_or_stats == "stats_change":
+			stat_range = [10, 100]
+
+		stat = random.choice(pool)
+		stats[chars_or_stats] = { stat: stat_range }
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		name = stat.translate({"_":" "})
+		return {"name": "bonus", "stats":stats} 
+
+class Nerf(Modifier): #simply adds defense, hinders evasion
+	def __init__(self, granted_by, host, stats = {}, name="nerf", description="???"):
+		Modifier.__init__(self, granted_by, host, stats, name, description)
+
+	@staticmethod
+	def get_randomized_params_for_coolity(coolity):
+		name = ""
+		self_class = Nerf
+
+		possible_chars = ["strength", "dexterity", "vitality", "intelligence"]
+		possible_stats = ["max_health", "max_energy"]
+		pool = possible_chars
+		stats = {}
+
+		chars_or_stats = "characteristics change"
+		if random.randint(0, 1) == 1:
+			chars_or_stats = "stats_change"
+			pool = possible_stats
+
+		stat_range = [-4, -1]
+		if chars_or_stats == "stats_change":
+			stat_range = [-100, -10]
+
+		stat = random.choice(pool)
+		stats[chars_or_stats] = { stat: stat_range }
+		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
+		name = stat.translate({"_":" "})
+		return {"name": "nerf", "stats":stats} 
 
 class Regeneration(Modifier): #simply adds defense, hinders evasion
 	priority = 0
@@ -795,6 +880,7 @@ class Vampirism(Modifier):
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
 		return {"name":"vampirism", "stats":stats} 
 
+
 def get_modifier_by_name(modifier_name, source, target, stats={}):
 	prototype = modifier_listing[modifier_name]
 
@@ -819,7 +905,7 @@ def get_random_modifiers_for_coolity(coolity):
 	granted_modifiers = []
 
 	got_modifier = get_number_in_range([0, 100], coolity)
-	chance_for_modifier = clamp(coolity*100, 20, 100)
+	chance_for_modifier = clamp(coolity*100, 25, 100)
 
 	if got_modifier < chance_for_modifier:
 		modifiers_type = None
@@ -856,6 +942,7 @@ def get_random_modifiers_for_coolity(coolity):
 modifier_listing = {
 	"shielded" : Shielded,
 	"bonus" : Bonus,
+	"nerf" : Nerf,
 	
 	
 	"vunerable": Vunerable,
@@ -882,5 +969,5 @@ modifier_listing = {
 
 }
 
-good_item_modifiers = ["fire attack", "electricity attack", "regeneration", "wisdom", "energy", "hurt undead", "hurt demons", "vampirism"]
-bad_item_modifiers = ["judgement", "suffering", "greed", "stupidity", "weakness"]
+good_item_modifiers = ["fire attack", "electricity attack", "regeneration", "wisdom", "energy", "hurt undead", "hurt demons", "vampirism", "bonus"]
+bad_item_modifiers = ["judgement", "suffering", "greed", "stupidity", "weakness", "nerf"]

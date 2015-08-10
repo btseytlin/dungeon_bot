@@ -281,7 +281,10 @@ class DungeonBot(object):
 
 			reply_markup = self.get_reply_markup(user)
 
-		self.api.sendMessage(user.id, message, None, None, reply_markup)
+		if reply_markup:
+			self.api.sendMessage(user.id, message, None, None, reply_markup)
+		else:
+			self.api.sendMessage(user.id, message)
 
 	def on_message(self, message):
 		user = message.from_user
@@ -299,6 +302,7 @@ class DungeonBot(object):
 			else:
 				ply = persistence_controller.get_ply(user)
 				command, args = parse_command(message.text)
+				response = None
 				if ply.event: #Check if player is in event
 					try:
 						response = ply.event.handle_command(user, command, *args)
@@ -309,19 +313,11 @@ class DungeonBot(object):
 						persistence_controller.save_players()
 						response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message using  the \"bug\" command describing what happened.\nCheers!"
 
-					if isinstance(response, list): #it's a broadcast
-						for msg in response:
-							if msg:
-								logger.info(("[RESPONSE] to user %s: %s")%(msg[0].id, msg[1]))
-
-								self.send_message(msg[0], msg[1])
-					else:
-						logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-						if response:	
-							self.send_message(user, response) #If he is, let the event handle the message
 				else:
 					#parse command on your own
 					response = self.handle_command(user, command, *args)
+
+				if response:
 					if isinstance(response, list): #it's a broadcast
 						for msg in response:
 							if msg:
@@ -329,8 +325,7 @@ class DungeonBot(object):
 								self.send_message(msg[0], msg[1])
 					else:
 						logger.info(("[RESPONSE] to user %s: %s")%(user.id, response))
-						if response:
-							self.send_message(user, response)
+						self.send_message(user, response) #If he is, let the event handle the message
 		except:
 			logger.exception("E:")
 			response = "An error occured.\n The current event has been finished.\n Your character has been saved just in case.\n We will look into the problem soon, but it will be much easier if you send a message using  the \"bug\" command describing what happened.\nCheers!"

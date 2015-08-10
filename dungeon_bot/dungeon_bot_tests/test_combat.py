@@ -29,7 +29,7 @@ def test_attack_abilities(player, enemy = None):
 	available_abiltiies = player.abilities
 	for testing_ability in available_abiltiies:
 		for x in range(1000):
-			dummy_pos = next((x for x in range(len(combat_event.turn_qeue)) if combat_event.turn_qeue[x] == dummy), None)
+			dummy_pos = next((x for x in range(len(combat_event.turn_queue)) if combat_event.turn_queue[x] == dummy), None)
 			#ability_pos = next((x for x in range(len(player.abilities)) if player.abilities[x].name == testing_ability ), None)
 			command = testing_ability.name
 			args = [str(dummy_pos+1)] 
@@ -72,7 +72,7 @@ def controlled_combat_event(players, enemies):
 		msg = inp.strip().lower().split(' ')
 		
 
-		user = next((x for x in combat_event.users if x.userid == combat_event.turn_qeue[combat_event.turn].userid), None)
+		user = next((x for x in combat_event.users if x.userid == combat_event.turn_queue[combat_event.turn].userid), None)
 		command, args = parse_command(inp)
 		output = combat_event.handle_command(user, command, *args)
 		for player in combat_event.players:
@@ -110,12 +110,12 @@ def test_weapon_abilities():
 
 def run_tests():
 
-	#test_weapon_abilities()
+	test_weapon_abilities()
 	#controlled combat event
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "sword"
+	item = "steel spear"
 	item = get_item_by_name(item, 1)
 
 	print(item.examine_self())
@@ -137,5 +137,5 @@ def run_tests():
 	dummy.equip(item)
 
 	#enemies = [dummy, Peasant()]
-	enemies, desc = lich()
+	enemies, desc = [LichCrystaline(), LichCrystaline()], "wow"
 	controlled_combat_event([ply], enemies)
