@@ -112,12 +112,18 @@ def test_weapon_abilities():
 		ply.clear_inventory()
 
 def run_tests():
-	item = "random"
-	while(True):
-		print(get_item_by_name(item, 1).examine_self())
-		inp = input("type stop to stop")
-		if inp == "stop":
-			break
+	# item = "random"
+	# while(True):
+	# 	print(get_item_by_name(item, 1).examine_self())
+	# 	inp = input("type stop to stop")
+	# 	if inp == "stop":
+	# 		break
+
+	# for enemy_table in list(enemy_tables.keys()):
+	# 	for diff in list(enemy_tables[enemy_table].keys()):
+	# 		enemies = enemy_tables[enemy_table][diff]
+	# 		en, desc = enemies[0](*enemies[1])
+	# 		print(desc)
 
 
 	#test_weapon_abilities()
@@ -125,7 +131,7 @@ def run_tests():
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "quaterstaff"
+	item = "steel halberd"
 	item = get_item_by_name(item, 1)
 
 	logger.info(item.examine_self())
@@ -146,6 +152,6 @@ def run_tests():
 	dummy.add_to_inventory(item)
 	dummy.equip(item)
 
-	enemies = [dummy,Mercenary(1),Mercenary(1), ]
-	#enemies, desc = [LichCrystaline(), LichCrystaline()], "wow"
+	#enemies = [dummy,(1),Mercenary(1), ]
+	enemies, desc = merc_mages("medium")
 	controlled_combat_event([ply], enemies)

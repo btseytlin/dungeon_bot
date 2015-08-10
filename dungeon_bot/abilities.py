@@ -1156,7 +1156,7 @@ class FireBall(Ability):
 	@staticmethod
 	def get_damage(user, target, weapon):
 		intelligence = user.characteristics["intelligence"]
-		base_damage = diceroll(str(intelligence) + "d" + str(intelligence * 2))
+		base_damage = diceroll(str(intelligence) + "d" + str(intelligence))
 		not_fire_resistant = int(not "fire resistant" in target.tags)
 		dmg = clamp( base_damage * not_fire_resistant, user.characteristics["intelligence"], 99999999 )
 		return dmg
@@ -1206,7 +1206,7 @@ class Lightning(Ability):
 	@staticmethod
 	def get_damage(user, target, weapon):
 		intelligence = user.characteristics["intelligence"]
-		base_damage = diceroll(str(intelligence) + "d" + str(intelligence * 2))
+		base_damage = diceroll(str(intelligence) + "d" + str(intelligence))
 		not_fire_resistant = int(not "electricity resistant" in target.tags)
 		dmg = clamp( base_damage * not_fire_resistant, user.characteristics["intelligence"], 99999999 )
 		return dmg
@@ -1590,7 +1590,7 @@ class AnimalClaw(Ability):
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
-abilities = {
+abilities_listing = {
 	"smash": Smash,
 	"shield up": ShieldUp,
 	"bash": Bash,

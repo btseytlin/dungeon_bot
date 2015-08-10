@@ -865,18 +865,18 @@ class Creature(object):
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
 				for ability in perk.__class__.abilities_granted:
-					prototype = abilities[ability]
+					prototype = abilities_listing[ability]
 					self.abilities.append(prototype(ability, perk))
 
 		for modifier in self.modifiers:
 			for ability in modifier.stats["abilities_granted"]:
-				prototype = abilities[ability]
+				prototype = abilities_listing[ability]
 				self.abilities.append(prototype(ability, modifier))
 
 		for key in self.equipment.keys():
 			if self.equipment[key]:
 				for ability in self.equipment[key].abilities_granted:
-					prototype = abilities[ability]
+					prototype = abilities_listing[ability]
 					self.abilities.append(prototype(ability, self.equipment[key]))
 	def refresh_characteristics(self):
 		self.characteristics = self.base_characteristics.copy()
@@ -1052,7 +1052,7 @@ class Player(Creature):
 		if perk_requirements["level"] > self.level:
 			return False
 		for p in perk_requirements["has_perks"]:
-			if not p.__class__.name in own_perk_names:
+			if not p in own_perk_names:
 				return False
 		for characteristic in list(perk_requirements["characteristics"].keys()):
 			if self.characteristics[characteristic] < perk_requirements["characteristics"][characteristic]:

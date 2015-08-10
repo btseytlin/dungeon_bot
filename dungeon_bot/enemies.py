@@ -413,7 +413,7 @@ class UndeadLegionaire(Enemy):
 	loot_coolity = 0.5
 	def __init__(self, level=1, name="undead legionaire",  characteristics = undead_legionaire_characteristics, stats=None, description="An undead legionaire.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "slow"],abilities=[],modifiers=[], exp_value=200):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["steel spear", "halberd"]), 0 )]
+		items = [get_item_by_name( random.choice(["steel spear", "steel halberd"]), 0 )]
 		items.append( get_item_by_name(random.choice(["targe shield", "tower shield"]), 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["chainmail", "plate armor", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
@@ -607,7 +607,6 @@ class LichCrystaline(Enemy):
 
 	def act(self, combat_event):
 		attack_infos = []
-		print(self.abilities)
 		if self.lich:
 			if self.lich.dead:
 				attack_infos.append(self.abilities[0].__class__.use(self, self.lich, None, combat_event))
@@ -957,48 +956,60 @@ class Thief(Enemy):
 						break
 
 		return attack_infos
-'''
-mage_characteristics = {
-	"strength": 2, #how hard you hit
-	"vitality": 2, #how much hp you have
+
+mercenary_mage_characteristics = {
+	"strength": 3, #how hard you hit
+	"vitality": 3, #how much hp you have
 	"dexterity": 4, #how fast you act, your position in turn queue
-	"intelligence": 6, #how likely you are to strike a critical
+	"intelligence": 8, #how likely you are to strike a critical
 }
 
-class Mage(Enemy):
+class MercenaryMage(Enemy):
 	drop_table = {
-		"club" : 7,
 		"dagger" : 7,
-		"mace": 4,
-		"ring of more intelligence" : 2,
-		"ring" : 3,
-		"talisman": 4,
-		"random": 3,
+		"armor":5,
+		"ring" : 10,
+		"talisman": 10,
+		"bronze crown": 5,
+		"random": 5,
 	}
-	loot_coolity = 0.3
-	def __init__(self, level=1, name="mage", characteristics = mage_characteristics, stats=None, description="A magical peasant.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
+	loot_coolity = 0.8
+	def __init__(self, level=1, name="mage", characteristics = mercenary_mage_characteristics, stats=None, description="Fireball for hire,.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["club", "dagger", "mace"]), 0 )]
-		items.append( get_item_by_name( random.choice(["chainmail", "iron helmet"]) , 0 ) ) if random.randint(0,10) > 8 else None
+		items = [get_item_by_name( random.choice(["quaterstaff", "dagger"]), 0 )]
+		items.append( get_item_by_name( random.choice(["hermit cloak", "leather armor", "ritual cloak"]) , 0 ) ) if random.randint(0,10) > 6 else None
+		items.append( get_item_by_name( random.choice(["ring", "talisman", "headwear"]) , 0 ) ) if random.randint(0,10) > 6 else None
 		for item in items:
 			if self.add_to_inventory(item):
 				self.equip(item, True)
 
+		spells = ["heal", "fireball", "lightning", "mass pain"]
+		for spell in spells:
+			self.base_abilities.append(abilities_listing[spell](spell, None))
+		
+
+
 	def act(self, combat_event):
 		attack_infos = []
+
+		for c in combat_event.enemies:
+			if not c.dead and c.health < c.stats["max_health"] and not "regeneration" in [modifier.name for modifier in c.modifiers]:
+				ability = [x for x in self.abilities if x.name == "heal"][0]
+				if self.energy >= ability.energy_required:
+					attack_infos.append(ability.__class__.use(self, c, ability.granted_by, combat_event))
 
 		if not self.target or self.target.dead:
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
-			for ability in self.abilities:
-				while self.energy >= ability.energy_required:
-					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
-					if not self.target or self.target.dead:
-						break
+			if len([enemy for enemy in combat_event.enemies if not enemy.dead]) > 0 and not "pain" in [modifier.name for modifier in self.target.modifiers]:
+				ability = [x for x in self.abilities if x.name == "mass pain"][0]
+			else:
+				ability = [x for x in self.abilities if x.name == "fireball"][0]
+			while self.energy >= ability.energy_required:
+				attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
 				if not self.target or self.target.dead:
-						break
-
-		return attack_infos'''
+					break
+		return attack_infos
 
 ogre_characteristics = {
 	"strength": 9, #how hard you hit
@@ -1188,22 +1199,23 @@ def ogres(size = None):
 """ Undead enemy spawn functions """
 def undead_soldier_pack(size=None, special_enemy=None):
 	description = "An undead soldier.\n"
+	levels = list(range(1,6))
 	amount = 1
 	if size == "small":
-		levels = list(range(1,6))
+		levels = list(range(10,25))
 		amount = random.randint(1, 2)
 		if amount > 1:
 			description = "A small group of undead soldiers.\n"
 	elif size == "medium":
-		levels = list(range(6,15))
+		levels = list(range(15,35))
 		description = "A group of undead soldiers.\n"
 		amount = random.randint(2, 3)
 	elif size == "big":
-		levels = list(range(15,35))
+		levels = list(range(35,55))
 		description = "A big group of undead soldiers.\n"
 		amount = random.randint(3, 5)
 	elif size == "huge":
-		levels = list(range(25,50))
+		levels = list(range(55,65))
 		description = "A unit of undead soldiers.\n"
 		amount = random.randint(4, 6)
 
@@ -1235,22 +1247,23 @@ def undead_soldier_pack(size=None, special_enemy=None):
 def undead_legionaire_pack(size=None, special_enemy=None):
 	description = "An undead soldier.\n"
 	amount = 1
+	levels = list(range(1,6))
 	if size == "small":
-		levels = list(range(1,6))
+		levels = list(range(5,15))
 		amount = random.randint(1, 2)
 		if amount > 1:
 			description = "A small group of undead legionaires.\n"
 	elif size == "medium":
-		levels = list(range(6,15))
+		levels = list(range(15,35))
 		description = "A group of undead legionaires.\n"
 		amount = random.randint(2, 3)
 	elif size == "big":
-		levels = list(range(15,35))
-		description = "A big group of undead legionaires.\n"
+		levels = list(range(25,55))
+		description = "A group of veteran undead legionaires.\n"
 		amount = random.randint(3, 5)
 	elif size == "huge":
-		levels = list(range(25,50))
-		description = "A unit of undead legionaires.\n"
+		levels = list(range(45,65))
+		description = "A unit of elite undead legionaires.\n"
 		amount = random.randint(4, 6)
 
 	desc = ""
@@ -1456,35 +1469,117 @@ def peasant_pack(size=None, special_enemy = None):
 	description += desc
 	return peasants, description
 
-'''def mages():
+def mercenary_pack(size=None, special_enemy = None):
+	description = "A mercenary.\n"
+	levels = list(range(1,5))
+	amount = 1
+	if size == "small":
+		amount = random.randint(1, 2)
+		levels = list(range(5,15))
+		if amount != 1:
+			description = "A small group of mercenaries.\n"
+	elif size == "medium":
+		levels = list(range(10,25))
+		description = "A group of mercenaries.\n"
+		amount = random.randint(3, 4)
+	elif size == "big":
+		levels = list(range(20,40))
+		description = "A group of experienced mercenaries.\n"
+		amount = random.randint(4, 5)
+	elif size == "huge":
+		levels = list(range(30,60))
+		description = "A group of veteran mercenaries.\n"
+		amount = random.randint(4, 5)
+	mercs = [ Mercenary(random.choice(levels)) if random.randint(1, 10) < 6 else MercenarySpearman(random.choice(levels)) for x in range(amount+1)]
+
+	thieves = []
+	thug_enemies = []
+	merc_leader = []
+	mage_enemies = []
+	desc = ""
+	if special_enemy:
+		if special_enemy == "thief":
+			if size == "medium" and random.randint(0, 10) > 3:
+				thieves, desc = thief()
+			elif size == "big" and random.randint(0, 10) > 3:
+				thieves, desc = thief("strong")
+			elif size == "huge" and random.randint(0, 10) > 3:
+				thieves, desc = thief("very strong")
+		elif special_enemy == "thugs":
+			if size == "medium" and random.randint(0, 10) > 3:
+				thug_enemies, desc = thugs()
+			elif size == "big" and random.randint(0, 10) > 3:
+				thug_enemies, desc = thugs("strong")
+			elif size == "huge" and random.randint(0, 10) > 3:
+				thug_enemies, desc = thugs("very strong")
+		elif special_enemy == "leader":
+			if size == "medium" and random.randint(0, 10) > 3:
+				merc_leader, desc = mercenary_leader()
+			elif size == "big" and random.randint(0, 10) > 3:
+				merc_leader, desc = mercenary_leader("strong")
+			elif size == "huge" and random.randint(0, 10) > 3:
+				merc_leader, desc = mercenary_leader("very strong")
+		elif special_enemy == "mages":
+			if size == "medium" and random.randint(0, 10) > 3:
+				mages, desc = merc_mages("medium")
+			elif size == "small" and random.randint(0, 10) > 3:
+				mages, desc = merc_mages("small")
+			elif size == "big" and random.randint(0, 10) > 3:
+				mages, desc = merc_mages("big")
+			elif size == "huge" and random.randint(0, 10) > 3:
+				mages, desc = merc_mages("huge")
+
+	mercs += thieves
+	mercs += thug_characteristics
+	mercs += merc_leader
+	mercs += mage_enemies
+	description += desc
+	return mercs, description
+
+def mercenary_leader(size = None):
+	if size == "strong":
+		levels = list(range(10, 30))
+		merc_leader_enemy = MercenaryLeader(random.choice(levels))
+		description = "A hardened mercenary leader.\n"
+	elif size == "very strong":
+		levels = list(range(30, 55))
+		merc_leader_enemy = MercenaryLeader(random.choice(levels))
+		description = "A legendary mercenary leader.\n"
+	else:
+		levels = list(range(5, 10))
+		merc_leader_enemy = MercenaryLeader(random.choice(levels))
+		description = "A mercenary leader.\n"
+	return [merc_leader_enemy], description
+
+def merc_mages(size=None):
 	description = "A mage."
 	levels = list(range(5,10))
 	amount = 1
 	if size == "small":
-		amount = random.randint(1, 3)
+		amount = random.randint(1, 2)
 		if amount != 1:
 			description = "Novice mages.\n"
 	elif size == "medium":
 		description = "Average mages.\n"
 		levels = list(range(10,20))
-		amount = random.randint(3, 6)
+		amount = random.randint(2, 3)
 	elif size == "big":
-		description = "Mage overseers.\n"
-		levels = list(range(15-25))
-		amount = random.randint(4, 7)
+		description = "Experienced mages.\n"
+		levels = list(range(20,40))
+		amount = random.randint(2, 3)
 	elif size == "huge":
-		description = "Grandmaster Mages.\n"
-		levels = list(range(40,50))
-		amount = random.randint(3, 5)
-	mages = [ Mage(random.choice(levels)) for x in range(amount+1)]
+		description = "Veteran mages.\n"
+		levels = list(range(40,60))
+		amount = random.randint(2, 3)
+	mages = [ MercenaryMage(random.choice(levels)) for x in range(amount+1)]
 	return mages, description
-'''
+
 
 def thief(size = None):
 	if size == "strong":
 		thief_levels = list(range(10, 20))
 		thief_enemy = Thief(random.choice(thief_levels))
-		description = "An professional thief.\n"
+		description = "A professional thief.\n"
 	elif size == "very strong":
 		thief_levels = list(range(20, 35))
 		thief_enemy = Thief(random.choice(thief_levels))
@@ -1583,18 +1678,38 @@ enemy_tables = { # difficulty rating: (function to get enemy or enemy group, par
 		"5": (peasant_pack,["small"] ),
 		"5": (thugs, []),
 		"10": (thief, [] ),
+		"5": (mercenary_pack,[] ),
+		"10": (merc_mages, []),
 		"10": (peasant_pack,["medium"] ),
+		"10": (mercenary_pack,["small"] ),
 		"10": (peasant_pack,["medium", "thief"] ),
 		"15": (peasant_pack,["medium", "thugs"] ),
+		"15": (mercenary_pack,["small", "thugs"] ),
+		"15": (mercenary_pack,["small", "mages"] ),
 		"15": (thugs, ["strong"]),
 		"15": (thief, ["strong"]),
+		"15": (mercenary_leader, []),
 		"20": (peasant_pack,["big", "thugs"] ),
 		"20": (peasant_pack,["big", "thief"] ),
+		"20": (mercenary_pack,["medium", "thugs"] ),
+		"20": (mercenary_pack,["medium", "thief"] ),
+		"20": (mercenary_pack,["medium", "mages"] ),
+		"20": (mercenary_pack,["medium", "leader"] ),
 		"30": (thief, ["very strong"] ),
 		"30": (thugs, ["very strong"] ),
+		"30": (mercenary_leader, ["strong"]),
+		"35": (mercenary_pack,["big", "thugs"] ),
+		"35": (mercenary_pack,["big", "thief"] ),
+		"35": (mercenary_pack,["big", "mages"] ),
+		"35": (mercenary_pack,["big", "leader"] ),
 		"40": (peasant_pack,["huge"] ),
+		"40": (mercenary_leader, ["very strong"]),
 		"50": (peasant_pack,["huge", "thugs"] ),
 		"50": (peasant_pack,["huge", "thief"] ),
+		"55": (mercenary_pack,["huge", "thugs"] ),
+		"55": (mercenary_pack,["huge", "thief"] ),
+		"55": (mercenary_pack,["huge", "mages"] ),
+		"55": (mercenary_pack,["huge", "leader"] ),
 	},
 
 }

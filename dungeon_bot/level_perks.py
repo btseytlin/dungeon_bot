@@ -126,7 +126,7 @@ class TeamTactics(LevelPerk):
 
 class Looter(LevelPerk):
 	name = "Looter"
-	description = "Get more loot.."
+	description = "Get more loot."
 	priority = 0
 	requirements = {
 		"level": 10,
