@@ -441,7 +441,7 @@ undead_warleader_characteristics = {
 	"intelligence": 6, #how likely you are to strike a critical
 }
 
-class UndeadWarleader(Enemy):
+class UndeadWarLeader(Enemy):
 	drop_table = {
 		"chainmail" : 3,
 		"plate armor" : 3,
@@ -464,7 +464,7 @@ class UndeadWarleader(Enemy):
 	loot_coolity = 0.5
 	def __init__(self, level=1, name="undead war leader",  characteristics = undead_warleader_characteristics, stats=None, description="A two and half meters high undead soldier. He carries a torn banner that has long lost it's colors. He seems sentinent and sane. His will to to dismember you is logically calculated.", inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "undead", "big"],abilities=[], modifiers=[], exp_value=500):
 		Enemy.__init__(self, name, level, characteristics, stats, description, inventory, equipment, tags, abilities, modifiers, exp_value)
-		items = [get_item_by_name( random.choice(["sword", "claymore", "rapier", "mace", "steel spear", "stone maul", "halberd"]), 0 )]
+		items = [get_item_by_name( random.choice(["sword", "claymore", "rapier", "mace", "steel spear", "stone maul", "steel halberd"]), 0 )]
 		items.append( get_item_by_name(random.choice(["targe shield", "dagger"]), 0 ) ) if random.randint(0,10) > 7 else None
 		items.append( get_item_by_name( random.choice(["ritual cloak", "golden crown"]) , 0 ) ) if random.randint(0,10) > 8 else None
 		for item in items:
@@ -806,7 +806,7 @@ class Mercenary(Enemy):
 		"armor": 5,
 		"ring" : 5,
 		"headwear": 5,
-		"random": 3,
+		"random": 10,
 	}
 	loot_coolity = 0.5
 	def __init__(self, level=1, name="mercenary", characteristics = mercenary_characteristics, stats=None, description="Sword for hire. Somewhat professional, quite experienced. Usually hired as canon foder and not really relied on.", inventory=[], equipment=default_equipment, tags=["human", "living", "animate", "humanoid"],abilities=[],modifiers=[], exp_value=200):
@@ -1052,7 +1052,7 @@ enemy_list = { #name to enemy
 	"undead soldier": UndeadSoldier,
 	"undead knight": UndeadKnight,
 	"undead legionaire": UndeadLegionaire,
-	"undead warleader": UndeadWarleader,
+	"undead warleader": UndeadWarLeader,
 	"undead siren": UndeadSiren,
 
 	"lich": Lich,
@@ -1302,30 +1302,22 @@ def undead_siren(size = None):
 def undead_warleader(size = None):
 	if not size:
 		description = "An undead warleader.\n"
-		levels = list(range(5,10))
-		lich = Lich(random.choice(levels))
-		crystaline = LichCrystaline(random.choice(levels))
-		crystaline.lich = lich
-		enemies = [ lich, crystaline ]
+		levels = list(range(35,60))
+		warleader = UndeadWarLeader(random.choice(levels))
+		enemies = [ warleader ]
 
 	elif size == "strong":
 		description = "A honored undead warleader.\n"
-		levels = list(range(10,20))
-		lich = Lich(random.choice(levels))
-		crystaline = LichCrystaline(random.choice(levels))
-		crystaline.lich = lich
-		enemies = [ lich, crystaline ]
+		levels = list(range(60,70))
+		warleader = UndeadWarLeader(random.choice(levels))
+		enemies = [ warleader ]
+
 
 	elif size == "very strong":
 		description = "A legendary undead warleader.\n"
-		levels = list(range(10,20))
-		lich = Lich(random.choice(levels))
-		lich1 = Lich(random.choice(levels))
-		crystaline = LichCrystaline(random.choice(levels))
-		crystaline1 = LichCrystaline(random.choice(levels))
-		crystaline.lich = lich
-		crystaline1.lich = lich1
-		enemies = [lich, lich1, crystaline, crystaline1]
+		levels = list(range(70,85))
+		warleader = UndeadWarLeader(random.choice(levels))
+		enemies = [ warleader ]
 
 	return enemies, description
 

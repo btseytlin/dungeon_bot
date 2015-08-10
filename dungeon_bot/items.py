@@ -53,15 +53,18 @@ class Item(object):
 			for key in [stat for stat in list(modifier["stats"].keys()) if not stat in ["duration", "priority", "characteristics_change", "stats_change", "abilities_granted", "tags_granted"] ]:
 				stats.append("|\t"+key+":" +str(modifier["stats"][key]))
 			for characteristic in list(modifier["stats"]["characteristics_change"].keys()):
-				stats.append("|\t"+characteristic+":" + ("+" if modifier["stats"]["characteristics_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"]))
+				stats.append("|\t"+characteristic+":" + ("+" if modifier["stats"]["characteristics_change"][characteristic] > 0 else "") +str(modifier["stats"]["characteristics_change"][characteristic]))
 			for stat in list(modifier["stats"]["stats_change"].keys()):
-				stats.append("|\t"+stat+":" + ("+" if modifier["stats"]["stats_change"] > 0 else "") +str(modifier["stats"]["characteristics_change"]))
+				if isinstance(modifier["stats"]["stats_change"][stat], str):
+					stats.append("|\t"+stat+":" +str(modifier["stats"]["stats_change"][stat]))
+				else:
+					stats.append("|\t"+stat+":" + ("+" if modifier["stats"]["stats_change"][stat] > 0 else "") +str(modifier["stats"]["stats_change"][stat]))
 
 		lines = []
 		lines.append("%s, %s."%(self.full_name.capitalize(), self.item_type))
 		lines.append("%s"%(self.description)) if self.description != "" else None
 		lines.append("Requirements:\n%s"%("\n".join(requirements))) if requirements != [] else None
-		lines.append("Stats:\n%s"%("\n".join(stats)))
+		lines.append("Stats:\n%s"%("\n".join(stats))) if stats != [] else None
 		lines.append("Abilities granted:\n|\t%s"%(", ".join(self.abilities_granted))) if self.abilities_granted != [] else None
 		lines.append("Tags granted:\n|\t%s"%(", ".join(self.tags_granted))) if self.tags_granted != [] else None
 		desc = "\n".join(lines)
@@ -147,7 +150,9 @@ class Armor(Item):
 	@property
 	def short_desc(self):
 		sh_dsc = super(Armor, self).short_desc
-		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
+		if "defense" in self.stats.keys() and "evasion"  in self.stats.keys():
+			return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
+		return sh_dsc
 
 	@staticmethod
 	def de_json(data):
@@ -187,7 +192,9 @@ class Headwear(Item):
 	@property
 	def short_desc(self):
 		sh_dsc = super(Headwear, self).short_desc
-		return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
+		if "defense" in self.stats.keys() and "evasion"  in self.stats.keys():
+			return sh_dsc+" |def:%s/ev:%s|"%(self.stats["defense"], self.stats["evasion"])
+		return sh_dsc
 
 	@staticmethod
 	def de_json(data):
@@ -247,6 +254,8 @@ def get_item_by_name(name, coolity=0):
 		for item in list(item_listing[key].keys()):
 			if item == name:
 				item_args = item_listing[key][item]["args"].copy()
+				if not "stats" in item_listing[key][item].keys():
+					item_listing[key][item]["stats"] = {}
 				item_stats = item_listing[key][item]["stats"].copy()
 				item_type = key
 				break
@@ -271,15 +280,15 @@ def get_item_by_name(name, coolity=0):
 
 item_listing = {
 	"primary weapon":{
-		"rapier": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"rapier", "description":"A rapier is fast and deadly to unarmed oponents. It requires some skill to use efficiently.","random_effects": True, "abilities_granted":["stab", "quick stab"], "requirements": {"dexterity": 7}}},
+		"rapier": {"stats": {"damage" : ["1d6","2d6"], "accuracy" : ["2d6","5d6"]} , "args":{"name":"rapier", "description":"A rapier is fast and deadly to unarmed oponents. It requires some skill to use efficiently.","random_effects": True, "abilities_granted":["stab", "quick stab"], "requirements": {"characteristics":{"dexterity": 7}}}},
 
 		"club": {"stats": {"damage" : ["1d3","2d6"], "accuracy" : ["1d6","2d6"]} , "args":{"name":"club","random_effects": True, "description":"A rough wooden club, good enough to break a skull! An unarmed, untrained, weak skull.", "abilities_granted":["smash"]}},
 
-		"mace": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"mace","random_effects": True, "description":"Like the club, except less bad!", "abilities_granted":["smash"], "requirements":{"strength":6}}},
+		"mace": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"mace","random_effects": True, "description":"Like the club, except less bad!", "abilities_granted":["smash"], "requirements":{"characteristics":{"strength":6}}}},
 
-		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"sword","random_effects": True, "description":"Steel sword!", "abilities_granted":["cut", "stab"],"requirements":{"strength":5, "dexterity": 5}}},
+		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"sword","random_effects": True, "description":"Steel sword!", "abilities_granted":["cut", "stab"],"requirements":{"characteristics":{"strength":5, "dexterity": 5}}}},
 
-		"quaterstaff": {"stats": {"characteristics_change":{"intelligence":[0, 3]}, "damage" : ["1d3","2d5"], "accuracy" : ["1d6","7d6"]} , "args":{"name":"steel spear","random_effects": True, "description":"Quite easy to use, hard to master. It doesn't deal much damage, but in the hands of a strong fighter it's a deadly weapon.", "abilities_granted":["smack"], "requirements": { "two handed": True }}},
+		"quaterstaff": {"stats": {"characteristics_change":{"intelligence":[0, 3]}, "damage" : ["1d3","2d5"], "accuracy" : ["1d6","7d6"]} , "args":{"name":"quaterstaff","random_effects": True, "description":"Quite easy to use, hard to master. It doesn't deal much damage, but in the hands of a strong fighter it's a deadly weapon.", "abilities_granted":["smack"], "requirements": { "two handed": True }}},
 
 		"steel spear": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"steel spear","random_effects": True, "description":"A spear is the simpliest weapon. It doesn't make it any less effective. It's main selling point is that it requires little to no skills to use one. Anyone can hit stuff with a spear.", "abilities_granted":["stab"], "requirements": {"two handed": True, "characteristics":{"strength":4} }}},
 
@@ -301,9 +310,9 @@ item_listing = {
 
 		"buckler": {"stats": {"defense" : ["1d1","1d5"], "evasion" : ["0d6","1d3"]} ,"args":{"random_effects": True, "name":"buckler", "description":"Tiny shield strapped to your arm. Offers little protection, but allows for a bashing attack.", "abilities_granted":["bash"]}},
 
-		"targe shield": {"stats": {"defense" : ["1d6","2d6"], "evasion" : ["-4d6","-1d6"]} , "args":{"name":"targe shield","random_effects": True, "description":"Big round shield, protects you from hip to neck.", "abilities_granted":["shield up"]}},
+		"targe shield": {"stats": {"defense" : ["1d6","2d6"], "evasion" : ["-4d6","-1d6"]} , "args":{"name":"targe shield","random_effects": True,"requirements": {"characteristics":{"strength": 5}}, "description":"Big round shield, protects you from hip to neck.", "abilities_granted":["shield up"]}},
 
-		"tower shield": {"stats": {"characteristics_change":{"dexterity":[-3, -1]}, "defense" : ["2d6","4d6"], "evasion" : ["-8d6","-3d6"]} ,"args":{"random_effects": True, "name":"tower shield", "description":"Huge shield covers nearly all of your body at the expense of being extremely heavy.", "abilities_granted":["shield up"]}},
+		"tower shield": {"stats": {"characteristics_change":{"dexterity":[-3, -1]}, "defense" : ["2d6","4d6"], "evasion" : ["-8d6","-3d6"]} ,"args":{"random_effects": True, "name":"tower shield", "description":"Huge shield covers nearly all of your body at the expense of being extremely heavy.","requirements": {"characteristics":{"strength": 6}}, "abilities_granted":["shield up"]}},
 
 
 		# enemy equipment below
@@ -313,16 +322,14 @@ item_listing = {
 
 		"hermit cloak": {"stats": { "characteristics_change":{"intelligence":[0, 4]}, "defense" : ["0d6","1d3"]} , "args":{"random_effects": True, "name":"hermit cloak", "description":"Makes you appear like a stray philosopher. Seems to speed up growth of grey hairs.", "tags_granted":[]}},
 
-		"ritual cloak": {"stats": { "characteristics_change":{"intelligence":[0, 6]}, "defense" : ["0d6","1d3"]}, "args":{"random_effects": True, "name":"ritual cloak", "description":"It's quite hard to wear because, but it's worth it. The voices say it's worth it.", "tags_granted":[]}},
+		"ritual cloak": {"stats": { "characteristics_change":{"intelligence":[0, 6]}, "defense" : ["0d6","1d3"]}, "args":{"random_effects": True, "name":"ritual cloak", "description":"It's hard to wear, but it's worth it. The voices say it's worth it.", "tags_granted":[]}},
 
 		"leather armor": {"stats": { "characteristics_change":{"dexterity":[-2, 1]}, "defense" : ["1d6","3d6"], "evasion" : ["-2d6","-1d3"]} , "args":{"random_effects": True, "name":"leather armor", "description":"Very light armor.", "tags_granted":["armor"]}},
 
-		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 0]}, "defense" : ["1d6","5d6"], "evasion" : ["-5d6","-1d6"]} , "args":{"random_effects": True, "name":"chainmail", "description":"Light armor.", "tags_granted":["armor"]}},
-		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -2]}, "defense" : ["2d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"]}},
+		"chainmail": {"stats": { "characteristics_change":{"dexterity":[-3, 0]}, "defense" : ["1d6","5d6"], "evasion" : ["-5d6","-1d6"]} , "args":{"random_effects": True, "name":"chainmail", "description":"Light armor.", "tags_granted":["armor"], "requirements": {"characteristics":{"vitality": 5} }} },
+		"plate armor": {"stats": { "characteristics_change":{"dexterity":[-5, -2]}, "defense" : ["2d6","7d6"], "evasion" : ["-10d6","-2d6"]} , "args":{"name":"plate armor", "description":"Heavy armor.","random_effects": True, "tags_granted":["heavy armor"], "requirements": {"characteristics":{"vitality": 7} }}},
 	},
 	"talisman":{
-		"amulet of defense": {"stats": {"defense" : ["1d6","2d6"]} , "args":{"name":"amulet of defense", "description":"The most boring talisman, it just protects you."}},
-
 		"bone amulet": {"stats":{}, "args":{"name":"bone amulet", "description":"A amulet cut from a bone. A human bone.", "random_effects": True}},
 
 		"pyramid talisman": {"stats":{}, "args":{"name":"pyramid talisman", "description":"A strange thing.", "random_effects": True}},

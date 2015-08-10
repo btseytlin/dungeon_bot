@@ -44,6 +44,12 @@ class Creature(object):
 		self.inventory = inventory.copy()
 		self.equipment = equipment.copy()
 
+		#self.stats = {}
+	#	self.characteristics = {}
+		self.tags = []
+		self.abilities = []
+		self.modifiers = []
+
 		self.refresh_derived()
 		self.dead = False
 
@@ -234,7 +240,7 @@ class Creature(object):
 			dmg = value
 
 		if isinstance(self, Enemy) and isinstance(inhibitor, Player):
-			exp_gained = self.exp_value * clamp(dmg/self.stats["max_health"], 0, 1)
+			exp_gained = self.exp_value * clamp(dmg/clamp(self.stats["max_health"],1, 10000000), 0, 1)
 			mes, exp_gained = inhibitor.on_experience_gain(exp_gained)
 			msg += mes
 			msg += inhibitor.add_experience(exp_gained)
@@ -336,6 +342,13 @@ class Creature(object):
 
 		self.modifiers.append(modifier)
 		self.modifiers = sorted(self.modifiers, key=lambda x: x.priority, reverse=False)
+		#print('refreshing on modifier added')
+		
+		self.refresh_characteristics()
+		self.refresh_stats()
+		self.refresh_abilities()
+		self.refresh_tags()
+
 		return True
 
 	""" EVENTS """
@@ -352,8 +365,10 @@ class Creature(object):
 			if effect:
 				msg += effect
 
-		self.refresh_stats()
+		#print("refreshing on combat start")
+		
 		self.refresh_characteristics()
+		self.refresh_stats()
 		self.refresh_abilities()
 		self.refresh_tags()
 		return msg
@@ -424,7 +439,10 @@ class Creature(object):
 				if effect:
 					msg += effect
 
+		#print("refreshing on modifier applied")
+
 		self.refresh_characteristics()
+		self.refresh_stats()
 		self.refresh_abilities()
 		self.refresh_tags()
 
@@ -442,8 +460,9 @@ class Creature(object):
 				effect = perk.on_modifier_lifted(modifier)
 				if effect:
 					msg += effect
-
+		#print("refreshing on modifier lifted")
 		self.refresh_characteristics()
+		self.refresh_stats()
 		self.refresh_abilities()
 		self.refresh_tags()
 
@@ -731,16 +750,16 @@ class Creature(object):
 
 		return ability_info
 
-	def on_loot(self, item):
+	def on_loot(self, item, source):
 		msg = ""
 		for modifier in self.modifiers:
-			effect = modifier.on_loot(item)
+			effect = modifier.on_loot(item, source)
 			if effect:
 				msg += effect
 
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
-				effect = perk.on_loot(item)
+				effect = perk.on_loot(item, source)
 				if effect:
 					msg += effect
 
@@ -859,7 +878,6 @@ class Creature(object):
 				for ability in self.equipment[key].abilities_granted:
 					prototype = abilities[ability]
 					self.abilities.append(prototype(ability, self.equipment[key]))
-
 	def refresh_characteristics(self):
 		self.characteristics = self.base_characteristics.copy()
 		#refresh characteristics
@@ -879,7 +897,13 @@ class Creature(object):
 
 
 	def refresh_stats(self):
-		self.stats = self.get_stats_from_characteristics(self.characteristics)
+		temp_stats = self.get_stats_from_characteristics(self.characteristics)
+		if hasattr(self, "stats"):
+			self.stats["max_health"] = temp_stats["max_health"]
+			self.stats["max_energy"] = temp_stats["max_energy"]
+			self.stats["energy_regen"] = temp_stats["energy_regen"]
+		else:
+			self.stats = temp_stats
 		#refresh stats
 		if hasattr(self, "level_perks"):
 			for perk in self.level_perks:
@@ -899,6 +923,7 @@ class Creature(object):
 						self.stats[stat] = clamp( self.stats[stat] +self.equipment[item].stats["stats_change"][stat], 0, 9999)
 
 	def refresh_derived(self):
+		#print("refreshing derived")
 		self.refresh_modifiers()
 		self.refresh_abilities()
 		self.refresh_tags()
@@ -926,6 +951,16 @@ class Creature(object):
 				granted_by = "(%s)"%(ability.granted_by.name)
 
 			abilities.append("%s%s"%(name, granted_by))
+
+		modifiers = []
+		for modifier in self.modifiers:
+			granted_by = ""
+			name = modifier.name
+			if modifier.granted_by:
+				granted_by = "(%s)"%(modifier.granted_by.name)
+			modifiers.append("|\t%s%s"%(name, granted_by))
+
+
 		desc = "\n".join(
 		[
 			"%s. lvl %d"%(self.name.capitalize(), self.level),
@@ -936,7 +971,7 @@ class Creature(object):
 			"Exp:\n|\t%d/%d"%(self.experience, self.max_experience) if hasattr(self, "experience") else "",
 			"Average defense, evasion, accuracy:\n|\t%d, %d, %d"%(avg_defense, avg_evasion, avg_accuracy),
 			"Tags:\n|\t%s"%(", ".join(self.tags)),
-			"Modifiers:\n%s"%("\n".join(["|\t%s(%s)"%(modifier.name, modifier.granted_by.name) for modifier in self.modifiers])),
+			"Modifiers:\n%s"%("\n".join(modifiers)),
 			"Abilities:\n|\t%s"%(", ".join(abilities)),
 			"Equipment:\n%s"%(self.examine_equipment()),
 		])
@@ -968,7 +1003,7 @@ class Creature(object):
 		return big_dict
 
 class Player(Creature):
-	def __init__(self, userid, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0, last_read_notification_id = -1):
+	def __init__(self, userid, name, level=1, characteristics = default_characteristics, stats=None, description=None, inventory=[], equipment=default_equipment, tags=["animate", "living", "humanoid", "human"],abilities=[],modifiers=[], level_perks=[], experience=0, level_up_points=0, perk_points=0, last_read_notification_id = -1):
 		self.level_perks = level_perks.copy()
 		self._experience = experience
 		self.level_up_points = level_up_points
@@ -1075,7 +1110,7 @@ class Player(Creature):
 		target = attack_info.target
 		if isinstance(target, Enemy):
 			dropped_items = target.drop_loot()
-			for item in dropped_items
+			for item in dropped_items:
 				if isinstance(attack_info.inhibitor, Player):
 					loot_goes_to = random.choice(attack_info.inhibitor.event.players)
 					if loot_goes_to.add_to_inventory(item):

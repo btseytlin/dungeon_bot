@@ -126,7 +126,7 @@ class TeamTactics(LevelPerk):
 
 class Looter(LevelPerk):
 	name = "Looter"
-	description = "Get 40 percent more loot."
+	description = "Get more loot.."
 	priority = 0
 	requirements = {
 		"level": 10,
@@ -139,23 +139,26 @@ class Looter(LevelPerk):
 		LevelPerk.__init__(self, host)
 
 	def on_loot(self, item, source):
+		description = ""
 		chance = 40
-		if random.randint(1, 100) < 30:
+		if random.randint(1, 100) < chance:
+			print("hey?")
 			new_items = source.drop_loot()
-			item = random.choice(new_items)
-			self.host.add_to_inventory(item)
+			if len(new_items)> 0:
+				item = random.choice(new_items)
+				self.host.add_to_inventory(item)
 
-			if self.host.add_to_inventory(item):
-				description += "!!\t%s got additional loot as a skilled looter: %s.\n"%(self.host.name.capitalize(), item.full_name)
-			else:
-				description += "!!\t%s got additional loot: %s, but didn't have enough space in inventory.\n"%(self.host.name.capitalize(), item.name)
-			return description
+				if self.host.add_to_inventory(item):
+					description += "!!\t%s got additional loot as a skilled looter: %s.\n"%(self.host.name.capitalize(), item.full_name)
+				else:
+					description += "!!\t%s got additional loot: %s, but didn't have enough space in inventory.\n"%(self.host.name.capitalize(), item.name)
+		return description
 
 
 """ Tank tree """
 class Legionaire(LevelPerk):
 	name = "Legionaire"
-	description = "Get twice more defence when putting your shield up."
+	description = "Get much more defense when putting your shield up. This is the first step to become an unbeatable soldier."
 	priority = 0
 	requirements = {
 		"level": 5,
@@ -167,9 +170,9 @@ class Legionaire(LevelPerk):
 
 	def on_modifier_applied(self, modifier):
 		msg = ""
-		if modifier.name == "shielded"
-			modifier.stats["stats_change"]["defense"] = str(int(stats["stats_change"]["defense"].split('d')[0])*2) + 'd' + str(int(stats["stats_change"]["defense"].split('d')[1])*2)
-			msg = "!!\t The defense bonus is two times stronger!!"
+		if modifier.name == "shielded":
+			modifier.stats["stats_change"]["defense"] = str(int(modifier.stats["stats_change"]["defense"].split('d')[0])*2) + 'd' + str(int(modifier.stats["stats_change"]["defense"].split('d')[1]))
+			msg = "!!\tThe defense bonus is stronger due to legionaire training!"
 		return msg
 
 class Knight(LevelPerk):
@@ -178,7 +181,7 @@ class Knight(LevelPerk):
 	priority = 0
 	requirements = {
 		"level": 10,
-		"has_perks": ["legionaire"],
+		"has_perks": ["Legionaire"],
 		"characteristics": {
 			"vitality": 6,
 		}
@@ -213,19 +216,22 @@ class Berserk(LevelPerk):
 	priority = 0
 	requirements = {
 		"level": 10,
-		"has_perks": ["legionaire"],
+		"has_perks": ["Legionaire"],
 		"characteristics": {
 			"vitality": 6,
 		}
 	}
 
 	def on_health_lost(self, value):
+		
+		msg = ""
 		chance = clamp((value / self.host.stats["max_health"]) * 100, 0, 95)
 		if random.randint(1, 100) < chance:
 			modifier = get_modifier_by_name("bonus", self, self.host, {"duration":2, "characteristics_change":{"strength": 2, "dexterity": 2}})
 			mod_added = self.host.add_modifier(modifier)
 			if mod_added:
 				msg = "!!\t%s is enraged!\n"%(self.host.name.capitalize())
+		return msg
 
 
 """ Damage Dealer tree """
@@ -249,7 +255,7 @@ class Sweeper(LevelPerk):
 				modifier = get_modifier_by_name("bonus", self, self.host, {"duration":1, "stats_change":{"accuracy": "3d6"}})
 				mod_added = self.host.add_modifier(modifier)
 				if mod_added:
-					msg = "!!\t%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n Hard to miss when they are all around you, huh!\n"%(self.host.name.capitalize())
+					msg = "!!\t%s gains a 4d4 accuracy bonus due to being surrounded by enemies.\n"%(self.host.name.capitalize())
 		return msg
 
 class Flow(LevelPerk):
@@ -258,7 +264,7 @@ class Flow(LevelPerk):
 	priority = 0
 	requirements = {
 		"level": 10,
-		"has_perks": ["sweeper"],
+		"has_perks": ["Sweeper"],
 		"characteristics": {
 			"strength": 6
 		}
@@ -276,7 +282,7 @@ class Deft(LevelPerk):
 	priority = 0
 	requirements = {
 		"level": 10,
-		"has_perks": ["sweeper"],
+		"has_perks": ["Sweeper"],
 		"characteristics": {
 			"strength": 6,
 		}
@@ -320,7 +326,7 @@ class Mage(LevelPerk):
 	priority = 0
 	requirements = {
 		"level": 10,
-		"has_perks": ["educated"],
+		"has_perks": ["Educated"],
 		"characteristics": {
 			"intelligence": 6,
 		}
@@ -334,7 +340,7 @@ class Necromancer(LevelPerk):
 	priority = 0
 	requirements = {
 		"level": 10,
-		"has_perks": ["educated"],
+		"has_perks": ["Educated"],
 		"characteristics": {
 			"intelligence": 6,
 		}
@@ -343,9 +349,23 @@ class Necromancer(LevelPerk):
 	abilities_granted = [ "fear scream", "fireball", "mass pain" ]
 
 level_perks_listing = {
+	#mage tree
 	"Educated":Educated,
+	"Mage":Mage,
+	"Necromancer":Necromancer,
+
+	#damage tree
+	"Sweeper": Sweeper,
 	"Flow": Flow,
 	"Deft": Deft,
-	"Sweeper": Sweeper,
+
+	#tank tree
+	"Legionaire": Legionaire,
+	"Knight": Knight,
+	"Berserk": Berserk,
+
+	#general tree
 	"Team tactics": TeamTactics,
+	"Looter": Looter,
+
 }

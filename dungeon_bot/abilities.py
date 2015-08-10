@@ -228,11 +228,18 @@ class Ability(object):
 
 	@staticmethod
 	def get_miss_description(attack_info):
-		return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name)
+		if attack_info.use_info['item_used']:
+			return "%s uses %s on %s with the %s, but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name)
+		else:
+			return "%s uses %s on %s, but misses.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize() )
+		
 
 	@staticmethod
 	def get_hit_description(attack_info):
-		return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
+		if attack_info.use_info['item_used']:
+			return "%s uses %s on %s with the %s for %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info['item_used'].name, attack_info.use_info["damage_dealt"] )
+		else:
+			return "%s uses %s on %s for %d damage.\n"%(attack_info.inhibitor.short_desc.capitalize(),attack_info.prototype_class.__name__, attack_info.target.short_desc.capitalize(), attack_info.use_info["damage_dealt"] )
 
 
 
@@ -353,7 +360,7 @@ class Bash(Ability):
 
 	@staticmethod
 	def get_knockdown_chance(use_info):		
-		chance = clamp(use_info.inhibitor.characteristics["vitality"]*use_info.inhibitor.characteristics["strength"] - use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2 + 5 * int("armor" in use_info.target.tags) + 10*("heavy armor" in use_info.target.tags), 5, 95)
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["strength"] - use_info.target.characteristics["dexterity"]-use_info.target.characteristics["intelligence"]/2 + 5 * int("armor" in use_info.target.tags) + 10*("heavy armor" in use_info.target.tags), 5, 95)
 		return chance
 
 	@staticmethod
@@ -496,7 +503,7 @@ class Smack(Ability):
 		if not hasattr(target, "exp_value"):
 			return False, "Can't attack a player."
 		if not target.dead:
-			return Ability.can_use(user, Crush)
+			return Ability.can_use(user, Smack)
 		else:
 			return False, "Target is already dead."
 
@@ -507,7 +514,7 @@ class Smack(Ability):
 
 	@staticmethod
 	def get_modifiers_applied(use_info):
-		if random.randint(1, 100) <= Crush.get_knockdown_chance(use_info):
+		if random.randint(1, 100) <= Smack.get_knockdown_chance(use_info):
 			modifier = get_modifier_by_name("knockdown", use_info.inhibitor, use_info.target)
 			return [modifier]
 		return []
@@ -522,7 +529,7 @@ class Smack(Ability):
 		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
-		dmg = clamp( weapon_dmg * strength * clamp(int(dexterity/4) , 1, 2)* clamp(int(intelligence/4) , 1, 2) , user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * int(strength/2) * clamp(int(dexterity/2) , 1, 2)* clamp(int(intelligence/4) , 1, 2) , user.characteristics["strength"]/2, 99999999 )
 		return dmg
 
 	@staticmethod
@@ -542,7 +549,7 @@ class Smack(Ability):
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
-		attack_info = AttackInfo(user,  Crush, target, combat_event)
+		attack_info = AttackInfo(user,  Smack, target, combat_event)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -951,7 +958,7 @@ class Sweep(Ability):
 		not_armored = int(not "armor" in target.tags and not "heavy armor" in target.tags)
 
 		target_str = target.characteristics["strength"]
-		target_vit = target.characteristics["vit"]
+		target_vit = target.characteristics["vitality"]
 
 		dmg = clamp( weapon_dmg * strength - target_str*target_vit*0.5, user.characteristics["strength"]/2, 99999999 )
 		return dmg
@@ -966,7 +973,7 @@ class Sweep(Ability):
 		accuracy = user.get_accuracy(weapon)
 		dexterity = user.characteristics["dexterity"]
 		target_str = target.characteristics["strength"]
-		target_vit = target.characteristics["vit"]
+		target_vit = target.characteristics["vitality"]
 		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
 
 		return chance_to_hit
@@ -1106,6 +1113,139 @@ class Revive(Ability):
 
 
 """ Magic abilities below """
+class Heal(Ability): 
+	"""
+	heal a creature
+
+	"""
+	name = "heal"
+	description = "Heal a creature."
+	energy_required = 3
+	requirements = None
+	requires_target = "friendly"
+
+	@staticmethod
+	def can_use(user, target=None):
+		return Ability.can_use(user, Heal)
+
+	@staticmethod
+	def get_buff_modifiers(use_info):
+		modifier_params = {"duration":3,"healing chance": "10d5","healing amount": str(use_info.inhibitor.characteristics["intelligence"])+"d"+str(use_info.inhibitor.characteristics["intelligence"])}
+		modifier = get_modifier_by_name("regeneration", use_info.inhibitor, use_info.target, modifier_params)
+		return [modifier]
+
+	@staticmethod
+	def get_buff_description(use_info):
+		return "%s's spell causes %s to start regenerating rapidly."%(use_info.inhibitor.short_desc.capitalize(),use_info.target.short_desc.capitalize())
+
+	@staticmethod
+	def use(user, target, weapon, combat_event):
+		buff_info = BuffInfo(user, Heal, target, combat_event)
+		buff_info.use_info["item_used"] = None
+
+		buff_info.description += "%s casts a spell to heal %s.\n"%(user.short_desc.capitalize(),target.short_desc.capitalize())
+		return Ability.use(buff_info)
+
+class FireBall(Ability):
+	name = "fireball"
+	description = "Ignite your enemies."
+	energy_required = 3
+	requirements = None
+	requires_target = "enemy"
+
+	@staticmethod
+	def get_damage(user, target, weapon):
+		intelligence = user.characteristics["intelligence"]
+		base_damage = diceroll(str(intelligence) + "d" + str(intelligence * 2))
+		not_fire_resistant = int(not "fire resistant" in target.tags)
+		dmg = clamp( base_damage * not_fire_resistant, user.characteristics["intelligence"], 99999999 )
+		return dmg
+
+	@staticmethod
+	def get_chance_to_hit(user, target, weapon):
+		accuracy = user.get_accuracy()
+		evasion = target.evasion
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
+
+		return chance_to_hit
+
+	@staticmethod
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, FireBall)
+		else:
+			return False, "Target is already dead"
+
+	@staticmethod
+	def get_burning_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"]-use_info.target.characteristics["intelligence"]/2 - 10 * int("armor" in use_info.target.tags or "heavy armor" in use_info.target.tags), 5, 95)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(1, 100) <= FireBall.get_burning_chance(use_info):
+			modifier = get_modifier_by_name("burning", use_info.inhibitor, use_info.target)
+			return [modifier]
+		return []
+
+	@staticmethod
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, FireBall, target, combat_event)
+		attack_info.use_info["item_used"] = None
+		return Ability.use(attack_info)
+
+class Lightning(Ability):
+	name = "lightning"
+	description = "Shock your enemies."
+	energy_required = 3
+	requirements = None
+	requires_target = "enemy"
+
+	@staticmethod
+	def get_damage(user, target, weapon):
+		intelligence = user.characteristics["intelligence"]
+		base_damage = diceroll(str(intelligence) + "d" + str(intelligence * 2))
+		not_fire_resistant = int(not "electricity resistant" in target.tags)
+		dmg = clamp( base_damage * not_fire_resistant, user.characteristics["intelligence"], 99999999 )
+		return dmg
+
+	@staticmethod
+	def get_chance_to_hit(user, target, weapon):
+		accuracy = user.get_accuracy()
+		evasion = target.evasion
+		chance_to_hit = clamp(accuracy - evasion, 5, 95 )
+
+		return chance_to_hit
+
+	@staticmethod
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, Lightning)
+		else:
+			return False, "Target is already dead"
+
+	@staticmethod
+	def get_pain_chance(use_info):
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*use_info.inhibitor.characteristics["dexterity"] - use_info.target.characteristics["vitality"]-use_info.target.characteristics["intelligence"]/2 - 10 * int("armor" in use_info.target.tags or "heavy armor" in use_info.target.tags), 5, 95)
+		return chance
+
+	@staticmethod
+	def get_modifiers_applied(use_info):
+		if random.randint(1, 100) <= Lightning.get_pain_chance(use_info):
+			modifier = get_modifier_by_name("pain", use_info.inhibitor, use_info.target)
+			return [modifier]
+		return []
+
+	@staticmethod
+	def use(user, target, weapon, combat_event):
+		attack_info = AttackInfo(user, Lightning, target, combat_event)
+		attack_info.use_info["item_used"] = None
+		return Ability.use(attack_info)
+
 class MassPain(Ability): 
 	"""
 	AOE apply pain to enemies around
@@ -1196,13 +1336,14 @@ class FearScream(Ability):
 		intelligence = user.characteristics["intelligence"]
 		target_int = target.characteristics["intelligence"]
 		random_mult = diceroll("1d10")
-		chance_to_hit = clamp( clamp((intelligence - target_int ), 1, 10)*random_mult, 5, 95 )
 
+		chance_to_hit = 95
 		return chance_to_hit
 
 	@staticmethod
-	def get_fear_chance(use_info):		
-		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*7-use_info.target.characteristics["intelligence"]*2, 5, 95)
+	def get_fear_chance(use_info):
+		random_mult = diceroll("1d10")
+		chance = clamp(use_info.inhibitor.characteristics["intelligence"]*random_mult-use_info.target.characteristics["intelligence"], 5, 95)
 		return chance
 
 	@staticmethod
@@ -1454,6 +1595,7 @@ abilities = {
 	"shield up": ShieldUp,
 	"bash": Bash,
 	"cut": Cut,
+	"crush": Crush,
 	"stab": Stab,
 	"quick cut": QuickCut,
 	"quick stab": QuickStab,
@@ -1463,6 +1605,9 @@ abilities = {
 
 	"fear scream": FearScream,
 	"mass pain": MassPain,
+	"heal": Heal,
+	"fireball": FireBall,
+	"lightning":Lightning,
 	#strict non player abilities below
 	"revive": Revive,
 

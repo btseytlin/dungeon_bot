@@ -142,7 +142,7 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 	def on_health_lost(self, amount=None):
 		pass
 
-	def on_loot(self, item_gained):
+	def on_loot(self, item_gained, source):
 		pass
 
 	def on_modifier_applied(self, modifier):
@@ -166,7 +166,7 @@ class KnockedDown(Modifier):
 
 	def __init__(self, granted_by, host, stats = {}, name="knockdown", description="Loose 5d6 evasion, 2d6 your defense, and half your dexterity.") :
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
-		self.stats["characteristics_change"] = {"dexterity": -host.characteristics["dexterity"]}
+		self.stats["characteristics_change"] = {"dexterity": -host.base_characteristics["dexterity"]}
 		self.stats["duration"] = clamp( 10 - host.characteristics["dexterity"], 1, 2)
 		self.stats["stats_change"] = {"defense": "-2d6"}
 	
@@ -242,13 +242,13 @@ class Pain(Modifier): #simply adds defense, hinders evasion
 class Fear(Modifier):
 	priority = 0
 	duration = 2
-	characteristics_change = {"dexterity":-2, "intelligence":-2}
+	characteristics_change = {"dexterity":-1, "intelligence":-2}
 	stats_change =  {}
 	abilities_granted = []
 	tags_granted = []
 	def __init__(self, granted_by, host, stats = {}, name="fear", description="Loose 2 dexterity and intelligence."):
 		Modifier.__init__(self, granted_by, host,  stats, name, description )
-		self.stats["characteristics_change"] = {"dexterity":-2, "intelligence":-2}
+		self.stats["characteristics_change"] = {"dexterity":-1, "intelligence":-2}
 		self.stats["duration"] = clamp( 10 - host.characteristics["intelligence"], 1, 3)
 
 	def can_apply(self):
@@ -370,23 +370,29 @@ class Bonus(Modifier): #simply adds defense, hinders evasion
 		self_class = Bonus
 
 		possible_chars = ["strength", "dexterity", "vitality", "intelligence"]
-		possible_stats = ["max_health", "max_energy"]
+		possible_stats = ["max_health", "max_energy", "defense", "evasion"]
 		pool = possible_chars
 		stats = {}
 
-		chars_or_stats = "characteristics change"
+		chars_or_stats = "characteristics_change"
 		if random.randint(0, 1) == 1:
 			chars_or_stats = "stats_change"
 			pool = possible_stats
 
 		stat_range = [1, 4]
-		if chars_or_stats == "stats_change":
-			stat_range = [10, 100]
-
 		stat = random.choice(pool)
+		if stat == "max_health":
+			stat_range = [10, 100]
+		if stat == "max_energy":
+			stat_range = [1, 2]
+		if stat == "defense":
+			stat_range = ["1d3", "2d6"]
+		if stat == "evasion":
+			stat_range = ["1d3", "2d6"]
+
 		stats[chars_or_stats] = { stat: stat_range }
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
-		name = stat.translate({"_":" "})
+		name = " ".join(stat.split("_"))
 		return {"name": "bonus", "stats":stats} 
 
 class Nerf(Modifier): #simply adds defense, hinders evasion
@@ -403,19 +409,26 @@ class Nerf(Modifier): #simply adds defense, hinders evasion
 		pool = possible_chars
 		stats = {}
 
-		chars_or_stats = "characteristics change"
+		chars_or_stats = "characteristics_change"
 		if random.randint(0, 1) == 1:
 			chars_or_stats = "stats_change"
 			pool = possible_stats
 
 		stat_range = [-4, -1]
-		if chars_or_stats == "stats_change":
-			stat_range = [-100, -10]
 
 		stat = random.choice(pool)
+		if stat == "max_health":
+			stat_range = [-100, -10]
+		if stat == "max_energy":
+			stat_range = [-2, 1]
+		if stat == "defense":
+			stat_range = ["-2d6", "-1d3"]
+		if stat == "evasion":
+			stat_range = ["-2d6", "-1d3"]
+
 		stats[chars_or_stats] = { stat: stat_range }
 		stats = Modifier.get_randomized_params_for_coolity(self_class, stats, coolity)
-		name = stat.translate({"_":" "})
+		name = " ".join(stat.split("_"))
 		return {"name": "nerf", "stats":stats} 
 
 class Regeneration(Modifier): #simply adds defense, hinders evasion
@@ -746,7 +759,7 @@ class Greed(Modifier):
 		Modifier.__init__(self, granted_by, host,  stats, name, description)
 
 	
-	def on_loot(self, item_gained):
+	def on_loot(self, item_gained, source):
 		msg = ""
 		chance = diceroll(self.stats["greed chance"])
 		if random.randint(0, 100) < chance:
@@ -950,6 +963,7 @@ modifier_listing = {
 	"bleeding": Bleeding,
 	"pain": Pain, 
 	"burning": Burning,
+	"fear": Fear,
 
 	"suffering": Suffering,
 	"judgement": Judgement,

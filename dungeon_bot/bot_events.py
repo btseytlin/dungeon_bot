@@ -1096,6 +1096,22 @@ class CombatEvent(BotEvent):
 		}
 
 
+		
+		for enemy in enemies:
+			enemy.event = self
+
+		combat_logger.info("Started combat %s vs %s"%(", ".join([str(p.name) + "("+str(p.userid)+")" for p in players]), ", ".join([e.name for e in enemies])))
+
+		self.greeting_message = 'Combat starts!\n'
+
+
+
+		self.greeting_message += self.next_round()
+
+		#if isinstance(self.turn_queue[self.turn], Enemy):
+		#	self.greeting_message += self.ai_turn()
+
+	def fill_combat_abilities(self):
 		for user in self.users:
 			for ply in self.players:
 				if ply.userid == str(user.id):
@@ -1111,19 +1127,6 @@ class CombatEvent(BotEvent):
 				else:
 					self.user_abilities[str(user.id)][ability.name] = ability
 
-		for enemy in enemies:
-			enemy.event = self
-
-		combat_logger.info("Started combat %s vs %s"%(", ".join([str(p.name) + "("+str(p.userid)+")" for p in players]), ", ".join([e.name for e in enemies])))
-
-		self.greeting_message = 'Combat starts!\n'
-
-
-
-		self.greeting_message += self.next_round()
-
-		#if isinstance(self.turn_queue[self.turn], Enemy):
-		#	self.greeting_message += self.ai_turn()
 
 	def get_keyboard(self, user):
 		keyboard = [
@@ -1170,12 +1173,14 @@ class CombatEvent(BotEvent):
 		msg += "Round %d.\n"%(self.round)
 		if self.turn_queue == []:
 			self.turn_queue = self.update_turn_queue()
+			
 
 		msg += self.get_printable_turn_queue()
 
 		if self.round == 1 and self.turn == 0:
 			for creature in self.turn_queue:
 				msg += creature.on_combat_start()
+			self.fill_combat_abilities()
 
 		combat_logger.info("%s"%(msg))
 		msg += self.this_turn()
