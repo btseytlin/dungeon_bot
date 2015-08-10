@@ -68,7 +68,7 @@ class Creature(object):
 
 		stats["max_health"] =  get_health_for_level(characteristics["vitality"], self.level)
 		stats["max_energy"] = characteristics["strength"] + int(self.level / 20)
-		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 20), 2, 10)
+		stats["energy_regen"] = clamp(int(characteristics["strength"] / 3) + int(self.level / 20), 2, 6)
 		stats["health"] = stats["max_health"]
 		stats["energy"] = stats["max_energy"]
 		return stats
@@ -243,7 +243,7 @@ class Creature(object):
 			exp_gained = self.exp_value * clamp(dmg/clamp(self.stats["max_health"],1, 10000000), 0, 1)
 			mes, exp_gained = inhibitor.on_experience_gain(exp_gained)
 			msg += mes
-			msg += inhibitor.add_experience(exp_gained)
+			msg += inhibitor.add_experience(exp_gained*settings.exp_multiplier)
 
 		if not self.dead:
 			self.health = self.health - dmg
@@ -291,7 +291,7 @@ class Creature(object):
 		self.refresh_derived()
 		self.sort_inventory()
 		msg = self.on_item_equipped(target_item)
-		return msg + "Succesfully equipped %s."%(target_item.name)
+		return msg + "Successfully equipped %s."%(target_item.name)
 
 	def unequip(self, target_item):
 		if target_item.item_type == "consumable":
@@ -302,7 +302,7 @@ class Creature(object):
 				self.sort_inventory()
 				self.refresh_derived()
 				msg = self.on_item_unequipped(target_item)
-				return msg + "Succesfully unequipped %s."%(target_item.name)
+				return msg + "Successfully unequipped %s."%(target_item.name)
 			else:
 				return "Not enough space in inventory."
 		return "Not equipped!"
@@ -317,7 +317,7 @@ class Creature(object):
 			self.unequip(target_item)
 			self.inventory.remove(target_item)
 			self.sort_inventory()
-			return "Succesfully destroyed %s."%(target_item.name)
+			return "Successfully destroyed %s."%(target_item.name)
 		return "No such item."
 
 	def clear_inventory(self):
@@ -1066,7 +1066,7 @@ class Player(Creature):
 
 	def level_up(self):
 		self.level = self.level + 1
-		self.level_up_points += ( int(self.level % 10) == 0 ) * 1
+		self.level_up_points += ( int(self.level % 5) == 0 ) * 1
 		self.perk_points += ( int(self.level % 5) == 0 ) * 1
 		msg = self.on_level_up()
 		return msg

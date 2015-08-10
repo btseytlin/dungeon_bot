@@ -151,10 +151,10 @@ class DungeonBot(object):
 			return msg
 		elif command in ["close"] and " ".join(args) == "keyboard":
 			DungeonBot.custom_keyboard_status[str(user.id)] = "close"
-			return "Keybroad closed."
+			return "Keyboard closed."
 		elif command in ["open"] and " ".join(args) == "keyboard":
 			DungeonBot.custom_keyboard_status[str(user.id)] = "show"
-			return "Keybroad opened."
+			return "Keyboard opened."
 		elif (command in ["bug", "dev"]):
 			if len(args) >0:
 				msg = " ".join(args)

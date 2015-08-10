@@ -321,7 +321,7 @@ class Educated(LevelPerk):
 
 class Mage(LevelPerk):
 	name = "Mage"
-	description = "Get spells: heal, fireball, lightning."
+	description = "Get spells: heal, fireball."
 	priority = 0
 	requirements = {
 		"level": 10,
@@ -331,11 +331,11 @@ class Mage(LevelPerk):
 		}
 	}
 
-	abilities_granted = [ "heal", "fireball", "lightning" ]
+	abilities_granted = [ "heal", "fireball"]
 
 class Necromancer(LevelPerk):
 	name = "Necromancer"
-	description = "Get spells: fireball, fear scream, mass pain."
+	description = "Get spells: lightning, fear scream, mass pain."
 	priority = 0
 	requirements = {
 		"level": 10,
@@ -345,7 +345,7 @@ class Necromancer(LevelPerk):
 		}
 	}
 
-	abilities_granted = [ "fear scream", "fireball", "mass pain" ]
+	abilities_granted = [ "fear scream", "lightning", "mass pain" ]
 
 level_perks_listing = {
 	#mage tree

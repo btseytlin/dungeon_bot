@@ -292,7 +292,7 @@ item_listing = {
 
 		"sword": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","5d6"]} , "args":{"name":"sword","random_effects": True, "description":"Steel sword!", "abilities_granted":["cut", "stab"],"requirements":{"characteristics":{"strength":5, "dexterity": 5}}}},
 
-		"quaterstaff": {"stats": {"characteristics_change":{"intelligence":[0, 3]}, "damage" : ["1d3","2d5"], "accuracy" : ["1d6","7d6"]} , "args":{"name":"quaterstaff","random_effects": True, "description":"Quite easy to use, hard to master. It doesn't deal much damage, but in the hands of a strong fighter it's a deadly weapon.", "abilities_granted":["smack"], "requirements": { "two handed": True }}},
+		"quaterstaff": {"stats": {"characteristics_change":{"intelligence":[0, 3]}, "damage" : ["1d3","2d3"], "accuracy" : ["1d6","7d6"]} , "args":{"name":"quaterstaff","random_effects": True, "description":"Quite easy to use, hard to master. It doesn't deal much damage, but in the hands of a strong fighter it's a deadly weapon.", "abilities_granted":["smack"], "requirements": { "two handed": True }}},
 
 		"steel spear": {"stats": {"damage" : ["1d6","3d6"], "accuracy" : ["1d6","6d6"]} , "args":{"name":"steel spear","random_effects": True, "description":"A spear is the simpliest weapon. It doesn't make it any less effective. It's main selling point is that it requires little to no skills to use one. Anyone can hit stuff with a spear.", "abilities_granted":["stab"], "requirements": {"two handed": True, "characteristics":{"strength":4} }}},
 

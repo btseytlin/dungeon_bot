@@ -131,7 +131,7 @@ def run_tests():
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "rapier"
+	item = "quaterstaff"
 	item = get_item_by_name(item, 1)
 	logger.info(item.examine_self())
 	#item.stats["accuracy"] = "100d10"
@@ -145,10 +145,10 @@ def run_tests():
 	dummy = Dummy(1000)
 
 	#ply.refresh_derived()
-	item = "dagger"
-	item = get_item_by_name(item)
-	ply.add_to_inventory(item)
-	ply.equip(item)
+	# item = "dagger"
+	# item = get_item_by_name(item)
+	# ply.add_to_inventory(item)
+	# ply.equip(item)
 
 	#enemies = [dummy,(1),Mercenary(1), ]
 	enemies, desc = undead_soldier_pack("medium")

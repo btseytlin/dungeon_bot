@@ -529,7 +529,7 @@ class Smack(Ability):
 		defense = target.defense
 		is_armored = int("armor" in target.tags) * 0.2
 		is_heavy_armored = int("heavy armor" in target.tags) * 0.4
-		dmg = clamp( weapon_dmg * int(strength/2) * clamp(int(dexterity/2) , 1, 2)* clamp(int(intelligence/4) , 1, 2) , user.characteristics["strength"]/2, 99999999 )
+		dmg = clamp( weapon_dmg * clamp(int(strength/3),1,3) * clamp(int(dexterity/2), 1,3) * clamp(int(intelligence/3), 1, 4), 1, 999999)
 		return dmg
 
 	@staticmethod

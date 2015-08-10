@@ -398,7 +398,7 @@ class LevelUpEvent(BotEvent):
 								return msg + str(self.finish())
 							else:
 								if len(self.available_perks) <= 0:
-									msg += "No perks available."
+									msg += "No perks available.\n"
 									msg += "Done leveling up.\n"
 									return msg + str(self.finish())
 								else:
@@ -1123,7 +1123,7 @@ class CombatEvent(BotEvent):
 			ply = self.users_to_players[str(user.id)]
 			for ability in ply.abilities:
 				if ability.name in [ab for ab in self.user_abilities[str(user.id)] ]:# ability with that name already exists
-					self.user_abilities[str(user.id)][ability.granted_by.short_name + " " +ability.name] = ability
+					self.user_abilities[str(user.id)][(ability.granted_by.short_name if hasattr(ability.granted_by, "short_name") else ability.granted_by.name) + " " +ability.name] = ability
 				else:
 					self.user_abilities[str(user.id)][ability.name] = ability
 
