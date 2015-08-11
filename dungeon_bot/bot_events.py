@@ -204,9 +204,13 @@ class ChatEvent(BotEvent):
 		if len(command.split(" "))>1:
 			if isinstance(args, tuple):
 				args = list(args)
-			args = command.split(" ")[1:] + args
-			command = command.split(" ")[0]
+
+			cmd_words = command.split(" ")
+			command = " ".join(cmd_words[:len(cmd_words)-1])
+			args.insert(0, cmd_words[len(cmd_words)-1])
+			#command = command.split(" ")[0]
 			return self.handle_command(user, command, *args)
+				
 		return 'Unknown command, try "help".'
 
 	def add_user(self, user):
@@ -748,9 +752,13 @@ class DungeonLobbyEvent(BotEvent):
 		if len(command.split(" "))>1:
 			if isinstance(args, tuple):
 				args = list(args)
-			args = command.split(" ")[1:] + args
-			command = command.split(" ")[0]
+
+			cmd_words = command.split(" ")
+			command = " ".join(cmd_words[:len(cmd_words)-1])
+			args.insert(0, cmd_words[len(cmd_words)-1])
+			#command = command.split(" ")[0]
 			return self.handle_command(user, command, *args)
+				
 
 		return 'Unknown command, try "help".'
 
@@ -1061,9 +1069,13 @@ class DungeonCrawlEvent(BotEvent):
 		if len(command.split(" "))>1:
 			if isinstance(args, tuple):
 				args = list(args)
-			args = command.split(" ")[1:] + args
-			command = command.split(" ")[0]
+
+			cmd_words = command.split(" ")
+			command = " ".join(cmd_words[:len(cmd_words)-1])
+			args.insert(0, cmd_words[len(cmd_words)-1])
+			#command = command.split(" ")[0]
 			return self.handle_command(user, command, *args)
+				
 		return 'Unknown command, try "help".'
 
 	def finish(self):
@@ -1311,8 +1323,11 @@ class CombatEvent(BotEvent):
 			if len(command.split(" "))>1:
 				if isinstance(args, tuple):
 					args = list(args)
-				args = command.split(" ")[1:] + args
-				command = command.split(" ")[0]
+
+				cmd_words = command.split(" ")
+				command = " ".join(cmd_words[:len(cmd_words)-1])
+				args.insert(0, cmd_words[len(cmd_words)-1])
+				#command = command.split(" ")[0]
 				return self.handle_combat_command(user, command, *args)
 
 			return "No such ability!"
@@ -1398,19 +1413,18 @@ class CombatEvent(BotEvent):
 		else:
 			if command in list(self.user_abilities[str(user.id)].keys()): #is it a combat ability?
 				return self.handle_combat_command(user, command, *args)
+
+
 			if len(command.split(" "))>1:
 				if isinstance(args, tuple):
 					args = list(args)
-				args = command.split(" ")[1:] + args
-				command = command.split(" ")[0]
+
+				cmd_words = command.split(" ")
+				command = " ".join(cmd_words[:len(cmd_words)-1])
+				args.insert(0, cmd_words[len(cmd_words)-1])
+				#command = command.split(" ")[0]
 				return self.handle_command(user, command, *args)
 
-
-			if len(command.split(" ")) == 1 and len(args) == 1:
-
-				args = list(args)
-				command = command.split(" ")[0] +" "+ args[0]
-				return self.handle_command(user, command, *args)
 
 			return 'Unknown command, try "help".'
 

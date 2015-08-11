@@ -128,7 +128,7 @@ def run_tests():
 
 	#test_weapon_abilities()
 	#controlled combat event
-	ply = Player("player1", "testply1", 100)
+	ply = Player("player1", "testply1 the ply", 100)
 	ply1 = Player("player2", "testply2")
 
 	item = "sword"

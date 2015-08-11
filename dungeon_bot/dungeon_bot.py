@@ -191,9 +191,13 @@ class DungeonBot(object):
 		if len(command.split(" "))>1:
 			if isinstance(args, tuple):
 				args = list(args)
-			args = command.split(" ")[1:] + args
-			command = command.split(" ")[0]
+
+			cmd_words = command.split(" ")
+			command = " ".join(cmd_words[:len(cmd_words)-1])
+			args.insert(0, cmd_words[len(cmd_words)-1])
+			#command = command.split(" ")[0]
 			return self.handle_command(user, command, *args)
+				
 		return 'Unknown command, try "help".'
 
 	def start_main_loop(self):
