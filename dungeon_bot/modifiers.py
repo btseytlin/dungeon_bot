@@ -938,11 +938,11 @@ def get_random_modifiers_for_coolity(coolity):
 
 		amount_of_modifiers = get_number_in_range([1, max_modifiers], 0)
 		if modifiers_type == "good":
-			modifier_pool = good_item_modifiers
+			modifier_pool = good_item_modifiers.copy()
 		elif modifiers_type == "bad":
-			modifier_pool = bad_item_modifiers
+			modifier_pool = bad_item_modifiers.copy()
 		else:
-			modifier_pool = good_item_modifiers + bad_item_modifiers
+			modifier_pool = good_item_modifiers.copy() + bad_item_modifiers.copy()
 		for x in range(amount_of_modifiers):
 			if len(modifier_pool) < 1:
 				break
