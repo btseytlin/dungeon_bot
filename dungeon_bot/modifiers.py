@@ -346,17 +346,19 @@ class Shielded(Modifier): #simply adds defense, hinders evasion
 	tags_granted = []
 	def __init__(self, granted_by, host, stats = {}, name="shielded", description="grants defense") :
 		Modifier.__init__(self, granted_by, host, stats, name, description)
-		self.stats["stats_change"]["defense"] = self.granted_by.stats["defense"]
-		self.stats["stats_change"]["evasion"] = self.granted_by.stats["evasion"]
+		if not "defense" in self.stats["stats_change"]:
+			self.stats["stats_change"]["defense"] = self.granted_by.stats["defense"]
+		if not "evasion" in self.stats["stats_change"]:
+			self.stats["stats_change"]["evasion"] = self.granted_by.stats["evasion"]
 
 	def on_applied(self):
 		msg = super(Shielded, self).on_applied()
-		msg += "%s raises his shieldup and gains a %s defense and %s evasion penalty for the next round.\n"%(self.host.short_desc, self.stats["stats_change"]["defense"], self.stats["stats_change"]["evasion"])
+		msg += "%s gains a %s defense and %s evasion penalty for the next %d rounds.\n"%(self.host.short_desc, self.stats["stats_change"]["defense"], self.stats["stats_change"]["evasion"], self.stats["duration"])
 		msg = "!!\t" + msg
 		return msg
 
 	def on_lifted(self):
-		msg = "%s is no longer protected by his shield!\n"%(self.host.short_desc.capitalize())
+		msg = "%s is no longer shielded!\n"%(self.host.short_desc.capitalize())
 		msg = "!!\t" + msg
 		return msg
 
@@ -764,7 +766,7 @@ class Greed(Modifier):
 		chance = diceroll(self.stats["greed chance"])
 		if random.randint(0, 100) < chance:
 			self.host.inventory.remove(item_gained)
-			msg = "!!\t%s destroys %s.\n"%(self.granted_by.name.capitalize, item_gained.name)
+			msg = "!!\t%s destroys %s.\n"%(self.granted_by.name.capitalize(), item_gained.name)
 		return msg
 
 	@staticmethod
@@ -880,7 +882,7 @@ class Vampirism(Modifier):
 		if attack_info.inhibitor == self.host and self.host.health < self.host.stats["max_health"]:
 			regen = int(attack_info.use_info["damage_dealt"] * diceroll(self.stats["vampirism amount"])/100)
 			if attack_info.use_info["did_hit"] and not attack_info.target.dead and "living" in attack_info.target.tags:
-				attack_info.description += "!!\t%s regenerates %d healh because of %s.\n"%(self.host.name.capitalize(), regen, self.granted_by.name)
+				attack_info.description += "!!\t%s regenerates %d healh because of %s.\n"%(self.host.name.capitalize(), regen, self.name)
 				self.host.health += regen
 		return attack_info
 

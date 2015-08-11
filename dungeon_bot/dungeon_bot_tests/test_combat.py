@@ -131,15 +131,15 @@ def run_tests():
 	ply = Player("player1", "testply1", 100)
 	ply1 = Player("player2", "testply2")
 
-	item = "quaterstaff"
+	item = "sword"
 	item = get_item_by_name(item, 1)
 	logger.info(item.examine_self())
 	#item.stats["accuracy"] = "100d10"
 	#item.stats["damage"] = "7d1"
 	ply.inventory.append(item)
 	ply.equip(item, True)
-	ply.level_perks.append(Looter(ply))
-	ply.base_characteristics["intelligence"] = 5
+	ply.level_perks.append(Mage(ply))
+	ply.base_characteristics["intelligence"] = 6
 
 	
 	dummy = Dummy(1000)
@@ -151,5 +151,5 @@ def run_tests():
 	# ply.equip(item)
 
 	#enemies = [dummy,(1),Mercenary(1), ]
-	enemies, desc = undead_soldier_pack("medium")
+	enemies, desc = peasant_pack("medium")
 	controlled_combat_event([ply], enemies)

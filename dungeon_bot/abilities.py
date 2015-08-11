@@ -74,6 +74,23 @@ class AbilityUseInfo(object):
 				for modifier in self.prototype_class.get_modifiers_applied(self):
 					use_info["modifiers_applied"].append(modifier)
 
+		if self.ability_type == "aoe_buff":
+			#self = self.inhibitor.on_attack(self)
+			#print(self.targets)
+			for i in range(len(self.targets)):
+				target = self.targets[i]
+				ability_info = BuffInfo(self.inhibitor, self.prototype_class, target, self.combat_event)
+				ability_info.use_info["item_used"] = self.use_info["item_used"]
+
+				modifiers = ability_info.prototype_class.get_buff_modifiers(ability_info)
+				ability_info.use_info["modifiers_applied"] += modifiers
+				ability_info.description += ability_info.prototype_class.get_buff_description(ability_info)
+
+				ability_info = ability_info.execute()
+				self.use_infos.append(ability_info)
+
+			self.description += "\n".join([x.description for x in self.use_infos])
+
 		if self.ability_type == "buff":
 			self = self.inhibitor.on_buff(self)
 			self = self.inhibitor.on_buffed(self)
@@ -139,11 +156,10 @@ class AttackInfo(AbilityUseInfo):
 		self.use_info = use_info
 
 class AoeAttackInfo(AbilityUseInfo):
-	def __init__(self, inhibitor,  prototype_class, target, combat_event=None, use_info=None, description = "", ):
+	def __init__(self, inhibitor,  prototype_class, target, combat_event=None, use_info=None, description = "", max_targets = 5):
 		AbilityUseInfo.__init__(self, inhibitor, "aoe_attack", prototype_class, target, combat_event)
 		self.targets = [target]
-		max_targets = 5
-		for i in range(max_targets):
+		for i in range(max_targets-1):
 			cr = None
 			if hasattr(inhibitor, "exp_value"):
 				cr = random.choice([ c for c in combat_event.turn_queue if not c.dead and not hasattr(c, "exp_value")])
@@ -164,6 +180,30 @@ class AoeAttackInfo(AbilityUseInfo):
 			}
 		self.use_info = use_info
 
+class AoeBuffInfo(AbilityUseInfo):
+	def __init__(self, inhibitor,  prototype_class, target, combat_event=None, use_info=None, description = "", max_targets = 5):
+		AbilityUseInfo.__init__(self, inhibitor, "aoe_buff", prototype_class, target, combat_event)
+		self.targets = [target]
+		for i in range(max_targets-1):
+			cr = None
+			if hasattr(inhibitor, "exp_value"):
+				cr = random.choice([ c for c in combat_event.turn_queue if not c.dead and hasattr(c, "exp_value")])
+			else:
+				cr = random.choice([ c for c in combat_event.turn_queue if not c.dead and not hasattr(c, "exp_value")])
+
+			if cr and not cr in self.targets:
+				self.targets.append( cr )
+
+		self.description = description
+		self.use_infos = []
+		if not use_info:
+			use_info = {
+				"energy_change": 0,
+				#"hit_chances": [],
+				"item_used": None,
+			}
+		self.use_info = use_info
+
 class BuffInfo(AbilityUseInfo):
 	def __init__(self, inhibitor,  prototype_class, target, combat_event=None, use_info=None, description="" ):
 		AbilityUseInfo.__init__(self, inhibitor, "buff", prototype_class, target, combat_event)
@@ -171,7 +211,6 @@ class BuffInfo(AbilityUseInfo):
 
 		if not use_info:
 			use_info = {
-				"hp_change" : 0,
 				"energy_change" : 0,
 				"experience_gained" : 0,
 				"item_used": None,
@@ -205,7 +244,7 @@ class Ability(object):
 			#	use_info.use_info["did_hit"] = True
 			#use_info.use_info["damage_dealt"] = use_info.prototype_class.get_damage(use_info.inhibitor, use_info.target, use_info.use_info["item_used"])
 				#use_info.description += use_info.prototype_class.get_hit_description(use_info)
-		else:
+		elif use_info.ability_type == "buff":
 			modifiers = use_info.prototype_class.get_buff_modifiers(use_info)
 			use_info.use_info["modifiers_applied"] += modifiers
 			use_info.description += use_info.prototype_class.get_buff_description(use_info)
@@ -215,7 +254,7 @@ class Ability(object):
 		return use_info
 
 	@staticmethod
-	def can_use(user, ability_class):
+	def can_use(user, target, ability_class):
 		if ability_class.requirements:
 			for key in list(ability_class.requirements.keys()):
 				if user.characteristics[key] < ability_class.requirements[key]:
@@ -223,6 +262,23 @@ class Ability(object):
 
 		if user.energy < ability_class.energy_required:
 			return False, "Not enough energy. Need %d more energy to use."%(ability_class.energy_required - user.energy)
+
+		if hasattr(user, "exp_value"):
+			if ability_class.requires_target == "enemy":
+				if hasattr(target, "exp_value"):
+					return False, "Can't attack a friendly."
+			if ability_class.requires_target == "friendly":
+				if not hasattr(target, "exp_value"):
+					return False, "Can't buff an enemy."
+
+		if not hasattr(user, "exp_value"):
+			if ability_class.requires_target == "enemy":
+				if not hasattr(target, "exp_value"):
+					return False, "Can't attack a friendly."
+			if ability_class.requires_target == "friendly":
+				if hasattr(target, "exp_value"):
+					return False, "Can't buff an enemy."
+
 		return True, ""
 
 
@@ -267,10 +323,9 @@ class Smash(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, Smash)
+			return Ability.can_use(user, target,Smash)
 		else:
 			return False, "Target is already dead."
 
@@ -351,10 +406,9 @@ class Bash(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, Bash)
+			return Ability.can_use(user, target,Bash)
 		else:
 			return False, "Target is already dead."
 
@@ -422,10 +476,9 @@ class Crush(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, Crush)
+			return Ability.can_use(user, target,Crush)
 		else:
 			return False, "Target is already dead."
 
@@ -500,10 +553,9 @@ class Smack(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, Smack)
+			return Ability.can_use(user, target,Smack)
 		else:
 			return False, "Target is already dead."
 
@@ -583,10 +635,9 @@ class Stab(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, Stab)
+			return Ability.can_use(user, target,Stab)
 		else:
 			return False, "Target is already dead."
 
@@ -669,10 +720,9 @@ class QuickStab(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, QuickStab)
+			return Ability.can_use(user, target,QuickStab)
 		else:
 			return False, "Target is already dead."
 
@@ -749,10 +799,9 @@ class Cut(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, Cut)
+			return Ability.can_use(user, target,Cut)
 		else:
 			return False, "Target is already dead."
 
@@ -831,10 +880,9 @@ class QuickCut(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
+ 
 		if not target.dead:
-			return Ability.can_use(user, QuickCut)
+			return Ability.can_use(user, target,QuickCut)
 		else:
 			return False, "Target is already dead."
 
@@ -898,7 +946,7 @@ class ShieldUp(Ability):
 
 	@staticmethod
 	def can_use(user, target=None):
-		return Ability.can_use(user, ShieldUp)
+		return Ability.can_use(user, target,ShieldUp)
 
 	@staticmethod
 	def get_buff_modifiers(use_info):
@@ -909,7 +957,7 @@ class ShieldUp(Ability):
 
 	@staticmethod
 	def get_buff_description(use_info):
-		return ""
+		return "%s puts his shield up and gains a defence bonus and an evasion penalty."%( use_info.inhibitor.short_desc)
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
@@ -941,10 +989,8 @@ class Sweep(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
 		if not target.dead:
-			return Ability.can_use(user, Sweep)
+			return Ability.can_use(user, target,Sweep)
 		else:
 			return False, "Target is already dead."
 
@@ -992,7 +1038,7 @@ class Sweep(Ability):
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
-		attack_info = AoeAttackInfo(user, Sweep, target, combat_event)
+		attack_info = AoeAttackInfo(user, Sweep, target, combat_event, None, "", 5)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -1017,10 +1063,8 @@ class Swing(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
 		if not target.dead:
-			return Ability.can_use(user, Swing)
+			return Ability.can_use(user, target,Swing)
 		else:
 			return False, "Target is already dead."
 
@@ -1064,7 +1108,7 @@ class Swing(Ability):
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
-		attack_info = AoeAttackInfo(user, Swing, target, combat_event)
+		attack_info = AoeAttackInfo(user, Swing, target, combat_event, None, "", 4)
 		attack_info.use_info["item_used"] = weapon
 		return Ability.use(attack_info)
 
@@ -1084,7 +1128,7 @@ class Revive(Ability):
 
 	@staticmethod
 	def can_use(user, target=None):
-		return Ability.can_use(user, Revive)
+		return Ability.can_use(user, target,Revive)
 
 	@staticmethod
 	def get_buff_modifiers(use_info):
@@ -1112,7 +1156,6 @@ class Revive(Ability):
 		return Ability.use(buff_info)
 
 
-""" Magic abilities below """
 class Heal(Ability): 
 	"""
 	heal a creature
@@ -1126,11 +1169,17 @@ class Heal(Ability):
 
 	@staticmethod
 	def can_use(user, target=None):
-		return Ability.can_use(user, Heal)
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, target,Heal)
+		else:
+			return False, "Target is already dead"
+
 
 	@staticmethod
 	def get_buff_modifiers(use_info):
-		modifier_params = {"duration":3,"healing chance": "10d5","healing amount": str(use_info.inhibitor.characteristics["intelligence"])+"d"+str(use_info.inhibitor.characteristics["intelligence"])}
+		modifier_params = {"duration":3,"healing chance": "10d5","healing amount": str(clamp(int(use_info.inhibitor.characteristics["intelligence"]), 7, 10))+"d"+str(use_info.inhibitor.characteristics["intelligence"])}
 		modifier = get_modifier_by_name("regeneration", use_info.inhibitor, use_info.target, modifier_params)
 		return [modifier]
 
@@ -1144,6 +1193,43 @@ class Heal(Ability):
 		buff_info.use_info["item_used"] = None
 
 		buff_info.description += "%s casts a spell to heal %s.\n"%(user.short_desc.capitalize(),target.short_desc.capitalize())
+		return Ability.use(buff_info)
+
+class VampireAura(Ability):
+	"""
+		grants vampirism to an ally
+	"""
+	name = "vampirism aura"
+	description = "Let a creature heal themselves."
+	energy_required = 3
+	requirements = None
+	requires_target = "friendly"
+
+	@staticmethod
+	def can_use(user, target=None):
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, target,VampireAura)
+		else:
+			return False, "Target is already dead"
+
+	@staticmethod
+	def get_buff_modifiers(use_info):
+		modifier_params = {"duration":3,"vampirism amount": str(use_info.inhibitor.characteristics["intelligence"])+"d5"}
+		modifier = get_modifier_by_name("vampirism", use_info.inhibitor, use_info.target, modifier_params)
+		return [modifier]
+
+	@staticmethod
+	def get_buff_description(use_info):
+		return "%s's spell grants %s vampirism aura."%(use_info.inhibitor.short_desc.capitalize(),use_info.target.short_desc.capitalize())
+
+	@staticmethod
+	def use(user, target, weapon, combat_event):
+		buff_info = BuffInfo(user, VampireAura, target, combat_event)
+		buff_info.use_info["item_used"] = None
+		print("WOW\n\n",user.name, target.name, "\nwow")
+		buff_info.description += "%s casts a spell of vampirism aura on %s.\n"%(user.short_desc.capitalize(),target.short_desc.capitalize())
 		return Ability.use(buff_info)
 
 class FireBall(Ability):
@@ -1174,7 +1260,7 @@ class FireBall(Ability):
 		if not target:
 			return False, "Target required."
 		if not target.dead:
-			return Ability.can_use(user, FireBall)
+			return Ability.can_use(user, target,FireBall)
 		else:
 			return False, "Target is already dead"
 
@@ -1192,7 +1278,7 @@ class FireBall(Ability):
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
-		attack_info = AttackInfo(user, FireBall, target, combat_event)
+		attack_info = AoeAttackInfo(user, FireBall, target, combat_event, None, "", clamp(int(user.characteristics["intelligence"]/3), 1, 3) )
 		attack_info.use_info["item_used"] = None
 		return Ability.use(attack_info)
 
@@ -1224,7 +1310,7 @@ class Lightning(Ability):
 		if not target:
 			return False, "Target required."
 		if not target.dead:
-			return Ability.can_use(user, Lightning)
+			return Ability.can_use(user, target,Lightning)
 		else:
 			return False, "Target is already dead"
 
@@ -1246,6 +1332,54 @@ class Lightning(Ability):
 		attack_info.use_info["item_used"] = None
 		return Ability.use(attack_info)
 
+
+class MassShield(Ability): 
+	"""
+	AOE apply defense bonus to friendlies
+
+	defense_gained = ?
+	evasion_lost = ?
+
+	"""
+	name = "mass shield"
+	description = "Hide behind your magic barriers."
+	energy_required = 4
+	requirements = None
+	requires_target = "friendly"
+
+	@staticmethod
+	def can_use(user, target=None):
+
+		if not target:
+			return False, "Target required."
+		if not target.dead:
+			return Ability.can_use(user, target,MassShield)
+		else:
+			return False, "Target is already dead"
+
+		
+	@staticmethod
+	def get_buff_modifiers(use_info):
+		intelligence = use_info.inhibitor.characteristics["intelligence"]
+		defense_bonus = str(clamp(int(intelligence),1,10))+"d"+str( clamp(int(intelligence/2),1,10) )
+
+		modifier_params = { "duration":2, "stats_change":{"defense":defense_bonus, "evasion": "-1d6"}}
+		modifier = get_modifier_by_name("shielded", use_info.inhibitor, use_info.target, modifier_params)
+		return [modifier]
+
+	@staticmethod
+	def get_buff_description(use_info):
+		return "%s applies magic shield to %s."%( use_info.inhibitor.short_desc, use_info.target.short_desc )
+
+	@staticmethod
+	def use(user, target, weapon, combat_event):
+		target = user
+		buff_info = AoeBuffInfo(user, MassShield, target, combat_event,  None, "", clamp(int(user.characteristics["intelligence"]/3), 1, 3) )
+		buff_info.use_info["item_used"] = None
+		return Ability.use(buff_info)
+
+
+
 class MassPain(Ability): 
 	"""
 	AOE apply pain to enemies around
@@ -1260,10 +1394,8 @@ class MassPain(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
 		if not target.dead:
-			return Ability.can_use(user, MassPain)
+			return Ability.can_use(user, target,MassPain)
 		else:
 			return False, "Target is already dead."
 
@@ -1277,10 +1409,10 @@ class MassPain(Ability):
 	@staticmethod
 	def get_chance_to_hit(user, target, weapon):
 
-		intelligence = user.characteristics["intelligence"]
-		target_int = target.characteristics["intelligence"]
-		random_mult = diceroll("1d10")
-		chance_to_hit = clamp( clamp((intelligence - target_int ), 1, 10)*random_mult, 5, 95 )
+		#intelligence = user.characteristics["intelligence"]
+		#target_int = target.characteristics["intelligence"]
+		#random_mult = diceroll("1d10")
+		chance_to_hit = 95#clamp( clamp((intelligence - target_int ), 1, 10)*random_mult, 5, 95 )
 
 		return chance_to_hit
 
@@ -1298,7 +1430,7 @@ class MassPain(Ability):
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
-		attack_info = AoeAttackInfo(user, MassPain, target, combat_event)
+		attack_info = AoeAttackInfo(user, MassPain, target, combat_event, None, "", clamp(int(user.characteristics["intelligence"]/3), 1, 4) )
 		attack_info.use_info["item_used"] = None
 		return Ability.use(attack_info)
 
@@ -1316,10 +1448,8 @@ class FearScream(Ability):
 	def can_use(user, target=None):
 		if not target:
 			return False, "Target required." 
-		if not hasattr(target, "exp_value"):
-			return False, "Can't attack a player."
 		if not target.dead:
-			return Ability.can_use(user, FearScream)
+			return Ability.can_use(user, target,FearScream)
 		else:
 			return False, "Target is already dead."
 
@@ -1355,7 +1485,7 @@ class FearScream(Ability):
 
 	@staticmethod
 	def use(user, target, weapon, combat_event):
-		attack_info = AoeAttackInfo(user, FearScream, target, combat_event)
+		attack_info = AoeAttackInfo(user, FearScream, target, combat_event, None, "", clamp(int(user.characteristics["intelligence"]/3), 1, 4) )
 		attack_info.use_info["item_used"] = None
 		return Ability.use(attack_info)
 
@@ -1412,7 +1542,7 @@ class RodentBite(Ability):
 		if not target:
 			return False, "Target required."
 		if not target.dead:
-			return Ability.can_use(user, RodentBite)
+			return Ability.can_use(user, target,RodentBite)
 		else:
 			return False, "Target is already dead"
 
@@ -1486,7 +1616,7 @@ class AnimalBite(Ability):
 		if not target:
 			return False, "Target required."
 		if not target.dead:
-			return Ability.can_use(user, AnimalBite)
+			return Ability.can_use(user, target,AnimalBite)
 		else:
 			return False, "Target is already dead"
 
@@ -1560,7 +1690,7 @@ class AnimalClaw(Ability):
 		if not target:
 			return False, "Target required."
 		if not target.dead:
-			return Ability.can_use(user, AnimalClaw)
+			return Ability.can_use(user, target,AnimalClaw)
 		else:
 			return False, "Target is already dead"
 
@@ -1605,9 +1735,11 @@ abilities_listing = {
 
 	"fear scream": FearScream,
 	"mass pain": MassPain,
+	"mass shield": MassShield,
 	"heal": Heal,
 	"fireball": FireBall,
 	"lightning":Lightning,
+	"vampirism aura": VampireAura,
 	#strict non player abilities below
 	"revive": Revive,
 
