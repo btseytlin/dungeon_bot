@@ -31,7 +31,17 @@ class PersistenceController(object):
 		players_to_save = {}
 		for uid in list(self.players.keys()):
 			if self.players[uid] and hasattr(self.players[uid], "level_up_points"):
+				# ply = self.players[uid]
+				# print("\nRespecing ply", ply.name)
+				# print("Has perks", ply.level_perks)
+				# print("---")
+				# perks_copy = ply.level_perks.copy()
+				# for perk in perks_copy:
+				# 	print("Respecing perk", perk)
+				# 	ply.level_perks.remove(perk)
+				# 	ply.perk_points += 1
 				players_to_save[uid] = self.players[uid].to_json()
+				
 
 		players_to_save = json.dumps(players_to_save)
 
