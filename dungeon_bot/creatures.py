@@ -312,17 +312,18 @@ class Creature(object):
 			if self.equipment[key]:
 				self.unequip(self.equipment[key])
 
-	def destroy(self, target_item):
+	def destroy(self, target_item, sort = True):
 		if target_item in self.inventory:
-			self.unequip(target_item)
+			#self.unequip(target_item)
 			self.inventory.remove(target_item)
-			self.sort_inventory()
+			if sort:
+				self.sort_inventory()
 			return "Successfully destroyed %s."%(target_item.name)
 		return "No such item."
 
 	def clear_inventory(self):
 		for item in self.inventory:
-			self.destroy(item)
+			self.destroy(item, False)
 
 	def use(self, item):
 		#if item in self.inventory:
@@ -896,12 +897,15 @@ class Creature(object):
 					self.characteristics[characteristic] = clamp ( self.characteristics[characteristic] + self.equipment[item].stats["characteristics_change"][characteristic], 1, 20)
 
 
-	def refresh_stats(self):
+	def refresh_stats(self, full_reset = False):
 		temp_stats = self.get_stats_from_characteristics(self.characteristics)
 		if hasattr(self, "stats"):
 			self.stats["max_health"] = temp_stats["max_health"]
 			self.stats["max_energy"] = temp_stats["max_energy"]
 			self.stats["energy_regen"] = temp_stats["energy_regen"]
+			if full_reset:
+				self.stats["health"] = temp_stats["health"]
+				self.stats["energy"] = temp_stats["energy"]
 		else:
 			self.stats = temp_stats
 		#refresh stats
@@ -928,7 +932,7 @@ class Creature(object):
 		self.refresh_abilities()
 		self.refresh_tags()
 		self.refresh_characteristics()
-		self.refresh_stats()
+		self.refresh_stats(True)
 
 	def examine_self(self):
 		if not self:

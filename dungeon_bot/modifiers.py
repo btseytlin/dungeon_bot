@@ -446,6 +446,7 @@ class Regeneration(Modifier): #simply adds defense, hinders evasion
 	def on_round(self):
 		chance = diceroll(self.stats["healing chance"])
 		msg = ""
+		print(chance)
 		if random.randint(0, 100) < chance:
 			heal = diceroll(self.stats["healing amount"])
 			if self.host.health < self.host.stats["max_health"]: 

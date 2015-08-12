@@ -169,7 +169,7 @@ class Legionaire(LevelPerk):
 
 	def on_modifier_applied(self, modifier):
 		msg = ""
-		if modifier.name == "shielded":
+		if modifier.name == "shielded" and hasattr(modifier.granted_by, "tags_granted"):
 			modifier.stats["stats_change"]["defense"] = str(int(modifier.stats["stats_change"]["defense"].split('d')[0])*2) + 'd' + str(int(modifier.stats["stats_change"]["defense"].split('d')[1]))
 			msg = "!!\tThe defense bonus is stronger due to legionaire training!"
 		return msg

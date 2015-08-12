@@ -1228,7 +1228,6 @@ class VampireAura(Ability):
 	def use(user, target, weapon, combat_event):
 		buff_info = BuffInfo(user, VampireAura, target, combat_event)
 		buff_info.use_info["item_used"] = None
-		print("WOW\n\n",user.name, target.name, "\nwow")
 		buff_info.description += "%s casts a spell of vampirism aura on %s.\n"%(user.short_desc.capitalize(),target.short_desc.capitalize())
 		return Ability.use(buff_info)
 
@@ -1292,7 +1291,7 @@ class Lightning(Ability):
 	@staticmethod
 	def get_damage(user, target, weapon):
 		intelligence = user.characteristics["intelligence"]
-		base_damage = diceroll(str(intelligence) + "d" + str(intelligence))
+		base_damage = diceroll(str(intelligence) + "d" + str(intelligence*2))
 		not_fire_resistant = int(not "electricity resistant" in target.tags)
 		dmg = clamp( base_damage * not_fire_resistant, user.characteristics["intelligence"], 99999999 )
 		return dmg
