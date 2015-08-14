@@ -128,8 +128,8 @@ def run_tests():
 
 	#test_weapon_abilities()
 	#controlled combat event
-	ply = Player("player1", "testply1 the ply", 100)
-	ply1 = Player("player2", "testply2")
+	ply = Player("player1", "testply1 the ply", 20)
+	#ply1 = Player("player2", "testply2")
 
 	item = "sword"
 	item = get_item_by_name(item, 1)
@@ -142,7 +142,7 @@ def run_tests():
 	ply.base_characteristics["intelligence"] = 6
 
 	
-	dummy = Dummy(1000)
+	dummy = UndeadWarLeader(10)
 
 	#ply.refresh_derived()
 	# item = "dagger"
@@ -150,6 +150,6 @@ def run_tests():
 	# ply.add_to_inventory(item)
 	# ply.equip(item)
 
-	#enemies = [dummy,(1),Mercenary(1), ]
-	enemies, desc = peasant_pack("medium")
+	enemies = [dummy ]
+	#enemies, desc = peasant_pack("medium")
 	controlled_combat_event([ply], enemies)

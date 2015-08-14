@@ -482,6 +482,8 @@ class UndeadWarLeader(Enemy):
 			for ability in self.abilities:
 				while self.energy >= ability.energy_required:
 					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
+					if ability.__class__ == FearScream:
+						break
 					if not self.target or self.target.dead:
 						break
 				if not self.target or self.target.dead:
@@ -987,7 +989,7 @@ class MercenaryMage(Enemy):
 		spells = ["heal", "fireball", "lightning", "mass pain"]
 		for spell in spells:
 			self.base_abilities.append(abilities_listing[spell](spell, None))
-		
+
 
 
 	def act(self, combat_event):
@@ -1078,7 +1080,7 @@ enemy_list = { #name to enemy
 	"mercenary leader": MercenaryLeader,
 	"thief": Thief,
 
-	
+
 	#"mage": Mage,
 	"ogre": Ogre,
 
