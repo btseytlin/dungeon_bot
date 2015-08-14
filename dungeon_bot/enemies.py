@@ -438,8 +438,8 @@ class UndeadLegionaire(Enemy):
 undead_warleader_characteristics = {
 	"strength": 7, #how hard you hit
 	"vitality": 7, #how much hp you have
-	"dexterity": 6, #how fast you act, your position in turn queue
-	"intelligence": 6, #how likely you are to strike a critical
+	"dexterity": 7, #how fast you act, your position in turn queue
+	"intelligence": 8, #how likely you are to strike a critical
 }
 
 class UndeadWarLeader(Enemy):
@@ -480,6 +480,8 @@ class UndeadWarLeader(Enemy):
 			self.select_target(combat_event)
 		if self.target and not self.target.dead:
 			for ability in self.abilities:
+				if ability.__class__ == FearScream and "fear" in [x.name for x in self.target.modifiers]:
+					continue
 				while self.energy >= ability.energy_required:
 					attack_infos.append(ability.__class__.use(self, self.target, ability.granted_by, combat_event))
 					if ability.__class__ == FearScream:
