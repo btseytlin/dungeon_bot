@@ -35,6 +35,8 @@ def parse_command(text):
 	else:
 		command = words[0]
 		args = []
+	command = " ".join(words)
+	args = []
 	return command,args
 
 def print_available_commands(available_commands):

@@ -326,6 +326,14 @@ class RegistrationEvent(BotEvent):
 				self.finish()
 				return('Registration complete!\nA club has been added to your inventory, don\'t forget to equip it.\nTry "examine" to see your stats, "inventory" to see your items.\nAlso remember to use "status" and "help" whenever you don\'t know where you are or what to do.')
 			else:
+
+				if len(command.split(" "))>1:
+					if isinstance(args, tuple):
+						args = list(args)
+					args = command.split(" ")[1:] + args
+					command = command.split(" ")[0]
+					return self.handle_command(user, command, *args)
+
 				return "Unknown command."
 
 class LevelUpEvent(BotEvent):
@@ -412,6 +420,17 @@ class LevelUpEvent(BotEvent):
 						return msg
 				else:
 					return "Wrong argument, try only \"+\" is allowed."
+
+			if len(command.split(" "))>1:
+				if isinstance(args, tuple):
+					args = list(args)
+
+				cmd_words = command.split(" ")
+				command = " ".join(cmd_words[:len(cmd_words)-1])
+				args.insert(0, cmd_words[len(cmd_words)-1])
+				#command = command.split(" ")[0]
+				return self.handle_command(user, command, *args)
+			return "Unknown command."
 		elif self.current_step == 1:
 
 			if self.player.perk_points <= 0 or len(self.available_perks) <= 0:
@@ -554,7 +573,7 @@ class InventoryEvent(BotEvent):
 
 		for i in range(len(all_items)):
 			item = all_items[i]
-			if item and item.name == arg or arg.isdigit() and i == int(arg):
+			if item and item.full_name == arg or arg.isdigit() and i == int(arg):
 				return True, item
 
 		error_text = "No such item in your inventory "
@@ -1010,6 +1029,7 @@ class DungeonCrawlEvent(BotEvent):
 		return(broadcast)
 
 	def handle_command(self, user, command, *args):
+
 		super(DungeonCrawlEvent, self).handle_command(user, command, *args)
 		#if user.id in list(self.non_combat_events.keys()):
 		#	return self.non_combat_events[str(user.id)].handle_command(user, command, *args)
@@ -1297,28 +1317,28 @@ class CombatEvent(BotEvent):
 				granted_by = ability.granted_by
 				argument = " ".join(args).lower()
 				target = None
-				if len(argument) > 0:
-					for i in range(len(self.turn_queue)):
-						t = self.turn_queue[i]
-						if t.name == argument or argument.isdigit() and int(argument)-1 == i or argument.split(".")[0].isdigit() and int(argument.split(".")[0])-1 == i:
-							target = t
-					can_use, cant_use_msg = ability_class.can_use( self.users_to_players[str(user.id)], target )
-					if can_use:
-						use_info = ability_class.use( self.users_to_players[str(user.id)], target, granted_by, self )
-						combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
-						self.abilities_used.append(use_info)
-						msg = use_info.description
-						broadcast = []
-						for u in self.users:
-							broadcast.append([u, msg])
-						return broadcast
+				#if len(argument) > 0:
+				for i in range(len(self.turn_queue)):
+					t = self.turn_queue[i]
+					if t.name == argument or argument.isdigit() and int(argument)-1 == i or argument.split(".")[0].isdigit() and int(argument.split(".")[0])-1 == i:
+						target = t
+				can_use, cant_use_msg = ability_class.can_use( self.users_to_players[str(user.id)], target )
+				if can_use:
+					use_info = ability_class.use( self.users_to_players[str(user.id)], target, granted_by, self )
+					combat_logger.info("Ability use info:\n---\n%s"%(str(use_info)))
+					self.abilities_used.append(use_info)
+					msg = use_info.description
+					broadcast = []
+					for u in self.users:
+						broadcast.append([u, msg])
+					return broadcast
 
-					else:
-						return cant_use_msg
-
-					return "No such target in turn queue"
 				else:
-					return "Specify your target"
+					return cant_use_msg
+
+				return "No such target in turn queue"
+				#else:
+				#	return "Specify your target"
 
 			if len(command.split(" "))>1:
 				if isinstance(args, tuple):
