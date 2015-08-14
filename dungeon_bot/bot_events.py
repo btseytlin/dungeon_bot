@@ -1130,6 +1130,7 @@ class CombatEvent(BotEvent):
 
 		
 		for enemy in enemies:
+			print(enemy)
 			enemy.event = self
 
 		combat_logger.info("Started combat %s vs %s"%(", ".join([str(p.name) + "("+str(p.userid)+")" for p in players]), ", ".join([e.name for e in enemies])))

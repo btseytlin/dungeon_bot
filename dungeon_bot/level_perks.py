@@ -199,9 +199,10 @@ class Knight(LevelPerk):
 		if item.item_type == "armor":
 			if "characteristics_change" in item.stats.keys() and "dexterity" in item.stats["characteristics_change"].keys() and item.stats["characteristics_change"]["dexterity"]<-1:
 				modifier = get_modifier_by_name("bonus",self, self.host, {"duration":-1, "characteristics_change":{"dexterity": abs(int(item.stats["characteristics_change"]["dexterity"]/2))}})
-				self.bonus = modifier
 				self.item = item
 				mod_added = self.host.add_modifier(modifier)
+				if mod_added:
+					self.bonus = modifier
 
 	def on_item_unequipped(self, item):
 		if item == self.item:

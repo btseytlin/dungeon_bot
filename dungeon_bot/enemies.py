@@ -1535,7 +1535,7 @@ def mercenary_pack(size=None, special_enemy = None):
 				mages, desc = merc_mages("huge")
 
 	mercs += thieves
-	mercs += thug_characteristics
+	mercs += thug_enemies
 	mercs += merc_leader
 	mercs += mage_enemies
 	description += desc

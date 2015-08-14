@@ -41,6 +41,7 @@ class Dungeon(object):
 			elif room_type == "combat":
 				enemy_type = random.choice(self.enemy_types)
 				room.combat_enemies, room.description = retrieve_enemies_for_difficulty(enemy_type, self.difficulty)
+				print(room.combat_enemies)
 			self.rooms.append(room)
 
 class Room(object):

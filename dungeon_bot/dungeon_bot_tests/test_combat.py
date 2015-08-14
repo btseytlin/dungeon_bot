@@ -112,37 +112,43 @@ def test_weapon_abilities():
 		ply.clear_inventory()
 
 def run_tests():
-	# item = "random"
+	ply = Player("player1", "testply1 the ply", 20)
+	# itemname = "hermit cloak"
+	# ply.level_perks.append(Knight(ply))
 	# while(True):
-	# 	print(get_item_by_name(item, 1).examine_self())
+	# 	item = get_item_by_name(itemname, 0.5)
+	# 	print(item)
+	# 	ply.add_to_inventory(item)
+	# 	ply.equip(item)
+	# 	ply.unequip(item)
 	# 	inp = input("type stop to stop")
 	# 	if inp == "stop":
 	# 		break
 
-	# for enemy_table in list(enemy_tables.keys()):
-	# 	for diff in list(enemy_tables[enemy_table].keys()):
-	# 		enemies = enemy_tables[enemy_table][diff]
-	# 		en, desc = enemies[0](*enemies[1])
-	# 		print(desc)
+	for enemy_table in list(enemy_tables.keys()):
+		for diff in list(enemy_tables[enemy_table].keys()):
+			enemies = enemy_tables[enemy_table][diff]
+			en, desc = enemies[0](*enemies[1])
+			print(en, desc)
 
 
 	#test_weapon_abilities()
 	#controlled combat event
-	ply = Player("player1", "testply1 the ply", 20)
+	
 	#ply1 = Player("player2", "testply2")
 
-	item = "sword"
+	item = "hermit cloak"
 	item = get_item_by_name(item, 1)
 	logger.info(item.examine_self())
 	#item.stats["accuracy"] = "100d10"
 	#item.stats["damage"] = "7d1"
 	ply.inventory.append(item)
 	ply.equip(item, True)
-	ply.level_perks.append(Mage(ply))
+	
 	ply.base_characteristics["intelligence"] = 6
 
 	
-	dummy = UndeadWarLeader(10)
+	dummy = Dummy(10)
 
 	#ply.refresh_derived()
 	# item = "dagger"
@@ -150,6 +156,6 @@ def run_tests():
 	# ply.add_to_inventory(item)
 	# ply.equip(item)
 
-	enemies = [dummy ]
-	#enemies, desc = peasant_pack("medium")
+	#enemies = mercenary_pack
+	enemies, desc = mercenary_pack("medium")
 	controlled_combat_event([ply], enemies)

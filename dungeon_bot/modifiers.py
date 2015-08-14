@@ -152,7 +152,8 @@ class Modifier(object): #Modifiers always affect only the host that carries them
 		pass
 
 	def lift(self):
-		self.host.modifiers.remove(self)
+		if self in self.host.modifiers:
+			self.host.modifiers.remove(self)
 		return self.on_lifted() + self.host.on_modifier_lifted(self)
 
 
@@ -766,8 +767,9 @@ class Greed(Modifier):
 		msg = ""
 		chance = diceroll(self.stats["greed chance"])
 		if random.randint(0, 100) < chance:
-			self.host.inventory.remove(item_gained)
-			msg = "!!\t%s destroys %s.\n"%(self.granted_by.name.capitalize(), item_gained.name)
+			if item_gained in self.host.inventory:
+				self.host.inventory.remove(item_gained)
+				msg = "!!\t%s destroys %s.\n"%(self.granted_by.name.capitalize(), item_gained.name)
 		return msg
 
 	@staticmethod
